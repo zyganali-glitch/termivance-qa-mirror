@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "mode": "OPERATOR_APPROVED_B3_DISPOSABLE_ONLY",
+  "mutation_enabled": true,
+  "provider": "GITLAB_PAGES",
+  "allowed_target_project_ids": [87785099],
+  "allowed_target_full_paths": [
+    "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+  ],
+  "allowed_actions": ["unpublish_pages"],
+  "authorization_required": true
+}

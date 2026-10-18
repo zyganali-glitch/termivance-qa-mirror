@@ -8,18 +8,22 @@ Core concepts: **Retirement Obligation Graph**, **Bounded Absence**, and **Retir
 
 ## Status
 
-**B1 executed live (2026-10-18); awaiting independent QA.** The canonical public
-MIT GitLab repository exists, GitLab CI is green, one real GitLab Duo Custom Flow
-(`Termivance Retirement Analyst`, exactly one `AgentComponent`) is created,
-enabled and **verified live** (session `9650440`, FINISHED) with a structured,
-independently read-back **non-authoritative** assessment on issue #1. The
-deterministic Python contracts (exact target identity, bounded authorization,
-bounded-absence evidence, fail-closed policy) and a fail-closed CLI are
-implemented and tested. B2/B3 and all retirement/bounded-absence claims remain
-`NOT_RUN`. See `docs/HANDOFF.md` and `docs/EVIDENCE_MATRIX.md`.
+**B3 implemented (2026-10-18); awaiting independent QA.** B1 (live Duo Custom
+Flow) and B2 (deterministic BLOCKED gate) stand. B3 adds a deterministic,
+endpoint-restricted GitLab Pages retirement executor, exact-target bounded
+authorization, independent bounded-absence observation, adversarial tests, and a
+permanent independent GitHub QA bridge that calls real GitLab APIs and mirrors
+the canonical commit.
 
 - Canonical repo: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance
-- Live session: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9650440
+- QA bridge (non-canonical): https://github.com/zyganali-glitch/termivance-qa-mirror
+- Live B1 session: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9650440
+
+**B3 retirement is `BLOCKED` on a real, verified access boundary**, not on the
+engine: the operator holds only `Developer` on the competition subgroup, and
+GitLab's Pages lifecycle (deploy + `DELETE /projects/:id/pages`) requires
+`Maintainer`. No destructive call is made without an exact-target operator
+authorization. See `docs/HANDOFF.md` and `docs/EVIDENCE_MATRIX.md`.
 
 ## GitLab-native demo target
 
@@ -55,9 +59,14 @@ in `.gitlab-ci.yml`.
 - `plans/MASTER_PLAN.md` — four batches; no microphases.
 - `docs/HANDOFF.md` — current critical project facts.
 - `docs/EVIDENCE_MATRIX.md` — claim/proof separation.
-- `src/termivance/` and `tests/` — minimal runnable baseline and deterministic contracts.
+- `src/termivance/` and `tests/` — minimal runnable baseline and deterministic contracts
+  (`pages.py` endpoint-restricted mutation, `retirement.py` authorized executor,
+  `absence.py` bounded-absence observation, `provision.py` disposable site).
 - `flows/termivance_retirement_analyst.yaml` — GitLab Duo Custom Flow source definition (`DEPLOYED`, live session `9650440`).
 - `config/retirement_policy.example.json` — non-authorizing sample, destructive operations off by default.
+- `config/retirement_policy.b3_disposable.json` — permits retirement of ONLY the disposable project `87785099`.
+- `config/authorization.example.json` — non-authorizing example of an operator-issued authorization record.
+- `deploy/disposable-pages/` — the disposable B3 Pages site template.
 
 ## Competition
 

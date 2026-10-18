@@ -12,10 +12,11 @@ This starter pack contains **no live evidence**. `NOT_RUN` != `PASS`. Record evi
 | B1: local foundation | `pip install -e .`, `ruff check .`, `pytest`, CLI exit codes | LOCAL_PASS (38 tests, ruff clean) | Local-only; never a substitute for remote CI or the live repo |
 | B2: SAFE_TO_RETIRE | Fresh graph/obligation checks + bound authority and exact target | ENGINE_PASS (synthetic safe case tested) | Deterministic verdict, not model prose |
 | B2: real BLOCKED | Actual GitLab read evidence, forbidden/unsatisfied edge, zero delete API calls | PASS (see B2 log) | Fixture tests cannot replace live gate |
-| B3: existing target | Exact disposable GitLab Pages project ID/path, Pages API `200`, live served site | NOT_RUN | NOT the canonical repo |
-| B3: authorized unpublish | Bound operator approval, exact project ID, DELETE result | NOT_RUN | Successful DELETE not proof of absence |
-| B3: OBSERVED_ABSENT | Fresh independent Pages API GET and served URL HTTP observation, scoped receipt | NOT_RUN | GitLab-only scope; no claim about Cloudflare, AWS or general external resources |
+| B3: existing target | Exact disposable GitLab Pages project ID/path, Pages API `200`, live served site | BLOCKED (project `87785099` exists; Pages gated by Maintainer) | NOT the canonical repo |
+| B3: authorized unpublish | Bound operator approval, exact project ID, DELETE result | NOT_RUN (engine ready; Maintainer 403) | Successful DELETE not proof of absence |
+| B3: OBSERVED_ABSENT | Fresh independent Pages API GET and served URL HTTP observation, scoped receipt | NOT_RUN (blocked on permission) | GitLab-only scope; no claim about Cloudflare, AWS or general external resources |
 | B3: environment state | Separate environment API or GitLab read | NOT_RUN | `stopped` does not prove Pages site deletion |
+| B3: GitHub QA bridge | Real GitHub Actions run calling live GitLab APIs; mirror SHA == canonical SHA | PASS (run `39143542346`) | Non-canonical; public read-only |
 | B3 optional: resurrection | Subsequent same-target observed redeploy + state downgrade | NOT_RUN | Do not claim `RESURRECTION_CONTROLLED` without control proof |
 | B4: judge package | Public evidence UI, integrated pipeline, YouTube <3m, Devpost submission | NOT_RUN | Video must depict actual product |
 
@@ -39,6 +40,13 @@ This starter pack contains **no live evidence**. `NOT_RUN` != `PASS`. Record evi
 - **Duo explanation (reused single flow):** issue #2 note `4037739173` by `ai-termivance-retirement-analyst-gitlab-ai-hackathon`, explicitly non-authoritative; deterministic verdict unchanged.
 
 
+
+## B3 evidence log (2026-10-18, all times UTC)
+
+- **Deterministic B3 core:** `pages.py` (the ONLY mutation capability: `DELETE /projects/:id/pages`, allowlist regex excludes project deletion), `retirement.py` (protected-target + policy + exact-target authorization preflight, single-use consumption, post-action read-back), `absence.py` (Pages API + served-URL channels, fail-closed), `provision.py` (disposable site), `authorization.py` (bound authorization serialization). **154 tests pass**, ruff clean, plus a network-free CI assertion that the mutation allowlist cannot match a project-deletion path.
+- **Disposable project (operator-approved scope):** ID **`87785099`**, `gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo`, created 2026-10-18, public, `pages_access_level=private`. Site template in `deploy/disposable-pages/`. Canonical `87779099` and showcase `87777871` are protected and untouched.
+- **Permission boundary (live):** as Developer, `GET /projects/87785099/pages` → **403**, `DELETE /projects/87785099/pages` → **403**, `PUT pages_access_level` → **403**. `project.pagesDeployments` (GraphQL) → **empty** for `87785099`, while an identical CI configuration produced a real Pages deployment (`PagesDeployment/46225378`) in an owner-controlled namespace. Conclusion: the Pages lifecycle (deploy + unpublish) is gated by **Maintainer** in this namespace. **No destructive call was made.**
+- **GitHub QA bridge (non-canonical, operational):** `https://github.com/zyganali-glitch/termivance-qa-mirror`. Mirror branch `gitlab-main` = GitLab `main` (exact SHA `21eed7e27a9077469be5297ada4cd87c728df13b`). Independent observer workflow run `39143542346` (`https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39143542346`) — drift `IN_SYNC`; B2 pipeline `2960412852` ↔ commit binding matched; 11/18 observations `LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS`; 7 `NOT_OBSERVED` (issue notes 401, pages 403, environments 401, duo probe 404) with real statuses preserved. No GitLab credential is present in GitHub.
 
 ## B3 feasibility notes (B2 observation, not evidence of absence)
 

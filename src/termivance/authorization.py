@@ -8,8 +8,11 @@ is revalidated immediately before any mutation.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
 from termivance.target import TargetIdentity
 
@@ -100,3 +103,72 @@ class Authorization:
     def from_prose(cls, *_args: object, **_kwargs: object) -> Authorization:
         """Always refuse: authorization may not be inferred from prose."""
         raise AuthorizationError("authorization cannot be inferred from prose or model text")
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "schema": "termivance.authorization/v1",
+            "target": self.target.to_dict(),
+            "action": self.action,
+            "issued_at": _as_utc(self.issued_at).isoformat(),
+            "expires_at": _as_utc(self.expires_at).isoformat(),
+            "nonce": self.nonce,
+            "max_uses": self.max_uses,
+            "uses": self.uses,
+            "binding": self.binding(),
+        }
+
+    def binding(self) -> str:
+        """A stable digest of the exact bound target/action/expiry/uses.
+
+        Printed in the receipt so an operator approval can be compared to the
+        exact authorization that was consumed.
+        """
+        payload = json.dumps(
+            {
+                "target": self._bound.to_dict(),
+                "action": self.action,
+                "issued_at": _as_utc(self.issued_at).isoformat(),
+                "expires_at": _as_utc(self.expires_at).isoformat(),
+                "nonce": self.nonce,
+                "max_uses": self.max_uses,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+    @classmethod
+    def from_dict(cls, data: dict[str, object]) -> Authorization:
+        """Reconstruct a bound authorization from a signed operator approval record."""
+        try:
+            target = TargetIdentity.from_dict(dict(data["target"]))  # type: ignore[arg-type]
+        except (KeyError, TypeError) as exc:
+            raise AuthorizationError("authorization record is missing a valid target") from exc
+        try:
+            issued = datetime.fromisoformat(str(data["issued_at"]))
+            expires = datetime.fromisoformat(str(data["expires_at"]))
+        except (KeyError, ValueError) as exc:
+            raise AuthorizationError("authorization record has invalid timestamps") from exc
+        return cls(
+            target=target,
+            action=str(data["action"]),
+            issued_at=issued,
+            expires_at=expires,
+            nonce=str(data["nonce"]),
+            max_uses=int(data.get("max_uses", 1)),  # type: ignore[arg-type]
+            uses=int(data.get("uses", 0)),  # type: ignore[arg-type]
+        )
+
+
+def load_authorization(path: str | Path) -> Authorization:
+    """Load an explicit, operator-issued authorization record. Fails closed."""
+    p = Path(path)
+    if not p.is_file():
+        raise AuthorizationError(f"authorization file not found: {p}")
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise AuthorizationError(f"invalid authorization JSON: {exc}") from exc
+    if not isinstance(data, dict):
+        raise AuthorizationError("authorization record must be a JSON object")
+    return Authorization.from_dict(data)

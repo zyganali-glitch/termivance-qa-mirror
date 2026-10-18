@@ -20,6 +20,9 @@ from termivance.report import render_decision_report
 
 CANONICAL_URL = "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance"
 
+#: Disposable B3 retirement demonstration target (never the canonical project).
+DISPOSABLE_PAGES_PROJECT_ID = 87785099
+
 #: Truthful local snapshot. Live GitLab state is verified separately (docs/).
 STATUS = {
     "product": "Termivance",
@@ -28,7 +31,8 @@ STATUS = {
     "ci": "NOT_VERIFIED_LOCALLY",
     "duo_flow": "DEPLOYED item 1018562",
     "duo_session": "9650440 FINISHED (B1)",
-    "retirement": "B2_BLOCKED_ENGINE_READY; B3_UNPUBLISH_NOT_RUN",
+    "retirement": "B3_ENGINE_READY; B3_UNPUBLISH_NOT_RUN",
+    "disposable_pages_project": DISPOSABLE_PAGES_PROJECT_ID,
 }
 
 
@@ -186,6 +190,109 @@ def _cmd_demo_blocked(args: argparse.Namespace) -> int:
     return 0 if decision.verdict.value == "BLOCKED" else 1
 
 
+def _resolve_target(project_id: int, kind: str):
+    from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.runtime import resolve_target
+
+    return resolve_target(GitLabClient(load_local_token()), project_id, kind)
+
+
+def _cmd_pages_state(args: argparse.Namespace) -> int:
+    from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.pages import read_pages_state
+
+    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
+    client = GitLabClient(load_local_token())
+    state = read_pages_state(client, target)
+    if args.json:
+        print(json.dumps(state.to_dict(), indent=2, sort_keys=True))
+    else:
+        print(f"pages target={target.project_id} {target.full_path}")
+        print(f"api_status={state.status} error={state.error_kind} present={state.present}")
+        print(f"url={state.url}")
+    return 0 if state.accessible else 2
+
+
+def _cmd_observe_absence(args: argparse.Namespace) -> int:
+    from termivance.absence import observe_absence
+    from termivance.gitlab_client import GitLabClient, load_local_token
+
+    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
+    client = GitLabClient(load_local_token())
+    probe = observe_absence(client, target, args.url)
+    if args.json:
+        print(json.dumps(probe.to_dict(), indent=2, sort_keys=True))
+    else:
+        print(f"target={target.project_id} {target.full_path}")
+        print(f"pages_api={probe.pages_api_status} ({probe.pages_api_error})")
+        print(f"served_url={args.url} http={probe.served_http_status}")
+        print(f"verdict={probe.verdict.value}")
+    return 0 if probe.verdict.value in {"OBSERVED_ABSENT", "RETIRED"} else 1
+
+
+def _cmd_retire_pages(args: argparse.Namespace) -> int:
+    from termivance.authorization import load_authorization
+    from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.pages import PagesMutationClient
+    from termivance.retirement import retire_pages
+    from termivance.runtime import load_policy_file
+
+    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
+    policy = load_policy_file(args.policy)
+    authorization = load_authorization(args.authorization) if args.authorization else None
+    mutation_client = PagesMutationClient(load_local_token()) if args.execute else None
+    read_client = GitLabClient(load_local_token()) if args.execute else None
+    receipt = retire_pages(
+        target,
+        policy,
+        authorization,
+        mutation_client=mutation_client,
+        read_client=read_client,
+        served_url=args.url,
+    )
+    payload = receipt.to_dict()
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"target={target.project_id} {target.full_path} action={receipt.action}")
+        print(f"preflight_ok={receipt.preflight.ok} "
+              f"mutation_attempted={receipt.mutation_attempted}")
+        for check in receipt.preflight.checks:
+            print(f"  - {check['check']}: {check['ok']} ({check['detail']})")
+        if receipt.mutation is not None:
+            print(f"mutation HTTP {receipt.mutation.status} accepted={receipt.mutation.accepted}")
+        if receipt.absence is not None:
+            print(
+                f"read-back: pages_api={receipt.absence.pages_api_status} "
+                f"served={receipt.absence.served_http_status}"
+            )
+        print(f"verdict={receipt.verdict.value}")
+        if not args.execute:
+            print("(dry run: no mutation performed; pass --execute to attempt the real call)")
+    return 0 if receipt.verdict.value in {"SAFE_TO_RETIRE", "OBSERVED_ABSENT", "RETIRED"} else 1
+
+
+def _cmd_provision_pages(args: argparse.Namespace) -> int:
+    from termivance.gitlab_client import load_local_token
+    from termivance.provision import create_disposable_project, site_files
+
+    project = create_disposable_project(
+        load_local_token(),
+        namespace_id=args.namespace_id,
+        name=args.name,
+        path=args.path,
+        description=args.description,
+    )
+    payload = project.to_dict()
+    payload["site_files"] = sorted(site_files())
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"created disposable project {project.project_id} {project.full_path}")
+        print(f"web_url={project.web_url}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="termivance",
@@ -224,6 +331,32 @@ def build_parser() -> argparse.ArgumentParser:
     demo.add_argument("--issue", action="store_true", help="publish the report as an issue")
     demo.add_argument("--json", action="store_true")
 
+    pages_state = sub.add_parser("pages-state", help="read-only GitLab Pages state")
+    pages_state.add_argument("--project-id", type=int, required=True)
+    pages_state.add_argument("--json", action="store_true")
+
+    absence = sub.add_parser("observe-absence", help="independent bounded-absence read-back")
+    absence.add_argument("--project-id", type=int, required=True)
+    absence.add_argument("--url", required=True, help="exact previously-served Pages URL")
+    absence.add_argument("--json", action="store_true")
+
+    retire = sub.add_parser(
+        "retire-pages", help="authorized Pages unpublish (dry run unless --execute)"
+    )
+    retire.add_argument("--project-id", type=int, required=True)
+    retire.add_argument("--url", default=None, help="exact served URL for read-back")
+    retire.add_argument("--policy", default=None)
+    retire.add_argument("--authorization", default=None, help="operator authorization JSON")
+    retire.add_argument("--execute", action="store_true", help="attempt the real DELETE call")
+    retire.add_argument("--json", action="store_true")
+
+    provision = sub.add_parser("provision-pages", help="create a disposable Pages project")
+    provision.add_argument("--namespace-id", type=int, required=True)
+    provision.add_argument("--name", required=True)
+    provision.add_argument("--path", required=True)
+    provision.add_argument("--description", default="Disposable Termivance B3 Pages demo target")
+    provision.add_argument("--json", action="store_true")
+
     return parser
 
 
@@ -243,6 +376,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_evaluate(args)
     if args.command == "demo-blocked":
         return _cmd_demo_blocked(args)
+    if args.command == "pages-state":
+        return _cmd_pages_state(args)
+    if args.command == "observe-absence":
+        return _cmd_observe_absence(args)
+    if args.command == "retire-pages":
+        return _cmd_retire_pages(args)
+    if args.command == "provision-pages":
+        return _cmd_provision_pages(args)
     return 1  # pragma: no cover
 
 
