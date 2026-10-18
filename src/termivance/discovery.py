@@ -378,7 +378,8 @@ def save_snapshot(snapshot: Snapshot, path: str | Path) -> Path:
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     data = snapshot.to_dict()
-    data["classification"] = EvidenceClass.RECORDED_LIVE.value
+    if snapshot.classification == EvidenceClass.LIVE:
+        data["classification"] = EvidenceClass.RECORDED_LIVE.value
     p.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
     return p
 
