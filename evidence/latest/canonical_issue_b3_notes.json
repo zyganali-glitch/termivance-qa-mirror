@@ -1,0 +1,15 @@
+{
+  "acquired_at_utc": "2026-10-18T18:57:13Z",
+  "artifact_sha256": "fedd8d63838c72dc32490e8252cf382bb6e3fa429e14c8c99c42ba849cce7a9f",
+  "classification": "NOT_OBSERVED",
+  "endpoint": "/projects/87779099/issues/3/notes",
+  "http_error": "HTTP 401",
+  "http_status": 401,
+  "limitations": "endpoint not observed with public read access; real status preserved",
+  "method": "GET",
+  "name": "canonical_issue_b3_notes",
+  "redacted_keys": [],
+  "sanitized_body": {
+    "message": "401 Unauthorized"
+  }
+}

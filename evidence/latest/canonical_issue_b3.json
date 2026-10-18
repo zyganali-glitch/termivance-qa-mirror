@@ -1,0 +1,84 @@
+{
+  "acquired_at_utc": "2026-10-18T18:57:13Z",
+  "artifact_sha256": "a91ab90193958d5a60e28cb2f1272e12f22905944295fa8420eb2b465092948a",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/issues/3",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_issue_b3",
+  "redacted_keys": [
+    "author",
+    "avatar_url",
+    "name",
+    "public_email"
+  ],
+  "sanitized_body": {
+    "_links": {
+      "award_emoji": "https://gitlab.com/api/v4/projects/87779099/issues/3/award_emoji",
+      "closed_as_duplicate_of": null,
+      "notes": "https://gitlab.com/api/v4/projects/87779099/issues/3/notes",
+      "project": "https://gitlab.com/api/v4/projects/87779099",
+      "self": "https://gitlab.com/api/v4/projects/87779099/issues/3"
+    },
+    "assignee": null,
+    "assignees": [],
+    "author": "[REDACTED]",
+    "blocking_issues_count": 0,
+    "closed_at": null,
+    "closed_by": null,
+    "confidential": false,
+    "created_at": "2026-10-18T18:56:41.601Z",
+    "description": "## Deterministic B3 status: **BLOCKED** \u2014 no mutation attempted\n\nThis record is written by the conduit under deterministic authority. A successful\nAPI call is never proof of retirement, and prose can never award a verdict.\n\n### Bound target (the only approved destructive target)\n- Project ID `87785099` \u2014 `gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo`\n- Resource kind `GITLAB_PAGES_SITE`, action `unpublish_pages`\n- Canonical `87779099` and showcase `87777871` are on the protected registry and were never touched.\n\n### Why the verdict is BLOCKED (observed, not assumed)\n- `GET /projects/87785099/pages` -> **403**; `DELETE /projects/87785099/pages` -> **403**; `PUT pages_access_level` -> **403**.\n- `pagesDeployments` for `87785099` -> **empty**: the disposable site was never genuinely published, even though the same CI configuration produced a real `PagesDeployment` in an owner-controlled namespace.\n- Unauthenticated reads of `*.gitlab.io` currently return a Cloudflare interstitial, which is evidence of neither presence nor absence.\n- Therefore the mandatory obligations `RETIREMENT_PERMISSION` and `PAGES_PUBLISHED` cannot be satisfied, and `retire_pages()` refuses before any DELETE. `mutation_attempted=false`.\n\n### What the engine now enforces before a single DELETE\n1. Static preflight: target not protected, policy explicitly permits this exact ID/path/action, authorization exactly bound, operator approval provenance verified.\n2. Fresh exact-target provider discovery and a complete obligation graph evaluation requiring the deterministic `SAFE_TO_RETIRE` \u2014 including the new mandatory `RETIREMENT_PERMISSION` (effective Maintainer/Owner Pages administration) and `PAGES_PUBLISHED` (live deployment **and** the distinctive marker observed at the exact served URL).\n3. An operator-supplied, target-bound `ControlAttestation` for `REDEPLOYMENT_PATH`; the absence of an observed mechanism is never treated as negative proof.\n4. A durable, `fsync`ed single-use reservation (`.termivance/authorization_ledger.json`): reloading the same authorization JSON in a separate invocation is refused.\n5. Immediate live revalidation (fresh discovery + publication probe + decision) and target-drift detection before dispatch.\n6. Exactly one `DELETE /projects/:id/pages` through an endpoint allowlist that structurally cannot express project deletion.\n\n### What bounded absence would require (never yet awarded)\nProven pre-publication (deployment + observed marker at the exact URL), a recorded accepted authorized unpublish, and independent post-action read-back of the Pages API **and** of the same URL within the freshness interval. Two unrelated 404s, a never-published site, a marker/URL mismatch, a Cloudflare challenge or redirect, an error, an unaccepted action or stale evidence all fail closed to `INCONCLUSIVE`.\n\n### Verified live evidence\n- GitLab CI pipeline `2960702629` (SHA `30a509a74913f78194ac7d3668f0d756bba56ff5`) \u2014 job `verification` `17267666551` SUCCESS: full test suite, `ruff`, CLI smoke checks and `scripts/ci_safety_assertions.py` printing seven safety-contract assertions `PASS`.\n- Independent GitHub Actions QA bridge run `39156275572` \u2014 `qa_status=PASS`, drift `IN_SYNC`, the then-current pipeline bound to the mirrored SHA, source manifest SHA-256 `fae21d3bff1fa328dc3e6fc7cd8dd2f3a3534196c127617956dfd7236cebd5a5`, evidence manifest SHA-256 `dab5c5bd279029055470c0d775fd11f99ed31fdc65b889254e96fe8a7413c895`. The bridge reads GitLab with unauthenticated public API calls only and never writes to GitLab.\n\n### Explicitly NOT_RUN / not claimed\n- No GitLab Pages unpublish was executed; no `OBSERVED_ABSENT` or `SAFE_TO_RETIRE` is claimed for `87785099`.\n- No project deletion, no privilege escalation, no paid service, **$0.00** spend.\n- `NOT_RUN` is not `PASS`.\n\n### Required external action\nA legitimate `Maintainer` (40) grant on `87785099` (or the organizer performing the exact unpublish). Only then can the disposable site be genuinely published, its served URL observed, and the authorized single unpublish executed and independently read back.",
+    "discussion_locked": null,
+    "downvotes": 0,
+    "due_date": null,
+    "epic": null,
+    "epic_iid": null,
+    "has_tasks": true,
+    "health_status": null,
+    "id": 207068923,
+    "iid": 3,
+    "imported": false,
+    "imported_from": "none",
+    "issue_type": "issue",
+    "iteration": null,
+    "labels": [
+      "retirement-decision",
+      "termivance::b3"
+    ],
+    "merge_requests_count": 0,
+    "milestone": null,
+    "moved_to_id": null,
+    "project_id": 87779099,
+    "references": {
+      "full": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance#3",
+      "relative": "#3",
+      "short": "#3"
+    },
+    "service_desk_reply_to": null,
+    "severity": "UNKNOWN",
+    "start_date": null,
+    "state": "opened",
+    "subscribed": false,
+    "task_completion_status": {
+      "completed_count": 0,
+      "count": 0
+    },
+    "task_status": "0 of 0 checklist items completed",
+    "time_stats": {
+      "human_time_estimate": null,
+      "human_total_time_spent": null,
+      "time_estimate": 0,
+      "total_time_spent": 0
+    },
+    "title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization",
+    "type": "ISSUE",
+    "updated_at": "2026-10-18T18:56:41.601Z",
+    "upvotes": 0,
+    "user_notes_count": 0,
+    "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/work_items/3",
+    "weight": null
+  }
+}

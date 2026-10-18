@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T18:54:15Z",
-  "artifact_sha256": "ebaa300d63e2ef0ed42a4360a0850ff4c3f3b29033041672f8baddaa3a491642",
+  "acquired_at_utc": "2026-10-18T18:57:10Z",
+  "artifact_sha256": "331b660870877efd43256e617751864ae6045dc8c2b2ce3872cdf26f3d502fe6",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "zyganali",
-      "authored_date": "2026-10-18T21:52:21.000+03:00",
-      "committed_date": "2026-10-18T21:52:21.000+03:00",
+      "authored_date": "2026-10-18T21:55:59.000+03:00",
+      "committed_date": "2026-10-18T21:55:59.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "zyganali",
-      "created_at": "2026-10-18T21:52:21.000+03:00",
+      "created_at": "2026-10-18T21:55:59.000+03:00",
       "extended_trailers": {},
-      "id": "2c9c7c553ed4c66391009b6f53d4f72bfc60ee76",
-      "message": "B3 fix: derive the exact target from a recorded snapshot so replay needs no provider access (CI collection failure)\n",
+      "id": "30a509a74913f78194ac7d3668f0d756bba56ff5",
+      "message": "B3 docs: record verified pipeline, bridge run, manifest digests and fail-closed QA status\n",
       "parent_ids": [
-        "1fc787f8ef22819584e8945efb57bc8c1783d7bf"
+        "2c9c7c553ed4c66391009b6f53d4f72bfc60ee76"
       ],
-      "short_id": "2c9c7c55",
-      "title": "B3 fix: derive the exact target from a recorded snapshot so replay needs no provider access (CI collection failure)",
+      "short_id": "30a509a7",
+      "title": "B3 docs: record verified pipeline, bridge run, manifest digests and fail-closed QA status",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/2c9c7c553ed4c66391009b6f53d4f72bfc60ee76"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/30a509a74913f78194ac7d3668f0d756bba56ff5"
     },
     "default": true,
     "developers_can_merge": true,
