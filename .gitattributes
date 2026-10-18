@@ -1,0 +1,5 @@
+# Normalize line endings so CI and local runs agree.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.zip binary
