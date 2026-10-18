@@ -1,0 +1,105 @@
+name: GitLab QA bridge (mirror + independent observer)
+
+# Non-canonical QA bridge. GitLab remains the only canonical source of the
+# Termivance product and competition evidence. This workflow never mutates
+# GitLab: it only reads GitLab's public API and mirrors the canonical commit.
+#
+# * job `mirror`  : mirrors GitLab `main` onto the `gitlab-main` branch,
+#                   preserving the exact GitLab commit SHA.
+# * job `observe` : runs the independent observer, which contacts real GitLab
+#                   API endpoints with its own read-only, unauthenticated calls,
+#                   verifies the mirror against the live GitLab commit and
+#                   commits sanitized provider evidence.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 */6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gitlab-qa-bridge
+  cancel-in-progress: false
+
+env:
+  CANONICAL_REPO: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance.git
+
+jobs:
+  mirror:
+    name: Mirror canonical GitLab main
+    runs-on: ubuntu-latest
+    outputs:
+      mirror_sha: ${{ steps.mirror.outputs.mirror_sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror GitLab main (preserve exact commit SHA)
+        id: mirror
+        run: |
+          set -euo pipefail
+          git remote add gitlab "$CANONICAL_REPO"
+          git fetch --no-tags gitlab main
+          sha="$(git rev-parse FETCH_HEAD)"
+          echo "GitLab main commit: $sha"
+          git push --force origin "FETCH_HEAD:refs/heads/gitlab-main"
+          echo "mirror_sha=$sha" >> "$GITHUB_OUTPUT"
+
+  observe:
+    name: Independent GitLab observer
+    runs-on: ubuntu-latest
+    needs: mirror
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve mirror SHA
+        id: mirror
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin gitlab-main
+          sha="$(git rev-parse FETCH_HEAD)"
+          echo "mirror_sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Run independent observer (real GitLab API reads)
+        env:
+          MIRROR_SHA: ${{ steps.mirror.outputs.mirror_sha }}
+        run: python3 observer/observe.py --targets observer/targets.json --out evidence
+
+      - name: Show manifest summary
+        run: |
+          python3 - <<'PY'
+          import json
+          m = json.load(open("evidence/latest/manifest.json"))
+          print("drift:", m["drift"])
+          print("b2 binding:", m["b2_pipeline_commit_binding"])
+          live = [o for o in m["observations"] if o["classification"].startswith("LIVE_GITLAB")]
+          print(f"live observations: {len(live)}/{len(m['observations'])}")
+          PY
+
+      - name: Commit sanitized evidence
+        run: |
+          set -euo pipefail
+          git config user.name "termivance-qa-bot"
+          git config user.email "termivance-qa-bot@users.noreply.github.com"
+          git add evidence
+          if git diff --cached --quiet; then
+            echo "no evidence change to commit"
+          else
+            git commit -m "qa: independent GitLab observation (run $GITHUB_RUN_ID)"
+            git push
+          fi
+
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitlab-observations-${{ github.run_id }}
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 90

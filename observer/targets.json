@@ -1,0 +1,14 @@
+{
+  "gitlab_base": "https://gitlab.com/api/v4",
+  "canonical": {
+    "project_id": 87779099,
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+    "b2_commit": "21eed7e27a9077469be5297ada4cd87c728df13b",
+    "b2_pipeline_id": 2960412852,
+    "b2_issue_iid": 2
+  },
+  "disposable": {
+    "project_id": 87785099,
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+  }
+}
