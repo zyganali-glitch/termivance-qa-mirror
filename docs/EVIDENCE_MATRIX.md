@@ -22,7 +22,7 @@ This starter pack contains **no live evidence**. `NOT_RUN` != `PASS`. Record evi
 ## B1 evidence log (2026-10-18, all times UTC)
 
 - **Repository:** `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance` — project ID `87779099`, namespace `gitlab-ai-hackathon/transcend-october-2026/39306908` (group `145090697`), public, default branch `main`, license detected MIT. Organizer `showcase` project (`87777871`) untouched.
-- **SHAs:** first pushed `ebfae4173da0a0adefea0e953502f70dc9777d11`; CI fix `0d9be1b59a3f473195855e27a4ffd0fb54024cf4`. Remote HEAD verified with `git ls-remote` and the GitLab API.
+- **SHAs:** first pushed `ebfae4173da0a0adefea0e953502f70dc9777d11`; CI fix `0d9be1b59a3f473195855e27a4ffd0fb54024cf4`; B1 completion `cc11f445478972ce8772b2db8859537776d26594`. Remote HEAD verified with `git ls-remote` and the GitLab API.
 - **CI:** pipeline `2960123673` SUCCESS (job `verification`, shared runner) — ruff clean, **38 tests passed**, CLI smoke exit 0. First pipeline `2960120304` FAILED (GitLab 19.6 rejects `default:variables`); root cause found via API and fixed in the same batch.
 - **Duo Custom Flow:** created via GraphQL `aiCatalogFlowCreate` → `Ai::Catalog::Item/1018562` (type `FLOW`, exactly one `AgentComponent`); enabled via `aiCatalogItemConsumerCreate` → `ItemConsumer/12750509`; mention trigger via `aiFlowTriggerCreate` → `Ai::FlowTrigger/3071665` (`eventTypes: [0]`). Service account `ai-termivance-retirement-analyst-gitlab-ai-hackathon`.
 - **Live session:** `Ai::DuoWorkflows::Workflow/9650440`, status `FINISHED`, triggered by a real issue mention — `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9650440`.

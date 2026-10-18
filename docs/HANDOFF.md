@@ -3,7 +3,7 @@
 - **Active batch:** B1 — Eligible GitLab foundation and real Duo integration.
 - **Canonical GitLab repository:** `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance` — created 2026-10-18, **public**, project ID `87779099`, namespace `full_path` `gitlab-ai-hackathon/transcend-october-2026/39306908` (group ID `145090697`, parent `142538134`). Distinct from the organizer `showcase` project (`87777871`), which is untouched.
 - **Canonical branch:** `main`.
-- **Last independently verified remote SHA:** `0d9be1b59a3f473195855e27a4ffd0fb54024cf4` (verified via `git ls-remote` + GitLab API). Later commits in this batch are recorded in `docs/EVIDENCE_MATRIX.md`.
+- **Last independently verified remote SHA:** `cc11f445478972ce8772b2db8859537776d26594` (verified via `git ls-remote` + GitLab API). Full push history in `docs/EVIDENCE_MATRIX.md`.
 - **Operator role:** GitLab `Developer` (access_level 30) on the subgroup and inherited on the project — **not** Maintainer/Owner. This did **not** block B1: custom-flow creation, enablement, trigger, and a live session all succeeded through the GraphQL API under the Developer role.
 - **Completed batches:** `NONE` (B1 executed; awaiting independent QA).
 - **Actual blockers:** `NONE VERIFIED` for B1. Open B3 risk: the Developer role gets HTTP 403 on the Pages API (`GET /projects/:id/pages`), so B3's disposable Pages project likely needs Maintainer/Owner — recheck live.
