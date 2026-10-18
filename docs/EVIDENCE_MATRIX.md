@@ -2,13 +2,13 @@
 
 This starter pack contains **no live evidence**. `NOT_RUN` != `PASS`. Record evidence with immutable project/resource IDs, exact commit SHA, invocation/run IDs, source, UTC time, and sanitized URLs. Separate local fixture, CI test, live GitLab Duo session, live GitLab Pages mutation, independent API observation, and unauthenticated HTTP observation.
 
-**B1 access blocker (2026-10-18):** the execution environment had no valid GitLab credential (stored `git:https://gitlab.com` token expired; no browser session; no GitLab CLI/MCP), so every live B1 row below remains `NOT_RUN`. Local-only rows (install, lint, tests, fail-closed CLI) were verified locally but are not substitutes for the live rows.
+**B1 live status (2026-10-18):** executed end-to-end with an operator-issued scoped GitLab PAT (`api`, `write_repository`) read privately from Git Credential Manager. Canonical project created, pipeline green, one real Duo Custom Flow created/enabled and executed live, artifact independently read back. Every B2/B3 row remains `NOT_RUN`.
 
 | Claim / gate | Required real evidence | Starter status | Boundaries |
 |---|---|---|---|
-| B1: canonical new repository | Public GitLab URL, license, remote SHA | NOT_RUN | GitHub repository is not substitute |
-| B1: CI works | Passing pipeline URL and job/test logs | NOT_RUN | Local tests insufficient |
-| B1: actual Duo agent | Custom Flow definition + actual session/run URL + independent GitLab result | NOT_RUN | YAML alone != integration; Chat alone != Custom Flow |
+| B1: canonical new repository | Public GitLab URL, license, remote SHA | PASS (see log) | GitHub repository is not substitute |
+| B1: CI works | Passing pipeline URL and job/test logs | PASS (see log) | Local tests insufficient |
+| B1: actual Duo agent | Custom Flow definition + actual session/run URL + independent GitLab result | PASS (see log) | YAML alone != integration; Chat alone != Custom Flow |
 | B1: local foundation | `pip install -e .`, `ruff check .`, `pytest`, CLI exit codes | LOCAL_PASS (38 tests, ruff clean) | Local-only; never a substitute for remote CI or the live repo |
 | B2: SAFE_TO_RETIRE | Fresh graph/obligation checks + bound authority and exact target | NOT_RUN | Deterministic verdict, not model prose |
 | B2: real BLOCKED | Actual GitLab read evidence, forbidden/unsatisfied edge, zero delete API calls | NOT_RUN | Fixture tests cannot replace live gate |
@@ -19,7 +19,22 @@ This starter pack contains **no live evidence**. `NOT_RUN` != `PASS`. Record evi
 | B3 optional: resurrection | Subsequent same-target observed redeploy + state downgrade | NOT_RUN | Do not claim `RESURRECTION_CONTROLLED` without control proof |
 | B4: judge package | Public evidence UI, integrated pipeline, YouTube <3m, Devpost submission | NOT_RUN | Video must depict actual product |
 
-## Minimal bounded-absence receipt fields
+## B1 evidence log (2026-10-18, all times UTC)
+
+- **Repository:** `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance` — project ID `87779099`, namespace `gitlab-ai-hackathon/transcend-october-2026/39306908` (group `145090697`), public, default branch `main`, license detected MIT. Organizer `showcase` project (`87777871`) untouched.
+- **SHAs:** first pushed `ebfae4173da0a0adefea0e953502f70dc9777d11`; CI fix `0d9be1b59a3f473195855e27a4ffd0fb54024cf4`. Remote HEAD verified with `git ls-remote` and the GitLab API.
+- **CI:** pipeline `2960123673` SUCCESS (job `verification`, shared runner) — ruff clean, **38 tests passed**, CLI smoke exit 0. First pipeline `2960120304` FAILED (GitLab 19.6 rejects `default:variables`); root cause found via API and fixed in the same batch.
+- **Duo Custom Flow:** created via GraphQL `aiCatalogFlowCreate` → `Ai::Catalog::Item/1018562` (type `FLOW`, exactly one `AgentComponent`); enabled via `aiCatalogItemConsumerCreate` → `ItemConsumer/12750509`; mention trigger via `aiFlowTriggerCreate` → `Ai::FlowTrigger/3071665` (`eventTypes: [0]`). Service account `ai-termivance-retirement-analyst-gitlab-ai-hackathon`.
+- **Live session:** `Ai::DuoWorkflows::Workflow/9650440`, status `FINISHED`, triggered by a real issue mention — `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9650440`.
+- **Artifact:** issue #1 (`.../-/work_items/1`) comment `4037535804` by the flow service account — a structured NON-AUTHORITATIVE assessment (Reference / Observed / Candidate obligations / Missing proof / Authorization / `NON-AUTHORITATIVE / DETERMINISTIC VERDICT: NOT_RUN`), produced with real tools `get_issue`, `list_repository_tree`, `get_repository_file`. Independently read back via `GET /projects/87779099/issues/1/notes`.
+- **No mutation:** no project/resource deleted or unpublished; only additive creates (project, flow, consumer, trigger, issue, comments).
+
+## B3 feasibility notes (B1 observation, not evidence of absence)
+
+- GitLab Pages exists on this GitLab.com namespace (`pages_access_level=private`) but the **Developer** role receives **HTTP 403** on `GET /projects/:id/pages` and `/pages/domains`. A disposable Pages project for B3 therefore likely needs the operator to be **Maintainer/Owner**, or the Pages API read will 403. Re-check live in B3; do not assume.
+- No Pages site, environment, or served URL exists for the canonical project — nothing was published or unpublished in B1.
+
+
 
 `provider=GITLAB_PAGES`, `exact_project_id`, `exact_project_path`, `resource_kind=PAGES_SITE`, `observed_scope`, `observation_time_utc`, `api_request_identity`, `api_status`, `deployment_state`, `served_url`, `http_observation`, `freshness_or_expiry`, `source_sha`, `authorization_binding`, `verdict`.
 

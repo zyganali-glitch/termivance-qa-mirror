@@ -1,19 +1,22 @@
-# Termivance Retirement Analyst - GitLab Duo Custom Flow (DRAFT, NOT DEPLOYED)
+# Termivance Retirement Analyst - GitLab Duo Custom Flow (DEPLOYED, B1)
 #
-# Status: NOT_RUN / NOT_DEPLOYED.
-# This file is a committed source artifact, not an active GitLab flow. A YAML
-# file in a repository does NOT constitute a running Custom Flow. It becomes a
-# real flow only when it is created in the GitLab UI (or AI Catalog) and enabled
-# for a project, which requires the Maintainer or Owner role.
+# Status: DEPLOYED and verified live on 2026-10-18.
+#   GitLab AI Catalog item: gid://gitlab/Ai::Catalog::Item/1018562 (type FLOW)
+#   Enabled consumer:       gid://gitlab/Ai::Catalog::ItemConsumer/12750509
+#   Mention trigger:        gid://gitlab/Ai::FlowTrigger/3071665
+#   Live session (FINISHED): gid://gitlab/Ai::DuoWorkflows::Workflow/9650440
+#     https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9650440
+#   Produced artifact (issue #1 comment 4037535804), independently read back.
+# This file was submitted as the flow `definition` at creation time and the
+# server validated it against the deployed schema (GitLab.com 19.6.0-pre); it
+# still is the exact source. A YAML file in a repository is not by itself a
+# running flow - it was made real via the AI Catalog API and enabled in the
+# project.
 #
 # Schema provenance: GitLab docs "Custom flow YAML schema"
 # (https://docs.gitlab.com/user/duo_agent_platform/flows/custom_flows_schema/,
 # fetched 2026-10-18) and the Flow Registry v1 specification
 # (https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/raw/main/docs/flow_registry/v1.md).
-# The schema has NOT been validated against a deployed GitLab instance yet
-# (B1 access blocker: no authenticated GitLab identity was available). Tool
-# names below are drawn from documented examples and must be re-validated when
-# the flow is first created in the live UI.
 #
 # Verified facts applied here:
 #   - environment supports only "ambient" for custom flows

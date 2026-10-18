@@ -8,16 +8,18 @@ Core concepts: **Retirement Obligation Graph**, **Bounded Absence**, and **Retir
 
 ## Status
 
-**B1 local foundation only; live GitLab integration is BLOCKED.** The deterministic
-Python contracts (exact target identity, bounded authorization, bounded-absence
-evidence, fail-closed policy) and a fail-closed CLI are implemented and tested
-locally. There is **no** canonical GitLab repository, **no** remote pipeline, **no**
-live GitLab Duo session, and **no** retirement evidence yet. B1 could not be
-completed live because no authenticated GitLab identity was available to the
-execution environment (the stored token is expired and there is no browser
-session). See `docs/HANDOFF.md` and `docs/EVIDENCE_MATRIX.md` for explicit
-`NOT_RUN` status and the exact unblock step. Genuine GitLab remote/pipeline/session
-links will be filled from B1 evidence, not guessed.
+**B1 executed live (2026-10-18); awaiting independent QA.** The canonical public
+MIT GitLab repository exists, GitLab CI is green, one real GitLab Duo Custom Flow
+(`Termivance Retirement Analyst`, exactly one `AgentComponent`) is created,
+enabled and **verified live** (session `9650440`, FINISHED) with a structured,
+independently read-back **non-authoritative** assessment on issue #1. The
+deterministic Python contracts (exact target identity, bounded authorization,
+bounded-absence evidence, fail-closed policy) and a fail-closed CLI are
+implemented and tested. B2/B3 and all retirement/bounded-absence claims remain
+`NOT_RUN`. See `docs/HANDOFF.md` and `docs/EVIDENCE_MATRIX.md`.
+
+- Canonical repo: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance
+- Live session: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9650440
 
 ## GitLab-native demo target
 
@@ -54,7 +56,7 @@ in `.gitlab-ci.yml`.
 - `docs/HANDOFF.md` — current critical project facts.
 - `docs/EVIDENCE_MATRIX.md` — claim/proof separation.
 - `src/termivance/` and `tests/` — minimal runnable baseline and deterministic contracts.
-- `flows/termivance_retirement_analyst.yaml` — GitLab Duo Custom Flow source definition (`NOT_DEPLOYED`).
+- `flows/termivance_retirement_analyst.yaml` — GitLab Duo Custom Flow source definition (`DEPLOYED`, live session `9650440`).
 - `config/retirement_policy.example.json` — non-authorizing sample, destructive operations off by default.
 
 ## Competition
