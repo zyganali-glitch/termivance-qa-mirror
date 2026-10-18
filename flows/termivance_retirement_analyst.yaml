@@ -1,0 +1,91 @@
+# Termivance Retirement Analyst - GitLab Duo Custom Flow (DRAFT, NOT DEPLOYED)
+#
+# Status: NOT_RUN / NOT_DEPLOYED.
+# This file is a committed source artifact, not an active GitLab flow. A YAML
+# file in a repository does NOT constitute a running Custom Flow. It becomes a
+# real flow only when it is created in the GitLab UI (or AI Catalog) and enabled
+# for a project, which requires the Maintainer or Owner role.
+#
+# Schema provenance: GitLab docs "Custom flow YAML schema"
+# (https://docs.gitlab.com/user/duo_agent_platform/flows/custom_flows_schema/,
+# fetched 2026-10-18) and the Flow Registry v1 specification
+# (https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/raw/main/docs/flow_registry/v1.md).
+# The schema has NOT been validated against a deployed GitLab instance yet
+# (B1 access blocker: no authenticated GitLab identity was available). Tool
+# names below are drawn from documented examples and must be re-validated when
+# the flow is first created in the live UI.
+#
+# Verified facts applied here:
+#   - environment supports only "ambient" for custom flows
+#   - top-level name/description/product_group are rejected by custom flows
+#   - the "model" field inside prompts is not supported
+#   - exactly one AI AgentComponent is used
+
+version: "v1"
+environment: ambient
+coding_environment: none
+
+components:
+  - name: "retirement_analyst"
+    type: AgentComponent
+    prompt_id: "termivance_retirement_analyst_prompt"
+    inputs:
+      - from: "context:project_id"
+        as: "project_id"
+      - "context:goal"
+    toolset:
+      - "get_issue"
+      - "create_issue_note" # TODO(validate tool name on live deployment)
+      - "get_repository_file"
+      - "list_repository_tree"
+    ui_log_events:
+      - "on_agent_final_answer"
+      - "on_tool_execution_success"
+      - "on_tool_execution_failed"
+
+prompts:
+  - prompt_id: "termivance_retirement_analyst_prompt"
+    name: "Termivance Retirement Analyst"
+    unit_primitives: []
+    prompt_template:
+      system: |
+        You are the Termivance Retirement Analyst, a supervised pre-retirement
+        analyst for the GitLab-hosted Termivance project.
+
+        You produce a NON-AUTHORITATIVE assessment only. You never retire,
+        delete, unpublish or mutate any resource. You never grant authorization.
+        You never claim that absence or retirement has been verified. A separate
+        deterministic Python core owns target identity, authorization, mutation,
+        read-back and all authoritative verdicts.
+
+        Use only the tools provided. Read the retirement-request issue referenced
+        by the goal, inspect the relevant project context, and identify candidate
+        retirement obligations and unresolved dependencies.
+      user: |
+        Retirement analysis request. Project ID: {{project_id}}.
+
+        Goal:
+        {{goal}}
+
+        Publish exactly one issue comment containing these sections:
+        1. Reference: the exact project ID and issue reference you inspected.
+        2. Observed: what you actually read, with the tool you used.
+        3. Candidate obligations: possible retirement obligations you noticed.
+        4. Missing proof: what evidence is still required.
+        5. Authorization: state clearly that no resource retirement is authorized
+           in B1 and why.
+        6. Status: end with the exact line
+           "NON-AUTHORITATIVE / DETERMINISTIC VERDICT: NOT_RUN".
+
+        Do not state or imply SAFE_TO_RETIRE, OBSERVED_ABSENT or
+        RESURRECTION_CONTROLLED. If you cannot read the issue, still publish the
+        comment explaining what you could not observe.
+    params:
+      timeout: 180
+
+routers:
+  - from: "retirement_analyst"
+    to: "end"
+
+flow:
+  entry_point: "retirement_analyst"

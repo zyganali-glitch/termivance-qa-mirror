@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.build/
+build/
+dist/
+.venv/
+venv/
+.coverage
+htmlcov/
+# Credentials / account artifacts
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+credentials.json
+secrets.json
+# OS and IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# Local execution evidence (publish sanitized verified evidence explicitly)
+.local/
+.tmp/
+.evidence-private/

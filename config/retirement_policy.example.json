@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "mode": "EXAMPLE_ONLY_NOT_AUTHORIZATION",
+  "mutation_enabled": false,
+  "provider": "GITLAB_PAGES",
+  "allowed_target_project_ids": [],
+  "allowed_target_full_paths": [],
+  "allowed_actions": [],
+  "authorization_required": true,
+  "explanation": "Never load this as an approval. Operator approval is separate and exact-target bound."
+}
