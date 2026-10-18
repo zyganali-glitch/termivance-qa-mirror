@@ -136,14 +136,10 @@ class GitLabClient:
         # Least-privilege read header. The token is never logged or stored.
         return {"PRIVATE-TOKEN": self._token, "Accept": "application/json"}
 
-    def get_json(
-        self, endpoint: str, *, params: Mapping[str, object] | None = None
-    ) -> ApiResult:
+    def get_json(self, endpoint: str, *, params: Mapping[str, object] | None = None) -> ApiResult:
         return self._request("GET", endpoint, params=params)
 
-    def get_text(
-        self, endpoint: str, *, params: Mapping[str, object] | None = None
-    ) -> ApiResult:
+    def get_text(self, endpoint: str, *, params: Mapping[str, object] | None = None) -> ApiResult:
         return self._request("GET", endpoint, params=params, expect_json=False)
 
     # Any other method is refused before a transport call happens.

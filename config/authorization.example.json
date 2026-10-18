@@ -1,10 +1,12 @@
 {
   "_comment": [
     "NON-AUTHORIZING EXAMPLE ONLY. This file never grants mutation.",
-    "It documents the exact shape of an operator-issued authorization record.",
-    "A real record is written only after the operator explicitly approves the",
-    "exact disposable project ID, resource kind and action, and is bound to a",
-    "short expiry and a single use. Authorization is never inferred from prose."
+    "It documents the exact shape of an operator-issued authorization record:",
+    "an exact target, an exact action, a short expiry, a nonce, a single use and",
+    "a verbatim operator_approval block whose binding digest commits to the whole",
+    "record. A real record is written only after the operator explicitly approves",
+    "that exact project ID, resource kind, endpoint and action. Authorization is",
+    "never inferred from prose, a CI job, a model statement or an earlier approval."
   ],
   "schema": "termivance.authorization/v1",
   "target": {
@@ -17,5 +19,14 @@
   "expires_at": "2026-01-01T00:10:00+00:00",
   "nonce": "example-not-a-real-authorization",
   "max_uses": 1,
-  "uses": 0
+  "uses": 0,
+  "operator_approval": {
+    "operator": "example-operator",
+    "statement": "EXAMPLE ONLY - not a real approval. A real statement must name the exact endpoint /projects/87785099/pages and the action unpublish_pages.",
+    "approved_at": "2026-01-01T00:00:00+00:00",
+    "channel": "example",
+    "binding": "b8702b36abf748640499059693a93b3721ff4a79e27e5cd1d0854d3282ac56c7",
+    "signature": null
+  },
+  "binding": "b8702b36abf748640499059693a93b3721ff4a79e27e5cd1d0854d3282ac56c7"
 }

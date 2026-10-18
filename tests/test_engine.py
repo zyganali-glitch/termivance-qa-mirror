@@ -16,8 +16,13 @@ def auth_for(target, *, action="unpublish_pages", ttl=timedelta(minutes=10), now
 
 
 def decide(snapshot, policy, *, now=NOW, authorization=None):
-    return evaluate(build_graph(snapshot), policy=policy, action=snapshot.action, now=now,
-                    authorization=authorization)
+    return evaluate(
+        build_graph(snapshot),
+        policy=policy,
+        action=snapshot.action,
+        now=now,
+        authorization=authorization,
+    )
 
 
 def test_synthetic_safe_case(pages_target, allow_policy):
@@ -49,9 +54,16 @@ def test_operator_control_satisfies_redeployment(pages_target, allow_policy):
 
 
 def test_protected_target_is_blocked_even_with_authorization(canonical_target):
-    policy = Policy(1, "OPERATOR_APPROVED", False, "GITLAB_PAGES",
-                    (canonical_target.project_id,), (canonical_target.full_path,),
-                    ("unpublish_pages",), True)
+    policy = Policy(
+        1,
+        "OPERATOR_APPROVED",
+        False,
+        "GITLAB_PAGES",
+        (canonical_target.project_id,),
+        (canonical_target.full_path,),
+        ("unpublish_pages",),
+        True,
+    )
     snapshot = make_snapshot(canonical_target)
     decision = decide(snapshot, policy, authorization=auth_for(canonical_target))
     assert decision.verdict == Verdict.BLOCKED
@@ -64,8 +76,11 @@ def test_canonical_demo_has_multiple_real_reasons(canonical_target, allow_policy
     decision = decide(snapshot, allow_policy)
     assert decision.verdict == Verdict.BLOCKED
     codes = {r.code for r in decision.reasons}
-    assert {ReasonCode.PROTECTED_PROJECT, ReasonCode.TARGET_NOT_AUTHORIZED,
-            ReasonCode.UNRESOLVED_OBLIGATION}.issubset(codes)
+    assert {
+        ReasonCode.PROTECTED_PROJECT,
+        ReasonCode.TARGET_NOT_AUTHORIZED,
+        ReasonCode.UNRESOLVED_OBLIGATION,
+    }.issubset(codes)
 
 
 def test_target_not_in_scope_is_blocked(pages_target):
@@ -85,8 +100,12 @@ def test_missing_authorization_is_blocked(pages_target, allow_policy):
 
 def test_expired_authorization_is_blocked(pages_target, allow_policy):
     auth = auth_for(pages_target, ttl=timedelta(seconds=1))
-    decision = decide(make_snapshot(pages_target), allow_policy, authorization=auth,
-                      now=NOW + timedelta(minutes=5))
+    decision = decide(
+        make_snapshot(pages_target),
+        allow_policy,
+        authorization=auth,
+        now=NOW + timedelta(minutes=5),
+    )
     assert decision.verdict == Verdict.BLOCKED
 
 
@@ -113,8 +132,9 @@ def test_missing_provider_observation_is_inconclusive(pages_target, allow_policy
 def test_stale_observation_is_inconclusive(pages_target, allow_policy):
     snapshot = make_snapshot(pages_target)
     later = NOW + timedelta(minutes=30)
-    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target, now=later),
-                      now=later)
+    decision = decide(
+        snapshot, allow_policy, authorization=auth_for(pages_target, now=later), now=later
+    )
     assert decision.verdict == Verdict.INCONCLUSIVE
     assert ReasonCode.STALE_EVIDENCE in {r.code for r in decision.reasons}
 
@@ -193,8 +213,9 @@ def test_replayed_record_is_not_live_and_stale_fails_closed(pages_target, allow_
 
     snapshot = make_snapshot(pages_target, classification=EvidenceClass.RECORDED_LIVE)
     later = NOW + timedelta(minutes=30)
-    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target, now=later),
-                      now=later)
+    decision = decide(
+        snapshot, allow_policy, authorization=auth_for(pages_target, now=later), now=later
+    )
     assert decision.verdict == Verdict.INCONCLUSIVE
 
 

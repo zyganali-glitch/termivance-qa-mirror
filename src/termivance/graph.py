@@ -46,6 +46,8 @@ class Relation(StrEnum):
 class ObligationKind(StrEnum):
     TARGET_SCOPE = "TARGET_SCOPE"
     OWNERSHIP_AUTHORIZATION = "OWNERSHIP_AUTHORIZATION"
+    RETIREMENT_PERMISSION = "RETIREMENT_PERMISSION"
+    PAGES_PUBLISHED = "PAGES_PUBLISHED"
     PROVIDER_OBSERVATION = "PROVIDER_OBSERVATION"
     IDENTITY_BINDING = "IDENTITY_BINDING"
     DEPENDENT_CONSUMERS = "DEPENDENT_CONSUMERS"
@@ -75,6 +77,10 @@ class EvidenceKind(StrEnum):
     OPEN_ISSUES = "OPEN_ISSUES"
     PAGES = "PAGES"
     ENVIRONMENT = "ENVIRONMENT"
+    #: The acting identity's effective ability to administer Pages on the target.
+    EFFECTIVE_PERMISSION = "EFFECTIVE_PERMISSION"
+    #: Evidence that the target is genuinely published (deployment + served marker).
+    PAGES_DEPLOYMENT = "PAGES_DEPLOYMENT"
     #: An affirmative, operator-supplied control attestation (not provider state).
     REDEPLOYMENT_CONTROL = "REDEPLOYMENT_CONTROL"
 
@@ -227,9 +233,7 @@ class Graph:
         mandatory: bool = True,
     ) -> str:
         self._register(obligation_id)
-        self._obligations[obligation_id] = Obligation(
-            obligation_id, kind, description, mandatory
-        )
+        self._obligations[obligation_id] = Obligation(obligation_id, kind, description, mandatory)
         return obligation_id
 
     def add_evidence(self, evidence: Evidence) -> str:
@@ -266,9 +270,7 @@ class Graph:
     def validate(self) -> None:
         for evidence in self._evidence.values():
             if evidence.target.key() not in {t.key() for t in self._targets.values()}:
-                raise GraphError(
-                    f"evidence {evidence.evidence_id!r} references an unknown target"
-                )
+                raise GraphError(f"evidence {evidence.evidence_id!r} references an unknown target")
         for dependency in self._dependencies.values():
             ev = dependency.evidence_id
             if ev is not None and ev not in self._evidence:
@@ -301,13 +303,20 @@ class Graph:
         return tuple(self._edges)
 
     def evidence_for(self, obligation_id: str) -> list[Evidence]:
-        ids = [e.dst for e in self._edges if e.src == obligation_id and e.relation
-               in (Relation.REQUIRES_EVIDENCE, Relation.SATISFIED_BY)]
+        ids = [
+            e.dst
+            for e in self._edges
+            if e.src == obligation_id
+            and e.relation in (Relation.REQUIRES_EVIDENCE, Relation.SATISFIED_BY)
+        ]
         return [self._evidence[i] for i in ids if i in self._evidence]
 
     def dependencies_for(self, obligation_id: str) -> list[Dependency]:
-        ids = [e.dst for e in self._edges if e.src == obligation_id and e.relation
-               == Relation.BLOCKED_BY]
+        ids = [
+            e.dst
+            for e in self._edges
+            if e.src == obligation_id and e.relation == Relation.BLOCKED_BY
+        ]
         return [self._dependencies[i] for i in ids if i in self._dependencies]
 
     def to_dict(self) -> dict[str, object]:

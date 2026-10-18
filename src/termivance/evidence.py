@@ -1,8 +1,23 @@
-"""Bounded-absence evidence.
+"""Bounded-absence evidence for a real publisher→retired transition.
 
-A negative observation is not universal absence. This module computes a verdict
-from one observation of one exact target and refuses to promote unknown, error,
-stale or out-of-scope observations into ``OBSERVED_ABSENT``.
+A negative observation is not universal absence. This module refuses to promote
+unknown, error, stale, out-of-scope or un-published observations into
+``OBSERVED_ABSENT``.
+
+Crucially, two unrelated ``404`` responses are **never** sufficient. To award
+``OBSERVED_ABSENT`` for one exact target the evidence must demonstrate a real
+transition:
+
+1. a genuinely published pre-state (a live Pages deployment *and* an
+   independently observed distinctive marker at the exact served URL);
+2. the pre-state URL is bound to the same exact target and equals the post URL;
+3. a recorded, accepted authorized unpublish action;
+4. an independent post-action Pages API read-back that the resource is gone;
+5. an independent post-action read-back of the *same* previously served URL;
+6. freshness within the stated interval.
+
+Anything else fails closed to ``INCONCLUSIVE``; a site still served yields
+``BLOCKED``.
 """
 
 from __future__ import annotations
@@ -30,8 +45,52 @@ class EvidenceError(ValueError):
 
 
 @dataclass(frozen=True, slots=True)
+class PagesPreState:
+    """A genuinely published pre-retirement observation of one Pages target."""
+
+    served_url: str
+    marker: str
+    marker_observed: bool
+    deployment_present: bool
+    observed_at: datetime
+
+    @property
+    def genuinely_published(self) -> bool:
+        return bool(self.marker_observed and self.deployment_present and self.served_url)
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "served_url": self.served_url,
+            "marker": self.marker,
+            "marker_observed": self.marker_observed,
+            "deployment_present": self.deployment_present,
+            "observed_at": _as_utc(self.observed_at).isoformat(),
+            "genuinely_published": self.genuinely_published,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, object]) -> PagesPreState:
+        try:
+            observed = datetime.fromisoformat(str(data["observed_at"]))
+        except (KeyError, ValueError) as exc:
+            raise EvidenceError("pre-state record has an invalid observed_at") from exc
+        try:
+            served_url = str(data["served_url"])
+            marker = str(data["marker"])
+        except KeyError as exc:
+            raise EvidenceError(f"pre-state record is missing {exc}") from exc
+        return cls(
+            served_url=served_url,
+            marker=marker,
+            marker_observed=bool(data.get("marker_observed")),
+            deployment_present=bool(data.get("deployment_present")),
+            observed_at=observed,
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class PagesObservation:
-    """One dated observation of one exact GitLab Pages target."""
+    """One dated post-retirement observation of one exact GitLab Pages target."""
 
     target: TargetIdentity
     observed_scope: frozenset[str]
@@ -41,6 +100,9 @@ class PagesObservation:
     served_url: str | None
     http_status: int | None
     fresh_until: datetime
+    pre_state: PagesPreState | None = None
+    action_accepted: bool = False
+    action_endpoint: str | None = None
 
     def __post_init__(self) -> None:
         if self.target.resource_kind != "GITLAB_PAGES_SITE":
@@ -61,24 +123,36 @@ class PagesObservation:
             "served_url": self.served_url,
             "http_status": self.http_status,
             "fresh_until": _as_utc(self.fresh_until).isoformat(),
+            "action_accepted": self.action_accepted,
+            "action_endpoint": self.action_endpoint,
+            "pre_state": self.pre_state.to_dict() if self.pre_state else None,
         }
 
 
 def bounded_absence(observation: PagesObservation, now: datetime) -> Verdict:
-    """Return the strongest verdict this single observation can justify.
+    """Return the strongest verdict this observation can justify, failing closed.
 
-    ``OBSERVED_ABSENT`` requires the API to report the Pages site missing *and*
-    the served URL to be independently gone, within scope and within freshness.
-    Anything else fails closed to ``INCONCLUSIVE``; a site still served yields
-    ``BLOCKED``.
+    ``OBSERVED_ABSENT`` requires the full transition described in the module
+    docstring. A missing or unproven pre-state, a mismatched URL, an unaccepted
+    action, an error/timeout/challenge, or stale evidence all yield
+    ``INCONCLUSIVE``.
     """
     now = _as_utc(now)
     if now > _as_utc(observation.fresh_until):
         return Verdict.INCONCLUSIVE
-    if not REQUIRED_PAGES_SCOPES.issubset(observation.observed_scope):
-        return Verdict.INCONCLUSIVE
     if observation.api_status == 200:
         return Verdict.BLOCKED
+    if not REQUIRED_PAGES_SCOPES.issubset(observation.observed_scope):
+        return Verdict.INCONCLUSIVE
+
+    pre = observation.pre_state
+    if pre is None or not pre.genuinely_published:
+        # No proof the site was ever genuinely published: absence cannot be claimed.
+        return Verdict.INCONCLUSIVE
+    if not observation.served_url or pre.served_url != observation.served_url:
+        return Verdict.INCONCLUSIVE
+    if not observation.action_accepted:
+        return Verdict.INCONCLUSIVE
     if observation.api_status in (404, 410) and observation.http_status in (404, 410):
         return Verdict.OBSERVED_ABSENT
     return Verdict.INCONCLUSIVE

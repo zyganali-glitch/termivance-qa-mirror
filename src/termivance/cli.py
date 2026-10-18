@@ -142,8 +142,7 @@ def _cmd_evaluate(args: argparse.Namespace) -> int:
 def _print_decision(decision: Decision) -> None:
     print(f"target={decision.target.project_id} {decision.target.full_path}")
     print(
-        f"action={decision.action} verdict={decision.verdict.value} "
-        f"read_only={decision.read_only}"
+        f"action={decision.action} verdict={decision.verdict.value} read_only={decision.read_only}"
     )
     for reason in decision.reasons:
         print(f"  - {reason.code.value}: {reason.detail}")
@@ -214,51 +213,129 @@ def _cmd_pages_state(args: argparse.Namespace) -> int:
 
 
 def _cmd_observe_absence(args: argparse.Namespace) -> int:
+    import json as _json
+
     from termivance.absence import observe_absence
+    from termivance.evidence import PagesPreState
     from termivance.gitlab_client import GitLabClient, load_local_token
 
     target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
     client = GitLabClient(load_local_token())
-    probe = observe_absence(client, target, args.url)
+    pre_state = None
+    if args.pre_state:
+        with open(args.pre_state, encoding="utf-8") as handle:
+            pre_state = PagesPreState.from_dict(_json.load(handle))
+    probe = observe_absence(
+        client,
+        target,
+        args.url,
+        pre_state=pre_state,
+        action_accepted=bool(args.action_accepted),
+        action_endpoint=args.action_endpoint,
+    )
     if args.json:
         print(json.dumps(probe.to_dict(), indent=2, sort_keys=True))
     else:
         print(f"target={target.project_id} {target.full_path}")
         print(f"pages_api={probe.pages_api_status} ({probe.pages_api_error})")
         print(f"served_url={args.url} http={probe.served_http_status}")
+        for note in probe.notes:
+            print(f"note: {note}")
         print(f"verdict={probe.verdict.value}")
-    return 0 if probe.verdict.value in {"OBSERVED_ABSENT", "RETIRED"} else 1
+    return 0 if probe.verdict.value == "OBSERVED_ABSENT" else 1
+
+
+def _cmd_verify_publication(args: argparse.Namespace) -> int:
+    from termivance.absence import publication_pre_state
+    from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.pages import observe_publication
+
+    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
+    client = GitLabClient(load_local_token())
+    probe = observe_publication(client, target, args.url, args.marker)
+    payload = probe.to_dict()
+    payload["pre_state"] = publication_pre_state(probe).to_dict()
+    if args.json_out:
+        from pathlib import Path
+
+        Path(args.json_out).write_text(
+            json.dumps(payload["pre_state"], indent=2, sort_keys=True), encoding="utf-8"
+        )
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"target={target.project_id} {target.full_path}")
+        print(
+            f"pages_api={probe.api_status} ({probe.api_error}) deployments={probe.deployment_count}"
+        )
+        print(f"served_url={probe.served_url} http={probe.http_status}")
+        print(f"marker_observed={probe.marker_observed}")
+        print(f"genuinely_published={probe.genuinely_published}")
+    return 0 if probe.genuinely_published else 1
 
 
 def _cmd_retire_pages(args: argparse.Namespace) -> int:
-    from termivance.authorization import load_authorization
+    import os
+
+    from termivance.attestation import ControlAttestation
+    from termivance.authorization import APPROVAL_KEY_ENV, load_authorization
+    from termivance.discovery import load_snapshot
     from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.ledger import AuthorizationLedger
     from termivance.pages import PagesMutationClient
     from termivance.retirement import retire_pages
     from termivance.runtime import load_policy_file
 
     target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
     policy = load_policy_file(args.policy)
-    authorization = load_authorization(args.authorization) if args.authorization else None
-    mutation_client = PagesMutationClient(load_local_token()) if args.execute else None
-    read_client = GitLabClient(load_local_token()) if args.execute else None
+    approval_key = os.environ.get(APPROVAL_KEY_ENV) or None
+    authorization = (
+        load_authorization(args.authorization, approval_key=approval_key)
+        if args.authorization
+        else None
+    )
+    control_attestation = None
+    if args.control_attestation:
+        with open(args.control_attestation, encoding="utf-8") as handle:
+            control_attestation = ControlAttestation.from_dict(json.load(handle))
+        control_attestation.verify(target, key=approval_key)
+    ledger = AuthorizationLedger(args.ledger) if args.ledger else None
+    snapshot = load_snapshot(args.from_record) if args.from_record else None
+    token = load_local_token() if (args.execute or snapshot is None) else None
+    mutation_client = PagesMutationClient(token) if (args.execute and token) else None
+    read_client = GitLabClient(token) if (token and snapshot is None) else None
     receipt = retire_pages(
         target,
         policy,
         authorization,
         mutation_client=mutation_client,
         read_client=read_client,
+        snapshot=snapshot,
         served_url=args.url,
+        marker=args.marker,
+        control_attestation=control_attestation,
+        ledger=ledger,
+        approval_key=approval_key,
     )
     payload = receipt.to_dict()
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
         print(f"target={target.project_id} {target.full_path} action={receipt.action}")
-        print(f"preflight_ok={receipt.preflight.ok} "
-              f"mutation_attempted={receipt.mutation_attempted}")
+        print(
+            f"preflight_ok={receipt.preflight.ok} mutation_attempted={receipt.mutation_attempted}"
+        )
         for check in receipt.preflight.checks:
             print(f"  - {check['check']}: {check['ok']} ({check['detail']})")
+        if receipt.eligibility is not None:
+            print(
+                f"decision={receipt.eligibility.decision.verdict.value} "
+                f"snapshot_digest={receipt.eligibility.snapshot_digest[:16]}…"
+            )
+            for obligation in receipt.eligibility.decision.obligations:
+                print(f"  - {obligation['kind']}: {obligation['status']}")
+        for note in receipt.notes:
+            print(f"note: {note}")
         if receipt.mutation is not None:
             print(f"mutation HTTP {receipt.mutation.status} accepted={receipt.mutation.accepted}")
         if receipt.absence is not None:
@@ -338,15 +415,41 @@ def build_parser() -> argparse.ArgumentParser:
     absence = sub.add_parser("observe-absence", help="independent bounded-absence read-back")
     absence.add_argument("--project-id", type=int, required=True)
     absence.add_argument("--url", required=True, help="exact previously-served Pages URL")
+    absence.add_argument(
+        "--pre-state",
+        default=None,
+        help="recorded pre-retirement publication proof (required to claim OBSERVED_ABSENT)",
+    )
+    absence.add_argument("--action-endpoint", default=None)
+    absence.add_argument("--action-accepted", action="store_true")
     absence.add_argument("--json", action="store_true")
+
+    publication = sub.add_parser(
+        "verify-publication", help="prove a Pages site is genuinely published before retiring it"
+    )
+    publication.add_argument("--project-id", type=int, required=True)
+    publication.add_argument("--url", required=True, help="exact served Pages URL")
+    publication.add_argument("--marker", required=True, help="distinctive content marker")
+    publication.add_argument("--json-out", default=None, help="write the pre-state record")
+    publication.add_argument("--json", action="store_true")
 
     retire = sub.add_parser(
         "retire-pages", help="authorized Pages unpublish (dry run unless --execute)"
     )
     retire.add_argument("--project-id", type=int, required=True)
     retire.add_argument("--url", default=None, help="exact served URL for read-back")
+    retire.add_argument("--marker", default=None, help="distinctive content marker")
     retire.add_argument("--policy", default=None)
     retire.add_argument("--authorization", default=None, help="operator authorization JSON")
+    retire.add_argument(
+        "--control-attestation",
+        default=None,
+        help="operator-supplied redeployment-control attestation JSON",
+    )
+    retire.add_argument(
+        "--ledger", default=None, help="durable single-use authorization ledger path"
+    )
+    retire.add_argument("--from-record", default=None, help="replay a recorded snapshot")
     retire.add_argument("--execute", action="store_true", help="attempt the real DELETE call")
     retire.add_argument("--json", action="store_true")
 
@@ -380,6 +483,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_pages_state(args)
     if args.command == "observe-absence":
         return _cmd_observe_absence(args)
+    if args.command == "verify-publication":
+        return _cmd_verify_publication(args)
     if args.command == "retire-pages":
         return _cmd_retire_pages(args)
     if args.command == "provision-pages":

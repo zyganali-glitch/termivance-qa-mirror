@@ -39,6 +39,14 @@ STANDARD_OBLIGATIONS: tuple[tuple[ObligationKind, str], ...] = (
         ObligationKind.OWNERSHIP_AUTHORIZATION,
         "an exact-target authorization exists for the requested action",
     ),
+    (
+        ObligationKind.RETIREMENT_PERMISSION,
+        "the acting identity can administer GitLab Pages on the target",
+    ),
+    (
+        ObligationKind.PAGES_PUBLISHED,
+        "the target is a genuinely published Pages site observed before retirement",
+    ),
     (ObligationKind.IDENTITY_BINDING, "all evidence is bound to the exact target identity"),
     (
         ObligationKind.PROVIDER_OBSERVATION,
@@ -61,6 +69,14 @@ _EVIDENCE_OBLIGATIONS: dict[EvidenceKind, tuple[ObligationKind, ...]] = {
     EvidenceKind.OPEN_ISSUES: (ObligationKind.UNRESOLVED_WORK,),
     EvidenceKind.CI_CONFIG: (ObligationKind.REDEPLOYMENT_PATH,),
     EvidenceKind.REDEPLOYMENT_CONTROL: (ObligationKind.REDEPLOYMENT_PATH,),
+    EvidenceKind.EFFECTIVE_PERMISSION: (
+        ObligationKind.RETIREMENT_PERMISSION,
+        ObligationKind.IDENTITY_BINDING,
+    ),
+    EvidenceKind.PAGES_DEPLOYMENT: (
+        ObligationKind.PAGES_PUBLISHED,
+        ObligationKind.IDENTITY_BINDING,
+    ),
 }
 
 #: Strong textual signals that a CI job participates in GitLab Pages deployment.
@@ -205,6 +221,7 @@ def discover_live(
     client: GitLabClient,
     target: TargetIdentity,
     *,
+    action: str = DEFAULT_ACTION,
     now: datetime | None = None,
     ttl_seconds: int = DEFAULT_TTL_SECONDS,
 ) -> Snapshot:
@@ -234,8 +251,12 @@ def discover_live(
         _record(
             EvidenceKind.BRANCH,
             branch,
-            {"branch": default_branch, "commit_id": (branch.data or {}).get("commit", {}).get("id")
-             if branch.ok and isinstance(branch.data, dict) else None},
+            {
+                "branch": default_branch,
+                "commit_id": (branch.data or {}).get("commit", {}).get("id")
+                if branch.ok and isinstance(branch.data, dict)
+                else None,
+            },
             now,
             ttl,
         )
@@ -309,8 +330,59 @@ def discover_live(
             {
                 "status": pages.status,
                 "present": bool(pages.ok),
-                "url": (pages.data or {}).get("url") if pages.ok and isinstance(pages.data, dict)
+                "url": (pages.data or {}).get("url")
+                if pages.ok and isinstance(pages.data, dict)
                 else None,
+            },
+            now,
+            ttl,
+        )
+    )
+
+    # Effective permission of the *acting* identity to administer Pages.
+    perm = (project.data or {}).get("permissions") if isinstance(project.data, dict) else None
+    levels: list[int] = []
+    if isinstance(perm, dict):
+        for scope in ("project_access", "group_access"):
+            entry = perm.get(scope)
+            if isinstance(entry, dict) and isinstance(entry.get("access_level"), int):
+                levels.append(int(entry["access_level"]))
+    effective_level = max(levels) if levels else None
+    can_manage = bool(effective_level is not None and effective_level >= 40 and pages.ok)
+    records.append(
+        _record(
+            EvidenceKind.EFFECTIVE_PERMISSION,
+            project,
+            {
+                "effective_access_level": effective_level,
+                "pages_api_status": pages.status,
+                "pages_api_error": pages.error_kind,
+                "can_manage_pages": can_manage,
+            },
+            now,
+            ttl,
+        )
+    )
+
+    # Pre-retirement publication evidence (deployment existence from the Pages API).
+    page_deployments = (
+        (pages.data or {}).get("deployments") if pages.ok and isinstance(pages.data, dict) else None
+    )
+    records.append(
+        _record(
+            EvidenceKind.PAGES_DEPLOYMENT,
+            pages,
+            {
+                "source": "gitlab_pages_api",
+                "deployment_present": bool(page_deployments),
+                "deployment_count": len(page_deployments)
+                if isinstance(page_deployments, list)
+                else 0,
+                "served_url": (pages.data or {}).get("url")
+                if pages.ok and isinstance(pages.data, dict)
+                else None,
+                "marker_observed": False,
+                "marker": None,
             },
             now,
             ttl,
@@ -330,10 +402,58 @@ def discover_live(
 
     return Snapshot(
         target=target,
-        action=DEFAULT_ACTION,
+        action=action,
         observed_at=now,
         ttl_seconds=ttl_seconds,
         classification=EvidenceClass.LIVE,
+        records=tuple(records),
+    )
+
+
+def with_pages_marker(
+    snapshot: Snapshot,
+    *,
+    served_url: str,
+    marker_observed: bool,
+    marker: str,
+    now: datetime | None = None,
+    source: str = "served_url_probe",
+) -> Snapshot:
+    """Augment the PAGES_DEPLOYMENT record with an independent served-URL probe.
+
+    The deployment-existence fact still comes from the Pages API; this adds the
+    externally observed marker so a genuinely published site can be proven.
+    """
+    now = _utc(now or datetime.now(tz=UTC))
+    ttl = timedelta(seconds=snapshot.ttl_seconds)
+    records: list[ObservationRecord] = []
+    for record in snapshot.records:
+        if record.kind == EvidenceKind.PAGES_DEPLOYMENT:
+            detail = dict(record.detail)
+            detail["marker_observed"] = bool(marker_observed)
+            detail["marker"] = marker
+            detail["served_url"] = served_url
+            detail["marker_source"] = source
+            records.append(
+                ObservationRecord(
+                    kind=record.kind,
+                    method="GET",
+                    endpoint=served_url,
+                    status=record.status,
+                    error_kind=record.error_kind,
+                    detail=detail,
+                    observed_at=now,
+                    fresh_until=now + ttl,
+                )
+            )
+        else:
+            records.append(record)
+    return Snapshot(
+        target=snapshot.target,
+        action=snapshot.action,
+        observed_at=now,
+        ttl_seconds=snapshot.ttl_seconds,
+        classification=snapshot.classification,
         records=tuple(records),
     )
 
@@ -388,8 +508,9 @@ def graph_from_snapshot(
             evidence_id="ev:open_issues",
         )
         graph.add_dependency(dep)
-        graph.link(obligation_ids[ObligationKind.UNRESOLVED_WORK], Relation.BLOCKED_BY,
-                   dep.dependency_id)
+        graph.link(
+            obligation_ids[ObligationKind.UNRESOLVED_WORK], Relation.BLOCKED_BY, dep.dependency_id
+        )
 
     ci = next((r for r in snapshot.records if r.kind == EvidenceKind.CI_CONFIG), None)
     if ci is not None and ci.error_kind is None:
@@ -407,8 +528,9 @@ def graph_from_snapshot(
             evidence_id="ev:ci_config",
         )
         graph.add_dependency(dep)
-        graph.link(obligation_ids[ObligationKind.REDEPLOYMENT_PATH], Relation.BLOCKED_BY,
-                   dep.dependency_id)
+        graph.link(
+            obligation_ids[ObligationKind.REDEPLOYMENT_PATH], Relation.BLOCKED_BY, dep.dependency_id
+        )
 
     graph.validate()
     return graph

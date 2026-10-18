@@ -50,6 +50,4 @@ def test_from_prose_always_refused(pages_target):
 
 def test_invalid_ttl_refused(pages_target):
     with pytest.raises(AuthorizationError):
-        Authorization.issue(
-            pages_target, "unpublish_pages", nonce="n", now=NOW, ttl=timedelta(0)
-        )
+        Authorization.issue(pages_target, "unpublish_pages", nonce="n", now=NOW, ttl=timedelta(0))

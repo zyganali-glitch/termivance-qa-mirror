@@ -13,8 +13,10 @@ from termivance.verdicts import Verdict
 
 
 def _evidence_table(graph_evidence: list[Evidence]) -> str:
-    rows = ["| evidence | kind | class | status | observed_at | digest |",
-            "|---|---|---|---|---|---|"]
+    rows = [
+        "| evidence | kind | class | status | observed_at | digest |",
+        "|---|---|---|---|---|---|",
+    ]
     for ev in sorted(graph_evidence, key=lambda e: e.evidence_id):
         rows.append(
             f"| `{ev.evidence_id}` | {ev.kind.value} | {ev.classification.value} | "

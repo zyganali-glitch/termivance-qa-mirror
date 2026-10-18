@@ -48,6 +48,8 @@ class ReasonCode(StrEnum):
     STALE_EVIDENCE = "STALE_EVIDENCE"
     IDENTITY_MISMATCH = "IDENTITY_MISMATCH"
     INSUFFICIENT_PROVIDER_ACCESS = "INSUFFICIENT_PROVIDER_ACCESS"
+    INSUFFICIENT_PERMISSION = "INSUFFICIENT_PERMISSION"
+    NOT_PUBLISHED = "NOT_PUBLISHED"
     DEPENDENT_UNRESOLVED = "DEPENDENT_UNRESOLVED"
     CONTRADICTORY_EVIDENCE = "CONTRADICTORY_EVIDENCE"
 
@@ -183,6 +185,100 @@ def _evaluate_obligation(
             ]
         return SATISFIED, []
 
+    if kind == ObligationKind.RETIREMENT_PERMISSION:
+        perm = _latest(graph, EvidenceKind.EFFECTIVE_PERMISSION)
+        if perm is None:
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.MISSING_EVIDENCE,
+                    oid,
+                    "effective Pages administration permission was not observed",
+                )
+            ]
+        if perm.classification != EvidenceClass.LIVE:
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.MISSING_EVIDENCE,
+                    oid,
+                    f"permission evidence is {perm.classification.value}, not a live observation",
+                    perm.evidence_id,
+                )
+            ]
+        if perm.error_kind is not None:
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.INSUFFICIENT_PROVIDER_ACCESS,
+                    oid,
+                    f"permission could not be observed ({perm.error_kind})",
+                    perm.evidence_id,
+                )
+            ]
+        if not perm.is_fresh(now):
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.STALE_EVIDENCE, oid, "permission evidence is stale", perm.evidence_id
+                )
+            ]
+        if bool(perm.detail.get("can_manage_pages")):
+            return SATISFIED, []
+        return VIOLATED, [
+            Reason(
+                ReasonCode.INSUFFICIENT_PERMISSION,
+                oid,
+                "the acting identity lacks Maintainer/Owner Pages administration on the target",
+                perm.evidence_id,
+            )
+        ]
+
+    if kind == ObligationKind.PAGES_PUBLISHED:
+        pub = _latest(graph, EvidenceKind.PAGES_DEPLOYMENT)
+        if pub is None:
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.MISSING_EVIDENCE,
+                    oid,
+                    "no live Pages publication evidence for the target",
+                )
+            ]
+        if pub.classification != EvidenceClass.LIVE:
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.MISSING_EVIDENCE,
+                    oid,
+                    f"publication evidence is {pub.classification.value}, not live",
+                    pub.evidence_id,
+                )
+            ]
+        if pub.error_kind is not None:
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.INSUFFICIENT_PROVIDER_ACCESS,
+                    oid,
+                    f"publication could not be observed ({pub.error_kind})",
+                    pub.evidence_id,
+                )
+            ]
+        if not pub.is_fresh(now):
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.STALE_EVIDENCE, oid, "publication evidence is stale", pub.evidence_id
+                )
+            ]
+        deployment = bool(pub.detail.get("deployment_present"))
+        marker = bool(pub.detail.get("marker_observed"))
+        url = pub.detail.get("served_url")
+        if deployment and marker and isinstance(url, str) and url:
+            return SATISFIED, []
+        return VIOLATED, [
+            Reason(
+                ReasonCode.NOT_PUBLISHED,
+                oid,
+                "the target is not a genuinely published Pages site "
+                f"(deployment_present={deployment}, marker_observed={marker})",
+                pub.evidence_id,
+            )
+        ]
+
     if kind == ObligationKind.IDENTITY_BINDING:
         reasons: list[Reason] = []
         for ev in graph.evidence.values():
@@ -205,6 +301,21 @@ def _evaluate_obligation(
                         oid,
                         f"observed project id {observed_id} does not match target "
                         f"{target.project_id}",
+                        identity.evidence_id,
+                    )
+                )
+            observed_path = identity.detail.get("path_with_namespace")
+            if (
+                isinstance(observed_path, str)
+                and observed_path
+                and observed_path != target.full_path
+            ):
+                reasons.append(
+                    Reason(
+                        ReasonCode.IDENTITY_MISMATCH,
+                        oid,
+                        f"observed full path {observed_path!r} does not match the authorised "
+                        f"path {target.full_path!r}",
                         identity.evidence_id,
                     )
                 )
@@ -233,8 +344,12 @@ def _evaluate_obligation(
                 else ReasonCode.MISSING_EVIDENCE
             )
             return UNKNOWN, [
-                Reason(code, oid, f"provider observation failed: {identity.error_kind}",
-                       identity.evidence_id)
+                Reason(
+                    code,
+                    oid,
+                    f"provider observation failed: {identity.error_kind}",
+                    identity.evidence_id,
+                )
             ]
         if not identity.is_fresh(now):
             return UNKNOWN, [
@@ -391,8 +506,12 @@ def evaluate(
         statuses[oid] = status
         reasons.extend(rs)
         obligation_summaries.append(
-            {"obligation_id": oid, "kind": obligation.kind.value, "status": status,
-             "mandatory": obligation.mandatory}
+            {
+                "obligation_id": oid,
+                "kind": obligation.kind.value,
+                "status": status,
+                "mandatory": obligation.mandatory,
+            }
         )
 
     mandatory = [o for o in graph.obligations.values() if o.mandatory]
