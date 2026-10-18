@@ -143,6 +143,16 @@ def test_fixture_only_evidence_cannot_satisfy_provider_observation(pages_target,
     assert decision.verdict == Verdict.INCONCLUSIVE
 
 
+def test_replayed_record_is_not_live_and_stale_fails_closed(pages_target, allow_policy):
+    from termivance.graph import EvidenceClass
+
+    snapshot = make_snapshot(pages_target, classification=EvidenceClass.RECORDED_LIVE)
+    later = NOW + timedelta(minutes=30)
+    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target, now=later),
+                      now=later)
+    assert decision.verdict == Verdict.INCONCLUSIVE
+
+
 def test_model_cannot_award_authoritative_verdict():
     reject_model_awarded_verdict(Verdict.BLOCKED)
     reject_model_awarded_verdict(Verdict.INCONCLUSIVE)

@@ -1,7 +1,7 @@
 {
   "action": "unpublish_pages",
-  "classification": "LIVE",
-  "observed_at": "2026-10-18T14:13:15.348962+00:00",
+  "classification": "RECORDED_LIVE",
+  "observed_at": "2026-10-18T14:21:39.937202+00:00",
   "records": [
     {
       "detail": {
@@ -15,23 +15,23 @@
       },
       "endpoint": "/projects/87779099",
       "error_kind": null,
-      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "fresh_until": "2026-10-18T14:36:39.937202+00:00",
       "kind": "PROJECT_IDENTITY",
       "method": "GET",
-      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "observed_at": "2026-10-18T14:21:39.937202+00:00",
       "status": 200
     },
     {
       "detail": {
         "branch": "main",
-        "commit_id": "616dc784ae3f9ee929e333fd223ff94a0598e065"
+        "commit_id": "a11331d4c224bdec844f16d453e415a1a40e7966"
       },
       "endpoint": "/projects/87779099/repository/branches/main",
       "error_kind": null,
-      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "fresh_until": "2026-10-18T14:36:39.937202+00:00",
       "kind": "BRANCH",
       "method": "GET",
-      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "observed_at": "2026-10-18T14:21:39.937202+00:00",
       "status": 200
     },
     {
@@ -43,29 +43,33 @@
       },
       "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw",
       "error_kind": null,
-      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "fresh_until": "2026-10-18T14:36:39.937202+00:00",
       "kind": "CI_CONFIG",
       "method": "GET",
-      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "observed_at": "2026-10-18T14:21:39.937202+00:00",
       "status": 200
     },
     {
       "detail": {
-        "latest_id": 2960227100,
+        "latest_id": 2960369438,
         "latest_status": "success"
       },
       "endpoint": "/projects/87779099/pipelines",
       "error_kind": null,
-      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "fresh_until": "2026-10-18T14:36:39.937202+00:00",
       "kind": "PIPELINE",
       "method": "GET",
-      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "observed_at": "2026-10-18T14:21:39.937202+00:00",
       "status": 200
     },
     {
       "detail": {
-        "open_count": 1,
+        "open_count": 2,
         "retirement_related": [
+          {
+            "iid": 2,
+            "title": "B2 retirement decision: BLOCKED (deterministic, read-only)"
+          },
           {
             "iid": 1,
             "title": "B1 retirement-analysis request (harmless, non-authoritative)"
@@ -74,10 +78,10 @@
       },
       "endpoint": "/projects/87779099/issues",
       "error_kind": null,
-      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "fresh_until": "2026-10-18T14:36:39.937202+00:00",
       "kind": "OPEN_ISSUES",
       "method": "GET",
-      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "observed_at": "2026-10-18T14:21:39.937202+00:00",
       "status": 200
     },
     {
@@ -86,10 +90,10 @@
       },
       "endpoint": "/projects/87779099/pages",
       "error_kind": "AUTH_DENIED",
-      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "fresh_until": "2026-10-18T14:36:39.937202+00:00",
       "kind": "PAGES",
       "method": "GET",
-      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "observed_at": "2026-10-18T14:21:39.937202+00:00",
       "status": 403
     },
     {
@@ -98,10 +102,10 @@
       },
       "endpoint": "/projects/87779099/environments",
       "error_kind": null,
-      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "fresh_until": "2026-10-18T14:36:39.937202+00:00",
       "kind": "ENVIRONMENT",
       "method": "GET",
-      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "observed_at": "2026-10-18T14:21:39.937202+00:00",
       "status": 200
     }
   ],

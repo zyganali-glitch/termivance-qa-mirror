@@ -134,12 +134,16 @@ class Snapshot:
 
     @classmethod
     def from_dict(cls, data: dict[str, object]) -> Snapshot:
+        classification = EvidenceClass(str(data.get("classification", "RECORDED_LIVE")))
+        # A snapshot loaded from storage is a *record*, never a fresh network read.
+        if classification == EvidenceClass.LIVE:
+            classification = EvidenceClass.RECORDED_LIVE
         return cls(
             target=TargetIdentity.from_dict(dict(data["target"])),  # type: ignore[arg-type]
             action=str(data.get("action", DEFAULT_ACTION)),
             observed_at=datetime.fromisoformat(str(data["observed_at"])),
             ttl_seconds=int(data.get("ttl_seconds", DEFAULT_TTL_SECONDS)),  # type: ignore[arg-type]
-            classification=EvidenceClass(str(data.get("classification", "RECORDED_LIVE"))),
+            classification=classification,
             records=tuple(
                 ObservationRecord.from_dict(dict(r))  # type: ignore[arg-type]
                 for r in (data.get("records") or [])  # type: ignore[union-attr]
@@ -370,9 +374,12 @@ def graph_from_snapshot(
 
 
 def save_snapshot(snapshot: Snapshot, path: str | Path) -> Path:
+    """Persist a snapshot as a *record* (never labeled live)."""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(snapshot.to_dict(), indent=2, sort_keys=True), encoding="utf-8")
+    data = snapshot.to_dict()
+    data["classification"] = EvidenceClass.RECORDED_LIVE.value
+    p.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
     return p
 
 

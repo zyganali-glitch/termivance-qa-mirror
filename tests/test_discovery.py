@@ -73,15 +73,25 @@ def test_pages_403_is_recorded_not_fabricated():
     assert pages is not None and pages.error_kind == "AUTH_DENIED" and pages.status == 403
 
 
-def test_snapshot_roundtrip_preserves_classification():
+def test_snapshot_roundtrip_downgrades_live_to_recorded():
     snapshot, _ = run_live(responses())
     from termivance.discovery import Snapshot
 
-    data = snapshot.to_dict()
-    restored = Snapshot.from_dict(data)
-    assert restored.classification == snapshot.classification
+    assert snapshot.classification.value == "LIVE"
+    restored = Snapshot.from_dict(snapshot.to_dict())
+    assert restored.classification.value == "RECORDED_LIVE"
     assert restored.target.key() == snapshot.target.key()
     assert len(restored.records) == len(snapshot.records)
+
+
+def test_saved_snapshot_is_recorded_not_live(tmp_path):
+    from termivance.discovery import Snapshot, load_snapshot, save_snapshot
+
+    snapshot, _ = run_live(responses())
+    path = save_snapshot(snapshot, tmp_path / "rec.json")
+    restored = load_snapshot(path)
+    assert restored.classification.value == "RECORDED_LIVE"
+    assert Snapshot.from_dict(restored.to_dict()).classification.value == "RECORDED_LIVE"
 
 
 def test_fresh_until_is_within_ttl():
