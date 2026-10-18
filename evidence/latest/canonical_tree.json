@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T16:07:16Z",
-  "artifact_sha256": "543e1e62a38a0db205582054b25626e4581d1042db5cfd5bedd5cdc47408cd92",
+  "acquired_at_utc": "2026-10-18T16:26:38Z",
+  "artifact_sha256": "058ce94fd8ed8152a608613735185720ae0add1bebdbd40834d417e6cf31e586",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/tree?ref=main&per_page=100",
   "http_error": null,
@@ -13,14 +13,21 @@
   ],
   "sanitized_body": [
     {
-      "id": "2daea94f80568433240290e9444fe9d65c1949a9",
+      "id": "fbcdc2b8475431267668b56e06498bb769036d0b",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "config",
       "type": "tree"
     },
     {
-      "id": "3fd7e40b0c1ae245c4197d409429f00d93104e7d",
+      "id": "ce9faedff69ed3ff7d760e397038ab30e9886c2c",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "deploy",
+      "type": "tree"
+    },
+    {
+      "id": "b16641db1100a24438c58e66b42ceeb17adb6d9f",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "docs",
@@ -41,14 +48,14 @@
       "type": "tree"
     },
     {
-      "id": "dbe0402d19118729d1a6236fd0e90761a349d3dc",
+      "id": "d54ade2aabe52a3efeaacba20cae2d96fdb65ec2",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "src",
       "type": "tree"
     },
     {
-      "id": "91b249435800ffc0ee62b40fcc2f189109a9cd9d",
+      "id": "01caf37c4cd0092859b001cfdd2ca597a4d27021",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "tests",
@@ -69,7 +76,7 @@
       "type": "blob"
     },
     {
-      "id": "9d0cd97f1c8c86edbf6049e414dc0c91d1764d5b",
+      "id": "c197e123ed786ad420a6545a4f608bb7099bc709",
       "mode": "100644",
       "name": "[REDACTED]",
       "path": ".gitlab-ci.yml",
@@ -90,14 +97,14 @@
       "type": "blob"
     },
     {
-      "id": "143e254bed7c19fabd3563dc416ff958956b500e",
+      "id": "528875ddc66ec6d8ca3189138a623d2457c46e0f",
       "mode": "100644",
       "name": "[REDACTED]",
       "path": "README.md",
       "type": "blob"
     },
     {
-      "id": "c3245ddf33013b56a093d6630d50d14ad5b7165d",
+      "id": "eed0955724f7af0fe115af37145d1bb68b2eb71e",
       "mode": "100644",
       "name": "[REDACTED]",
       "path": "pyproject.toml",

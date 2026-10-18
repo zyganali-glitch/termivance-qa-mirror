@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T16:07:15Z",
-  "artifact_sha256": "d56d1e0db7ea2c3835ca0c85863b96f04fcc7e12acac0323086236ba9cd507cf",
+  "acquired_at_utc": "2026-10-18T16:26:38Z",
+  "artifact_sha256": "a131a70da5c95be9a31e59da3194f377ac0e962b667a836353b4483ccbfc8e7e",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -17,21 +17,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "zyganali",
-      "authored_date": "2026-10-18T17:59:42.000+03:00",
-      "committed_date": "2026-10-18T17:59:42.000+03:00",
+      "authored_date": "2026-10-18T19:25:03.000+03:00",
+      "committed_date": "2026-10-18T19:25:03.000+03:00",
       "committer_email": "zyganali@users.noreply.gitlab.com",
       "committer_name": "zyganali",
-      "created_at": "2026-10-18T17:59:42.000+03:00",
+      "created_at": "2026-10-18T19:25:03.000+03:00",
       "extended_trailers": {},
-      "id": "21eed7e27a9077469be5297ada4cd87c728df13b",
-      "message": "B2 repair: affirmative-evidence REDEPLOYMENT_PATH (job-name-agnostic Pages detection, no negative inference), LIVE-only provider evidence\n",
+      "id": "1711dbba18883ae316a07b61ad58f41a8e2f2557",
+      "message": "B3 fix: import conftest as a top-level test helper (CI collection)\n",
       "parent_ids": [
-        "9633e37ffe8566e51d3380aa8ad35469494987c7"
+        "20900b845bff58a5eb1a2a92a57e76384924b1ec"
       ],
-      "short_id": "21eed7e2",
-      "title": "B2 repair: affirmative-evidence REDEPLOYMENT_PATH (job-name-agnostic Pages detection, no negative inference), LIVE-only provider evidence",
+      "short_id": "1711dbba",
+      "title": "B3 fix: import conftest as a top-level test helper (CI collection)",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/21eed7e27a9077469be5297ada4cd87c728df13b"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/1711dbba18883ae316a07b61ad58f41a8e2f2557"
     },
     "default": true,
     "developers_can_merge": true,

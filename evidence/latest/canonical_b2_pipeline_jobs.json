@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T16:07:18Z",
-  "artifact_sha256": "d772aa52175da84f8dc8604066a60598393bdf0cc1a840b71927f9f00e342d73",
+  "acquired_at_utc": "2026-10-18T16:26:40Z",
+  "artifact_sha256": "32ef157438a8aa0d78ab0ebb66275538a1a42dbe8a8c2d7f95453f4738c76e30",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/pipelines/2960412852/jobs",
   "http_error": null,
@@ -96,7 +96,7 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-18T16:07:14.473Z",
+        "contacted_at": "2026-10-18T16:26:40.743Z",
         "created_at": "2026-10-16T16:36:16.707Z",
         "id": 163227071,
         "ip_address": "10.218.11.3",

@@ -1,15 +1,44 @@
 {
-  "acquired_at_utc": "2026-10-18T16:07:17Z",
-  "artifact_sha256": "a22e772ed9463193f2d78548dfdb40ebb1f4283325b98150399b6450bfc0b9a4",
-  "classification": "NOT_OBSERVED",
+  "acquired_at_utc": "2026-10-18T16:26:39Z",
+  "artifact_sha256": "b625dde3a02604c4ec8d6c5bbc36f9d55320e562146fb46bfebe7b72ffc4f1c1",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87785099/repository/branches/main",
-  "http_error": "HTTP 404",
-  "http_status": 404,
-  "limitations": "endpoint not observed with public read access; real status preserved",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
   "method": "GET",
   "name": "disposable_main_branch",
-  "redacted_keys": [],
+  "redacted_keys": [
+    "author_email",
+    "name"
+  ],
   "sanitized_body": {
-    "message": "404 Branch Not Found"
+    "can_push": false,
+    "commit": {
+      "author_email": "[REDACTED]",
+      "author_name": "zyganali",
+      "authored_date": "2026-10-18T19:13:51.000+03:00",
+      "committed_date": "2026-10-18T19:13:51.000+03:00",
+      "committer_email": "zyganali@users.noreply.github.com",
+      "committer_name": "zyganali",
+      "created_at": "2026-10-18T19:13:51.000+03:00",
+      "extended_trailers": {},
+      "id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+      "message": "use documented pages:true user-defined job syntax\n",
+      "parent_ids": [
+        "da77a182fda87943ff7297f139549fffb20b79a1"
+      ],
+      "short_id": "54fcc9ff",
+      "title": "use documented pages:true user-defined job syntax",
+      "trailers": {},
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo/-/commit/54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
+    },
+    "default": true,
+    "developers_can_merge": true,
+    "developers_can_push": true,
+    "merged": false,
+    "name": "[REDACTED]",
+    "protected": true,
+    "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo/-/tree/main"
   }
 }
