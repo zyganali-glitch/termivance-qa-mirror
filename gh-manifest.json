@@ -1,0 +1,271 @@
+{
+  "b2_pipeline_commit_binding": {
+    "expected_sha": "21eed7e27a9077469be5297ada4cd87c728df13b",
+    "match": true,
+    "observed_sha": "21eed7e27a9077469be5297ada4cd87c728df13b"
+  },
+  "canonical_project_id": 87779099,
+  "disposable_project_id": 87785099,
+  "drift": {
+    "detail": "GitHub gitlab-main mirror matches the live GitLab main commit exactly",
+    "github_gitlab_main_mirror_sha": "21eed7e27a9077469be5297ada4cd87c728df13b",
+    "live_gitlab_main_sha": "21eed7e27a9077469be5297ada4cd87c728df13b",
+    "status": "IN_SYNC"
+  },
+  "generated_at_utc": "2026-10-18T16:07:18Z",
+  "gitlab_base": "https://gitlab.com/api/v4",
+  "observations": [
+    {
+      "artifact_sha256": "6ee3b80b3b65456d7eb95441e6a3ebdff94733477afed058a5e85765592186ca",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_project",
+      "observed_at_utc": "2026-10-18T16:07:15Z",
+      "summary": {
+        "created_at": "2026-10-18T10:56:59.177Z",
+        "default_branch": "main",
+        "id": 87779099,
+        "path_with_namespace": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+        "visibility": "public",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance"
+      }
+    },
+    {
+      "artifact_sha256": "d56d1e0db7ea2c3835ca0c85863b96f04fcc7e12acac0323086236ba9cd507cf",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/repository/branches/main",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_main_branch",
+      "observed_at_utc": "2026-10-18T16:07:15Z",
+      "summary": {
+        "commit_id": "21eed7e27a9077469be5297ada4cd87c728df13b",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/tree/main"
+      }
+    },
+    {
+      "artifact_sha256": "543e1e62a38a0db205582054b25626e4581d1042db5cfd5bedd5cdc47408cd92",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/repository/tree?ref=main&per_page=100",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_tree",
+      "observed_at_utc": "2026-10-18T16:07:16Z",
+      "summary": {
+        "count": 13,
+        "first_id": "2daea94f80568433240290e9444fe9d65c1949a9"
+      }
+    },
+    {
+      "artifact_sha256": "97828226098fe192060051759041ec301e1dab43b1656ed8f5c3e9fb1fcf80a7",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/pipelines?per_page=10",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_pipelines",
+      "observed_at_utc": "2026-10-18T16:07:16Z",
+      "summary": {
+        "count": 10,
+        "first_id": 2960412852
+      }
+    },
+    {
+      "artifact_sha256": "c252daa13b6a2c396f535a184c2815d8718a5e6bbdebf4e7817aed474499f0b1",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/issues?per_page=20",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_issues",
+      "observed_at_utc": "2026-10-18T16:07:16Z",
+      "summary": {
+        "count": 2,
+        "first_id": 207049857
+      }
+    },
+    {
+      "artifact_sha256": "211e1db680f390cf70b4a1dd6db64d30b83ab4b24ecec9d0d8bb055aed41a90d",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/issues/2",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_issue_b2",
+      "observed_at_utc": "2026-10-18T16:07:16Z",
+      "summary": {
+        "created_at": "2026-10-18T14:14:15.330Z",
+        "id": 207049857,
+        "iid": 2,
+        "updated_at": "2026-10-18T15:00:44.496Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/work_items/2"
+      }
+    },
+    {
+      "artifact_sha256": "dcab67068235b3d880fbc2b44dab2637aec1c965e75cf65d30345a2f78df5be4",
+      "classification": "NOT_OBSERVED",
+      "endpoint": "/projects/87779099/issues/2/notes",
+      "http_status": 401,
+      "method": "GET",
+      "name": "canonical_issue_b2_notes",
+      "observed_at_utc": "2026-10-18T16:07:16Z",
+      "summary": {
+        "message": "401 Unauthorized"
+      }
+    },
+    {
+      "artifact_sha256": "1a92b0568e6dc87a253c5072af9a3f27adaafa1caf7a8ae47ad248103ac2f274",
+      "classification": "NOT_OBSERVED",
+      "endpoint": "/projects/87779099/pages",
+      "http_status": 403,
+      "method": "GET",
+      "name": "canonical_pages",
+      "observed_at_utc": "2026-10-18T16:07:16Z",
+      "summary": {
+        "message": "403 Forbidden"
+      }
+    },
+    {
+      "artifact_sha256": "c3c7379feeacd7669be185c4859bb75ce4147f12b256afcc8a81d466668985d4",
+      "classification": "NOT_OBSERVED",
+      "endpoint": "/projects/87779099/environments",
+      "http_status": 401,
+      "method": "GET",
+      "name": "canonical_environments",
+      "observed_at_utc": "2026-10-18T16:07:17Z",
+      "summary": {
+        "message": "401 Unauthorized"
+      }
+    },
+    {
+      "artifact_sha256": "0ea48a1ef145a03e586c8b0e81a2a8328b7ac8008253bd554c5b0c07386c8bb3",
+      "classification": "NOT_OBSERVED",
+      "endpoint": "/projects/87779099/duo_workflows",
+      "http_status": 404,
+      "method": "GET",
+      "name": "duo_workflows_probe",
+      "observed_at_utc": "2026-10-18T16:07:17Z",
+      "summary": {}
+    },
+    {
+      "artifact_sha256": "a7ae27f0d7c1c98f333c0cafc328a3f437629c4494cca285069bfa9e477714af",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87785099",
+      "http_status": 200,
+      "method": "GET",
+      "name": "disposable_project",
+      "observed_at_utc": "2026-10-18T16:07:17Z",
+      "summary": {
+        "created_at": "2026-10-18T15:32:25.812Z",
+        "default_branch": "main",
+        "id": 87785099,
+        "path_with_namespace": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+        "visibility": "public",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+      }
+    },
+    {
+      "artifact_sha256": "a22e772ed9463193f2d78548dfdb40ebb1f4283325b98150399b6450bfc0b9a4",
+      "classification": "NOT_OBSERVED",
+      "endpoint": "/projects/87785099/repository/branches/main",
+      "http_status": 404,
+      "method": "GET",
+      "name": "disposable_main_branch",
+      "observed_at_utc": "2026-10-18T16:07:17Z",
+      "summary": {
+        "message": "404 Branch Not Found"
+      }
+    },
+    {
+      "artifact_sha256": "25dc3a38ce48366ec3dea28f13081ef9f3274007f77497342a26652d1107f6ad",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87785099/pipelines?per_page=5",
+      "http_status": 200,
+      "method": "GET",
+      "name": "disposable_pipelines",
+      "observed_at_utc": "2026-10-18T16:07:17Z",
+      "summary": {
+        "count": 0,
+        "first_id": null
+      }
+    },
+    {
+      "artifact_sha256": "3ec09ffddb0f28fb11e86787cdcd04b2f3d03e355061081e47f7a1421ae7d922",
+      "classification": "NOT_OBSERVED",
+      "endpoint": "/projects/87785099/pages",
+      "http_status": 403,
+      "method": "GET",
+      "name": "disposable_pages",
+      "observed_at_utc": "2026-10-18T16:07:17Z",
+      "summary": {
+        "message": "403 Forbidden"
+      }
+    },
+    {
+      "artifact_sha256": "08a1baa7c01c53ca65bff47a38c9d3d784e7cb873c5af2fbcc0bc32042f19849",
+      "classification": "NOT_OBSERVED",
+      "endpoint": "/projects/87785099/environments",
+      "http_status": 401,
+      "method": "GET",
+      "name": "disposable_environments",
+      "observed_at_utc": "2026-10-18T16:07:18Z",
+      "summary": {
+        "message": "401 Unauthorized"
+      }
+    },
+    {
+      "artifact_sha256": "b2efa625b11b6c678b74e2cbce2b71b9407e6a0cfbb5b4f464e5b619480427f9",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/repository/commits/21eed7e27a9077469be5297ada4cd87c728df13b",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_b2_commit",
+      "observed_at_utc": "2026-10-18T16:07:18Z",
+      "summary": {
+        "created_at": "2026-10-18T17:59:42.000+03:00",
+        "id": "21eed7e27a9077469be5297ada4cd87c728df13b",
+        "message": "B2 repair: affirmative-evidence REDEPLOYMENT_PATH (job-name-agnostic Pages detection, no negative inference), LIVE-only provider evidence\n",
+        "status": "success",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/21eed7e27a9077469be5297ada4cd87c728df13b"
+      }
+    },
+    {
+      "artifact_sha256": "731793462f21d329420dbd208a47b9930c379db2d5eb90f9cc0b64f14845e0ba",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/pipelines/2960412852",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_b2_pipeline",
+      "observed_at_utc": "2026-10-18T16:07:18Z",
+      "summary": {
+        "created_at": "2026-10-18T14:59:46.249Z",
+        "id": 2960412852,
+        "iid": 10,
+        "ref": "main",
+        "sha": "21eed7e27a9077469be5297ada4cd87c728df13b",
+        "status": "success",
+        "updated_at": "2026-10-18T15:00:06.971Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960412852"
+      }
+    },
+    {
+      "artifact_sha256": "d772aa52175da84f8dc8604066a60598393bdf0cc1a840b71927f9f00e342d73",
+      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "endpoint": "/projects/87779099/pipelines/2960412852/jobs",
+      "http_status": 200,
+      "method": "GET",
+      "name": "canonical_b2_pipeline_jobs",
+      "observed_at_utc": "2026-10-18T16:07:18Z",
+      "summary": {
+        "count": 1,
+        "first_id": 17265930122
+      }
+    }
+  ],
+  "provenance_note": "Each entry is an independent, read-only GitLab API observation made by this GitHub Actions run. NOT_OBSERVED entries preserve the real non-2xx status and make no claim. An archived observation is not perpetual proof of current state.",
+  "schema": "termivance.qa_observer_manifest/v1",
+  "workflow": {
+    "repository": "zyganali-glitch/termivance-qa-mirror",
+    "run_id": "39143542346",
+    "run_url": "https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39143542346"
+  }
+}

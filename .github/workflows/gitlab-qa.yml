@@ -67,6 +67,9 @@ jobs:
           sha="$(git rev-parse FETCH_HEAD)"
           echo "mirror_sha=$sha" >> "$GITHUB_OUTPUT"
 
+      - name: Observer self-test (fail-closed semantics, offline)
+        run: python3 observer/selftest.py
+
       - name: Run independent observer (real GitLab API reads)
         env:
           MIRROR_SHA: ${{ steps.mirror.outputs.mirror_sha }}
@@ -75,12 +78,17 @@ jobs:
       - name: Show manifest summary
         run: |
           python3 - <<'PY'
-          import json
+          import json, sys
           m = json.load(open("evidence/latest/manifest.json"))
+          print("qa_status:", m["qa_status"])
           print("drift:", m["drift"])
-          print("b2 binding:", m["b2_pipeline_commit_binding"])
+          print("current pipeline binding:", m["current_pipeline_binding"])
+          print("source manifest sha256:", m["source_manifest_sha256"]["combined_sha256"])
+          print("evidence manifest sha256:", m["evidence_manifest_sha256"]["combined_sha256"])
           live = [o for o in m["observations"] if o["classification"].startswith("LIVE_GITLAB")]
           print(f"live observations: {len(live)}/{len(m['observations'])}")
+          for failure in m["qa_failures"]:
+              print("FAIL:", failure)
           PY
 
       - name: Commit sanitized evidence
