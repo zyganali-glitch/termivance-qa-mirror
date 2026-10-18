@@ -16,8 +16,9 @@ verification:
     - termivance status --json
     - termivance doctor
     - termivance policy-check config/retirement_policy.example.json
-    # Network-free proof that the only mutation allowlist excludes project deletion.
-    - python -c "from termivance.pages import mutation_is_structurally_safe as s; assert s(), 'mutation allowlist unsafe'"
+    # Network-free safety-contract assertions (mutation allowlist, provenance gate,
+    # durable single-use ledger, bounded-absence transition requirement).
+    - python scripts/ci_safety_assertions.py
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
