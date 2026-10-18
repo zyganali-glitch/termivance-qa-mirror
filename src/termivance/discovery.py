@@ -60,7 +60,38 @@ _EVIDENCE_OBLIGATIONS: dict[EvidenceKind, tuple[ObligationKind, ...]] = {
     EvidenceKind.BRANCH: (ObligationKind.IDENTITY_BINDING,),
     EvidenceKind.OPEN_ISSUES: (ObligationKind.UNRESOLVED_WORK,),
     EvidenceKind.CI_CONFIG: (ObligationKind.REDEPLOYMENT_PATH,),
+    EvidenceKind.REDEPLOYMENT_CONTROL: (ObligationKind.REDEPLOYMENT_PATH,),
 }
+
+#: Strong textual signals that a CI job participates in GitLab Pages deployment.
+#: Job names are arbitrary, so detection must not assume a job called "pages".
+_PAGES_SIGNALS: tuple[tuple[str, str], ...] = (
+    ("pages_job_key", r"(?m)^pages\s*:"),
+    ("pages_job_key_slash", r"(?m)^pages/[\w.\-]+\s*:"),
+    ("pages_true", r"(?m)^\s*pages\s*:\s*true\s*$"),
+    ("pages_keyword", r"(?m)^\s+pages\s*:"),
+    ("pages_stage", r"(?m)^\s*stage\s*:\s*pages\s*$"),
+)
+
+_INCLUDE_SIGNAL = r"(?m)^\s*include\s*:"
+_RETIREMENT_RE = re.compile(r"retir|unpublish|decommission", re.IGNORECASE)
+
+
+def detect_pages_mechanism(ci_body: str) -> tuple[bool, list[str]]:
+    """Detect any Pages deployment signal, independent of the job name."""
+    signals = [name for name, pattern in _PAGES_SIGNALS if re.search(pattern, ci_body)]
+    return bool(signals), signals
+
+
+def ci_configuration_is_complete(ci_body: str) -> bool:
+    """A configuration that uses ``include:`` cannot prove global completeness."""
+    return not re.search(_INCLUDE_SIGNAL, ci_body)
+
+
+def is_retirement_related(issue: dict[str, object]) -> bool:
+    """A defensible relationship: title or labels explicitly reference retirement."""
+    text = f"{issue.get('title', '')} {' '.join(str(x) for x in (issue.get('labels') or []))}"
+    return bool(_RETIREMENT_RE.search(text))
 
 
 def _utc(value: datetime) -> datetime:
@@ -212,16 +243,20 @@ def discover_live(
 
     ci = client.get_text(f"/projects/{pid}/repository/files/.gitlab-ci.yml/raw")
     ci_body = ci.data if (ci.ok and isinstance(ci.data, str)) else ""
-    has_pages_job = bool(re.search(r"(?m)^\s*pages\s*:", ci_body))
+    pages_mechanism, pages_signals = detect_pages_mechanism(ci_body)
     records.append(
         _record(
             EvidenceKind.CI_CONFIG,
             ci,
             {
                 "file": ".gitlab-ci.yml",
+                "ref": default_branch,
                 "present": bool(ci_body),
-                "has_pages_job": has_pages_job,
                 "bytes": len(ci_body),
+                "pages_mechanism": pages_mechanism,
+                "pages_signals": pages_signals,
+                "includes_present": not ci_configuration_is_complete(ci_body),
+                "refs_examined": [default_branch],
             },
             now,
             ttl,
@@ -251,13 +286,11 @@ def discover_live(
     open_issues: list[dict[str, object]] = []
     if issues.ok and isinstance(issues.data, list):
         open_issues = [
-            {"iid": i.get("iid"), "title": i.get("title")}
+            {"iid": i.get("iid"), "title": i.get("title"), "labels": i.get("labels")}
             for i in issues.data
             if isinstance(i, dict)
         ]
-    retirement_related = [
-        i for i in open_issues if "retire" in str(i.get("title", "")).lower()
-    ]
+    retirement_related = [i for i in open_issues if is_retirement_related(i)]
     records.append(
         _record(
             EvidenceKind.OPEN_ISSUES,
@@ -320,12 +353,17 @@ def graph_from_snapshot(
         graph.link(target_node, Relation.HAS_OBLIGATION, oid)
 
     for record in snapshot.records:
+        evidence_class = (
+            EvidenceClass.OPERATOR_CONFIRMED
+            if record.kind == EvidenceKind.REDEPLOYMENT_CONTROL
+            else classification
+        )
         evidence = Evidence(
             evidence_id=f"ev:{record.kind.value.lower()}",
             kind=record.kind,
-            classification=classification,
+            classification=evidence_class,
             target=snapshot.target,
-            method=record.method if record.method in {"GET", "FIXTURE"} else "GET",
+            method=record.method if record.method in {"GET", "FIXTURE", "ATTESTATION"} else "GET",
             endpoint=record.endpoint,
             status=record.status,
             observed_at=record.observed_at,
@@ -355,14 +393,17 @@ def graph_from_snapshot(
 
     ci = next((r for r in snapshot.records if r.kind == EvidenceKind.CI_CONFIG), None)
     if ci is not None and ci.error_kind is None:
-        has_pages = bool(ci.detail.get("has_pages_job"))
+        has_mechanism = bool(ci.detail.get("pages_mechanism"))
         dep = Dependency(
             dependency_id="dep:active_redeployment",
             kind=DependencyKind.ACTIVE_REDEPLOYMENT,
-            description="CI pipeline publishes/deploys a Pages site"
-            if has_pages
-            else "no Pages deployment job found in CI configuration",
-            active=has_pages,
+            description=(
+                "observed Pages deployment mechanism in CI configuration"
+                if has_mechanism
+                else "no Pages mechanism detected in the observed CI configuration "
+                "(not evidence of absence)"
+            ),
+            active=has_mechanism,
             evidence_id="ev:ci_config",
         )
         graph.add_dependency(dep)

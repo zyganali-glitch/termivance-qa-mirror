@@ -216,12 +216,13 @@ def _evaluate_obligation(
             return UNKNOWN, [
                 Reason(ReasonCode.MISSING_EVIDENCE, oid, "no provider identity observation")
             ]
-        if identity.classification == EvidenceClass.FIXTURE:
+        if identity.classification != EvidenceClass.LIVE:
             return UNKNOWN, [
                 Reason(
                     ReasonCode.MISSING_EVIDENCE,
                     oid,
-                    "only fixture evidence present; a live observation is required",
+                    f"provider evidence is {identity.classification.value}, not a live "
+                    "observation; fixtures and records cannot satisfy a live requirement",
                     identity.evidence_id,
                 )
             ]
@@ -276,11 +277,20 @@ def _evaluate_obligation(
                 Reason(
                     ReasonCode.REDEPLOYMENT_RISK,
                     oid,
-                    f"{len(active)} active redeployment/recreation mechanism(s)",
+                    f"{len(active)} observed redeployment/recreation mechanism(s)",
                     active[0].evidence_id,
                 )
             ]
-        if _latest(graph, EvidenceKind.CI_CONFIG) is None:
+        control = _latest(graph, EvidenceKind.REDEPLOYMENT_CONTROL)
+        if (
+            control is not None
+            and control.classification == EvidenceClass.OPERATOR_CONFIRMED
+            and control.error_kind is None
+            and control.is_fresh(now)
+        ):
+            return SATISFIED, []
+        ci = _latest(graph, EvidenceKind.CI_CONFIG)
+        if ci is None:
             return UNKNOWN, [
                 Reason(
                     ReasonCode.MISSING_EVIDENCE,
@@ -288,7 +298,34 @@ def _evaluate_obligation(
                     "CI configuration was not observed, so redeployment risk is unknown",
                 )
             ]
-        return SATISFIED, []
+        if ci.error_kind is not None:
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.INSUFFICIENT_PROVIDER_ACCESS,
+                    oid,
+                    f"CI configuration could not be read ({ci.error_kind}); completeness unknown",
+                    ci.evidence_id,
+                )
+            ]
+        if bool(ci.detail.get("includes_present")):
+            return UNKNOWN, [
+                Reason(
+                    ReasonCode.MISSING_EVIDENCE,
+                    oid,
+                    "CI configuration includes external configuration; global completeness is "
+                    "not established",
+                    ci.evidence_id,
+                )
+            ]
+        return UNKNOWN, [
+            Reason(
+                ReasonCode.MISSING_EVIDENCE,
+                oid,
+                "no operator-confirmed control that redeployment is prevented; absence of a "
+                "discovered mechanism is not proof of absence",
+                ci.evidence_id,
+            )
+        ]
 
     if kind == ObligationKind.DEPENDENT_CONSUMERS:
         deps = graph.dependencies_for(oid)

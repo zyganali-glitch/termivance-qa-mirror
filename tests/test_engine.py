@@ -21,10 +21,31 @@ def decide(snapshot, policy, *, now=NOW, authorization=None):
 
 
 def test_synthetic_safe_case(pages_target, allow_policy):
-    snapshot = make_snapshot(pages_target)
+    snapshot = make_snapshot(pages_target, operator_control=True)
     decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
     assert decision.verdict == Verdict.SAFE_TO_RETIRE
     assert decision.read_only is True
+
+
+def test_complete_ci_without_affirmative_control_is_not_safe(pages_target, allow_policy):
+    # CI present, no Pages mechanism, but no affirmative control: NOT SAFE.
+    snapshot = make_snapshot(pages_target)
+    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
+    assert decision.verdict == Verdict.INCONCLUSIVE
+    assert ReasonCode.MISSING_EVIDENCE in {r.code for r in decision.reasons}
+
+
+def test_includes_make_redeployment_unknown(pages_target, allow_policy):
+    snapshot = make_snapshot(pages_target, includes_present=True)
+    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
+    assert decision.verdict == Verdict.INCONCLUSIVE
+    assert ReasonCode.MISSING_EVIDENCE in {r.code for r in decision.reasons}
+
+
+def test_operator_control_satisfies_redeployment(pages_target, allow_policy):
+    snapshot = make_snapshot(pages_target, operator_control=True)
+    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
+    assert decision.verdict == Verdict.SAFE_TO_RETIRE
 
 
 def test_protected_target_is_blocked_even_with_authorization(canonical_target):
@@ -106,10 +127,34 @@ def test_identity_mismatch_is_blocked(pages_target, allow_policy):
 
 
 def test_active_redeployment_is_blocked(pages_target, allow_policy):
-    snapshot = make_snapshot(pages_target, has_pages_job=True)
+    snapshot = make_snapshot(pages_target, pages_mechanism=True)
     decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
     assert decision.verdict == Verdict.BLOCKED
     assert ReasonCode.REDEPLOYMENT_RISK in {r.code for r in decision.reasons}
+
+
+def test_generic_open_issue_does_not_block(pages_target, allow_policy):
+    snapshot = make_snapshot(pages_target, open_generic_issues=1, operator_control=True)
+    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
+    assert decision.verdict == Verdict.SAFE_TO_RETIRE
+
+
+def test_retirement_open_issue_blocks(pages_target, allow_policy):
+    snapshot = make_snapshot(pages_target, open_retirement_issues=1, operator_control=True)
+    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
+    assert decision.verdict == Verdict.BLOCKED
+    assert ReasonCode.UNRESOLVED_OBLIGATION in {r.code for r in decision.reasons}
+
+
+def test_fresh_recorded_snapshot_cannot_satisfy_live_requirement(pages_target, allow_policy):
+    from termivance.graph import EvidenceClass
+
+    snapshot = make_snapshot(
+        pages_target, classification=EvidenceClass.RECORDED_LIVE, operator_control=True
+    )
+    decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
+    assert decision.verdict == Verdict.INCONCLUSIVE
+    assert ReasonCode.MISSING_EVIDENCE in {r.code for r in decision.reasons}
 
 
 def test_missing_ci_config_is_inconclusive(pages_target, allow_policy):
@@ -168,7 +213,7 @@ def test_authorization_from_prose_refused(pages_target):
 
 
 def test_decision_serialization_has_boundaries(pages_target, allow_policy):
-    snapshot = make_snapshot(pages_target)
+    snapshot = make_snapshot(pages_target, operator_control=True)
     decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
     payload = decision.to_dict()
     assert payload["verdict"] == "SAFE_TO_RETIRE"
@@ -178,7 +223,7 @@ def test_decision_serialization_has_boundaries(pages_target, allow_policy):
 
 
 def test_obligation_summary_present(pages_target, allow_policy):
-    snapshot = make_snapshot(pages_target)
+    snapshot = make_snapshot(pages_target, operator_control=True)
     decision = decide(snapshot, allow_policy, authorization=auth_for(pages_target))
     kinds = {o["kind"] for o in decision.obligations}
     assert ObligationKind.TARGET_SCOPE.value in kinds

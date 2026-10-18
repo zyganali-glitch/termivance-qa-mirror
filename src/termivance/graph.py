@@ -54,11 +54,16 @@ class ObligationKind(StrEnum):
 
 
 class EvidenceClass(StrEnum):
-    """Provenance classification. A fixture is never LIVE."""
+    """Provenance classification.
+
+    A fixture is never LIVE, and a record is never a fresh network read. Only
+    ``LIVE`` may satisfy a mandatory live provider-evidence requirement.
+    """
 
     LIVE = "LIVE"
     RECORDED_LIVE = "RECORDED_LIVE"
     FIXTURE = "FIXTURE"
+    OPERATOR_CONFIRMED = "OPERATOR_CONFIRMED"
 
 
 class EvidenceKind(StrEnum):
@@ -70,6 +75,8 @@ class EvidenceKind(StrEnum):
     OPEN_ISSUES = "OPEN_ISSUES"
     PAGES = "PAGES"
     ENVIRONMENT = "ENVIRONMENT"
+    #: An affirmative, operator-supplied control attestation (not provider state).
+    REDEPLOYMENT_CONTROL = "REDEPLOYMENT_CONTROL"
 
 
 class DependencyKind(StrEnum):
@@ -104,7 +111,7 @@ class Evidence:
     def __post_init__(self) -> None:
         if not self.evidence_id.strip():
             raise GraphError("evidence_id must be non-empty")
-        if self.method not in {"GET", "FIXTURE"}:
+        if self.method not in {"GET", "FIXTURE", "ATTESTATION"}:
             raise GraphError(f"evidence method must be read-only, got {self.method!r}")
         if not isinstance(self.detail, dict):
             raise GraphError("evidence detail must be a mapping")

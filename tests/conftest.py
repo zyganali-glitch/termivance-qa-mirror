@@ -73,7 +73,10 @@ def make_snapshot(
     classification: EvidenceClass = EvidenceClass.LIVE,
     observed_at: datetime = NOW,
     open_retirement_issues: int = 0,
-    has_pages_job: bool = False,
+    open_generic_issues: int = 0,
+    pages_mechanism: bool = False,
+    includes_present: bool = False,
+    operator_control: bool = False,
     pages_error: str | None = None,
     project_id_override: int | None = None,
     include_ci_config: bool = True,
@@ -123,11 +126,38 @@ def make_snapshot(
                 endpoint=f"/projects/{target.project_id}/repository/files/.gitlab-ci.yml/raw",
                 status=200,
                 error_kind=None,
-                detail={"file": ".gitlab-ci.yml", "present": True, "has_pages_job": has_pages_job},
+                detail={
+                    "file": ".gitlab-ci.yml",
+                    "present": True,
+                    "pages_mechanism": pages_mechanism,
+                    "pages_signals": ["pages_job_key"] if pages_mechanism else [],
+                    "includes_present": includes_present,
+                },
                 observed_at=observed_at,
                 fresh_until=fresh,
             )
         )
+    if operator_control:
+        records.append(
+            ObservationRecord(
+                kind=EvidenceKind.REDEPLOYMENT_CONTROL,
+                method="ATTESTATION",
+                endpoint="operator://redeployment-control",
+                status=None,
+                error_kind=None,
+                detail={"control": "operator confirmed no redeployment path for this target"},
+                observed_at=observed_at,
+                fresh_until=fresh,
+            )
+        )
+    issues = [
+        {"iid": 1, "title": "retire this", "labels": ["retirement"]}
+        for _ in range(open_retirement_issues)
+    ]
+    issues += [
+        {"iid": 100 + n, "title": "fix a normal bug", "labels": ["bug"]}
+        for n in range(open_generic_issues)
+    ]
     records.append(
         ObservationRecord(
             kind=EvidenceKind.OPEN_ISSUES,
@@ -136,10 +166,8 @@ def make_snapshot(
             status=200,
             error_kind=None,
             detail={
-                "open_count": open_retirement_issues,
-                "retirement_related": [
-                    {"iid": 1, "title": "retire this"} for _ in range(open_retirement_issues)
-                ],
+                "open_count": len(issues),
+                "retirement_related": issues[:open_retirement_issues],
             },
             observed_at=observed_at,
             fresh_until=fresh,

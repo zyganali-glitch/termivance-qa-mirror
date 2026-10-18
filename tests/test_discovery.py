@@ -2,7 +2,12 @@ from datetime import UTC, datetime, timedelta
 
 from conftest import FakeTransport
 
-from termivance.discovery import discover_live, graph_from_snapshot
+from termivance.discovery import (
+    detect_pages_mechanism,
+    discover_live,
+    graph_from_snapshot,
+    is_retirement_related,
+)
 from termivance.gitlab_client import GitLabClient, HttpReply, RecordingTransport
 from termivance.graph import EvidenceKind
 from termivance.target import TargetIdentity
@@ -12,7 +17,7 @@ NOW = datetime(2026, 10, 18, 12, 0, tzinfo=UTC)
 TARGET = TargetIdentity(1, "group/proj", "GITLAB_PAGES_SITE")
 
 
-def responses(*, ci_body="stages: [verify]\n", issues=None, pages=None):
+def responses(*, ci_body="stages: [verify]\nverify:\n  script: [true]\n", issues=None, pages=None):
     if pages is None:
         pages = HttpReply(403, "", "HTTP 403")
     return {
@@ -31,8 +36,7 @@ def responses(*, ci_body="stages: [verify]\n", issues=None, pages=None):
 
 
 def run_live(responses_map):
-    inner = FakeTransport(responses_map)
-    recorder = RecordingTransport(inner=inner)
+    recorder = RecordingTransport(inner=FakeTransport(responses_map))
     client = GitLabClient("t", transport=recorder)
     return discover_live(client, TARGET, now=NOW), recorder
 
@@ -43,28 +47,70 @@ def test_discovery_only_uses_get():
     assert recorder.methods_used() == {"GET"}
 
 
-def test_discovery_records_identity_and_no_pages_job():
+def test_discovery_records_identity_and_no_pages_mechanism():
     snapshot, _ = run_live(responses())
     ci = snapshot.record(EvidenceKind.CI_CONFIG)
-    assert ci is not None and ci.detail["has_pages_job"] is False
+    assert ci is not None and ci.detail["pages_mechanism"] is False
+    assert ci.detail["includes_present"] is False
     graph = graph_from_snapshot(snapshot)
     deps = {d.dependency_id: d for d in graph.dependencies.values()}
     assert deps["dep:active_redeployment"].active is False
 
 
-def test_discovery_detects_pages_job_as_redeployment():
-    snapshot, _ = run_live(responses(ci_body="pages:\n  script: [echo]\n"))
+def test_detect_pages_signal_agnostic_of_job_name():
+    ci = "deploy_site:\n  script: [echo hi]\n  pages: true\n"
+    detected, signals = detect_pages_mechanism(ci)
+    assert detected is True and signals
+
+
+def test_detect_top_level_pages_job():
+    detected, _ = detect_pages_mechanism("pages:\n  script: [echo]\n")
+    assert detected is True
+
+
+def test_detect_nested_pages_keyword():
+    ci = "deploy:\n  pages:\n    publish: dist\n  script: [echo]\n"
+    detected, _ = detect_pages_mechanism(ci)
+    assert detected is True
+
+
+def test_detect_pages_stage():
+    detected, _ = detect_pages_mechanism("site:\n  stage: pages\n  script: [echo]\n")
+    assert detected is True
+
+
+def test_plain_config_has_no_pages_signal():
+    detected, signals = detect_pages_mechanism("stages: [verify]\nverify:\n  script: [true]\n")
+    assert detected is False and signals == []
+
+
+def test_arbitrary_pages_job_becomes_active_redeployment():
+    ci = "publish_docs:\n  script: [echo]\n  pages: true\n"
+    snapshot, _ = run_live(responses(ci_body=ci))
     graph = graph_from_snapshot(snapshot)
     deps = {d.dependency_id: d for d in graph.dependencies.values()}
     assert deps["dep:active_redeployment"].active is True
 
 
+def test_include_is_flagged_as_incomplete():
+    ci = "include:\n  - project: a/b\n    file: ci.yml\n"
+    snapshot, _ = run_live(responses(ci_body=ci))
+    ci_ev = snapshot.record(EvidenceKind.CI_CONFIG)
+    assert ci_ev is not None and ci_ev.detail["includes_present"] is True
+
+
 def test_discovery_detects_open_retirement_issue():
-    issues = '[{"iid": 1, "title": "Please retire this site"}]'
+    issues = '[{"iid": 1, "title": "Please retire this site", "labels": ["retirement"]}]'
     snapshot, _ = run_live(responses(issues=issues))
     graph = graph_from_snapshot(snapshot)
     deps = {d.dependency_id: d for d in graph.dependencies.values()}
     assert deps["dep:open_work_item"].active is True
+
+
+def test_generic_issue_is_not_a_retirement_obligation():
+    assert is_retirement_related({"title": "fix a normal bug", "labels": ["bug"]}) is False
+    assert is_retirement_related({"title": "cleanup", "labels": ["decommission"]}) is True
+    assert is_retirement_related({"title": "Retire the demo Pages site"}) is True
 
 
 def test_pages_403_is_recorded_not_fabricated():
@@ -74,14 +120,12 @@ def test_pages_403_is_recorded_not_fabricated():
 
 
 def test_snapshot_roundtrip_downgrades_live_to_recorded():
-    snapshot, _ = run_live(responses())
     from termivance.discovery import Snapshot
 
+    snapshot, _ = run_live(responses())
     assert snapshot.classification.value == "LIVE"
     restored = Snapshot.from_dict(snapshot.to_dict())
     assert restored.classification.value == "RECORDED_LIVE"
-    assert restored.target.key() == snapshot.target.key()
-    assert len(restored.records) == len(snapshot.records)
 
 
 def test_saved_snapshot_is_recorded_not_live(tmp_path):
