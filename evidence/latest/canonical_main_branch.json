@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T16:26:38Z",
-  "artifact_sha256": "a131a70da5c95be9a31e59da3194f377ac0e962b667a836353b4483ccbfc8e7e",
+  "acquired_at_utc": "2026-10-18T18:53:18Z",
+  "artifact_sha256": "9784826607f40935920128008bc6edf4e416ef7df613927bdd50538e5a74b2fd",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -17,21 +17,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "zyganali",
-      "authored_date": "2026-10-18T19:25:03.000+03:00",
-      "committed_date": "2026-10-18T19:25:03.000+03:00",
+      "authored_date": "2026-10-18T21:52:21.000+03:00",
+      "committed_date": "2026-10-18T21:52:21.000+03:00",
       "committer_email": "zyganali@users.noreply.gitlab.com",
       "committer_name": "zyganali",
-      "created_at": "2026-10-18T19:25:03.000+03:00",
+      "created_at": "2026-10-18T21:52:21.000+03:00",
       "extended_trailers": {},
-      "id": "1711dbba18883ae316a07b61ad58f41a8e2f2557",
-      "message": "B3 fix: import conftest as a top-level test helper (CI collection)\n",
+      "id": "2c9c7c553ed4c66391009b6f53d4f72bfc60ee76",
+      "message": "B3 fix: derive the exact target from a recorded snapshot so replay needs no provider access (CI collection failure)\n",
       "parent_ids": [
-        "20900b845bff58a5eb1a2a92a57e76384924b1ec"
+        "1fc787f8ef22819584e8945efb57bc8c1783d7bf"
       ],
-      "short_id": "1711dbba",
-      "title": "B3 fix: import conftest as a top-level test helper (CI collection)",
+      "short_id": "2c9c7c55",
+      "title": "B3 fix: derive the exact target from a recorded snapshot so replay needs no provider access (CI collection failure)",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/1711dbba18883ae316a07b61ad58f41a8e2f2557"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/2c9c7c553ed4c66391009b6f53d4f72bfc60ee76"
     },
     "default": true,
     "developers_can_merge": true,

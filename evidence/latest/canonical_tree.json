@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T16:26:38Z",
-  "artifact_sha256": "058ce94fd8ed8152a608613735185720ae0add1bebdbd40834d417e6cf31e586",
+  "acquired_at_utc": "2026-10-18T18:53:19Z",
+  "artifact_sha256": "2523f04a0d377d8b069aa762ff8bcd4e820611b5c2b3ece8579ae250e4b40841",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/tree?ref=main&per_page=100",
   "http_error": null,
@@ -13,7 +13,7 @@
   ],
   "sanitized_body": [
     {
-      "id": "fbcdc2b8475431267668b56e06498bb769036d0b",
+      "id": "c32a97968ccc8330f28ce74b091d45ead176f63f",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "config",
@@ -27,7 +27,7 @@
       "type": "tree"
     },
     {
-      "id": "b16641db1100a24438c58e66b42ceeb17adb6d9f",
+      "id": "f20ba539b32a934e3c033f3070cfe4417a931830",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "docs",
@@ -48,14 +48,21 @@
       "type": "tree"
     },
     {
-      "id": "d54ade2aabe52a3efeaacba20cae2d96fdb65ec2",
+      "id": "de737733126242c8bceb3097ea44e95da9ce9dce",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "scripts",
+      "type": "tree"
+    },
+    {
+      "id": "1a79cce6b77dc9db783a7268872fce59e8f6c939",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "src",
       "type": "tree"
     },
     {
-      "id": "01caf37c4cd0092859b001cfdd2ca597a4d27021",
+      "id": "f7babb70eb5ac7619bce3a4e76f4a06582c37196",
       "mode": "040000",
       "name": "[REDACTED]",
       "path": "tests",
@@ -69,14 +76,14 @@
       "type": "blob"
     },
     {
-      "id": "efaa4abf8a59df3e82836c5163ef2bb42280f9dc",
+      "id": "f102d64e166729f90b68b2fe8573e81299d37922",
       "mode": "100644",
       "name": "[REDACTED]",
       "path": ".gitignore",
       "type": "blob"
     },
     {
-      "id": "c197e123ed786ad420a6545a4f608bb7099bc709",
+      "id": "149297abe2ae3a902e78f9a1cb156cdb63f6ca33",
       "mode": "100644",
       "name": "[REDACTED]",
       "path": ".gitlab-ci.yml",
