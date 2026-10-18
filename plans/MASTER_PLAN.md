@@ -12,6 +12,8 @@
 
 ## B2 — Retirement Obligation Graph and real BLOCKED gate
 
+**Status (2026-10-18):** implemented and verified live. Typed obligation graph, GET-only GitLab discovery, fail-closed deterministic engine, 94 tests, live read-only `BLOCKED` on canonical `87779099` with zero non-GET calls, published as issue #2 and explained by the reused Duo flow. Awaiting independent QA.
+
 **Outcome:** Typed minimal graph of GitLab resource, ownership, authorization, redeploy/recreation mechanisms and unresolved obligations; GitLab API-backed read-only discovery; deterministic decision logic for `SAFE_TO_RETIRE` or `BLOCKED`; meaningful negative tests and one **real GitLab-backed BLOCKED demonstration** that produces zero destructive API calls.
 
 **Critical acceptance:** graph nodes/edges tied to actual resource IDs and evidence; adversarial tests for missing/stale evidence, wrong target, unapproved operation, active republish paths, malformed model plan; real blocked demonstration linked to GitLab system-of-record. No model-generated permission grants or fake observed absence.

@@ -8,7 +8,7 @@ def test_policy_check_example_disabled(capsys):
     assert rc == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["mutation_enabled"] is False
-    assert payload["safe_for_b1"] is True
+    assert payload["safe_read_only"] is True
 
 
 def test_policy_check_missing_fails(capsys):

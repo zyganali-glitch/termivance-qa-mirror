@@ -1,8 +1,8 @@
 """Termivance deterministic CLI.
 
-B1 foundation only: this CLI never performs a GitLab mutation and offers no
-mutation-capable command. It reports truthful status and validates the
-deterministic boundaries that the rest of the protocol depends on.
+Read-only by default. The evaluator path can only perform ``GET`` requests; the
+only writing command is ``demo-blocked --issue`` which publishes a report and is
+kept separate from evaluation.
 """
 
 from __future__ import annotations
@@ -14,16 +14,26 @@ import sys
 from collections.abc import Sequence
 
 from termivance import __version__
+from termivance.engine import Decision
 from termivance.policy import PolicyError, load_policy
+from termivance.report import render_decision_report
 
+CANONICAL_URL = "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance"
+
+#: Truthful local snapshot. Live GitLab state is verified separately (docs/).
 STATUS = {
     "product": "Termivance",
-    "remote": "NOT_CREATED_OR_NOT_VERIFIED",
-    "ci": "NOT_RUN",
-    "duo_flow": "NOT_RUN",
-    "duo_session": "NOT_RUN",
-    "retirement": "NOT_RUN",
+    "source": "local_snapshot_not_live",
+    "remote": CANONICAL_URL,
+    "ci": "NOT_VERIFIED_LOCALLY",
+    "duo_flow": "DEPLOYED item 1018562",
+    "duo_session": "9650440 FINISHED (B1)",
+    "retirement": "B2_BLOCKED_ENGINE_READY; B3_UNPUBLISH_NOT_RUN",
 }
+
+
+def _emit(payload: dict[str, object], as_json: bool, human: str) -> None:
+    print(json.dumps(payload, indent=2, sort_keys=True) if as_json else human)
 
 
 def _cmd_version() -> int:
@@ -36,10 +46,11 @@ def _cmd_status(as_json: bool) -> int:
     if as_json:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
-        print(f"Termivance {__version__} - B1 foundation (no mutation)")
+        print(f"Termivance {__version__} - deterministic retirement engine (read-only)")
+        print(f"source={STATUS['source']} remote={STATUS['remote']}")
         print(
-            f"remote={STATUS['remote']}  ci={STATUS['ci']}  "
-            f"Duo={STATUS['duo_flow']}  retirement={STATUS['retirement']}"
+            f"ci={STATUS['ci']}  Duo={STATUS['duo_flow']}  "
+            f"session={STATUS['duo_session']}  retirement={STATUS['retirement']}"
         )
     return 0
 
@@ -56,14 +67,13 @@ def _cmd_policy_check(path: str, as_json: bool) -> int:
         "authorization_required": policy.authorization_required,
         "targets": list(policy.allowed_target_project_ids),
         "actions": list(policy.allowed_actions),
-        "safe_for_b1": not policy.mutation_enabled,
+        "safe_read_only": not policy.mutation_enabled,
     }
     if as_json:
         print(json.dumps(result, indent=2, sort_keys=True))
     else:
         state = "DISABLED" if not policy.mutation_enabled else "ENABLED"
         print(f"policy mode={policy.mode} mutation={state} targets={len(result['targets'])}")
-    # Exit non-zero if a policy would permit mutation during B1.
     return 0 if not policy.mutation_enabled else 3
 
 
@@ -81,16 +91,111 @@ def _cmd_doctor(as_json: bool) -> int:
     return 0 if checks["python_ok"] else 1
 
 
+def _cmd_discover(args: argparse.Namespace) -> int:
+    from termivance.discovery import graph_from_snapshot, save_snapshot
+    from termivance.runtime import live_run
+
+    run = live_run(args.project_id, kind=args.kind)
+    snapshot = run.snapshot
+    if args.save:
+        save_snapshot(snapshot, args.save)
+    graph = graph_from_snapshot(snapshot)
+    if args.json:
+        print(graph.to_json())
+    else:
+        print(
+            f"discovered project {snapshot.target.project_id} "
+            f"{snapshot.target.full_path} ({snapshot.target.resource_kind})"
+        )
+        print(f"classification={snapshot.classification.value} records={len(snapshot.records)}")
+        print(f"read_only_methods={sorted(run.methods_used())}")
+        print(f"nodes: obligations={len(graph.obligations)} evidence={len(graph.evidence)}")
+        if args.save:
+            print(f"saved snapshot: {args.save}")
+    return 0
+
+
+def _cmd_evaluate(args: argparse.Namespace) -> int:
+    from termivance.discovery import load_snapshot
+    from termivance.runtime import decide, load_policy_file
+
+    if args.from_record:
+        snapshot = load_snapshot(args.from_record)
+    else:
+        from termivance.runtime import live_run
+
+        snapshot = live_run(args.project_id, kind=args.kind).snapshot
+    decision, graph = decide(snapshot, load_policy_file(args.policy))
+    payload = decision.to_dict(graph=graph)
+    payload["evidence_classification"] = snapshot.classification.value
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        _print_decision(decision)
+    return 0
+
+
+def _print_decision(decision: Decision) -> None:
+    print(f"target={decision.target.project_id} {decision.target.full_path}")
+    print(
+        f"action={decision.action} verdict={decision.verdict.value} "
+        f"read_only={decision.read_only}"
+    )
+    for reason in decision.reasons:
+        print(f"  - {reason.code.value}: {reason.detail}")
+
+
+def _cmd_demo_blocked(args: argparse.Namespace) -> int:
+    from termivance.discovery import load_snapshot
+    from termivance.runtime import CANONICAL_PROJECT_ID, decide, live_run, load_policy_file
+
+    if args.from_record:
+        snapshot = load_snapshot(args.from_record)
+    else:
+        snapshot = live_run(CANONICAL_PROJECT_ID, kind="GITLAB_PAGES_SITE").snapshot
+    decision, graph = decide(snapshot, load_policy_file(args.policy))
+    payload = decision.to_dict(graph=graph)
+    payload["evidence_classification"] = snapshot.classification.value
+    payload["scenario"] = "canonical_project_as_protected_negative_control"
+
+    if args.issue:
+        from termivance.gitlab_client import load_local_token
+        from termivance.publish import GitLabPublisher
+
+        body = render_decision_report(decision, snapshot, list(graph.evidence.values()))
+        publisher = GitLabPublisher(load_local_token())
+        result = publisher.create_issue(
+            snapshot.target.project_id,
+            title="B2 retirement decision: BLOCKED (deterministic, read-only)",
+            description=body,
+            labels="termivance::b2,retirement-decision",
+        )
+        if result.ok and isinstance(result.data, dict):
+            payload["published_issue_url"] = result.data.get("web_url")
+            payload["published_issue_iid"] = result.data.get("iid")
+        else:
+            payload["publish_error"] = result.error or f"HTTP {result.status}"
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(render_decision_report(decision, snapshot, list(graph.evidence.values())))
+        print()
+        if "published_issue_url" in payload:
+            print(f"published issue: {payload['published_issue_url']}")
+    return 0 if decision.verdict.value == "BLOCKED" else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="termivance",
-        description="Proof-bounded software retirement (B1 foundation; no mutation).",
+        description="Proof-bounded software retirement (B2 read-only decision engine).",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("version", help="print the package version")
 
-    status = sub.add_parser("status", help="print truthful project status")
+    status = sub.add_parser("status", help="print the local status snapshot")
     status.add_argument("--json", action="store_true", help="emit JSON")
 
     policy_check = sub.add_parser("policy-check", help="validate a policy file (fail closed)")
@@ -99,6 +204,25 @@ def build_parser() -> argparse.ArgumentParser:
 
     doctor = sub.add_parser("doctor", help="report environment sanity checks")
     doctor.add_argument("--json", action="store_true", help="emit JSON")
+
+    discover = sub.add_parser("discover", help="read-only GitLab discovery for a project")
+    discover.add_argument("--project-id", type=int, required=True)
+    discover.add_argument("--kind", default="GITLAB_PAGES_SITE")
+    discover.add_argument("--save", default=None, help="save the raw snapshot JSON")
+    discover.add_argument("--json", action="store_true")
+
+    evaluate = sub.add_parser("evaluate", help="deterministic retirement decision")
+    evaluate.add_argument("--project-id", type=int, default=0)
+    evaluate.add_argument("--kind", default="GITLAB_PAGES_SITE")
+    evaluate.add_argument("--from-record", default=None, help="replay a recorded snapshot")
+    evaluate.add_argument("--policy", default=None)
+    evaluate.add_argument("--json", action="store_true")
+
+    demo = sub.add_parser("demo-blocked", help="canonical blocked negative-control scenario")
+    demo.add_argument("--from-record", default=None, help="replay a recorded snapshot")
+    demo.add_argument("--policy", default=None)
+    demo.add_argument("--issue", action="store_true", help="publish the report as an issue")
+    demo.add_argument("--json", action="store_true")
 
     return parser
 
@@ -113,7 +237,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_policy_check(args.path, args.json)
     if args.command == "doctor":
         return _cmd_doctor(args.json)
-    return 1  # pragma: no cover - argparse guarantees a known command
+    if args.command == "discover":
+        return _cmd_discover(args)
+    if args.command == "evaluate":
+        return _cmd_evaluate(args)
+    if args.command == "demo-blocked":
+        return _cmd_demo_blocked(args)
+    return 1  # pragma: no cover
 
 
 if __name__ == "__main__":

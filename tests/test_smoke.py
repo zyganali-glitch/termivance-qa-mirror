@@ -5,15 +5,15 @@ from termivance.cli import main
 def test_status_is_truthful(capsys):
     assert main(["status"]) == 0
     out = capsys.readouterr().out
-    assert "Duo=NOT_RUN" in out
-    assert "retirement=NOT_RUN" in out
+    assert "source=local_snapshot_not_live" in out
+    assert "retirement=" in out
 
 
 def test_status_json(capsys):
     assert main(["status", "--json"]) == 0
     out = capsys.readouterr().out
-    assert '"retirement": "NOT_RUN"' in out
-    assert '"remote": "NOT_CREATED_OR_NOT_VERIFIED"' in out
+    assert '"source": "local_snapshot_not_live"' in out
+    assert '"product": "Termivance"' in out
 
 
 def test_version(capsys):

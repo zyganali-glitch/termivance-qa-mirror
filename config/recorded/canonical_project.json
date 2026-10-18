@@ -1,0 +1,115 @@
+{
+  "action": "unpublish_pages",
+  "classification": "LIVE",
+  "observed_at": "2026-10-18T14:13:15.348962+00:00",
+  "records": [
+    {
+      "detail": {
+        "archived": false,
+        "default_branch": "main",
+        "namespace_full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908",
+        "path_with_namespace": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+        "project_id": 87779099,
+        "visibility": "public",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance"
+      },
+      "endpoint": "/projects/87779099",
+      "error_kind": null,
+      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "kind": "PROJECT_IDENTITY",
+      "method": "GET",
+      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "branch": "main",
+        "commit_id": "616dc784ae3f9ee929e333fd223ff94a0598e065"
+      },
+      "endpoint": "/projects/87779099/repository/branches/main",
+      "error_kind": null,
+      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "kind": "BRANCH",
+      "method": "GET",
+      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "bytes": 539,
+        "file": ".gitlab-ci.yml",
+        "has_pages_job": false,
+        "present": true
+      },
+      "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw",
+      "error_kind": null,
+      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "kind": "CI_CONFIG",
+      "method": "GET",
+      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "latest_id": 2960227100,
+        "latest_status": "success"
+      },
+      "endpoint": "/projects/87779099/pipelines",
+      "error_kind": null,
+      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "kind": "PIPELINE",
+      "method": "GET",
+      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "open_count": 1,
+        "retirement_related": [
+          {
+            "iid": 1,
+            "title": "B1 retirement-analysis request (harmless, non-authoritative)"
+          }
+        ]
+      },
+      "endpoint": "/projects/87779099/issues",
+      "error_kind": null,
+      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "kind": "OPEN_ISSUES",
+      "method": "GET",
+      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "error": "AUTH_DENIED"
+      },
+      "endpoint": "/projects/87779099/pages",
+      "error_kind": "AUTH_DENIED",
+      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "kind": "PAGES",
+      "method": "GET",
+      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "status": 403
+    },
+    {
+      "detail": {
+        "count": 0
+      },
+      "endpoint": "/projects/87779099/environments",
+      "error_kind": null,
+      "fresh_until": "2026-10-18T14:28:15.348962+00:00",
+      "kind": "ENVIRONMENT",
+      "method": "GET",
+      "observed_at": "2026-10-18T14:13:15.348962+00:00",
+      "status": 200
+    }
+  ],
+  "schema": "termivance.gitlab_snapshot/v1",
+  "target": {
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+    "project_id": 87779099,
+    "resource_kind": "GITLAB_PAGES_SITE"
+  },
+  "ttl_seconds": 900
+}

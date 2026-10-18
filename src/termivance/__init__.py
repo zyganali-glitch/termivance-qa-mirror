@@ -1,7 +1,7 @@
 """Termivance - Proof-Bounded Software Retirement Protocol.
 
-B1 foundation: deterministic target/authorization/evidence/policy contracts and
-a fail-closed CLI. No live integration is implemented yet.
+B2: deterministic Retirement Obligation Graph, read-only GitLab discovery and a
+fail-closed retirement decision engine. No mutation is implemented.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
