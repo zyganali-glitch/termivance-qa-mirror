@@ -286,7 +286,17 @@ def _cmd_retire_pages(args: argparse.Namespace) -> int:
     from termivance.retirement import retire_pages
     from termivance.runtime import load_policy_file
 
-    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
+    # A recorded snapshot already carries the exact bound target, so a replay
+    # needs no provider access at all. A live run always resolves the target from
+    # the provider itself: the identity is never taken from local input.
+    snapshot = load_snapshot(args.from_record) if args.from_record else None
+    live_run = args.execute or snapshot is None
+    token = load_local_token() if live_run else None
+    if not live_run and snapshot is not None and snapshot.target.project_id == args.project_id:
+        target = snapshot.target
+    else:
+        target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
+
     policy = load_policy_file(args.policy)
     approval_key = os.environ.get(APPROVAL_KEY_ENV) or None
     authorization = (
@@ -300,10 +310,11 @@ def _cmd_retire_pages(args: argparse.Namespace) -> int:
             control_attestation = ControlAttestation.from_dict(json.load(handle))
         control_attestation.verify(target, key=approval_key)
     ledger = AuthorizationLedger(args.ledger) if args.ledger else None
-    snapshot = load_snapshot(args.from_record) if args.from_record else None
-    token = load_local_token() if (args.execute or snapshot is None) else None
+    if args.execute and not token:
+        print("refusing --execute: no local GitLab token is available", file=sys.stderr)
+        return 2
     mutation_client = PagesMutationClient(token) if (args.execute and token) else None
-    read_client = GitLabClient(token) if (token and snapshot is None) else None
+    read_client = GitLabClient(token) if (live_run and token) else None
     receipt = retire_pages(
         target,
         policy,
