@@ -1,0 +1,13 @@
+{
+  "acquired_at_utc": "2026-10-18T18:54:15Z",
+  "artifact_sha256": "b572a6f0ffc99bd967f2d77d4f9a694e689a47cbcf61f5f008c531d76aebcc3a",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw?ref=main",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_repo_file_ci",
+  "redacted_keys": [],
+  "sanitized_body": "stages:\n  - verify\n\nvariables:\n  PIP_DISABLE_PIP_VERSION_CHECK: \"1\"\n\nverification:\n  stage: verify\n  image: python:3.12-slim\n  script:\n    - python --version\n    - python -m pip install -e \".[dev]\"\n    - ruff check .\n    - pytest -q\n    - termivance status\n    - termivance status --json\n    - termivance doctor\n    - termivance policy-check config/retirement_policy.example.json\n    # Network-free safety-contract assertions (mutation allowlist, provenance gate,\n    # durable single-use ledger, bounded-absence transition requirement).\n    - python scripts/ci_safety_assertions.py\n  rules:\n    - if: '$CI_PIPELINE_SOURCE == \"merge_request_event\"'\n    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'\n    - if: '$CI_PIPELINE_SOURCE == \"web\"'\n"
+}

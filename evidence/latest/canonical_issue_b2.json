@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T18:53:19Z",
-  "artifact_sha256": "75fef4ec9cc85d4c79de2eaea74208cb480105ea2c53dbdc7e3c8a37b65be468",
+  "acquired_at_utc": "2026-10-18T18:54:17Z",
+  "artifact_sha256": "449ebbb0679b1ce297e322e545a219d37964c7a0b62a94451bd9ea0ff359dbd9",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/issues/2",
   "http_error": null,
@@ -9,6 +9,7 @@
   "method": "GET",
   "name": "canonical_issue_b2",
   "redacted_keys": [
+    "author",
     "avatar_url",
     "name",
     "public_email"
@@ -23,16 +24,7 @@
     },
     "assignee": null,
     "assignees": [],
-    "author": {
-      "avatar_url": "[REDACTED]",
-      "id": 39306908,
-      "locked": false,
-      "name": "[REDACTED]",
-      "public_email": "[REDACTED]",
-      "state": "active",
-      "username": "zyganali",
-      "web_url": "https://gitlab.com/zyganali"
-    },
+    "author": "[REDACTED]",
     "blocking_issues_count": 0,
     "closed_at": null,
     "closed_by": null,

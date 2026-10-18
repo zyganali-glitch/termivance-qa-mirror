@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T18:53:21Z",
-  "artifact_sha256": "737e11e681013a35c0d4b0a44e7ea58b8b24ccde9cefc728fe92e2f7ad9331de",
+  "acquired_at_utc": "2026-10-18T18:54:17Z",
+  "artifact_sha256": "afd0b0613717059fedcbefc82edf0329989eebbb83a2b09ef02b5ac8e6d67987",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/commits/21eed7e27a9077469be5297ada4cd87c728df13b",
   "http_error": null,
@@ -9,14 +9,15 @@
   "method": "GET",
   "name": "canonical_b2_commit",
   "redacted_keys": [
-    "author_email"
+    "author_email",
+    "committer_email"
   ],
   "sanitized_body": {
     "author_email": "[REDACTED]",
     "author_name": "zyganali",
     "authored_date": "2026-10-18T17:59:42.000+03:00",
     "committed_date": "2026-10-18T17:59:42.000+03:00",
-    "committer_email": "zyganali@users.noreply.gitlab.com",
+    "committer_email": "[REDACTED]",
     "committer_name": "zyganali",
     "created_at": "2026-10-18T17:59:42.000+03:00",
     "extended_trailers": {},

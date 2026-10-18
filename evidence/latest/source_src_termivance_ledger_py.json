@@ -1,0 +1,13 @@
+{
+  "acquired_at_utc": "2026-10-18T18:54:19Z",
+  "artifact_sha256": "1871c73e1ff9fef634c0aa6b47eb9f73968da2d25ccb0f5cbe436fbc7136a229",
+  "body_sha256": "1871c73e1ff9fef634c0aa6b47eb9f73968da2d25ccb0f5cbe436fbc7136a229",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fledger.py/raw?ref=2c9c7c553ed4c66391009b6f53d4f72bfc60ee76",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "source_src_termivance_ledger_py",
+  "redacted_keys": []
+}

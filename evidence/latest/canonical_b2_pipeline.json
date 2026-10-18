@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T18:53:21Z",
-  "artifact_sha256": "39eddafe425170a7285e83c76148d9e262f12a421830bbcde2ae859f3bbaa747",
+  "acquired_at_utc": "2026-10-18T18:54:18Z",
+  "artifact_sha256": "1d760268c6b023458ac1e38c7c29d0203a5d2bbbdc363e27777b471ab1d2ca62",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/pipelines/2960412852",
   "http_error": null,
@@ -11,7 +11,8 @@
   "redacted_keys": [
     "avatar_url",
     "name",
-    "public_email"
+    "public_email",
+    "user"
   ],
   "sanitized_body": {
     "archived": false,
@@ -44,16 +45,7 @@
     "status": "success",
     "tag": false,
     "updated_at": "2026-10-18T15:00:06.971Z",
-    "user": {
-      "avatar_url": "[REDACTED]",
-      "id": 39306908,
-      "locked": false,
-      "name": "[REDACTED]",
-      "public_email": "[REDACTED]",
-      "state": "active",
-      "username": "zyganali",
-      "web_url": "https://gitlab.com/zyganali"
-    },
+    "user": "[REDACTED]",
     "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960412852",
     "yaml_errors": null
   }

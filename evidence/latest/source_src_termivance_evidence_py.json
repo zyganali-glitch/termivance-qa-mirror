@@ -1,0 +1,13 @@
+{
+  "acquired_at_utc": "2026-10-18T18:54:18Z",
+  "artifact_sha256": "a5bc74f2c3edc81994170930aadd2f60d84cc619301980af95fc1511637bdc40",
+  "body_sha256": "a5bc74f2c3edc81994170930aadd2f60d84cc619301980af95fc1511637bdc40",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fevidence.py/raw?ref=2c9c7c553ed4c66391009b6f53d4f72bfc60ee76",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "source_src_termivance_evidence_py",
+  "redacted_keys": []
+}

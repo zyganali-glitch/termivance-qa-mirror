@@ -1,0 +1,123 @@
+{
+  "acquired_at_utc": "2026-10-18T18:54:20Z",
+  "artifact_sha256": "f91cdae5cccd0a0f8d5c39b4cdc6c13b95c9a5a9e462a28b1f8f21cf5ec7ffc3",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/pipelines/2960698724/jobs",
+  "extracted": [
+    {
+      "allow_failure": false,
+      "id": 17267640342,
+      "name": "[REDACTED]",
+      "stage": "verify",
+      "status": "success"
+    }
+  ],
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_latest_pipeline_jobs",
+  "redacted_keys": [
+    "author_email",
+    "avatar_url",
+    "committer_email",
+    "name",
+    "public_email",
+    "user"
+  ],
+  "sanitized_body": [
+    {
+      "allow_failure": false,
+      "archived": false,
+      "artifacts": [],
+      "artifacts_expire_at": null,
+      "commit": {
+        "author_email": "[REDACTED]",
+        "author_name": "zyganali",
+        "authored_date": "2026-10-18T21:52:21.000+03:00",
+        "committed_date": "2026-10-18T21:52:21.000+03:00",
+        "committer_email": "[REDACTED]",
+        "committer_name": "zyganali",
+        "created_at": "2026-10-18T21:52:21.000+03:00",
+        "extended_trailers": {},
+        "id": "2c9c7c553ed4c66391009b6f53d4f72bfc60ee76",
+        "message": "B3 fix: derive the exact target from a recorded snapshot so replay needs no provider access (CI collection failure)\n",
+        "parent_ids": [
+          "1fc787f8ef22819584e8945efb57bc8c1783d7bf"
+        ],
+        "short_id": "2c9c7c55",
+        "title": "B3 fix: derive the exact target from a recorded snapshot so replay needs no provider access (CI collection failure)",
+        "trailers": {},
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/2c9c7c553ed4c66391009b6f53d4f72bfc60ee76"
+      },
+      "coverage": null,
+      "created_at": "2026-10-18T18:52:25.155Z",
+      "duration": 17.864662,
+      "erased_at": null,
+      "finished_at": "2026-10-18T18:52:43.367Z",
+      "id": 17267640342,
+      "name": "[REDACTED]",
+      "pipeline": {
+        "created_at": "2026-10-18T18:52:25.008Z",
+        "id": 2960698724,
+        "iid": 14,
+        "project_id": 87779099,
+        "ref": "main",
+        "sha": "2c9c7c553ed4c66391009b6f53d4f72bfc60ee76",
+        "source": "push",
+        "status": "success",
+        "updated_at": "2026-10-18T18:52:44.726Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960698724"
+      },
+      "project": {
+        "ci_job_token_scope_enabled": false
+      },
+      "queued_duration": 0.07216,
+      "ref": "main",
+      "runner": {
+        "active": true,
+        "created_at": "2026-08-06T11:12:30.404Z",
+        "created_by": {
+          "avatar_url": "[REDACTED]",
+          "id": 6515150,
+          "locked": false,
+          "name": "[REDACTED]",
+          "public_email": "[REDACTED]",
+          "state": "active",
+          "username": "rhassanein-admin",
+          "web_url": "https://gitlab.com/rhassanein-admin"
+        },
+        "description": "k8s.saas-linux-small-amd64.runners-manager.gitlab.com/default ",
+        "id": 54907241,
+        "ip_address": null,
+        "is_shared": true,
+        "job_execution_status": "active",
+        "name": "[REDACTED]",
+        "online": true,
+        "paused": false,
+        "runner_type": "instance_type",
+        "status": "online"
+      },
+      "runner_manager": {
+        "architecture": "amd64",
+        "contacted_at": "2026-10-18T18:54:20.129Z",
+        "created_at": "2026-10-16T16:24:50.991Z",
+        "id": 163225572,
+        "ip_address": "10.218.11.3",
+        "job_execution_status": "active",
+        "platform": "linux",
+        "revision": "77694893",
+        "status": "online",
+        "system_id": "r_0AjiUHhuV9FX",
+        "version": "19.6.0~pre.2336.g77694893"
+      },
+      "stage": "verify",
+      "started_at": "2026-10-18T18:52:25.503Z",
+      "status": "success",
+      "tag": false,
+      "tag_list": [],
+      "user": "[REDACTED]",
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17267640342"
+    }
+  ]
+}

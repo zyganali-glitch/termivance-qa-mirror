@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-18T18:53:19Z",
-  "artifact_sha256": "51630e3e5e954a821979542120c666fdbe209cc25b448be9aace26017e95ea22",
+  "acquired_at_utc": "2026-10-18T18:54:15Z",
+  "artifact_sha256": "8bbfe497cceaa911f2d8fcd1a72571707ea084ebfe870ccf3742ee146251814f",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/issues?per_page=20",
   "http_error": null,
@@ -9,6 +9,7 @@
   "method": "GET",
   "name": "canonical_issues",
   "redacted_keys": [
+    "author",
     "avatar_url",
     "name",
     "public_email"
@@ -24,16 +25,7 @@
       },
       "assignee": null,
       "assignees": [],
-      "author": {
-        "avatar_url": "[REDACTED]",
-        "id": 39306908,
-        "locked": false,
-        "name": "[REDACTED]",
-        "public_email": "[REDACTED]",
-        "state": "active",
-        "username": "zyganali",
-        "web_url": "https://gitlab.com/zyganali"
-      },
+      "author": "[REDACTED]",
       "blocking_issues_count": 0,
       "closed_at": null,
       "closed_by": null,
@@ -99,16 +91,7 @@
       },
       "assignee": null,
       "assignees": [],
-      "author": {
-        "avatar_url": "[REDACTED]",
-        "id": 39306908,
-        "locked": false,
-        "name": "[REDACTED]",
-        "public_email": "[REDACTED]",
-        "state": "active",
-        "username": "zyganali",
-        "web_url": "https://gitlab.com/zyganali"
-      },
+      "author": "[REDACTED]",
       "blocking_issues_count": 0,
       "closed_at": null,
       "closed_by": null,

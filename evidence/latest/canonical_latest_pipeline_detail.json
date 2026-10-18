@@ -1,0 +1,52 @@
+{
+  "acquired_at_utc": "2026-10-18T18:54:19Z",
+  "artifact_sha256": "3984961e0906b215f15676a3d05bd4c57b93bd0a709bb5b56e645dd2bc620ac9",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/pipelines/2960698724",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_latest_pipeline_detail",
+  "redacted_keys": [
+    "avatar_url",
+    "name",
+    "public_email",
+    "user"
+  ],
+  "sanitized_body": {
+    "archived": false,
+    "before_sha": "1fc787f8ef22819584e8945efb57bc8c1783d7bf",
+    "committed_at": null,
+    "coverage": null,
+    "created_at": "2026-10-18T18:52:25.008Z",
+    "detailed_status": {
+      "details_path": "/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960698724",
+      "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
+      "group": "success",
+      "has_details": true,
+      "icon": "status_success",
+      "illustration": null,
+      "label": "passed",
+      "text": "Passed",
+      "tooltip": "passed"
+    },
+    "duration": 17,
+    "finished_at": "2026-10-18T18:52:44.715Z",
+    "id": 2960698724,
+    "iid": 14,
+    "name": "[REDACTED]",
+    "project_id": 87779099,
+    "queued_duration": null,
+    "ref": "main",
+    "sha": "2c9c7c553ed4c66391009b6f53d4f72bfc60ee76",
+    "source": "push",
+    "started_at": "2026-10-18T18:52:25.668Z",
+    "status": "success",
+    "tag": false,
+    "updated_at": "2026-10-18T18:52:44.726Z",
+    "user": "[REDACTED]",
+    "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960698724",
+    "yaml_errors": null
+  }
+}
