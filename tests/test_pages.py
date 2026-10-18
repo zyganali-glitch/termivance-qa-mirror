@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from conftest import FakeTransport
 
 from termivance.gitlab_client import GitLabClient, HttpReply
 from termivance.pages import (
@@ -12,7 +13,6 @@ from termivance.pages import (
     read_pages_state,
 )
 from termivance.target import TargetIdentity
-from tests.conftest import FakeTransport
 
 PAGES_TARGET = TargetIdentity(12345678, "grp/disposable", "GITLAB_PAGES_SITE")
 

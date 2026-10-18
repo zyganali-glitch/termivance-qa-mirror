@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from conftest import FakeTransport
 
 from termivance import absence as absence_mod
 from termivance.authorization import (
@@ -18,7 +19,6 @@ from termivance.policy import Policy
 from termivance.retirement import preflight, retire_pages
 from termivance.target import TargetIdentity
 from termivance.verdicts import Verdict
-from tests.conftest import FakeTransport
 
 NOW = datetime(2026, 10, 18, 12, 0, tzinfo=UTC)
 TARGET = TargetIdentity(12345678, "grp/disposable-pages", "GITLAB_PAGES_SITE")

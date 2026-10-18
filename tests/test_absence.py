@@ -6,6 +6,7 @@ import json
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from conftest import FakeTransport
 
 from termivance import absence as absence_mod
 from termivance.absence import observe_absence
@@ -13,7 +14,6 @@ from termivance.evidence import PagesObservation, bounded_absence
 from termivance.gitlab_client import GitLabClient, HttpReply
 from termivance.target import TargetIdentity
 from termivance.verdicts import Verdict
-from tests.conftest import FakeTransport
 
 TARGET = TargetIdentity(12345678, "grp/disposable", "GITLAB_PAGES_SITE")
 URL = "https://grp.gitlab.io/disposable/"
