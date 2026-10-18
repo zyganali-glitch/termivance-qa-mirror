@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-18T18:57:15Z",
+  "acquired_at_utc": "2026-10-18T20:16:28Z",
   "artifact_sha256": "51542f5c4584eb471dd661ca8245b813e7aed5ac9d1cbefdc7b60a8743d443bf",
   "body_sha256": "51542f5c4584eb471dd661ca8245b813e7aed5ac9d1cbefdc7b60a8743d443bf",
   "classification": "NOT_OBSERVED",
-  "endpoint": "/projects/87779099/jobs/17267666551/trace",
+  "endpoint": "/projects/87779099/jobs/17268328687/trace",
   "http_error": "HTTP 401",
   "http_status": 401,
   "limitations": "endpoint not observed with public read access; real status preserved",

@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-18T18:57:15Z",
-  "artifact_sha256": "39b6a6fafbd8c05f758a1c312a9c957298b49804653214850ddbd942bb6ddd07",
+  "acquired_at_utc": "2026-10-18T20:16:27Z",
+  "artifact_sha256": "2c06eb878f5d6796a1467615b17fe2b7ce88de7a710b070b0c726de2f4de191b",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2960702629/jobs",
+  "endpoint": "/projects/87779099/pipelines/2960806292/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17267666551,
+      "id": 17268328687,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "zyganali",
-        "authored_date": "2026-10-18T21:55:59.000+03:00",
-        "committed_date": "2026-10-18T21:55:59.000+03:00",
+        "authored_date": "2026-10-18T23:15:17.000+03:00",
+        "committed_date": "2026-10-18T23:15:17.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "zyganali",
-        "created_at": "2026-10-18T21:55:59.000+03:00",
+        "created_at": "2026-10-18T23:15:17.000+03:00",
         "extended_trailers": {},
-        "id": "30a509a74913f78194ac7d3668f0d756bba56ff5",
-        "message": "B3 docs: record verified pipeline, bridge run, manifest digests and fail-closed QA status\n",
+        "id": "56d3ea3a811c4c0df3ba9bd916feaaec1450b1f4",
+        "message": "B4 plan: record operator-approved scope expansion into the Software Retirement Control Plane (P0/P1/P2, acceptance contracts, timeline, bridge permanence)\n",
         "parent_ids": [
-          "2c9c7c553ed4c66391009b6f53d4f72bfc60ee76"
+          "30a509a74913f78194ac7d3668f0d756bba56ff5"
         ],
-        "short_id": "30a509a7",
-        "title": "B3 docs: record verified pipeline, bridge run, manifest digests and fail-closed QA status",
+        "short_id": "56d3ea3a",
+        "title": "B4 plan: record operator-approved scope expansion into the Software Retirement Control Plane (P0/P1/P2, acceptance contracts, timeline, bridge permanence)",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/30a509a74913f78194ac7d3668f0d756bba56ff5"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/56d3ea3a811c4c0df3ba9bd916feaaec1450b1f4"
       },
       "coverage": null,
-      "created_at": "2026-10-18T18:56:03.080Z",
-      "duration": 20.408568,
+      "created_at": "2026-10-18T20:15:21.599Z",
+      "duration": 21.028863,
       "erased_at": null,
-      "finished_at": "2026-10-18T18:56:23.828Z",
-      "id": 17267666551,
+      "finished_at": "2026-10-18T20:15:43.065Z",
+      "id": 17268328687,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-18T18:56:02.946Z",
-        "id": 2960702629,
-        "iid": 15,
+        "created_at": "2026-10-18T20:15:21.456Z",
+        "id": 2960806292,
+        "iid": 16,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "30a509a74913f78194ac7d3668f0d756bba56ff5",
+        "sha": "56d3ea3a811c4c0df3ba9bd916feaaec1450b1f4",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-18T18:56:25.293Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960702629"
+        "updated_at": "2026-10-18T20:15:44.493Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960806292"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.078116,
+      "queued_duration": 0.148388,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-18T18:57:15.594Z",
-        "created_at": "2026-10-16T16:32:23.905Z",
-        "id": 163226663,
-        "ip_address": "10.218.11.18",
+        "contacted_at": "2026-10-18T20:16:27.322Z",
+        "created_at": "2026-10-16T16:33:28.954Z",
+        "id": 163226801,
+        "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_rZB13czUy5Gz",
+        "system_id": "r_D9VS6duoYrJd",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-18T18:56:03.420Z",
+      "started_at": "2026-10-18T20:15:22.036Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17267666551"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17268328687"
     }
   ]
 }
