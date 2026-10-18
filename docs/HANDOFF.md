@@ -4,7 +4,7 @@
 - **Canonical GitLab repository:** `NOT_CREATED_OR_NOT_VERIFIED` — B1 could not reach an authenticated GitLab identity. The stored `git:https://gitlab.com` credential (user `zyganali`) returns `invalid_token: Token is expired`; no `glab` CLI, no GitLab MCP, and no GitLab browser session exist in the execution environment. Do not infer the namespace from the GitHub username.
 - **Canonical branch:** `main` (unless sponsor-provisioned project requires a verified alternative).
 - **Last independently verified remote SHA:** `NONE — BOOTSTRAP ZIP ONLY`.
-- **Latest executor candidate remote SHA:** `NONE`.
+- **Latest executor candidate remote SHA:** `NONE` (no remote). Local baseline commit: `0d90deeacaccde1e03c3014dc4c4e2a4574ab2f9` (branch `main`, not yet pushed).
 - **Completed batches:** `NONE`.
 - **Actual blockers:** `GITLAB_ACCESS_BLOCKED` — no valid GitLab credential, so project creation, push, remote CI, and the live Custom Flow session cannot run. Local B1 foundation (deterministic contracts, CLI, tests, CI config, flow YAML) is complete and green locally. Unblock: operator stores a fresh scoped GitLab PAT for `glpat`/`api`+`write_repository` in Git Credential Manager (`git credential approve`), then the executor reads it via `git credential fill` (never pasted into chat).
 - **Architecture:** one real GitLab Duo Custom Flow agent; deterministic Python; GitLab-native only; disposable separate GitLab Pages site for B3. No Cloudflare or other external provider.
