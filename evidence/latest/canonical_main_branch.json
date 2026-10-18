@@ -1,0 +1,44 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:15Z",
+  "artifact_sha256": "d56d1e0db7ea2c3835ca0c85863b96f04fcc7e12acac0323086236ba9cd507cf",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/repository/branches/main",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_main_branch",
+  "redacted_keys": [
+    "author_email",
+    "name"
+  ],
+  "sanitized_body": {
+    "can_push": false,
+    "commit": {
+      "author_email": "[REDACTED]",
+      "author_name": "zyganali",
+      "authored_date": "2026-10-18T17:59:42.000+03:00",
+      "committed_date": "2026-10-18T17:59:42.000+03:00",
+      "committer_email": "zyganali@users.noreply.gitlab.com",
+      "committer_name": "zyganali",
+      "created_at": "2026-10-18T17:59:42.000+03:00",
+      "extended_trailers": {},
+      "id": "21eed7e27a9077469be5297ada4cd87c728df13b",
+      "message": "B2 repair: affirmative-evidence REDEPLOYMENT_PATH (job-name-agnostic Pages detection, no negative inference), LIVE-only provider evidence\n",
+      "parent_ids": [
+        "9633e37ffe8566e51d3380aa8ad35469494987c7"
+      ],
+      "short_id": "21eed7e2",
+      "title": "B2 repair: affirmative-evidence REDEPLOYMENT_PATH (job-name-agnostic Pages detection, no negative inference), LIVE-only provider evidence",
+      "trailers": {},
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/21eed7e27a9077469be5297ada4cd87c728df13b"
+    },
+    "default": true,
+    "developers_can_merge": true,
+    "developers_can_push": true,
+    "merged": false,
+    "name": "[REDACTED]",
+    "protected": true,
+    "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/tree/main"
+  }
+}

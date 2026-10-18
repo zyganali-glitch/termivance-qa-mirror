@@ -1,0 +1,15 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:17Z",
+  "artifact_sha256": "0ea48a1ef145a03e586c8b0e81a2a8328b7ac8008253bd554c5b0c07386c8bb3",
+  "classification": "NOT_OBSERVED",
+  "endpoint": "/projects/87779099/duo_workflows",
+  "http_error": "HTTP 404",
+  "http_status": 404,
+  "limitations": "endpoint not observed with public read access; real status preserved",
+  "method": "GET",
+  "name": "duo_workflows_probe",
+  "redacted_keys": [],
+  "sanitized_body": {
+    "error": "404 Not Found"
+  }
+}

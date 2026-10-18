@@ -1,0 +1,15 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:17Z",
+  "artifact_sha256": "3ec09ffddb0f28fb11e86787cdcd04b2f3d03e355061081e47f7a1421ae7d922",
+  "classification": "NOT_OBSERVED",
+  "endpoint": "/projects/87785099/pages",
+  "http_error": "HTTP 403",
+  "http_status": 403,
+  "limitations": "endpoint not observed with public read access; real status preserved",
+  "method": "GET",
+  "name": "disposable_pages",
+  "redacted_keys": [],
+  "sanitized_body": {
+    "message": "403 Forbidden"
+  }
+}

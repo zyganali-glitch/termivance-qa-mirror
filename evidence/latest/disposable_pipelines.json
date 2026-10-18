@@ -1,0 +1,13 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:17Z",
+  "artifact_sha256": "25dc3a38ce48366ec3dea28f13081ef9f3274007f77497342a26652d1107f6ad",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87785099/pipelines?per_page=5",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "disposable_pipelines",
+  "redacted_keys": [],
+  "sanitized_body": []
+}

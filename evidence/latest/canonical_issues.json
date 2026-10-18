@@ -1,0 +1,168 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:16Z",
+  "artifact_sha256": "c252daa13b6a2c396f535a184c2815d8718a5e6bbdebf4e7817aed474499f0b1",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/issues?per_page=20",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_issues",
+  "redacted_keys": [
+    "avatar_url",
+    "name",
+    "public_email"
+  ],
+  "sanitized_body": [
+    {
+      "_links": {
+        "award_emoji": "https://gitlab.com/api/v4/projects/87779099/issues/2/award_emoji",
+        "closed_as_duplicate_of": null,
+        "notes": "https://gitlab.com/api/v4/projects/87779099/issues/2/notes",
+        "project": "https://gitlab.com/api/v4/projects/87779099",
+        "self": "https://gitlab.com/api/v4/projects/87779099/issues/2"
+      },
+      "assignee": null,
+      "assignees": [],
+      "author": {
+        "avatar_url": "[REDACTED]",
+        "id": 39306908,
+        "locked": false,
+        "name": "[REDACTED]",
+        "public_email": "[REDACTED]",
+        "state": "active",
+        "username": "zyganali",
+        "web_url": "https://gitlab.com/zyganali"
+      },
+      "blocking_issues_count": 0,
+      "closed_at": null,
+      "closed_by": null,
+      "confidential": false,
+      "created_at": "2026-10-18T14:14:15.330Z",
+      "description": "## Termivance B2 \u2014 Deterministic Retirement Decision (READ-ONLY)\n\n### What is being retired?\n- Target: project `87779099` `gitlab-ai-hackathon/transcend-october-2026/39306908/termivance` (GITLAB_PAGES_SITE), action `unpublish_pages`.\n- Provider: GitLab (read-only observations only).\n\n### Deterministic result\n- **Verdict: `BLOCKED`** (computed by deterministic code).\n- Evaluated at: 2026-10-18T14:14:13.997511+00:00\n- Observation time: 2026-10-18T14:14:11.341851+00:00\n- Classification: `LIVE`\n- Destructive API operations performed: **0** (read-only client).\n\n### Blocking obligations and reasons\n| reason | obligation | detail | evidence |\n|---|---|---|---|\n| `TARGET_NOT_AUTHORIZED` | `obl:ownership_authorization` | no bound authorization supplied | `-` |\n| `PROTECTED_PROJECT` | `obl:target_scope` | canonical Termivance repository is expressly excluded from retirement | `-` |\n| `UNRESOLVED_OBLIGATION` | `obl:unresolved_work` | 1 active unresolved retirement work item(s) | `ev:open_issues` |\n\n### Obligation status\n| obligation | kind | mandatory | status |\n|---|---|---|---|\n| `obl:identity_binding` | IDENTITY_BINDING | True | SATISFIED |\n| `obl:ownership_authorization` | OWNERSHIP_AUTHORIZATION | True | VIOLATED |\n| `obl:provider_observation` | PROVIDER_OBSERVATION | True | SATISFIED |\n| `obl:redeployment_path` | REDEPLOYMENT_PATH | True | SATISFIED |\n| `obl:target_scope` | TARGET_SCOPE | True | VIOLATED |\n| `obl:unresolved_work` | UNRESOLVED_WORK | True | VIOLATED |\n\n### Evidence provenance\n| evidence | kind | class | status | observed_at | digest |\n|---|---|---|---|---|---|\n| `ev:branch` | BRANCH | LIVE | 200 | 2026-10-18T14:14:11.341851+00:00 | `3635d3d5916e` |\n| `ev:ci_config` | CI_CONFIG | LIVE | 200 | 2026-10-18T14:14:11.341851+00:00 | `dd98565b37f0` |\n| `ev:environment` | ENVIRONMENT | LIVE | 200 | 2026-10-18T14:14:11.341851+00:00 | `6cf5f17e9cfc` |\n| `ev:open_issues` | OPEN_ISSUES | LIVE | 200 | 2026-10-18T14:14:11.341851+00:00 | `7be8203df1e9` |\n| `ev:pages` | PAGES | LIVE | 403 | 2026-10-18T14:14:11.341851+00:00 | `a67376401330` |\n| `ev:pipeline` | PIPELINE | LIVE | 200 | 2026-10-18T14:14:11.341851+00:00 | `f229840a73ca` |\n| `ev:project_identity` | PROJECT_IDENTITY | LIVE | 200 | 2026-10-18T14:14:11.341851+00:00 | `e32bfdab5807` |\n\n### What would resolve the block\n- resolve TARGET_NOT_AUTHORIZED: no bound authorization supplied\n- resolve PROTECTED_PROJECT: canonical Termivance repository is expressly excluded from retirement\n- resolve UNRESOLVED_OBLIGATION: 1 active unresolved retirement work item(s)\n\n### Authority boundary\n- This verdict is produced by deterministic Python over typed facts.\n- A GitLab Duo agent may *explain* this result but cannot compute or override it.\n- `SAFE_TO_RETIRE` would mean eligibility under the checked protocol scope only; it is not evidence of removal. `OBSERVED_ABSENT` / `RESURRECTION_CONTROLLED` are out of B2 scope.\n\n_Termivance deterministic status: BLOCKED._\nNo destructive operation was attempted. This is a dry-run eligibility evaluation.",
+      "discussion_locked": null,
+      "downvotes": 0,
+      "due_date": null,
+      "epic": null,
+      "epic_iid": null,
+      "has_tasks": true,
+      "health_status": null,
+      "id": 207049857,
+      "iid": 2,
+      "imported": false,
+      "imported_from": "none",
+      "issue_type": "issue",
+      "iteration": null,
+      "labels": [
+        "retirement-decision",
+        "termivance::b2"
+      ],
+      "merge_requests_count": 0,
+      "milestone": null,
+      "moved_to_id": null,
+      "project_id": 87779099,
+      "references": {
+        "full": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance#2",
+        "relative": "#2",
+        "short": "#2"
+      },
+      "service_desk_reply_to": null,
+      "severity": "UNKNOWN",
+      "start_date": null,
+      "state": "opened",
+      "task_completion_status": {
+        "completed_count": 0,
+        "count": 0
+      },
+      "task_status": "0 of 0 checklist items completed",
+      "time_stats": {
+        "human_time_estimate": null,
+        "human_total_time_spent": null,
+        "time_estimate": 0,
+        "total_time_spent": 0
+      },
+      "title": "B2 retirement decision: BLOCKED (deterministic, read-only)",
+      "type": "ISSUE",
+      "updated_at": "2026-10-18T15:00:44.496Z",
+      "upvotes": 0,
+      "user_notes_count": 4,
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/work_items/2",
+      "weight": null
+    },
+    {
+      "_links": {
+        "award_emoji": "https://gitlab.com/api/v4/projects/87779099/issues/1/award_emoji",
+        "closed_as_duplicate_of": null,
+        "notes": "https://gitlab.com/api/v4/projects/87779099/issues/1/notes",
+        "project": "https://gitlab.com/api/v4/projects/87779099",
+        "self": "https://gitlab.com/api/v4/projects/87779099/issues/1"
+      },
+      "assignee": null,
+      "assignees": [],
+      "author": {
+        "avatar_url": "[REDACTED]",
+        "id": 39306908,
+        "locked": false,
+        "name": "[REDACTED]",
+        "public_email": "[REDACTED]",
+        "state": "active",
+        "username": "zyganali",
+        "web_url": "https://gitlab.com/zyganali"
+      },
+      "blocking_issues_count": 0,
+      "closed_at": null,
+      "closed_by": null,
+      "confidential": false,
+      "created_at": "2026-10-18T11:27:07.858Z",
+      "description": "## Purpose\n\nThis is a harmless, non-destructive **B1** retirement-analysis request used to exercise the\nTermivance Retirement Analyst Duo Custom Flow.\n\n## What is requested\n\nUsing the GitLab context of this project, report candidate retirement obligations for a\nhypothetical disposable Pages site and the missing proof required before any retirement.\n\n## Hard boundaries\n\n- No resource may be retired, deleted, or unpublished.\n- No authorization is granted by this issue.\n- Any output is NON-AUTHORITATIVE; deterministic code owns all verdicts.",
+      "discussion_locked": null,
+      "downvotes": 0,
+      "due_date": null,
+      "epic": null,
+      "epic_iid": null,
+      "has_tasks": true,
+      "health_status": null,
+      "id": 207041176,
+      "iid": 1,
+      "imported": false,
+      "imported_from": "none",
+      "issue_type": "issue",
+      "iteration": null,
+      "labels": [
+        "retirement-analysis",
+        "termivance::b1"
+      ],
+      "merge_requests_count": 0,
+      "milestone": null,
+      "moved_to_id": null,
+      "project_id": 87779099,
+      "references": {
+        "full": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance#1",
+        "relative": "#1",
+        "short": "#1"
+      },
+      "service_desk_reply_to": null,
+      "severity": "UNKNOWN",
+      "start_date": null,
+      "state": "opened",
+      "task_completion_status": {
+        "completed_count": 0,
+        "count": 0
+      },
+      "task_status": "0 of 0 checklist items completed",
+      "time_stats": {
+        "human_time_estimate": null,
+        "human_total_time_spent": null,
+        "time_estimate": 0,
+        "total_time_spent": 0
+      },
+      "title": "B1 retirement-analysis request (harmless, non-authoritative)",
+      "type": "ISSUE",
+      "updated_at": "2026-10-18T12:15:24.047Z",
+      "upvotes": 0,
+      "user_notes_count": 4,
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/work_items/1",
+      "weight": null
+    }
+  ]
+}

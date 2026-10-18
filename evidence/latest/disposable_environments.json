@@ -1,0 +1,15 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:18Z",
+  "artifact_sha256": "08a1baa7c01c53ca65bff47a38c9d3d784e7cb873c5af2fbcc0bc32042f19849",
+  "classification": "NOT_OBSERVED",
+  "endpoint": "/projects/87785099/environments",
+  "http_error": "HTTP 401",
+  "http_status": 401,
+  "limitations": "endpoint not observed with public read access; real status preserved",
+  "method": "GET",
+  "name": "disposable_environments",
+  "redacted_keys": [],
+  "sanitized_body": {
+    "message": "401 Unauthorized"
+  }
+}

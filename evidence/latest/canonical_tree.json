@@ -1,0 +1,107 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:16Z",
+  "artifact_sha256": "543e1e62a38a0db205582054b25626e4581d1042db5cfd5bedd5cdc47408cd92",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/repository/tree?ref=main&per_page=100",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_tree",
+  "redacted_keys": [
+    "name"
+  ],
+  "sanitized_body": [
+    {
+      "id": "2daea94f80568433240290e9444fe9d65c1949a9",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "config",
+      "type": "tree"
+    },
+    {
+      "id": "3fd7e40b0c1ae245c4197d409429f00d93104e7d",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "docs",
+      "type": "tree"
+    },
+    {
+      "id": "c39ab7751a6196f5e9da5df3a9b1a48163224923",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "flows",
+      "type": "tree"
+    },
+    {
+      "id": "121841dea630cdf825360ca066b143749e1add20",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "plans",
+      "type": "tree"
+    },
+    {
+      "id": "dbe0402d19118729d1a6236fd0e90761a349d3dc",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "src",
+      "type": "tree"
+    },
+    {
+      "id": "91b249435800ffc0ee62b40fcc2f189109a9cd9d",
+      "mode": "040000",
+      "name": "[REDACTED]",
+      "path": "tests",
+      "type": "tree"
+    },
+    {
+      "id": "68905a7537fbd6014ff8f6dcca92b926db24a5e7",
+      "mode": "100644",
+      "name": "[REDACTED]",
+      "path": ".gitattributes",
+      "type": "blob"
+    },
+    {
+      "id": "efaa4abf8a59df3e82836c5163ef2bb42280f9dc",
+      "mode": "100644",
+      "name": "[REDACTED]",
+      "path": ".gitignore",
+      "type": "blob"
+    },
+    {
+      "id": "9d0cd97f1c8c86edbf6049e414dc0c91d1764d5b",
+      "mode": "100644",
+      "name": "[REDACTED]",
+      "path": ".gitlab-ci.yml",
+      "type": "blob"
+    },
+    {
+      "id": "a4c6d4a207620867cfb420e1ce24ff9c57d7de26",
+      "mode": "100644",
+      "name": "[REDACTED]",
+      "path": "AGENTS.md",
+      "type": "blob"
+    },
+    {
+      "id": "be97fc8c9e01b5f16dea9d48b69f688d1b66cec4",
+      "mode": "100644",
+      "name": "[REDACTED]",
+      "path": "LICENSE",
+      "type": "blob"
+    },
+    {
+      "id": "143e254bed7c19fabd3563dc416ff958956b500e",
+      "mode": "100644",
+      "name": "[REDACTED]",
+      "path": "README.md",
+      "type": "blob"
+    },
+    {
+      "id": "c3245ddf33013b56a093d6630d50d14ad5b7165d",
+      "mode": "100644",
+      "name": "[REDACTED]",
+      "path": "pyproject.toml",
+      "type": "blob"
+    }
+  ]
+}

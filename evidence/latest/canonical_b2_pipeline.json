@@ -1,0 +1,60 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:18Z",
+  "artifact_sha256": "731793462f21d329420dbd208a47b9930c379db2d5eb90f9cc0b64f14845e0ba",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/pipelines/2960412852",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "canonical_b2_pipeline",
+  "redacted_keys": [
+    "avatar_url",
+    "name",
+    "public_email"
+  ],
+  "sanitized_body": {
+    "archived": false,
+    "before_sha": "9633e37ffe8566e51d3380aa8ad35469494987c7",
+    "committed_at": null,
+    "coverage": null,
+    "created_at": "2026-10-18T14:59:46.249Z",
+    "detailed_status": {
+      "details_path": "/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960412852",
+      "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
+      "group": "success",
+      "has_details": true,
+      "icon": "status_success",
+      "illustration": null,
+      "label": "passed",
+      "text": "Passed",
+      "tooltip": "passed"
+    },
+    "duration": 18,
+    "finished_at": "2026-10-18T15:00:06.960Z",
+    "id": 2960412852,
+    "iid": 10,
+    "name": "[REDACTED]",
+    "project_id": 87779099,
+    "queued_duration": null,
+    "ref": "main",
+    "sha": "21eed7e27a9077469be5297ada4cd87c728df13b",
+    "source": "push",
+    "started_at": "2026-10-18T14:59:46.890Z",
+    "status": "success",
+    "tag": false,
+    "updated_at": "2026-10-18T15:00:06.971Z",
+    "user": {
+      "avatar_url": "[REDACTED]",
+      "id": 39306908,
+      "locked": false,
+      "name": "[REDACTED]",
+      "public_email": "[REDACTED]",
+      "state": "active",
+      "username": "zyganali",
+      "web_url": "https://gitlab.com/zyganali"
+    },
+    "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2960412852",
+    "yaml_errors": null
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:17Z",
+  "artifact_sha256": "a7ae27f0d7c1c98f333c0cafc328a3f437629c4494cca285069bfa9e477714af",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87785099",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "disposable_project",
+  "redacted_keys": [
+    "avatar_url",
+    "http_url_to_repo",
+    "name",
+    "ssh_url_to_repo"
+  ],
+  "sanitized_body": {
+    "avatar_url": "[REDACTED]",
+    "created_at": "2026-10-18T15:32:25.812Z",
+    "default_branch": "main",
+    "description": "DISPOSABLE B3 demonstration target. Temporary. Safe to retire. Do not treat as canonical.",
+    "forks_count": 0,
+    "http_url_to_repo": "[REDACTED]",
+    "id": 87785099,
+    "last_activity_at": "2026-10-18T15:32:25.731Z",
+    "name": "[REDACTED]",
+    "name_with_namespace": "GitLab AI Hackathon / Transcend October 2026 / zyganali / termivance-b3-disposable-pages-demo",
+    "namespace": {
+      "avatar_url": "[REDACTED]",
+      "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908",
+      "id": 145090697,
+      "kind": "group",
+      "name": "[REDACTED]",
+      "parent_id": 142538134,
+      "path": "39306908",
+      "web_url": "https://gitlab.com/groups/gitlab-ai-hackathon/transcend-october-2026/39306908"
+    },
+    "path": "termivance-b3-disposable-pages-demo",
+    "path_with_namespace": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+    "readme_url": null,
+    "ssh_url_to_repo": "[REDACTED]",
+    "star_count": 0,
+    "tag_list": [],
+    "topics": [],
+    "visibility": "public",
+    "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+  }
+}

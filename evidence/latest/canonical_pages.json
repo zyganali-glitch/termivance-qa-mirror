@@ -1,0 +1,15 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:16Z",
+  "artifact_sha256": "1a92b0568e6dc87a253c5072af9a3f27adaafa1caf7a8ae47ad248103ac2f274",
+  "classification": "NOT_OBSERVED",
+  "endpoint": "/projects/87779099/pages",
+  "http_error": "HTTP 403",
+  "http_status": 403,
+  "limitations": "endpoint not observed with public read access; real status preserved",
+  "method": "GET",
+  "name": "canonical_pages",
+  "redacted_keys": [],
+  "sanitized_body": {
+    "message": "403 Forbidden"
+  }
+}

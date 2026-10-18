@@ -1,0 +1,15 @@
+{
+  "acquired_at_utc": "2026-10-18T16:07:17Z",
+  "artifact_sha256": "a22e772ed9463193f2d78548dfdb40ebb1f4283325b98150399b6450bfc0b9a4",
+  "classification": "NOT_OBSERVED",
+  "endpoint": "/projects/87785099/repository/branches/main",
+  "http_error": "HTTP 404",
+  "http_status": 404,
+  "limitations": "endpoint not observed with public read access; real status preserved",
+  "method": "GET",
+  "name": "disposable_main_branch",
+  "redacted_keys": [],
+  "sanitized_body": {
+    "message": "404 Branch Not Found"
+  }
+}
