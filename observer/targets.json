@@ -6,7 +6,7 @@
     "b2_commit": "21eed7e27a9077469be5297ada4cd87c728df13b",
     "b2_pipeline_id": 2960412852,
     "b2_issue_iid": 2,
-    "b3_issue_iid": null,
+    "b3_issue_iid": 3,
     "source_files": [
       ".gitlab-ci.yml",
       "config/retirement_policy.b3_disposable.json",
