@@ -1158,7 +1158,9 @@ def build_parser() -> argparse.ArgumentParser:
     supervised_review.add_argument("--risk-map", dest="risk_map", default=None)
     supervised_review.add_argument("--capsule", default=None, help="proof capsule JSON")
     supervised_review.add_argument("--project-id", type=int, default=87785099)
-    supervised_review.add_argument("--target", dest="project_id", type=int, help="alias for --project-id")
+    supervised_review.add_argument(
+        "--target", dest="project_id", type=int, help="alias for --project-id"
+    )
     supervised_review.add_argument(
         "--full-path",
         default="gitlab-ai-hackathon/transcend-october-2026/39306908/"
