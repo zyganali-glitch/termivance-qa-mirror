@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-19T04:51:36Z",
-  "artifact_sha256": "963b11ce7a501f015172d460a7546981d8ef5c6c59e2b4e8fa6c71448e893630",
+  "acquired_at_utc": "2026-10-19T07:30:55Z",
+  "artifact_sha256": "41603eaa24d7a8d2da5a2c07dd62d994b7a08daf1288b68805a08a45a9a8b9ad",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -17,22 +17,22 @@
     "can_push": false,
     "commit": {
       "author_email": "[REDACTED]",
-      "author_name": "zyganali",
-      "authored_date": "2026-10-18T23:15:17.000+03:00",
-      "committed_date": "2026-10-18T23:15:17.000+03:00",
+      "author_name": "Mehmet Aydo\u011fan",
+      "authored_date": "2026-10-19T10:28:56.000+03:00",
+      "committed_date": "2026-10-19T10:28:56.000+03:00",
       "committer_email": "[REDACTED]",
-      "committer_name": "zyganali",
-      "created_at": "2026-10-18T23:15:17.000+03:00",
+      "committer_name": "Mehmet Aydo\u011fan",
+      "created_at": "2026-10-19T10:28:56.000+03:00",
       "extended_trailers": {},
-      "id": "56d3ea3a811c4c0df3ba9bd916feaaec1450b1f4",
-      "message": "B4 plan: record operator-approved scope expansion into the Software Retirement Control Plane (P0/P1/P2, acceptance contracts, timeline, bridge permanence)\n",
+      "id": "b13b97b4ba7c17f7d560f4e34c098ef9d60921a6",
+      "message": "B4: close P0 security defects and deliver the six-capability Retirement Control Plane\n\nP0 security closure:\n- ledger v2: durable sealed-reservation design (atomic fsync writes, O_CREAT|O_EXCL\n  cross-process lock, health check inside the durable_ledger_required preflight,\n  malformed ledgers refused, sealed CONSUMED records never overwritten)\n- approval_source.py: only a gitlab_issue channel authorizes real mutations, with\n  live provider read-back of author/timestamps/endpoint binding; executor-invented\n  approvals refused; dry-run keeps new gates advisory\n- capsule.py + rewritten absence.py: OBSERVED_ABSENT requires a validated mutation\n  receipt (durable ledger seal, exact endpoint, temporal coherence, operation id);\n  caller --pre-state/--action-accepted claims removed from the CLI\n\nP1 capabilities (all read-only or recorded-artifact driven):\n- portfolio.py + CLI portfolio (GET-only, anonymous mode via GitLabClient(None))\n- riskmap.py + CLI risk-map (pure function of a recorded decision)\n- simulation.py + CLI simulate (same engine, PROJECTED_NOT_OBSERVED labels, no\n  mutation import at all)\n- workflow.py + CLI workflow-plan/workflow-status (7 stages around the ONE\n  retire-pages --execute path; stage states read from recorded artifacts only)\n- capsule CLI: capsule-build (receipt or no-mutation-yet decision capsules),\n  capsule-verify (fail-closed integrity), capsule-render\n- control_room/ static Control Room + scripts/build_control_room.py\n- tripwire.py (P2 resurrection watch, fail-closed)\n\nEvidence (live, GET-only, anonymous): evidence/b4/ portfolio, snapshot, BLOCKED\ndecision, risk map, simulation, workflow assessment, no-mutation-yet proof capsule.\nControl Room built from those files (RECORDED_LIVE reads, mutation_status NOT_RUN).\n\nDocs: single B4 reconciliation (README, HANDOFF, EVIDENCE_MATRIX B4 log,\nMASTER_PLAN B4 status, new docs/DEMO_SCRIPT.md).\n\nTests: 239 passed; ruff clean; scripts/ci_safety_assertions.py 16/16.\n",
       "parent_ids": [
-        "30a509a74913f78194ac7d3668f0d756bba56ff5"
+        "56d3ea3a811c4c0df3ba9bd916feaaec1450b1f4"
       ],
-      "short_id": "56d3ea3a",
-      "title": "B4 plan: record operator-approved scope expansion into the Software Retirement Control Plane (P0/P1/P2, acceptance contracts, timeline, bridge permanence)",
+      "short_id": "b13b97b4",
+      "title": "B4: close P0 security defects and deliver the six-capability Retirement Control Plane",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/56d3ea3a811c4c0df3ba9bd916feaaec1450b1f4"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/b13b97b4ba7c17f7d560f4e34c098ef9d60921a6"
     },
     "default": true,
     "developers_can_merge": true,
