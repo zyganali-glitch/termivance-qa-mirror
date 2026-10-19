@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-19T18:33:50Z",
-  "artifact_sha256": "a69ac17302e0b4d2e4bacbdd3667fcafef3985460d3c3be6dfcb3f1c9be2cc84",
+  "acquired_at_utc": "2026-10-19T20:14:08Z",
+  "artifact_sha256": "c3ca7a64468fc3f8cbf281ca8545145b15385cdc8967d0ff5f1832899bd51b66",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/issues?per_page=20",
   "http_error": null,
@@ -15,6 +15,73 @@
     "public_email"
   ],
   "sanitized_body": [
+    {
+      "_links": {
+        "award_emoji": "https://gitlab.com/api/v4/projects/87779099/issues/5/award_emoji",
+        "closed_as_duplicate_of": null,
+        "notes": "https://gitlab.com/api/v4/projects/87779099/issues/5/notes",
+        "project": "https://gitlab.com/api/v4/projects/87779099",
+        "self": "https://gitlab.com/api/v4/projects/87779099/issues/5"
+      },
+      "assignee": null,
+      "assignees": [],
+      "author": "[REDACTED]",
+      "blocking_issues_count": 0,
+      "closed_at": null,
+      "closed_by": null,
+      "confidential": false,
+      "created_at": "2026-10-19T19:45:18.370Z",
+      "description": "## Supervised Pre-Retirement Analysis Request: Disposable Project 87785099\n\n### Target Identity\n- Target Project ID: `87785099`\n- Target Full Path: `gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo`\n- Target Ref: `main` (commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d`)\n- Resource Kind: `GITLAB_PAGES_SITE`\n- Purpose: Non-destructive supervised pre-retirement candidate risk discovery for Termivance demonstration (neutral input without embedded source snapshot)\n\n### Task for Termivance Retirement Analyst\nInspect the repository configuration and deployment lifecycle of GitLab project 87785099 directly using your repository tools. Identify evidence-backed obligations, dependencies, and possible ways the resource could reappear after retirement. Report exact source paths, commit IDs, observations, uncertainties, and candidate risks. Do not retire or modify anything.\n\nPublish your standard 6-section non-authoritative assessment ending with:\nNON-AUTHORITATIVE / DETERMINISTIC VERDICT: NOT_RUN",
+      "discussion_locked": null,
+      "downvotes": 0,
+      "due_date": null,
+      "epic": null,
+      "epic_iid": null,
+      "has_tasks": true,
+      "health_status": null,
+      "id": 207188256,
+      "iid": 5,
+      "imported": false,
+      "imported_from": "none",
+      "issue_type": "issue",
+      "iteration": null,
+      "labels": [
+        "demo-neutral",
+        "retirement-decision",
+        "termivance::b4"
+      ],
+      "merge_requests_count": 0,
+      "milestone": null,
+      "moved_to_id": null,
+      "project_id": 87779099,
+      "references": {
+        "full": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance#5",
+        "relative": "#5",
+        "short": "#5"
+      },
+      "service_desk_reply_to": null,
+      "severity": "UNKNOWN",
+      "start_date": null,
+      "state": "opened",
+      "task_completion_status": {
+        "completed_count": 0,
+        "count": 0
+      },
+      "task_status": "0 of 0 checklist items completed",
+      "time_stats": {
+        "human_time_estimate": null,
+        "human_total_time_spent": null,
+        "time_estimate": 0,
+        "total_time_spent": 0
+      },
+      "title": "[B4-DEMO] Neutral supervised retirement analysis request: target project 87785099",
+      "type": "ISSUE",
+      "updated_at": "2026-10-19T19:48:05.225Z",
+      "upvotes": 0,
+      "user_notes_count": 4,
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/work_items/5",
+      "weight": null
+    },
     {
       "_links": {
         "award_emoji": "https://gitlab.com/api/v4/projects/87779099/issues/4/award_emoji",
