@@ -569,6 +569,77 @@ def _cmd_simulate(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_reconcile_duo(args: argparse.Namespace) -> int:
+    from termivance.duo_reconciliation import (
+        ReconciliationError,
+        load_claims,
+        observe_duo_surface,
+        probe_web_status,
+        reconcile_duo,
+    )
+    from termivance.gitlab_client import GitLabClient
+
+    try:
+        claims_data, claims = load_claims(args.claims)
+    except ReconciliationError as exc:
+        print(f"claims record unusable: {exc}", file=sys.stderr)
+        return 2
+    # Reconciliation is anonymous by construction: the Duo evidence surface is
+    # public, and no credential may ever enter this read-only path.
+    client = GitLabClient(None)
+    surface = observe_duo_surface(
+        client,
+        project_id=args.project_id,
+        issue_iid=args.issue_iid,
+        session_url=args.session_url or "",
+        web_probe=probe_web_status,
+    )
+    reconciliation = reconcile_duo(
+        claims_data,
+        claims,
+        surface,
+        claims_source=args.claims,
+        ttl_seconds=args.ttl,
+    )
+    payload = reconciliation.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(reconciliation.render())
+    return 0
+
+
+def _cmd_witness_build(args: argparse.Namespace) -> int:
+    from termivance.gitlab_client import GitLabClient
+    from termivance.target import TargetIdentity
+    from termivance.witness import build_witness
+
+    client = GitLabClient(None)
+    full_path = args.full_path
+    if not full_path:
+        project = client.get_json(f"/projects/{args.project_id}")
+        if project.ok and isinstance(project.data, dict):
+            full_path = str(project.data.get("path_with_namespace") or "")
+        if not full_path:
+            print(
+                "could not resolve the project full path anonymously; pass --full-path",
+                file=sys.stderr,
+            )
+            return 2
+    target = TargetIdentity(args.project_id, full_path, args.kind)
+    witness = build_witness(client, target)
+    payload = witness.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(witness.render())
+    return 0
+
+
 def _cmd_capsule_build(args: argparse.Namespace) -> int:
     from termivance.capsule import build_capsule, save_capsule
     from termivance.target import TargetIdentity
@@ -624,6 +695,34 @@ def _cmd_capsule_build(args: argparse.Namespace) -> int:
                 ],
             }
     notes = tuple(note.strip() for note in str(args.notes or "").split(";") if note.strip())
+    duo_reconciliation = _read_json(getattr(args, "duo_reconciliation", None))
+    if (
+        duo_reconciliation is not None
+        and duo_reconciliation.get("schema") != "termivance.duo_reconciliation/v1"
+    ):
+        print(
+            "--duo-reconciliation must be a termivance.duo_reconciliation/v1 record",
+            file=sys.stderr,
+        )
+        return 2
+    witness = _read_json(getattr(args, "witness", None))
+    if witness is not None:
+        if witness.get("schema") != "termivance.resurrection_witness/v1":
+            print(
+                "--witness must be a termivance.resurrection_witness/v1 record",
+                file=sys.stderr,
+            )
+            return 2
+        witness_target = witness.get("target")
+        if not isinstance(witness_target, dict) or (
+            TargetIdentity.from_dict(witness_target).key() != target.key()
+        ):
+            print(
+                "the witness record targets a different resource than the capsule; "
+                "a capsule never adopts another target's witness",
+                file=sys.stderr,
+            )
+            return 2
     if receipt is None:
         default_notes = (
             "no-mutation-yet capsule: assembled from a recorded deterministic "
@@ -642,6 +741,8 @@ def _cmd_capsule_build(args: argparse.Namespace) -> int:
         mutation=mutation,
         absence=None if receipt is None else _read_json(args.absence),
         authorization=authorization_section,
+        duo_reconciliation=duo_reconciliation,
+        witness=witness,
         notes=tuple(dict.fromkeys(notes + default_notes)),
     )
     path = save_capsule(capsule, args.out)
@@ -911,6 +1012,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="resource kind for a no-mutation-yet capsule",
     )
     capsule_build.add_argument("--notes", default=None, help="semicolon-separated limitation notes")
+    capsule_build.add_argument(
+        "--duo-reconciliation",
+        dest="duo_reconciliation",
+        default=None,
+        help="recorded termivance.duo_reconciliation/v1 record (embedded verbatim, "
+        "always NON_AUTHORITATIVE)",
+    )
+    capsule_build.add_argument(
+        "--witness",
+        default=None,
+        help="recorded termivance.resurrection_witness/v1 record for this exact target",
+    )
     capsule_build.add_argument("--out", required=True)
     capsule_build.add_argument("--json", action="store_true")
 
@@ -955,6 +1068,37 @@ def build_parser() -> argparse.ArgumentParser:
     tripwire.add_argument("--earlier", required=True, help="earlier tripwire reading JSON")
     tripwire.add_argument("--later", required=True, help="later tripwire reading JSON")
     tripwire.add_argument("--json", action="store_true")
+
+    reconcile_duo = sub.add_parser(
+        "reconcile-duo",
+        help="reconcile recorded Duo candidate claims against anonymous read-only evidence",
+    )
+    reconcile_duo.add_argument(
+        "--claims", required=True, help="termivance.duo_claims/v1 claims record"
+    )
+    reconcile_duo.add_argument("--project-id", type=int, required=True)
+    reconcile_duo.add_argument("--issue-iid", type=int, required=True)
+    reconcile_duo.add_argument(
+        "--session-url", default=None, help="recorded agent-session UI URL (probed anonymously)"
+    )
+    reconcile_duo.add_argument(
+        "--ttl", type=int, default=900, help="freshness window in seconds (default 900)"
+    )
+    reconcile_duo.add_argument("--out", default=None)
+    reconcile_duo.add_argument("--json", action="store_true")
+
+    witness_build = sub.add_parser(
+        "witness-build",
+        help="resurrection counterexample witness: the target's own CI config at "
+        "the exact observed commit, plus its Pages administration surface",
+    )
+    witness_build.add_argument("--project-id", type=int, required=True)
+    witness_build.add_argument(
+        "--full-path", default=None, help="exact full path (resolved anonymously when omitted)"
+    )
+    witness_build.add_argument("--kind", default="GITLAB_PAGES_SITE")
+    witness_build.add_argument("--out", default=None)
+    witness_build.add_argument("--json", action="store_true")
 
     return parser
 
@@ -1005,6 +1149,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_workflow_status(args)
     if args.command == "tripwire-check":
         return _cmd_tripwire(args)
+    if args.command == "reconcile-duo":
+        return _cmd_reconcile_duo(args)
+    if args.command == "witness-build":
+        return _cmd_witness_build(args)
     return 1  # pragma: no cover
 
 

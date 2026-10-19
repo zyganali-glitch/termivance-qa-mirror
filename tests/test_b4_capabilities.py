@@ -25,6 +25,7 @@ from termivance.portfolio import (
     KIND_RELEASE,
     NOT_AUTHORIZING,
     PAGES_ABSENT,
+    PAGES_NOT_OBSERVED_404,
     PAGES_PRESENT,
     PAGES_UNVERIFIABLE,
     SUPPORT_INFERRED,
@@ -137,11 +138,24 @@ def test_portfolio_policy_labels_approved_target_and_pages_presence(tmp_path, mo
     assert any("boundary:" in line for line in lines)
 
 
-def test_portfolio_pages_endpoint_404_is_no_pages_not_unverifiable():
+def test_portfolio_pages_endpoint_404_is_never_verified_absence():
+    # QA-FIX C: a standalone read-only 404 on the Pages endpoint is an
+    # access/visibility observation, never proof that a published site is gone.
     client = GitLabClient(None, transport=transport(own=404))
-    asset = observe_portfolio(client, [PID], now=NOW).assets[0]
-    assert asset.pages_state == PAGES_ABSENT
+    snapshot = observe_portfolio(client, [PID], now=NOW)
+    asset = snapshot.assets[0]
+    assert asset.pages_state == PAGES_NOT_OBSERVED_404
     assert asset.ok is True  # the project itself was readable
+    assert snapshot.to_dict()["totals"]["pages_not_observed"] == 1
+    assert snapshot.to_dict()["totals"]["pages_sites"] == 0
+    # The recorded Pages resource is an explicit NOT_OBSERVED record, and the
+    # absence state reserved for the authorized-transition protocol must not
+    # appear anywhere in this read-only observation.
+    pages_records = [r for r in asset.resources if r.kind == KIND_PAGES]
+    assert pages_records and pages_records[0].support == SUPPORT_NOT_OBSERVED
+    assert PAGES_ABSENT not in {r.state for r in asset.resources}
+    lines = snapshot.render().splitlines()
+    assert any("boundary:" in line for line in lines)
 
 
 def test_portfolio_unreadable_project_is_recorded_not_hidden():
@@ -449,6 +463,125 @@ def test_control_room_build_writes_embedded_data(tmp_path):
     # The interactive contract is visible in the page itself.
     assert "What if we retire this?" in index or "What-if" in index
     assert "escapeHtml" in index and "<script>" in index
+
+
+def _build_control_room(tmp_path, receipt_obj):
+    """Run the builder with one receipt artifact; return the embedded payload."""
+    receipt_path = tmp_path / "receipt.json"
+    receipt_path.write_text(json.dumps(receipt_obj), encoding="utf-8")
+    out_dir = tmp_path / "control_room_receipt"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/build_control_room.py",
+            "--receipt",
+            str(receipt_path),
+            "--out-dir",
+            str(out_dir),
+        ],
+        capture_output=True,
+        text=True,
+        cwd=Path(__file__).parents[1],
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr
+    data_js = (out_dir / "data.js").read_text(encoding="utf-8")
+    return json.loads(data_js.removeprefix("window.TERMIVANCE_DATA = ").removesuffix(";\n"))
+
+
+def _v3_receipt(**overrides):
+    """A minimally coherent v3 receipt for classifier tests (display-only)."""
+    receipt = {
+        "schema": "termivance.retirement_receipt/v3",
+        "target": {"project_id": PID, "full_path": PATH, "resource_kind": "GITLAB_PAGES_SITE"},
+        "action": "unpublish_pages",
+        "mutation_attempted": False,
+        "verdict": "BLOCKED",
+        "mutation": None,
+    }
+    receipt.update(overrides)
+    return receipt
+
+
+def test_control_room_receipt_schema_presence_is_never_live(tmp_path):
+    # QA-FIX D: a bare, incoherent schema string must classify INVALID and must
+    # never flip the provenance to RECORDED_LIVE or a live mutation state.
+    payload = _build_control_room(tmp_path, {"schema": "termivance.retirement_receipt/v3"})
+    receipt = payload["sections"]["receipt"]
+    assert receipt["receipt_state"] == "INVALID"
+    assert payload["mutation_status"] == "INVALID"
+    assert payload["provenance_label"] != "RECORDED_LIVE"
+    gate = next(
+        g for g in payload["authorization_gates"] if "87785099" in str(g["gate"])
+    )
+    assert gate["state"] == "INVALID"
+
+
+def test_control_room_unknown_schema_receipt_is_invalid(tmp_path):
+    payload = _build_control_room(tmp_path, {"schema": "termivance.fake_receipt/v9"})
+    receipt = payload["sections"]["receipt"]
+    assert receipt["receipt_state"] == "INVALID"
+    assert receipt["record"]["schema"] == "termivance.fake_receipt/v9"
+    assert payload["mutation_status"] == "INVALID"
+
+
+def test_control_room_blocked_receipt_is_surfaced_never_promoted(tmp_path):
+    payload = _build_control_room(
+        tmp_path, _v3_receipt(mutation_attempted=False, verdict="BLOCKED")
+    )
+    receipt = payload["sections"]["receipt"]
+    assert receipt["receipt_state"] == "BLOCKED"
+    assert receipt["mutation_attempted"] is False
+    assert payload["mutation_status"] == "BLOCKED"
+    # A recorded non-attempt is never live evidence of the destructive event.
+    assert payload["provenance_label"] != "RECORDED_LIVE"
+
+
+def test_control_room_accepted_mutation_is_action_acceptance_never_absence(tmp_path):
+    payload = _build_control_room(
+        tmp_path,
+        _v3_receipt(
+            mutation_attempted=True,
+            verdict="INCONCLUSIVE",
+            mutation={"accepted": True, "status": 202, "method": "DELETE"},
+        ),
+    )
+    receipt = payload["sections"]["receipt"]
+    assert receipt["receipt_state"] == "MUTATION_ACCEPTED"
+    assert receipt["mutation_accepted"] is True
+    assert payload["mutation_status"] == "MUTATION_ACCEPTED"
+    # Acceptance is not absence: the data must not claim an absence outcome.
+    raw = json.dumps(payload)
+    assert "OBSERVED_ABSENT" not in raw
+    assert "RESURRECTION_CONTROLLED" not in raw
+
+
+def test_control_room_observed_absent_only_from_receipt_verdict(tmp_path):
+    payload = _build_control_room(
+        tmp_path,
+        _v3_receipt(
+            mutation_attempted=True,
+            verdict="OBSERVED_ABSENT",
+            mutation={"accepted": True, "status": 204, "method": "DELETE"},
+        ),
+    )
+    receipt = payload["sections"]["receipt"]
+    assert receipt["receipt_state"] == "OBSERVED_ABSENT"
+    assert receipt["recorded_verdict"] == "OBSERVED_ABSENT"
+
+
+def test_control_room_incoherent_acceptance_without_2xx_is_invalid(tmp_path):
+    payload = _build_control_room(
+        tmp_path,
+        _v3_receipt(
+            mutation_attempted=True,
+            verdict="RETIRED",
+            mutation={"accepted": True, "status": "202", "method": "DELETE"},
+        ),
+    )
+    receipt = payload["sections"]["receipt"]
+    assert receipt["receipt_state"] == "INVALID"
+    assert payload["mutation_status"] == "INVALID"
 
 
 # -- P2: tripwire ------------------------------------------------------------------

@@ -10,9 +10,9 @@ demo*, which is itself a product feature (honest evidence states).
 
 ```bash
 python -m pip install -e ".[dev]"
-ruff check . && python -m pytest -q   # 277 passed
+ruff check . && python -m pytest -q   # 306 passed
 python scripts/refresh_b4_evidence.py  # anonymous live refresh (GET-only, $0)
-python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --out-dir control_room
+python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --out-dir control_room
 ```
 
 Open `control_room/index.html` in a browser (final shot).
@@ -65,10 +65,18 @@ Open `control_room/index.html` and *use it live*:
 4. What-if tab: pick the CI mechanism → its precomputed `PROJECTED_NOT_OBSERVED`
    factor; pick the Pages resource → honest `NOT_RUN` card. "This page runs no
    engine and observes nothing — it is a viewer of records."
-5. Proof tab: authorization gates (`STRUCTURALLY_REFUSED` for project deletion),
-   capsule sections, the Duo session `9671626` evidence ladder
-   (independently observed 200s vs operator-confirmed contents vs 401/404
-   unobservable leg), and the escaping self-test rendering as inert text.
+5. Proof tab: authorization gates (`STRUCTURALLY_REFUSED` for project deletion,
+   the receipt card showing the fail-closed truth state — `NOT_RUN` today, never
+   a "live" label from mere schema presence), capsule sections, the Duo session
+   `9671626` evidence ladder (independently observed 200s vs operator-confirmed
+   contents vs 401/404 unobservable leg), the **claim reconciliation** table
+   (4 SUPPORTED / 2 UNRESOLVED / 2 NOT_AUTHENTICALLY_ATTRIBUTABLE / 1 UNSUPPORTED
+   — "consistency is never promoted; a 401 is not attribution") and the
+   **resurrection witness** card (target 87785099's *own* CI config at the exact
+   observed commit carries Pages redeployment signals; its Pages administration
+   surface answers 403 → "the observing identity cannot verify this surface";
+   absence claim `NEVER`, control `NOT_CLAIMED`) — plus the escaping self-test
+   rendering as inert text.
 
 ## 5 · Proof Capsule + verify-receipt (≈25 s)
 
@@ -82,9 +90,12 @@ termivance capsule-verify evidence/b4/proof_capsule.json
 
 This is the *no-mutation-yet* capsule over the real BLOCKED decision:
 mutation/absence sections are explicit `NOT_RUN`/`NOT_OBSERVED`, never invented.
-Say plainly: "integrity verification is a hash check, not a provider
-re-observation. When a real receipt exists, the capsule carries the mutation
-receipt, authorization provenance and independence observations instead."
+The shipped `evidence/b4/proof_capsule.json` additionally embeds the
+non-authoritative Duo reconciliation and the resurrection witness verbatim (or
+explicit `NOT_OBSERVED` when not supplied). Say plainly: "integrity verification
+is a hash check, not a provider re-observation. When a real receipt exists, the
+capsule carries the mutation receipt, authorization provenance and independence
+observations instead."
 
 ## 6 · Single-flow workflow (≈20 s)
 

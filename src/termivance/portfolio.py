@@ -42,6 +42,14 @@ PORTFOLIO_TTL_SECONDS = 900
 
 PAGES_PRESENT = "DEPLOYMENT_PRESENT"
 PAGES_UNVERIFIABLE = "PAGES_UNVERIFIABLE_403"
+#: QA-FIX C: a standalone Pages-endpoint 404 is an *unavailable observation*,
+#: never verified absence. Whether the endpoint is invisible because no site was
+#: ever published, because the site exists but the endpoint is hidden, or
+#: because the inbound identity lacks visibility cannot be decided from one
+#: read-only probe. Only the separate authorized-transition evidence protocol
+#: (proven pre-publication state + accepted unpublish + independent read-back)
+#: may ever produce PAGES_ABSENT.
+PAGES_NOT_OBSERVED_404 = "PAGES_NOT_OBSERVED_404"
 PAGES_ABSENT = "NO_PAGES"
 PAGES_UNKNOWN = "UNKNOWN"
 
@@ -317,7 +325,15 @@ def _pages_record(
 
 
 def _pages_support(pages_state: str) -> bool:
-    return pages_state in {PAGES_PRESENT, PAGES_ABSENT}
+    """True only for an *observed* Pages record.
+
+    QA-FIX C: only a positive provider read (a served URL from the Pages API)
+    is an OBSERVED fact. ``PAGES_ABSENT`` is intentionally excluded — bounded
+    retirement absence is established by the authorized-transition evidence
+    protocol (receipt-bound bounded absence), never by a standalone read-only
+    404, 403 or 401.
+    """
+    return pages_state == PAGES_PRESENT
 
 
 @dataclass(frozen=True, slots=True)
@@ -430,34 +446,25 @@ def observe_asset(
         pages_state = PAGES_PRESENT if served_url else PAGES_UNKNOWN
         pages_error = None
     elif pages.error_kind == "AUTH_DENIED":
-        # A 403 cannot distinguish site-present from site-gone; say so.
+        # A 401/403 cannot distinguish site-present from site-gone; say so.
         pages_state = PAGES_UNVERIFIABLE
         pages_error = pages.error_kind
     elif pages.error_kind == "NOT_FOUND":
-        pages_state = PAGES_ABSENT
-        pages_error = None
+        # QA-FIX C: a standalone 404 is an access/visibility observation, not
+        # proof that a previously published site became absent.
+        pages_state = PAGES_NOT_OBSERVED_404
+        pages_error = pages.error_kind
     else:
         pages_state = PAGES_UNKNOWN
         pages_error = pages.error_kind
-    pages_record = (
-        _pages_record(
-            pages_state,
-            project_id=project_id,
-            endpoint=pages_endpoint,
-            served_url=served_url,
-            observed_at=observed,
-            provenance=provenance,
-            error_kind=pages_error,
-        )
-        if pages_state in {PAGES_PRESENT, PAGES_ABSENT, PAGES_UNVERIFIABLE}
-        else ResourceRecord.not_observed(
-            kind=KIND_PAGES,
-            project_id=project_id,
-            endpoint=pages_endpoint,
-            error_kind=pages_error,
-            observed_at=observed,
-            provenance=provenance,
-        )
+    pages_record = _pages_record(
+        pages_state,
+        project_id=project_id,
+        endpoint=pages_endpoint,
+        served_url=served_url,
+        observed_at=observed,
+        provenance=provenance,
+        error_kind=pages_error,
     )
 
     env_endpoint = f"/projects/{project_id}/environments"
@@ -586,7 +593,9 @@ def observe_asset(
         role=_role_for(project_id, policy),
         pages_state=pages_state,
         ok=True,
-        error_kind=pages.error_kind if pages_state in (PAGES_UNVERIFIABLE, PAGES_UNKNOWN) else None,
+        error_kind=pages.error_kind
+        if pages_state in (PAGES_UNVERIFIABLE, PAGES_NOT_OBSERVED_404, PAGES_UNKNOWN)
+        else None,
         anonymous=anonymous,
         observed_at=observed,
         resources=(
@@ -730,6 +739,9 @@ class PortfolioSnapshot:
                 "pages_unverifiable": sum(
                     1 for a in self.assets if a.pages_state == PAGES_UNVERIFIABLE
                 ),
+                "pages_not_observed": sum(
+                    1 for a in self.assets if a.pages_state == PAGES_NOT_OBSERVED_404
+                ),
                 "approved_targets": sum(1 for a in self.assets if a.approved_target),
                 "protected": sum(1 for a in self.assets if a.role.startswith("PROTECTED")),
                 "resources_observed": sum(observed_counts.values()),
@@ -782,18 +794,22 @@ class PortfolioSnapshot:
         lines.append("-" * 100)
         lines.append(
             f"totals: {totals['assets']} assets, {totals['pages_sites']} pages sites, "
-            f"{totals['pages_unverifiable']} unverifiable(403), "
+            f"{totals['pages_unverifiable']} unverifiable(401/403), "
+            f"{totals['pages_not_observed']} pages endpoint NOT_OBSERVED(404 — never absence), "
             f"{totals['approved_targets']} approved targets, {totals['protected']} protected; "
             f"observed resources {totals['resources_observed']} "
             f"(not observed {totals['resources_not_observed']}); "
             f"relations observed {totals['observed_relations']} "
             f"/ inferred {totals['inferred_relations']}"
         )
-        # Honest limitation: a 403 is not evidence of presence or absence, and a
-        # discovery pass authorizes nothing.
+        # Honest limitation: access failures are not evidence of presence or
+        # absence, a 404 on the Pages endpoint is not a verified retirement, and
+        # a discovery pass authorizes nothing.
         lines.append(
             "boundary: NOT_OBSERVED records are access observations, never "
-            "deployment claims; every resource carries mutation_capability="
+            "deployment claims; verified Pages absence exists only inside the "
+            "authorized-transition evidence protocol, never from a read-only "
+            "probe; every resource carries mutation_capability="
             "NOT_AUTHORIZING — discovering a resource never authorizes mutating it"
         )
         return "\n".join(lines)
@@ -905,6 +921,7 @@ __all__ = [
     "PORTFOLIO_SCHEMA_V1",
     "PORTFOLIO_TTL_SECONDS",
     "PAGES_ABSENT",
+    "PAGES_NOT_OBSERVED_404",
     "PAGES_PRESENT",
     "PAGES_UNVERIFIABLE",
     "PAGES_UNKNOWN",

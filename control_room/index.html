@@ -139,11 +139,19 @@ const escapeHtml = (v) => String(v ?? "")
 
 function chipState(state) {
   const s = String(state ?? "");
-  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE)/.test(s)) return "chip ok";
-  if (/^INFERRED|^PROJECTED/.test(s)) return "chip amber";
-  if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT)/.test(s)) return "chip bad";
-  if (/^(UNAVAILABLE|UNKNOWN)/.test(s)) return "chip dim";
+  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE|SUPPORTED)/.test(s)) return "chip ok";
+  if (/^INFERRED|^PROJECTED|^STALE|^UNRESOLVED/.test(s)) return "chip amber";
+  if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT|CONTRADICTED|NOT_AUTHENTICALLY)/.test(s)) return "chip bad";
+  if (/^(UNAVAILABLE|UNKNOWN|UNSUPPORTED)/.test(s)) return "chip dim";
   if (/^(NOT_AUTHORIZING|READ_ONLY|READ_ONLY_OBSERVATION|AUTHORIZED_FALSE|STRUCTURALLY_REFUSED)/.test(s)) return "chip violet";
+  /* QA-FIX D: receipt truth states. Provider acceptance is a recorded fact but
+     never absence (amber); incoherence is a defect, never evidence (red). */
+  if (/^MUTATION_ACCEPTED/.test(s)) return "chip amber";
+  if (/^(INVALID|ATTEMPT_NOT_ACCEPTED|MALFORMED)/.test(s)) return "chip bad";
+  /* Witness truth states: an observed mechanism is a live counterexample
+     (amber); an unobserved config is unknown, never safe (dim). */
+  if (/^MECHANISM_PRESENT|^MECHANISM_NOT_FOUND/.test(s)) return "chip amber";
+  if (/^CONFIG_NOT_OBSERVED/.test(s)) return "chip dim";
   return "chip acc";
 }
 const chip = (label, cls) => `<span class="${cls || chipState(label)}">${escapeHtml(label)}</span>`;
@@ -209,8 +217,9 @@ function renderPortfolio() {
         </p>
         ${kv([
           ["provenance", chip(pf.provenance || "UNAVAILABLE")],
-          ["pages sites present", escapeHtml(t.pages_sites_present ?? "—")],
-          ["pages unverifiable", escapeHtml(t.pages_unverifiable ?? "—")],
+          ["pages sites present", escapeHtml(t.pages_sites ?? "—")],
+          ["pages unverifiable (401/403)", escapeHtml(t.pages_unverifiable ?? "—")],
+          ["pages endpoint NOT observed (404 — never absence)", escapeHtml(t.pages_not_observed ?? "—")],
           ["resources observed", escapeHtml(t.resources_observed ?? "—")],
           ["resources NOT observed", escapeHtml(t.resources_not_observed ?? "—")],
           ["observed / inferred relations", escapeHtml(t.observed_relations ?? "—") + " / " + escapeHtml(t.inferred_relations ?? "—")],
@@ -568,17 +577,18 @@ function renderProof() {
           <div><b>${escapeHtml(g.gate)}</b></div><div class="muted">${escapeHtml(g.detail)}</div><p></p>`).join("")}
       </div>
       <div class="card">${proofCapsule(sec.capsule)}</div>
-      ${sec.receipt && sec.receipt.schema ? receiptCard(sec.receipt) : `
-        <div class="card"><h2>Retirement receipt</h2>${chip("NOT_RUN")}
-        <div class="muted">No live mutation receipt exists: the runtime never
-        executed the destructive step, and this page will not pretend
-        otherwise.</div></div>`}
+      <div class="card">${witnessCard(sec.witness)}</div>
+      ${sec.receipt && sec.receipt.receipt_state ? receiptCard(sec.receipt) : `
+        <div class="card"><h2>Retirement receipt</h2>${chip("UNAVAILABLE", "chip dim")}
+        <div class="muted">The receipt section was not supplied to the builder;
+        nothing about a mutation is assumed here.</div></div>`}
     </div>
     <div>
       ${sec.decision && sec.decision.verdict ? decisionCard(sec.decision) : missing("Decision")}
       <div class="card"><h2>External evidence — GitLab Duo session 9671626</h2>
         ${duo ? duoLadder(duo) : missing("Duo session evidence")}
       </div>
+      <div class="card">${duoReconciliationCard(sec.duo_reconciliation)}</div>
       <div class="card"><h2>Escaping self-test</h2>
         <p class="muted">The raw string below is rendered as inert text (not as
         HTML) to demonstrate that provider-shaped content is always escaped:</p>
@@ -608,13 +618,66 @@ function proofCapsule(c) {
       `<tr><td>${escapeHtml(k)}</td><td>${chip((v && v.state) || "—")}</td></tr>`).join("")}
     </table>` : ""}`;
 }
-function receiptCard(r) {
-  return `<div class="card"><h2>Retirement receipt (live)</h2>${chip("RECORDED_LIVE")}
+function receiptCard(rc) {
+  /* QA-FIX D: the truth state comes from the build-time fail-closed classifier.
+     Schema presence alone is never evidence; acceptance is never absence. */
+  const r = rc.record || {};
+  const state = rc.receipt_state || "INVALID";
+  const recordedOnly = state !== "NOT_RUN" && state !== "INVALID";
+  return `<div class="card"><h2>Retirement receipt${recordedOnly ? " (recorded artifact)" : ""}</h2>${chip(state)}
+    ${rc.recorded_verdict && rc.recorded_verdict !== state ? chip("recorded verdict: " + rc.recorded_verdict) : ""}
     ${kv([
-      ["schema", escapeHtml(r.schema || "")],
-      ["action", escapeHtml(r.action || "")],
-      ["verdict", chip((r.verification && r.verification.verdict) || r.verdict || "—")],
-    ])}</div>`;
+      ["schema", escapeHtml(r.schema || "—")],
+      ["action", escapeHtml(r.action || "—")],
+      ["target project", escapeHtml((r.target || {}).project_id ?? "—")],
+      ["mutation attempted", escapeHtml(String(rc.mutation_attempted))],
+      ["mutation accepted", escapeHtml(String(rc.mutation_accepted))],
+    ])}
+    <div class="muted">${escapeHtml(rc.note || "")}</div>
+    ${state === "NOT_RUN" ? `<div class="muted">No live mutation receipt exists: the
+    runtime never executed the destructive step, and this page will not pretend
+    otherwise.</div>` : ""}
+  </div>`;
+}
+function duoReconciliationCard(rc) {
+  if (!rc || !rc.claims) {
+    return `<h2>Duo claim reconciliation</h2>${chip("UNAVAILABLE", "chip dim")}
+      <div class="muted">No recorded reconciliation was supplied; nothing about the
+      Duo session output is assumed here.</div>`;
+  }
+  const totals = rc.totals || {};
+  return `<h2>Duo claim reconciliation — candidate claims only</h2>
+    ${chip("authority: " + (rc.authority || "—"))} ${chip("session " + (rc.duo_session_id || "—"))}
+    <p>${Object.entries(totals).map(([k, v]) => chip(k + ": " + v)).join(" ")}</p>
+    <table><tr><th>claim</th><th>status</th><th>evidence note</th></tr>
+    ${(rc.claims || []).map((c) => `<tr>
+      <td><b>${escapeHtml(c.claim_id)}</b><br><span class="muted">${escapeHtml(c.text)}</span></td>
+      <td>${chip(c.status)}</td>
+      <td class="muted">${escapeHtml(c.detail)}</td></tr>`).join("")}
+    </table>
+    <div class="muted">${escapeHtml(rc.boundary || "")}</div>`;
+}
+function witnessCard(w) {
+  if (!w || !w.resurrection_possible) {
+    return `<h2>Resurrection counterexample witness</h2>${chip("UNAVAILABLE", "chip dim")}
+      <div class="muted">No witness record was supplied; resurrection paths are not
+      assumed away.</div>`;
+  }
+  const t = w.target || {};
+  const cfg = w.config || {};
+  return `<h2>Resurrection counterexample witness</h2>
+    ${chip(w.resurrection_possible)}
+    ${chip("absence_claim: " + (w.absence_claim || "—"))}
+    ${chip("resurrection_controlled: " + (w.resurrection_controlled || "—"))}
+    ${kv([
+      ["target", `<code>${escapeHtml(t.project_id || "")}</code> ${escapeHtml(t.full_path || "")}`],
+      ["default branch @ commit", escapeHtml(String(w.default_branch)) + " @ " + escapeHtml(String(w.commit_sha))],
+      ["config signals", escapeHtml(JSON.stringify(cfg.signals || []))],
+      ["config complete", escapeHtml(String(cfg.configuration_complete))],
+    ])}
+    <div class="muted">${escapeHtml((w.pages_administration || {}).phrase || "")}</div>
+    <h3>Counterexamples — what could still resurrect it</h3>
+    <ul class="tight">${(w.counterexamples || []).map((c) => `<li>${escapeHtml(c)}</li>`).join("")}</ul>`;
 }
 function decisionCard(d) {
   return `<div class="card"><h2>Deterministic decision</h2>${chip(d.verdict)}

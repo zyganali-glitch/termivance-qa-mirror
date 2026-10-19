@@ -21,13 +21,13 @@ This starter pack contains **no live evidence**. `NOT_RUN` != `PASS`. Record evi
 | B3: environment state | Separate environment API or GitLab read | NOT_RUN | `stopped` does not prove Pages site deletion |
 | B3: GitHub QA bridge | Real GitHub Actions run calling live GitLab APIs; mirror SHA == canonical SHA; current pipeline bound to that SHA; fail-closed `qa_status` | PASS (run `39156275572`, `qa_status=PASS`, drift `IN_SYNC`) | Non-canonical; public read-only; Actions never writes to GitLab |
 | B3 optional: resurrection | Subsequent same-target observed redeploy + state downgrade | NOT_RUN | Do not claim `RESURRECTION_CONTROLLED` without control proof |
-| B4: P0 security closure | Durable sealed-reservation ledger, GitLab-issue approval provenance, receipt-bound absence; adversarial tests + CI assertions | PASS (unit + CI assertion; 238 tests) | Local/CI contract; still not a live mutation proof |
+| B4: P0 security closure | Durable sealed-reservation ledger, GitLab-issue approval provenance, receipt-bound absence; adversarial tests + CI assertions | PASS (unit + CI assertion; closure suite 306 tests) | Local/CI contract; still not a live mutation proof |
 | B4: Portfolio (Capability 1) | GET-only, labeled live snapshot over selected projects | PASS (live anonymous read: `evidence/b4/portfolio.json`) | 403 on `/pages` is an access observation, never a deployment claim |
 | B4: Risk map (Capability 2) | Deterministic map from a recorded decision | PASS (`evidence/b4/risk_map.json`; live-decision-derived) | Adds no new observation; explains one |
 | B4: Simulation (Capability 3) | Same rules as the real engine; zero mutation dispatch | PASS (`evidence/b4/simulation.json`; `PROJECTED_NOT_OBSERVED` labels) | Hypothetical banner; never a completed provider operation |
-| B4: Control Room (Capability 4) | Self-contained static UI from recorded evidence; ~15s comprehension | PASS (`control_room/`; visual render verified) | Shows only what happened; mutation status `NOT_RUN` displayed |
-| B4: Proof Capsule + verify-receipt (Capability 5) | `capsule-build` + `capsule-verify` CLI, tamper-evident manifest | PASS as capability (unit + CLI); **live capsule NOT_RUN** (no live receipt exists) | Integrity verification is not provider re-observation |
-| B4: single Duo flow workflow (Capability 6) | New live, linked Duo session on the workflow | NOT_RUN (requires operator GUI action; B1 session remains the deployed-flow evidence) | AI text non-authoritative; no autonomous mutation |
+| B4: Control Room (Capability 4) | Self-contained static UI from recorded evidence; ~15s comprehension | PASS (`control_room/`; browser-verified v2 + Node DOM-render test; receipt card fail-closed since closure fix D) | Shows only what happened; mutation status `NOT_RUN` displayed; schema presence is never labeled live |
+| B4: Proof Capsule + verify-receipt (Capability 5) | `capsule-build` + `capsule-verify` CLI, tamper-evident manifest | PASS as capability (unit + CLI; now embeds Duo-reconciliation + witness records); **live capsule NOT_RUN** (no live receipt exists) | Integrity verification is not provider re-observation |
+| B4: single Duo flow workflow (Capability 6) | New live, linked Duo session on the workflow | OPERATOR_CONFIRMED (session `9671626` on canonical issue #3; note `4040776241`); mutating legs NOT_RUN; note content **not independently attributable** (anonymous note reads 401) | AI text non-authoritative; no autonomous mutation; reconciliation marks note-content claims `NOT_AUTHENTICALLY_ATTRIBUTABLE` |
 | B4: role-dependent 87785099 access re-check | Authenticated `GET /pages` under granted Maintainer role | NOT_RUN (no operator PAT on this machine; only an anonymous 403 was re-observed) | Anonymous 403 ≠ role verdict; blocked stays blocked |
 | B4: judge package | Public evidence UI, integrated pipeline, YouTube <3m, Devpost submission | NOT_RUN | Video must depict actual product |
 
@@ -135,6 +135,26 @@ Independent QA of B3 found the GitHub bridge genuinely operational but identifie
 **Defect E evidence (docs/demo reconcile):** README status/commands, this matrix, `DEMO_SCRIPT.md` and `HANDOFF.md` updated in this one pass: refreshed artifact descriptions, Control Room v2, trust-chain CLI, genuine Duo session with its evidence ladder, and honest `NOT_RUN` legs — no claimed live retirement, no unstaged DevSecOps stages.
 
 **Still `NOT_RUN` after repair (unchanged posture):** live Pages unpublish on `87785099`, real `OBSERVED_ABSENT`, live capsule with a real receipt, authenticated `CLEAR`/`MAINTAINER` reads, live tripwire, operator GUI legs (Maintainer grant or organizer-executed unpublish; video; Devpost submission). No absence, no mutation, no verdict is claimed from this repair.
+
+## B4 final consolidated closure evidence (2026-10-19, all times UTC)
+
+**Batch state:** the four mandatory QA correctness fixes (A–D) and two evidence-bound enhancements implemented and verified in one closure pass. Suite **306 passed** locally (305 + 1 Node DOM-render test that skips where Node is absent), `ruff check` clean, `scripts/ci_safety_assertions.py` **40/40 PASS** network-free. GitLab CI on the pushed closure SHA re-runs the same gates; its pipeline and the GitHub QA bridge run are recorded in the closure report (they cannot be embedded in the commit they verify).
+
+**Fix A — operator HMAC is not policy-bypassable (`approval_source.py`):** `signature_required=false` is refused at dataclass construction **and** on load, and HMAC verification runs unconditionally; no policy field can silently disable the operator MAC. Adversarial tests cover construction refusal, load refusal and the unconditional verification path.
+
+**Fix B — duplicate/conflicting approvals are refused (`approval_source.py`):** approval statements are parsed structurally; more than one binding statement fails as *ambiguous*; a single statement with a wrong value fails against *exactly as required*. Tests cover duplicate, conflicting and single-wrong-value statements.
+
+**Fix C — a Pages-endpoint `404` is never verified absence (`portfolio.py`):** new state `PAGES_NOT_OBSERVED_404`; Pages support is reported only for `PAGES_PRESENT`; `PAGES_ABSENT` is never assigned by read-only observation; totals carry `pages_not_observed`; the boundary text states the observation is not absence. Regression: `test_portfolio_pages_endpoint_404_is_never_verified_absence`.
+
+**Fix D — Control Room receipts are fail-closed (`scripts/build_control_room.py`, `control_room/index.html`):** a classifier maps a receipt artifact to `NOT_RUN` / `INVALID` / recorded verdict / `ATTEMPT_NOT_ACCEPTED` / `MUTATION_ACCEPTED`; gates, `mutation_status` and the provenance label derive from that classification; the receipt card shows the truth state and never "(live)". Six negative tests in `tests/test_b4_capabilities.py`.
+
+**Enhancement 1 — Evidence-Bound Duo Retirement Reconciliation (`duo_reconciliation.py`, CLI `reconcile-duo`; `evidence/b4/duo_reconciliation.json`):** 9 candidate claims derived strictly from the operator-confirmed Duo ladder (issue #3 · session `9671626` · note `4040776241`) classified `SUPPORTED` / `CONTRADICTED` / `UNRESOLVED` / `STALE` / `UNSUPPORTED` / `NOT_AUTHENTICALLY_ATTRIBUTABLE` → 4 / 0 / 2 / 0 / 1 / 2; every claim non-authoritative and the record marked NON_AUTHORITATIVE; "consistent with, but not proof" is always `UNRESOLVED`. Anonymous observations: project 200, issue 200, notes 401, discussions 401, agent-sessions UI 404 — access observations, never absence and never authenticity.
+
+**Enhancement 2 — Resurrection Counterexample Witness (`witness.py`, CLI `witness-build`; `evidence/b4/witness_87785099.json`):** reads the disposable target's **own** `.gitlab-ci.yml` at the exact observed default-branch commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d`; signals `pages_true` + `pages_keyword` → `MECHANISM_PRESENT_IN_OBSERVED_CONFIG` (4 counterexamples); the Pages administration read returns 403 phrased as "the observing identity cannot verify this Pages administration surface"; `absence_claim: NEVER_FROM_THIS_WITNESS`, `resurrection_controlled: NOT_CLAIMED`.
+
+**Capsule binding:** `capsule-build --duo-reconciliation/--witness` embeds both records with cross-target refusal (rc=2); `capsule-verify` binds the nested `record` objects to the same target and known verdicts; `evidence/b4/proof_capsule.json` regenerated embedding both sections.
+
+**Verification additions:** 22 acceptance tests (`tests/test_b4_duo_witness.py`) + 6 receipt-classifier negatives + 1 Node DOM-render test; 40/40 CI safety assertions now include the A/B/C/D regressions, reconciliation/witness non-authority and shipped-artifact conformance; control room rebuilt (provenance `LIVE_ANONYMOUS`) and DOM-render smoke-tested (proof tab cards present, no "(live)" label).
 
 ## Minimal bounded-absence receipt fields
 

@@ -1,0 +1,201 @@
+{
+  "authority": "NON_AUTHORITATIVE",
+  "boundary": "Duo output is candidate claims only; every status here is derived from anonymous read-only observations; no verdict may originate from this record and no claim is ever promoted beyond what a GET actually showed",
+  "claims": [
+    {
+      "check_kind": "PROJECT_READ",
+      "claim_id": "duo-9671626-01",
+      "detail": "the project is publicly readable to this anonymous identity (HTTP 200)",
+      "observed": {
+        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "project_read_status": 200
+      },
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "source_ladder": "independently_observed_anonymous_api[0]",
+      "status": "SUPPORTED",
+      "text": "project 87779099 is publicly readable (HTTP 200)"
+    },
+    {
+      "check_kind": "ISSUE_METADATA",
+      "claim_id": "duo-9671626-02",
+      "detail": "the anonymous issue read confirms every stated field exactly",
+      "observed": {
+        "issue_metadata": {
+          "author": {
+            "id": 39306908,
+            "name": "Mehmet Aydoğan",
+            "username": "zyganali"
+          },
+          "created_at": "2026-10-18T18:56:41.601Z",
+          "labels": [
+            "retirement-decision",
+            "termivance::b3"
+          ],
+          "state": "opened",
+          "title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization",
+          "updated_at": "2026-10-19T08:57:41.500Z",
+          "user_notes_count": 3
+        },
+        "issue_read_status": 200,
+        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+      },
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "source_ladder": "independently_observed_anonymous_api[1]",
+      "status": "SUPPORTED",
+      "text": "issue #3 exists, state opened, title/labels/author match the recorded B3 retirement status thread"
+    },
+    {
+      "check_kind": "CONSISTENCY_INFERENCE",
+      "claim_id": "duo-9671626-03",
+      "detail": "the observable core matches, but 'consistent with' is not proof: the inference is never promoted to SUPPORTED",
+      "observed": {
+        "issue_metadata": {
+          "author": {
+            "id": 39306908,
+            "name": "Mehmet Aydoğan",
+            "username": "zyganali"
+          },
+          "created_at": "2026-10-18T18:56:41.601Z",
+          "labels": [
+            "retirement-decision",
+            "termivance::b3"
+          ],
+          "state": "opened",
+          "title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization",
+          "updated_at": "2026-10-19T08:57:41.500Z",
+          "user_notes_count": 3
+        },
+        "issue_read_status": 200,
+        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+      },
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "source_ladder": "independently_observed_anonymous_api[2]",
+      "status": "UNRESOLVED",
+      "text": "issue user_notes_count=3 and updated_at=2026-10-19T08:57:41.500Z are consistent with, but not proof of, the operator-reported new comment window"
+    },
+    {
+      "check_kind": "SESSION_UI_PROBE",
+      "claim_id": "duo-9671626-04",
+      "detail": "the agent-sessions UI is an authenticated surface; the anonymous probe returned 404 — an access observation that can neither confirm nor deny the session's recorded state, and is never promoted",
+      "observed": {
+        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "session_ui_status": 404,
+        "session_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626"
+      },
+      "origin": "OPERATOR_CONFIRMED_UI",
+      "source_ladder": "operator_confirmed_only[0]",
+      "status": "UNRESOLVED",
+      "text": "session id 9671626 exists and Finished in the authenticated automate/agent-sessions UI"
+    },
+    {
+      "check_kind": "ISSUE_NOTE_READ",
+      "claim_id": "duo-9671626-05",
+      "detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution — the claim cannot be attributed",
+      "observed": {
+        "note_id_claimed": 4040776241,
+        "notes_read_status": 401,
+        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+      },
+      "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
+      "source_ladder": "operator_confirmed_only[1]",
+      "status": "NOT_AUTHENTICALLY_ATTRIBUTABLE",
+      "text": "the agent-authored comment note id 4040776241 was published on issue #3 by the GitLab Duo service account"
+    },
+    {
+      "check_kind": "ISSUE_NOTE_READ",
+      "claim_id": "duo-9671626-06",
+      "detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution — the claim cannot be attributed",
+      "observed": {
+        "note_id_claimed": 4040776241,
+        "notes_read_status": 401,
+        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+      },
+      "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
+      "source_ladder": "operator_confirmed_only[2]",
+      "status": "NOT_AUTHENTICALLY_ATTRIBUTABLE",
+      "text": "the six-section analysis content itself and its read-only, non-authoritative character"
+    },
+    {
+      "check_kind": "FLOW_INTERNALS",
+      "claim_id": "duo-9671626-07",
+      "detail": "flow-execution internals have no independently observable surface; the claim can never be promoted by this tool",
+      "observed": {
+        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+      },
+      "origin": "OPERATOR_CONFIRMED_UI",
+      "source_ladder": "operator_confirmed_only[3]",
+      "status": "UNSUPPORTED",
+      "text": "the agent used genuine GitLab tools and stated it did NOT directly query disposable project 87785099"
+    },
+    {
+      "check_kind": "OBSERVABILITY_PROBE",
+      "claim_id": "duo-9671626-08",
+      "detail": "the anonymous probe reproduces the recorded access observation (HTTP 401)",
+      "observed": {
+        "actual_status": 401,
+        "expected_status": 401,
+        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "surface": "notes"
+      },
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "source_ladder": "not_independently_observable_and_never_promoted[0]",
+      "status": "SUPPORTED",
+      "text": "note/discussion contents (HTTP 401 to anonymous readers; 401 is an access observation, never absence, never authenticity)"
+    },
+    {
+      "check_kind": "OBSERVABILITY_PROBE",
+      "claim_id": "duo-9671626-09",
+      "detail": "the anonymous probe reproduces the recorded access observation (HTTP 404)",
+      "observed": {
+        "actual_status": 404,
+        "expected_status": 404,
+        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "surface": "session_ui"
+      },
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "source_ladder": "not_independently_observable_and_never_promoted[1]",
+      "status": "SUPPORTED",
+      "text": "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
+    }
+  ],
+  "claims_source": "evidence/b4/duo_session_9671626_readback.json",
+  "duo_session_id": "9671626",
+  "flow_catalog_item_id": 1018562,
+  "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+  "schema": "termivance.duo_reconciliation/v1",
+  "surface": {
+    "discussions_read_status": 401,
+    "issue_iid": 3,
+    "issue_metadata": {
+      "author": {
+        "id": 39306908,
+        "name": "Mehmet Aydoğan",
+        "username": "zyganali"
+      },
+      "created_at": "2026-10-18T18:56:41.601Z",
+      "labels": [
+        "retirement-decision",
+        "termivance::b3"
+      ],
+      "state": "opened",
+      "title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization",
+      "updated_at": "2026-10-19T08:57:41.500Z",
+      "user_notes_count": 3
+    },
+    "issue_read_status": 200,
+    "notes_read_status": 401,
+    "observed_at": "2026-10-19T11:31:49.660547+00:00",
+    "project_id": 87779099,
+    "project_read_status": 200,
+    "provenance": "ANONYMOUS_PUBLIC_READ",
+    "session_ui_status": 404,
+    "session_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626"
+  },
+  "totals": {
+    "NOT_AUTHENTICALLY_ATTRIBUTABLE": 2,
+    "SUPPORTED": 4,
+    "UNRESOLVED": 2,
+    "UNSUPPORTED": 1
+  }
+}

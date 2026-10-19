@@ -368,6 +368,8 @@ def build_capsule(
     absence: dict[str, object] | None = None,
     authorization: dict[str, object] | None = None,
     source: dict[str, object] | None = None,
+    duo_reconciliation: dict[str, object] | None = None,
+    witness: dict[str, object] | None = None,
     notes: tuple[str, ...] = (),
     now: datetime | None = None,
 ) -> dict[str, object]:
@@ -375,7 +377,10 @@ def build_capsule(
 
     Everything passed here must already be recorded evidence; no section is
     ever invented. Anything genuinely absent is recorded as an explicit
-    ``NOT_OBSERVED``/``NOT_RUN`` entry instead of being omitted.
+    ``NOT_OBSERVED``/``NOT_RUN`` entry instead of being omitted. The optional
+    ``duo_reconciliation`` and ``witness`` records are embedded verbatim
+    (wrapped) and never promoted: the reconciliation stays NON_AUTHORITATIVE
+    and the witness never claims absence or ``RESURRECTION_CONTROLLED``.
     """
     generated = _now_iso(now)
     sections: dict[str, object] = {
@@ -414,6 +419,18 @@ def build_capsule(
         sections["source_evidence"] = source
     else:
         sections["source_evidence"] = {"state": "NOT_OBSERVED"}
+    if duo_reconciliation is not None:
+        sections["duo_reconciliation"] = {
+            "state": "RECONCILED",
+            "authority": "NON_AUTHORITATIVE",
+            "record": duo_reconciliation,
+        }
+    else:
+        sections["duo_reconciliation"] = {"state": "NOT_OBSERVED"}
+    if witness is not None:
+        sections["witness"] = {"state": "RECORDED", "record": witness}
+    else:
+        sections["witness"] = {"state": "NOT_OBSERVED"}
 
     manifest = {"sections": {name: _digest(section) for name, section in sections.items()}}
     manifest_digest = _digest(manifest)
@@ -490,19 +507,29 @@ def verify_capsule(capsule: dict[str, object]) -> dict[str, object]:
     for name, section in sections.items():
         if not isinstance(section, dict):
             continue
-        if "target" in section and isinstance(section["target"], dict):
-            section_target = TargetIdentity.from_dict(dict(section["target"]))
-            if section_target.key() != capsule_target.key():
-                failures.append(
-                    f"section {name!r} is bound to a different target than the capsule identity"
-                )
-        if "verdict" in section and section["verdict"] is not None:
-            try:
-                Verdict(str(section["verdict"]))
-            except ValueError:
-                failures.append(
-                    f"section {name!r} carries an unknown verdict {section['verdict']!r}"
-                )
+        # Nested recorded artifacts (for example the witness record inside its
+        # wrapper section) must bind to the same target and carry only known
+        # verdicts, exactly like top-level sections.
+        candidates = [("", section)]
+        nested = section.get("record")
+        if isinstance(nested, dict):
+            candidates.append((" record", nested))
+        for suffix, candidate in candidates:
+            if "target" in candidate and isinstance(candidate["target"], dict):
+                section_target = TargetIdentity.from_dict(dict(candidate["target"]))
+                if section_target.key() != capsule_target.key():
+                    failures.append(
+                        f"section {name!r}{suffix} is bound to a different target "
+                        "than the capsule identity"
+                    )
+            if "verdict" in candidate and candidate["verdict"] is not None:
+                try:
+                    Verdict(str(candidate["verdict"]))
+                except ValueError:
+                    failures.append(
+                        f"section {name!r}{suffix} carries an unknown verdict "
+                        f"{candidate['verdict']!r}"
+                    )
     if failures:
         raise CapsuleError("capsule binding failures: " + "; ".join(failures))
 
@@ -560,7 +587,9 @@ def _section_order(name: str) -> tuple[int, str]:
         "absence": 3,
         "authorization": 4,
         "source_evidence": 5,
-        "limitation_notice": 6,
+        "duo_reconciliation": 6,
+        "witness": 7,
+        "limitation_notice": 8,
     }
     return (priority.get(name, 9), name)
 

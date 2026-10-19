@@ -11,17 +11,23 @@ capability:
 * the policy (``termivance.operator_trust/v1``) lists the trusted operators the
   *organization* recognizes — username **and** the provider-issued user ID, so a
   renamed or spoofed username cannot replay trust;
-* the policy states which projects may carry operator approval issues, when an
-  approval goes stale, and whether the operator-held HMAC signature is
-  mandatory;
+* the policy states which projects may carry operator approval issues and when
+  an approval goes stale. It **cannot waive the operator-held HMAC signature**:
+  a policy that sets ``signature_required=false`` is refused at load time and a
+  policy object that carries the waived value is refused at verification time,
+  because a coding agent able to write a local trust file must never be able to
+  disable independent human consent;
 * the approval issue is read back from GitLab verbatim at verification time and
   its binding content (endpoint, action, nonce, binding digest, target, validity
-  window) must appear as exact, unambiguous lines — duplicated or edited lines
-  are refused instead of matched by substring search;
-* by default the approval block must also carry a valid HMAC signature made with
-  an operator-held key (``TERMIVANCE_APPROVAL_HMAC_KEY``) that the executor does
+  window) must appear as an **exact, unambiguous structured statement** — each
+  security field exactly once with exactly the expected value; duplicated,
+  conflicting, reordered-with-extra-fields or edited lines are refused instead
+  of matched by substring search;
+* the approval block must always carry a valid HMAC signature made with an
+  operator-held key (``TERMIVANCE_APPROVAL_HMAC_KEY``) that the executor does
   not possess: possessing a GitLab PAT for the *executor* account can never
-  manufacture an operator approval under this policy.
+  manufacture an operator approval under this policy, and no local file can
+  turn the requirement off.
 
 The record is read back from the provider (``GET /projects/:id/issues/:iid``)
 verbatim, before any mutation may be dispatched — the local JSON file only
@@ -90,6 +96,17 @@ class OperatorTrustPolicy:
     approval_freshness_seconds: int = 86_400
     revocations: tuple[tuple[str, datetime], ...] = ()
 
+    def __post_init__(self) -> None:
+        # QA-FIX A: an operator-held signature is not waivable. A policy that
+        # attempts to waive it is not weaker consent — it is no consent at all,
+        # because the file could equally have been written by the executor.
+        if self.signature_required is not True:
+            raise TrustPolicyError(
+                "operator trust policy waives the operator-held approval signature "
+                "(signature_required=false); a policy file that can switch off "
+                "independent human consent can never authorize a real mutation"
+            )
+
     def operator_for(self, username: str) -> TrustedOperator | None:
         for operator in self.trusted_operators:
             if operator.username == username:
@@ -108,7 +125,7 @@ class OperatorTrustPolicy:
             f"trust policy "
             f"(operators={names!r}, "
             f"approval_projects={list(self.approval_project_ids)}, "
-            f"signature_required={self.signature_required})"
+            f"operator-held signature: mandatory, unwaivable)"
         )
 
 
@@ -168,6 +185,17 @@ def load_operator_trust(path: str | Path) -> OperatorTrustPolicy:
             raise TrustPolicyError(
                 f"operator trust policy at {source} has an invalid revocation: {exc}"
             ) from exc
+    # QA-FIX A: ownership of the local trust file is not independent
+    # authorization. The operator-held signature is mandatory for every real
+    # mutation, so a policy that waives it is refused outright — it can never
+    # become a weaker path into the destructive dispatch.
+    if "signature_required" in data and data.get("signature_required") is not True:
+        raise TrustPolicyError(
+            f"operator trust policy at {source} sets signature_required="
+            f"{data.get('signature_required')!r}; the operator-held approval signature "
+            "is mandatory for every real mutation and a policy cannot waive it — "
+            "the executor must not be able to disable independent human consent"
+        )
     return OperatorTrustPolicy(
         schema_version=int(data.get("schema_version") or 1),
         trusted_operators=tuple(operators),
@@ -254,36 +282,60 @@ def read_approval_issue(
     )
 
 
-def _binding_lines(body: str) -> list[tuple[str, str]]:
-    """Normalized ``(stripped_line)`` view used for exact line matching."""
-    return [line.strip() for line in body.splitlines()]
+#: Every security-relevant binding field the approval statement must state
+#: exactly once with exactly the expected value.
+_BINDING_FIELDS: tuple[str, ...] = ("endpoint", "action", "nonce", "binding", "target", "valid")
+
+
+def _parse_binding_statement(body: str) -> dict[str, list[str]]:
+    """Structured view of the security-relevant ``field: value`` lines.
+
+    A line belongs to a field when the text before its *first* colon equals
+    (case-insensitively) one of ``_BINDING_FIELDS``. *All* occurrences are
+    collected, so callers can refuse any duplicated binding key instead of
+    matching the first — or the expected — one. Anything else (prose, unknown
+    labels, lines without a colon) is not a binding field and is ignored.
+    """
+    occurrences: dict[str, list[str]] = {}
+    for raw_line in body.splitlines():
+        label, separator, value = raw_line.strip().partition(":")
+        if not separator:
+            continue
+        label = label.strip().lower()
+        if label in _BINDING_FIELDS:
+            occurrences.setdefault(label, []).append(value.strip())
+    return occurrences
 
 
 def _require_exact_lines(provenance: ApprovalProvenance, expected: dict[str, str]) -> None:
-    """Every binding line must appear exactly once, verbatim.
+    """Every binding field must appear exactly once, with the exact value.
 
-    Substring matching accepts adversarial duplicates (an approval issue that
-    states two different nonces, one of them ours, is ambiguous, and ambiguity
-    must fail closed). Exact single-occurrence matching refuses both.
+    Substring or first-match searching accepts adversarial duplicates: an
+    approval issue that states two different nonces (or a correct line plus a
+    conflicting one) is ambiguous, and ambiguity must fail closed. The
+    structured parser therefore counts *every* occurrence of each binding
+    field and refuses anything other than exactly one exact statement.
     """
-    lines = _binding_lines(provenance.body)
+    occurrences = _parse_binding_statement(provenance.body)
     for key, expectation in expected.items():
-        prefix = f"{key}:"
-        matches = [
-            line
-            for line in lines
-            if line.startswith(prefix) and line[len(prefix) :].strip() == expectation
-        ]
-        if len(matches) > 1:
+        values = occurrences.get(key, [])
+        if len(values) > 1:
             raise AuthorizationError(
-                f"the operator approval record states {key!r} {len(matches)} times; "
-                "duplicated binding content is ambiguous and cannot authorize a "
-                "single-use mutation"
+                f"the operator approval record states {key!r} {len(values)} times "
+                f"(values: {values!r}); duplicated or conflicting binding content is "
+                "ambiguous and cannot authorize a single-use mutation"
             )
-        if not matches:
+        if values and values[0] != expectation:
             raise AuthorizationError(
                 f"the operator approval record does not state {key!r} exactly as "
-                f"required: expected the exact line {prefix} {expectation!r}; an "
+                f"required: expected the exact line {key}: {expectation!r}; an "
+                "approval whose binding content was edited cannot be honored and "
+                "must be re-issued from the approval template"
+            )
+        if not values:
+            raise AuthorizationError(
+                f"the operator approval record does not state {key!r} exactly as "
+                f"required: expected the exact line {key}: {expectation!r}; an "
                 "approval whose binding content was edited cannot be honored and "
                 "must be re-issued from the approval template"
             )
@@ -308,10 +360,11 @@ def verify_approval_source(
        by username **and** provider-issued user ID;
     2. the issue lives in a policy-approved project, is open, and is fresh;
     3. the operator identity is not revoked by the policy;
-    4. the issue body states the exact binding content once, verbatim;
-    5. when the policy demands it (default), the approval block carries an HMAC
-       signature made with the operator-held key — a credential held by a coding
-       agent cannot forge it.
+    4. the issue body states the exact binding content exactly once per
+       security field, verbatim (duplicates and conflicts fail closed);
+    5. the approval block carries an HMAC signature made with the operator-held
+       key — a credential held by a coding agent cannot forge it; the
+       requirement is unconditional and no local file can waive it.
 
     Any failure raises :class:`AuthorizationError`; nothing from the local file
     is trusted here except content mutually confirmed by the provider read-back.
@@ -392,24 +445,31 @@ def verify_approval_source(
     )
 
     # -- executor-independent human consent: the operator-held HMAC key.
-    if trust.signature_required:
-        if not approval_key:
-            raise AuthorizationError(
-                "the operator trust policy requires an operator-held approval "
-                "signature key; an unsigned approval cannot become a real mutation "
-                "because a coding agent with issue-creating access could otherwise "
-                "manufacture its own operator consent"
-            )
-        expected = hmac.new(
-            approval_key.encode("utf-8"),
-            authorization.binding().encode("utf-8"),
-            hashlib.sha256,
-        ).hexdigest()
-        if not approval.signature or not hmac.compare_digest(expected, approval.signature):
-            raise AuthorizationError(
-                "operator approval signature is missing or invalid for the "
-                "operator-held key configured in the trust policy"
-            )
+    #    QA-FIX A: this gate is unconditional. Neither the trust file nor any
+    #    other executor-writable artifact can waive it; a policy object that
+    #    still carries a waived flag is refused here as defense in depth.
+    if trust.signature_required is not True:
+        raise TrustPolicyError(
+            "the operator trust policy waives the operator-held approval "
+            "signature; a waived signature can never authorize a real mutation"
+        )
+    if not approval_key:
+        raise AuthorizationError(
+            "the operator trust policy requires an operator-held approval "
+            "signature key; an unsigned approval cannot become a real mutation "
+            "because a coding agent with issue-creating access could otherwise "
+            "manufacture its own operator consent"
+        )
+    expected = hmac.new(
+        approval_key.encode("utf-8"),
+        authorization.binding().encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    if not approval.signature or not hmac.compare_digest(expected, approval.signature):
+        raise AuthorizationError(
+            "operator approval signature is missing or invalid for the "
+            "operator-held key configured in the trust policy"
+        )
 
     # -- the approval must have been created inside the authorization's lifetime.
     issued = authorization.issued_at

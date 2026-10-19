@@ -18,7 +18,11 @@ described in documentation:
 11. a forged receipt without a durable record cannot bind an absence claim;
 12. capsule integrity verification fails closed on any tampering;
 13. cross-target receipts are refused; and
-14. concurrent ledger reservations are serialized by the lock file.
+14. concurrent ledger reservations are serialized by the lock file;
+15. the B4 QA correctness fixes A–D (unwaivable operator signature, unambiguous
+    approval statements, Pages-404-is-never-absence, receipt truth
+    classification) stay enforced; and
+16. the reconciliation/witness enhancement records stay non-authoritative.
 
 Exits non-zero on any violation.
 """
@@ -471,6 +475,268 @@ def main() -> int:
         )
     else:
         check("shipped simulation factors stay PROJECTED_NOT_OBSERVED", False)
+
+    # 23-26. B4 QA correctness fixes A-D, enforced by the shipped code itself.
+    from termivance.approval_source import (
+        ApprovalProvenance,
+        TrustPolicyError,
+        _require_exact_lines,
+        load_operator_trust,
+    )
+    from termivance.approval_source import OperatorTrustPolicy as _Trust2
+
+    waived_at_construction = False
+    try:
+        _Trust2(
+            schema_version=1,
+            trusted_operators=(TrustedOperator(username="waiver", user_id=2),),
+            approval_project_ids=(87785099,),
+            signature_required=False,
+        )
+    except TrustPolicyError:
+        waived_at_construction = True
+    check(
+        "A: a trust policy object cannot waive the operator-held signature",
+        waived_at_construction,
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        waived_file = Path(tmp) / "waived_trust.json"
+        waived_file.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "trusted_operators": [{"username": "waiver", "user_id": 2}],
+                    "approval_project_ids": [87785099],
+                    "signature_required": False,
+                }
+            ),
+            encoding="utf-8",
+        )
+        waived_load_refused = False
+        try:
+            load_operator_trust(waived_file)
+        except TrustPolicyError:
+            waived_load_refused = True
+        check(
+            "A: a trust file that waives the operator-held signature is refused",
+            waived_load_refused,
+        )
+
+    def _provenance(body: str) -> ApprovalProvenance:
+        return ApprovalProvenance(
+            project_id=87785099,
+            issue_iid=1,
+            issue_state="opened",
+            author_username="op",
+            author_user_id=2,
+            body=body,
+            created_at=NOW,
+            endpoint="/projects/87785099/issues/1",
+        )
+
+    try:
+        _require_exact_lines(
+            _provenance(
+                "endpoint: /projects/87785099/pages\nendpoint: /projects/999/pages\n"
+            ),
+            {"endpoint": "/projects/87785099/pages"},
+        )
+        check("B: duplicated binding lines are refused as ambiguous", False)
+    except AuthorizationError as exc:
+        check("B: duplicated binding lines are refused as ambiguous", "ambiguous" in str(exc))
+    try:
+        _require_exact_lines(
+            _provenance("endpoint: /projects/999/pages\n"),
+            {"endpoint": "/projects/87785099/pages"},
+        )
+        check("B: edited binding content is refused", False)
+    except AuthorizationError as exc:
+        check("B: edited binding content is refused", "exactly as required" in str(exc))
+
+    from termivance.gitlab_client import GitLabClient, HttpReply
+    from termivance.portfolio import observe_portfolio
+
+    class _PagesProbeTransport:
+        """Anonymous GET surface where the Pages endpoint answers 404."""
+
+        def request(self, method, url, headers, timeout):  # type: ignore[no-untyped-def]
+            if url.endswith("/pages"):
+                return HttpReply(404, "", "HTTP 404")
+            if url.rstrip("/").endswith("/87785099"):
+                return HttpReply(
+                    200,
+                    json.dumps(
+                        {"id": 87785099, "path_with_namespace": "x/y", "name": "y"}
+                    ),
+                    None,
+                )
+            if "/repository/files/" in url:
+                return HttpReply(200, "stages: []\n", None)
+            return HttpReply(200, "[]", None)
+
+    probe_snapshot = observe_portfolio(
+        GitLabClient(None, transport=_PagesProbeTransport()), [87785099], now=NOW
+    )
+    probe_asset = probe_snapshot.assets[0]
+    probe_states = {r.state for r in probe_asset.resources}
+    check(
+        "C: a standalone Pages 404 is recorded NOT_OBSERVED, never absence",
+        probe_asset.pages_state == "PAGES_NOT_OBSERVED_404"
+        and probe_snapshot.to_dict()["totals"]["pages_not_observed"] == 1
+        and "NO_PAGES" not in probe_states,
+    )
+
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "termivance_build_control_room", Path("scripts/build_control_room.py")
+    )
+    assert spec and spec.loader
+    control_room_builder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(control_room_builder)
+    classify = control_room_builder.classify_receipt
+    check(
+        "D: schema presence alone is INVALID, never a live receipt",
+        classify(None)["receipt_state"] == "NOT_RUN"
+        and classify({"schema": "termivance.retirement_receipt/v3"})["receipt_state"]
+        == "INVALID"
+        and classify(
+            {
+                "schema": "termivance.retirement_receipt/v3",
+                "verdict": "RETIRED",
+                "mutation_attempted": True,
+                "mutation": {"accepted": True, "status": "202"},
+            }
+        )["receipt_state"]
+        == "INVALID",
+    )
+    check(
+        "D: an accepted mutation is action-acceptance, never absence",
+        classify(
+            {
+                "schema": "termivance.retirement_receipt/v3",
+                "verdict": "INCONCLUSIVE",
+                "mutation_attempted": True,
+                "mutation": {"accepted": True, "status": 202},
+            }
+        )["receipt_state"]
+        == "MUTATION_ACCEPTED",
+    )
+
+    # 27-29. the enhancement records stay non-authoritative by construction.
+    from termivance.duo_reconciliation import (
+        ClaimStatus,
+        DuoClaim,
+        DuoSurfaceObservation,
+        reconcile_duo,
+    )
+
+    ci_surface = DuoSurfaceObservation(
+        observed_at=NOW,
+        project_id=87779099,
+        issue_iid=3,
+        session_url="",
+        project_read_status=200,
+        issue_read_status=200,
+        issue_metadata={"state": "opened"},
+        notes_read_status=401,
+        discussions_read_status=401,
+        session_ui_status=404,
+    )
+    ci_reconciliation = reconcile_duo(
+        {"schema": "termivance.duo_claims/v1", "duo_session_id": "ci"},
+        (
+            DuoClaim("ci-1", "flow internals", "OPERATOR_CONFIRMED_UI", "FLOW_INTERNALS", {}),
+            DuoClaim(
+                "ci-2", "notes deny anonymous", "ANONYMOUS_API_OBSERVATION",
+                "OBSERVABILITY_PROBE", {"surface": "notes", "status": 401},
+            ),
+        ),
+        ci_surface,
+        claims_source="ci",
+        now=NOW,
+    ).to_dict()
+    c1 = {r["claim_id"]: r["status"] for r in ci_reconciliation["claims"]}
+    check(
+        "reconciliation stays NON_AUTHORITATIVE and never awards a verdict",
+        ci_reconciliation["authority"] == "NON_AUTHORITATIVE"
+        and c1["ci-1"] == ClaimStatus.UNSUPPORTED.value
+        and not (
+            {r["status"] for r in ci_reconciliation["claims"]}
+            & {"SAFE_TO_RETIRE", "RETIRED", "OBSERVED_ABSENT", "RESURRECTION_CONTROLLED"}
+        ),
+    )
+
+    from termivance.witness import (
+        ABSENCE_CLAIM_NEVER,
+        RESURRECTION_CONTROLLED_NOT_CLAIMED,
+        build_witness,
+    )
+
+    class _WitnessTransport:
+        """Anonymous Get-only surface with a 403 Pages administration endpoint."""
+
+        def request(self, method, url, headers, timeout):  # type: ignore[no-untyped-def]
+            if url.endswith("/pages"):
+                return HttpReply(403, "", "HTTP 403")
+            if "/repository/commits" in url:
+                return HttpReply(200, json.dumps([{"id": "c" * 40}]), None)
+            if "/repository/files/" in url:
+                return HttpReply(200, "pages:\n  script:\n    - echo hi\n", None)
+            return HttpReply(
+                200,
+                json.dumps(
+                    {
+                        "id": TARGET.project_id,
+                        "default_branch": "main",
+                        "path_with_namespace": TARGET.full_path,
+                    }
+                ),
+                None,
+            )
+
+    ci_witness = build_witness(
+        GitLabClient(None, transport=_WitnessTransport()), TARGET, now=NOW
+    ).to_dict()
+    check(
+        "witness never claims absence or RESURRECTION_CONTROLLED (403 phrased carefully)",
+        ci_witness["absence_claim"] == ABSENCE_CLAIM_NEVER
+        and ci_witness["resurrection_controlled"] == RESURRECTION_CONTROLLED_NOT_CLAIMED
+        and ci_witness["resurrection_possible"] == "MECHANISM_PRESENT_IN_OBSERVED_CONFIG"
+        and "cannot verify this Pages administration surface"
+        in ci_witness["pages_administration"]["phrase"],
+    )
+
+    shipped_duo = Path("evidence/b4/duo_reconciliation.json")
+    if shipped_duo.exists():
+        duo_payload = json.loads(shipped_duo.read_text(encoding="utf-8"))
+        duo_claims = {r["claim_id"]: r for r in duo_payload.get("claims", [])}
+        check(
+            "shipped Duo reconciliation is non-authoritative with a fail-closed claim set",
+            duo_payload.get("authority") == "NON_AUTHORITATIVE"
+            and duo_claims
+            and all(
+                r["status"]
+                in {s.value for s in ClaimStatus}
+                and r["status"]
+                not in {"SAFE_TO_RETIRE", "RETIRED", "OBSERVED_ABSENT", "RESURRECTION_CONTROLLED"}
+                for r in duo_claims.values()
+            ),
+        )
+    else:
+        check("shipped Duo reconciliation is non-authoritative with a fail-closed claim set", False)
+    shipped_witness = Path("evidence/b4/witness_87785099.json")
+    if shipped_witness.exists():
+        witness_payload = json.loads(shipped_witness.read_text(encoding="utf-8"))
+        check(
+            "shipped witness keeps the absence claim NEVER and control NOT_CLAIMED",
+            witness_payload.get("schema") == "termivance.resurrection_witness/v1"
+            and witness_payload.get("absence_claim") == "NEVER_FROM_THIS_WITNESS"
+            and witness_payload.get("resurrection_controlled") == "NOT_CLAIMED"
+            and witness_payload.get("target", {}).get("project_id") == 87785099,
+        )
+    else:
+        check("shipped witness keeps the absence claim NEVER and control NOT_CLAIMED", False)
 
     if failures:
         print(f"\nSAFETY CONTRACT FAILED: {len(failures)} assertion(s)")

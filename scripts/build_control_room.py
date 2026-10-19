@@ -34,10 +34,17 @@ omitted and never invented):
 * ``--workflow``    workflow assessment JSON
 * ``--tripwire``    tripwire report JSON
 * ``--duo-external`` external Duo-session evidence-ladder JSON
+* ``--duo-reconciliation`` recorded termivance.duo_reconciliation/v1 record
+* ``--witness``     recorded termivance.resurrection_witness/v1 record
 
-The provenance label is honest: ``RECORDED_LIVE`` only when a live receipt is
-supplied; otherwise the reads label (``LIVE_ANONYMOUS`` when the embedded
-portfolio says the evidence was read anonymously and live).
+The provenance label is honest (QA-FIX D): ``RECORDED_LIVE`` only when the
+supplied receipt is a *coherent, recognized* v3 receipt that records an
+attempted, accepted mutation. A receipt with an unknown schema, a malformed
+body, no recorded attempt or no 2xx provider status is classified
+``INVALID`` / ``BLOCKED`` / ``NOT_RUN`` by a fail-closed classifier — schema
+presence alone is never live evidence, provider acceptance is never absence,
+and ``OBSERVED_ABSENT`` may appear only because the coherent receipt's own
+recorded verdict says so.
 """
 
 from __future__ import annotations
@@ -50,6 +57,169 @@ from pathlib import Path
 
 NOT_OBSERVED = "NOT_OBSERVED"
 UNAVAILABLE = "UNAVAILABLE"
+
+#: The only receipt schema this build understands. A receipt file whose schema
+#: is unrecognized is rendered ``INVALID`` — never as evidence.
+RECOGNIZED_RECEIPT_SCHEMAS = frozenset({"termivance.retirement_receipt/v3"})
+
+#: Verdicts that assert an evidence-backed retirement outcome. These may be
+#: displayed only because a *coherent recognized* receipt itself records the
+#: deterministic code's verdict; the Control Room re-verifies nothing.
+AUTHORITATIVE_VERDICTS = frozenset(
+    {"RETIRED", "OBSERVED_ABSENT", "RESURRECTION_CONTROLLED"}
+)
+KNOWN_VERDICTS = frozenset(
+    {
+        "NOT_RUN",
+        "BLOCKED",
+        "INCONCLUSIVE",
+        "SAFE_TO_RETIRE",
+        "RETIRED",
+        "OBSERVED_ABSENT",
+        "RESURRECTION_CONTROLLED",
+    }
+)
+
+
+def classify_receipt(receipt: object) -> dict[str, object]:
+    """Classify a supplied receipt artifact into its honest truth state (QA-FIX D).
+
+    Schema *presence* is never live evidence. The classifier is fail-closed:
+
+    * ``NOT_RUN``  — no receipt artifact was supplied at all;
+    * ``INVALID``  — an artifact was supplied but it is not a recognized,
+      coherent receipt (not an object, unknown schema, missing/unknown verdict,
+      or an accepted attempt without an integer 2xx provider status);
+    * the recorded non-attempt verdict (``BLOCKED`` / ``NOT_RUN`` /
+      ``INCONCLUSIVE`` …) — a coherent receipt whose run never attempted the
+      destructive action; the verdict is surfaced exactly, never promoted;
+    * ``ATTEMPT_NOT_ACCEPTED`` — the run attempted the DELETE but the provider
+      did not accept it;
+    * ``MUTATION_ACCEPTED`` — provider acceptance only; explicitly *never*
+      absence. Absence requires the independent read-back protocol;
+    * ``RETIRED`` / ``OBSERVED_ABSENT`` / ``RESURRECTION_CONTROLLED`` — only
+      when the coherent receipt's recorded verdict itself says so.
+    """
+    if receipt is None:
+        return {
+            "receipt_state": "NOT_RUN",
+            "mutation_attempted": None,
+            "mutation_accepted": None,
+            "recorded_verdict": None,
+            "record": None,
+            "note": (
+                "no receipt artifact was supplied; the runtime records no "
+                "mutation attempt and this page will not pretend otherwise"
+            ),
+        }
+    if not isinstance(receipt, dict):
+        return {
+            "receipt_state": "INVALID",
+            "mutation_attempted": None,
+            "mutation_accepted": None,
+            "recorded_verdict": None,
+            "record": None,
+            "note": (
+                "the supplied receipt artifact is not a JSON object; it is "
+                "rendered INVALID, never as evidence"
+            ),
+        }
+    schema = str(receipt.get("schema") or "")
+    if schema not in RECOGNIZED_RECEIPT_SCHEMAS:
+        return {
+            "receipt_state": "INVALID",
+            "mutation_attempted": None,
+            "mutation_accepted": None,
+            "recorded_verdict": None,
+            "record": receipt,
+            "note": (
+                f"unrecognized receipt schema {schema!r}; only a coherent "
+                f"{'/'.join(sorted(RECOGNIZED_RECEIPT_SCHEMAS))} receipt carries "
+                "recorded facts, anything else is INVALID"
+            ),
+        }
+    verdict = str(receipt.get("verdict") or "")
+    if verdict not in KNOWN_VERDICTS:
+        return {
+            "receipt_state": "INVALID",
+            "mutation_attempted": receipt.get("mutation_attempted") is True,
+            "mutation_accepted": None,
+            "recorded_verdict": None,
+            "record": receipt,
+            "note": (
+                f"the receipt carries no recognized verdict {verdict!r}; an "
+                "incoherent receipt is INVALID, never evidence"
+            ),
+        }
+    attempted = receipt.get("mutation_attempted") is True
+    mutation = receipt.get("mutation")
+    accepted = isinstance(mutation, dict) and mutation.get("accepted") is True
+    status = mutation.get("status") if isinstance(mutation, dict) else None
+    if attempted and accepted and not (
+        isinstance(status, int) and 200 <= status < 300
+    ):
+        return {
+            "receipt_state": "INVALID",
+            "mutation_attempted": True,
+            "mutation_accepted": None,
+            "recorded_verdict": verdict,
+            "record": receipt,
+            "note": (
+                "the receipt claims an accepted mutation without an integer 2xx "
+                "provider status; an incoherent acceptance is INVALID, never "
+                "evidence"
+            ),
+        }
+    if not attempted:
+        return {
+            "receipt_state": verdict,
+            "mutation_attempted": False,
+            "mutation_accepted": None,
+            "recorded_verdict": verdict,
+            "record": receipt,
+            "note": (
+                "the recorded run did not attempt the destructive action; its "
+                "recorded verdict is surfaced exactly, never promoted"
+            ),
+        }
+    if not accepted:
+        return {
+            "receipt_state": "ATTEMPT_NOT_ACCEPTED",
+            "mutation_attempted": True,
+            "mutation_accepted": False,
+            "recorded_verdict": verdict,
+            "record": receipt,
+            "note": (
+                "the run attempted the DELETE but the provider did not accept "
+                "it; the recorded verdict is surfaced, never promoted"
+            ),
+        }
+    if verdict in AUTHORITATIVE_VERDICTS:
+        return {
+            "receipt_state": verdict,
+            "mutation_attempted": True,
+            "mutation_accepted": True,
+            "recorded_verdict": verdict,
+            "record": receipt,
+            "note": (
+                "the coherent receipt itself records this deterministic verdict; "
+                "this page displays the recorded verdict and independently "
+                "re-verifies nothing"
+            ),
+        }
+    return {
+        "receipt_state": "MUTATION_ACCEPTED",
+        "mutation_attempted": True,
+        "mutation_accepted": True,
+        "recorded_verdict": verdict,
+        "record": receipt,
+        "note": (
+            "provider accepted the DELETE — provider action-acceptance only, "
+            "never absence; absence requires proven pre-publication, accepted "
+            "authorized unpublish and independent read-back"
+        ),
+    }
+
 
 
 def _load(path: str | None) -> object:
@@ -69,8 +239,9 @@ def _portfolio_read_provenance(portfolio: object) -> str:
     return "UNAVAILABLE"
 
 
-def _gates(receipt: object) -> list[dict[str, object]]:
-    live_receipt = isinstance(receipt, dict) and "schema" in receipt
+def _gates(classification: dict[str, object]) -> list[dict[str, object]]:
+    gate_state = str(classification.get("receipt_state") or "NOT_RUN")
+    gate_note = str(classification.get("note") or "")
     return [
         {
             "gate": "READ-ONLY GITLAB API (GET)",
@@ -83,12 +254,13 @@ def _gates(receipt: object) -> list[dict[str, object]]:
         },
         {
             "gate": "DELETE /projects/87785099/pages (the sole approved destructive action)",
-            "state": "LIVE_RECEIPT" if live_receipt else "NOT_RUN",
+            "state": gate_state,
             "detail": (
                 "bound to immutable numeric project id, exact endpoint, one-time "
                 "operator-signed approval + trust policy, durable single-use ledger, "
                 "fresh SAFE_TO_RETIRE decision and operator-provided credential; "
-                "GitHub-namespace approvals and API-key possession never equal consent"
+                "GitHub-namespace approvals and API-key possession never equal consent. "
+                f"Receipt truth state: {gate_note}"
             ),
         },
         {
@@ -119,18 +291,38 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     simulation = _load(args.simulation)
     capsule = _load(args.capsule)
     duo_evidence = _load(args.duo_external)
+    duo_reconciliation = _load(getattr(args, "duo_reconciliation", None))
+    witness = _load(getattr(args, "witness", None))
     workflow = _load(args.workflow)
     tripwire = _load(args.tripwire)
 
-    live_receipt = isinstance(receipt, dict) and receipt.get("schema") is not None
+    def _recognized(record: object, schema: str) -> dict[str, object] | None:
+        if isinstance(record, dict) and record.get("schema") == schema:
+            return record
+        return None
+
+    reconciliation_section = _recognized(
+        duo_reconciliation, "termivance.duo_reconciliation/v1"
+    )
+    witness_section = _recognized(witness, "termivance.resurrection_witness/v1")
+
+    # QA-FIX D: receipt truth is decided by the fail-closed classifier — mere
+    # schema presence is never live evidence and never flips RECORDED_LIVE.
+    classification = classify_receipt(receipt)
+    receipt_state = str(classification["receipt_state"])
+    receipt_records_live_event = receipt_state == "MUTATION_ACCEPTED" or (
+        receipt_state in AUTHORITATIVE_VERDICTS and classification.get("mutation_accepted") is True
+    )
     read_provenance = _portfolio_read_provenance(portfolio)
-    provenance = "RECORDED_LIVE" if live_receipt else read_provenance
+    provenance = "RECORDED_LIVE" if receipt_records_live_event else read_provenance
 
     data: dict[str, object] = {
         "schema": "termivance.control_room/v2",
         "provenance_label": provenance,
         "read_provenance": read_provenance,
-        "mutation_status": "LIVE_RECEIPT" if live_receipt else NOT_OBSERVED,
+        "mutation_status": (
+            NOT_OBSERVED if receipt_state == "NOT_RUN" else receipt_state
+        ),
         "built_at": datetime.now(tz=UTC).isoformat(),
         "interactive_contract": {
             "page_is_static": True,
@@ -147,15 +339,23 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
                 {"state": UNAVAILABLE} if not isinstance(portfolio, dict) else portfolio
             ),
             "risk_map": risk_map if isinstance(risk_map, dict) else {"state": UNAVAILABLE},
-            "receipt": receipt if isinstance(receipt, dict) else {"state": "NOT_RUN"},
+            "receipt": classification,
             "capsule": capsule if isinstance(capsule, dict) else {"state": UNAVAILABLE},
+            "duo_reconciliation": (
+                reconciliation_section
+                if reconciliation_section is not None
+                else {"state": UNAVAILABLE}
+            ),
+            "witness": (
+                witness_section if witness_section is not None else {"state": UNAVAILABLE}
+            ),
             "simulation": (
                 simulation if isinstance(simulation, dict) else {"state": UNAVAILABLE}
             ),
             "workflow": workflow if isinstance(workflow, dict) else {"state": UNAVAILABLE},
             "tripwire": tripwire if isinstance(tripwire, dict) else {"state": UNAVAILABLE},
         },
-        "authorization_gates": _gates(receipt),
+        "authorization_gates": _gates(classification),
         # Rendered as inert text by the page: live proof that provider-shaped
         # content is escaped, never interpreted as HTML.
         "escape_probe": '<img src=x onerror=alert(1)>&"\'',
@@ -213,6 +413,8 @@ def main() -> int:
         "workflow",
         "tripwire",
         "duo-external",
+        "duo-reconciliation",
+        "witness",
     ):
         parser.add_argument(f"--{name}", dest=name.replace("-", "_"), default=None)
     parser.add_argument("--out-dir", default="control_room")

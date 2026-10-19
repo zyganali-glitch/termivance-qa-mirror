@@ -13,7 +13,15 @@ with no credential (``GitLabClient(None)``):
                               with cross-resource nodes/edges from the *same*
                               portfolio snapshot;
 5. ``simulation.json``      — hypothetical analysis reusing the same cross view;
-6. ``workflow_assessment.json`` — shipped-plan posture assessment.
+6. ``workflow_assessment.json`` — shipped-plan posture assessment;
+7. ``duo_reconciliation.json`` — recorded Duo candidate claims reconciled against
+                              the same anonymous live reads (NON_AUTHORITATIVE);
+8. ``witness_87785099.json`` — resurrection counterexample witness: the
+                              disposable target's own CI configuration at the
+                              exact observed commit + its Pages surface (never
+                              claims absence, never awards control);
+9. ``proof_capsule.json``    — regenerated capsule embedding the decision plus
+                              the reconciliation and witness records verbatim.
 
 Every artifact embeds its provenance label (``ANONYMOUS_PUBLIC_READ``),
 observation timestamps and freshness. 401/403/404 responses are recorded as
@@ -77,16 +85,16 @@ def main() -> int:  # type: ignore[no-untyped-def]
         "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
         "GITLAB_PAGES_SITE",
     )
-    print("1/6 discovery snapshot (anonymous) …")
+    print("1/9 discovery snapshot (anonymous) …")
     snapshot = discover_live(client, target, now=observed)
     _write(out_dir / "snapshot.json", snapshot.to_dict())
 
-    print("2/6 deterministic decision …")
+    print("2/9 deterministic decision …")
     graph = graph_from_snapshot(snapshot)
     decision = evaluate(graph, policy=policy, action="unpublish_pages", now=observed)
     _write(out_dir / "decision.json", decision.to_dict(graph=graph))
 
-    print("3/6 multi-resource portfolio (four explicitly selected ids) …")
+    print("3/9 multi-resource portfolio (four explicitly selected ids) …")
     portfolio = observe_portfolio(
         client,
         PROJECT_IDS,
@@ -95,7 +103,7 @@ def main() -> int:  # type: ignore[no-untyped-def]
     )
     _write(out_dir / "portfolio.json", portfolio.to_dict())
 
-    print("4/6 risk map (same decision, same portfolio evidence) …")
+    print("4/9 risk map (same decision, same portfolio evidence) …")
     view = cross_resource_view(portfolio)
     risk_map = risk_map_from_record(
         decision.to_dict(graph=graph),
@@ -104,13 +112,13 @@ def main() -> int:  # type: ignore[no-untyped-def]
     )
     _write(out_dir / "risk_map.json", risk_map.to_dict())
 
-    print("5/6 simulation (same cross view) …")
+    print("5/9 simulation (same cross view) …")
     simulation = simulate_retirement(graph, policy=policy, now=observed, cross=view)
     sim_payload = simulation.to_dict()
     sim_payload["target_project_id"] = DISPOSABLE
     _write(out_dir / "simulation.json", sim_payload)
 
-    print("6/6 workflow assessment …")
+    print("6/9 workflow assessment …")
     artifact_paths: dict[str, Path] = {
         "decision": out_dir / "decision.json",
         "snapshot": out_dir / "snapshot.json",
@@ -125,6 +133,63 @@ def main() -> int:  # type: ignore[no-untyped-def]
     )
     assessment = assess(artifact_paths, shipping_plan)
     _write(out_dir / "workflow_assessment.json", dict(assessment))  # type: ignore[arg-type]
+
+    print("7/9 duo reconciliation (candidate claims vs the same anonymous reads) …")
+    from termivance.duo_reconciliation import (
+        load_claims,
+        observe_duo_surface,
+        probe_web_status,
+        reconcile_duo,
+    )
+
+    claims_path = out_dir / "duo_claims.json"
+    claims_data, claims = load_claims(claims_path)
+    session_url = ""
+    readback_path = out_dir / "duo_session_9671626_readback.json"
+    if readback_path.exists():
+        readback = json.loads(readback_path.read_text(encoding="utf-8"))
+        session = readback.get("duo_session") or {}
+        session_url = str(session.get("url") or "")
+    surface = observe_duo_surface(
+        client,
+        project_id=CANONICAL,
+        issue_iid=3,
+        session_url=session_url,
+        web_probe=probe_web_status,
+        now=observed,
+    )
+    reconciliation = reconcile_duo(
+        claims_data,
+        claims,
+        surface,
+        claims_source="evidence/b4/duo_session_9671626_readback.json",
+    )
+    reconciliation_payload = reconciliation.to_dict()
+    _write(out_dir / "duo_reconciliation.json", reconciliation_payload)
+
+    print("8/9 resurrection counterexample witness (target 87785099's own config) …")
+    from termivance.witness import build_witness
+
+    witness_payload = build_witness(client, target, now=observed).to_dict()
+    _write(out_dir / "witness_87785099.json", witness_payload)
+
+    print("9/9 proof capsule (decision + reconciliation + witness, verbatim) …")
+    from termivance.capsule import build_capsule, save_capsule
+
+    capsule = build_capsule(
+        target=target,
+        decision=decision.to_dict(graph=graph),
+        duo_reconciliation=reconciliation_payload,
+        witness=witness_payload,
+        notes=(
+            "assembled by scripts/refresh_b4_evidence.py from anonymous live reads",
+            "no mutation was attempted; no absence is claimed and no control is "
+            "asserted anywhere in this capsule",
+        ),
+        now=observed,
+    )
+    capsule_path = save_capsule(capsule, out_dir / "proof_capsule.json")
+    print(f"  wrote {capsule_path.name}")
 
     print("done — all reads anonymous; zero mutations; zero spend")
     return 0
