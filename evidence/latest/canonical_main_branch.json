@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-19T20:14:08Z",
-  "artifact_sha256": "328f7b5adfc6d01e19c7f1ee36e69a65e5a4d3ef5cce423ec865ea95e0559d7b",
+  "acquired_at_utc": "2026-10-19T20:56:52Z",
+  "artifact_sha256": "a7f639e292d87ce8eba45bfcd38a3b8788ddf1a1e08b662013598467f7d450b3",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "zyganali",
-      "authored_date": "2026-10-19T23:11:55.000+03:00",
-      "committed_date": "2026-10-19T23:11:55.000+03:00",
+      "authored_date": "2026-10-19T23:53:26.000+03:00",
+      "committed_date": "2026-10-19T23:53:26.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "zyganali",
-      "created_at": "2026-10-19T23:11:55.000+03:00",
+      "created_at": "2026-10-19T23:53:26.000+03:00",
       "extended_trailers": {},
-      "id": "8f3ef4f956678d797d94160aad05c867e11cb53c",
-      "message": "feat(supervised): close jury audit gaps with unprimed Duo discovery and supervised workflow continuity\n",
+      "id": "9425700b7a4d895cc4e7914b77edbfa8210fd77e",
+      "message": "fix(supervised): resolve evidence-integrity defects in Duo note ingestion, candidate corroboration, and counterfactual derivation\n",
       "parent_ids": [
-        "f68799d5ff300f86a589102b95cf4eeef69e8a93"
+        "8f3ef4f956678d797d94160aad05c867e11cb53c"
       ],
-      "short_id": "8f3ef4f9",
-      "title": "feat(supervised): close jury audit gaps with unprimed Duo discovery and supervised workflow continuity",
+      "short_id": "9425700b",
+      "title": "fix(supervised): resolve evidence-integrity defects in Duo note ingestion, candidate corroboration, and counterfactual derivation",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/8f3ef4f956678d797d94160aad05c867e11cb53c"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/9425700b7a4d895cc4e7914b77edbfa8210fd77e"
     },
     "default": true,
     "developers_can_merge": true,

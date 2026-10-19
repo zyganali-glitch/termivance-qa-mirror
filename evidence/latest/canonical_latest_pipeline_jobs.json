@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-19T20:14:14Z",
-  "artifact_sha256": "6cd24c701f951dbe8551f23dd62ea37414e90919d3394a8dbfa1f42dc3c130c5",
+  "acquired_at_utc": "2026-10-19T20:56:58Z",
+  "artifact_sha256": "665551bb6956bdb45ec4d63c5872ae09479528bdfcf404f67659ac5a7321f682",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2964870420/jobs",
+  "endpoint": "/projects/87779099/pipelines/2964995900/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17297245719,
+      "id": 17298223727,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "zyganali",
-        "authored_date": "2026-10-19T23:11:55.000+03:00",
-        "committed_date": "2026-10-19T23:11:55.000+03:00",
+        "authored_date": "2026-10-19T23:53:26.000+03:00",
+        "committed_date": "2026-10-19T23:53:26.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "zyganali",
-        "created_at": "2026-10-19T23:11:55.000+03:00",
+        "created_at": "2026-10-19T23:53:26.000+03:00",
         "extended_trailers": {},
-        "id": "8f3ef4f956678d797d94160aad05c867e11cb53c",
-        "message": "feat(supervised): close jury audit gaps with unprimed Duo discovery and supervised workflow continuity\n",
+        "id": "9425700b7a4d895cc4e7914b77edbfa8210fd77e",
+        "message": "fix(supervised): resolve evidence-integrity defects in Duo note ingestion, candidate corroboration, and counterfactual derivation\n",
         "parent_ids": [
-          "f68799d5ff300f86a589102b95cf4eeef69e8a93"
+          "8f3ef4f956678d797d94160aad05c867e11cb53c"
         ],
-        "short_id": "8f3ef4f9",
-        "title": "feat(supervised): close jury audit gaps with unprimed Duo discovery and supervised workflow continuity",
+        "short_id": "9425700b",
+        "title": "fix(supervised): resolve evidence-integrity defects in Duo note ingestion, candidate corroboration, and counterfactual derivation",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/8f3ef4f956678d797d94160aad05c867e11cb53c"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/9425700b7a4d895cc4e7914b77edbfa8210fd77e"
       },
       "coverage": null,
-      "created_at": "2026-10-19T20:12:07.267Z",
-      "duration": 73.252546,
+      "created_at": "2026-10-19T20:53:55.817Z",
+      "duration": 111.401555,
       "erased_at": null,
-      "finished_at": "2026-10-19T20:13:20.894Z",
-      "id": 17297245719,
+      "finished_at": "2026-10-19T20:55:47.596Z",
+      "id": 17298223727,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-19T20:12:07.125Z",
-        "id": 2964870420,
-        "iid": 30,
+        "created_at": "2026-10-19T20:53:55.683Z",
+        "id": 2964995900,
+        "iid": 31,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "8f3ef4f956678d797d94160aad05c867e11cb53c",
+        "sha": "9425700b7a4d895cc4e7914b77edbfa8210fd77e",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-19T20:13:22.297Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2964870420"
+        "updated_at": "2026-10-19T20:55:49.057Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2964995900"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.088394,
+      "queued_duration": 0.089835,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-19T20:14:14.069Z",
-        "created_at": "2026-10-19T13:14:10.802Z",
-        "id": 163767555,
-        "ip_address": "10.218.11.3",
+        "contacted_at": "2026-10-19T20:56:57.057Z",
+        "created_at": "2026-10-19T20:24:33.119Z",
+        "id": 163842582,
+        "ip_address": "10.218.11.18",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_vgXfqFrdmLi9",
+        "system_id": "r_mgdZGYMnRB9w",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-19T20:12:07.642Z",
+      "started_at": "2026-10-19T20:53:56.195Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17297245719"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17298223727"
     }
   ]
 }
