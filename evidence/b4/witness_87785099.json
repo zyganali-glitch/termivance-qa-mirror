@@ -22,8 +22,8 @@
     "cached or edge-replicated copies of previously served content can remain reachable after the provider state changes"
   ],
   "default_branch": "main",
-  "fresh_until": "2026-10-19T16:41:02.530404+00:00",
-  "observed_at": "2026-10-19T16:26:02.530404+00:00",
+  "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+  "observed_at": "2026-10-19T20:04:14.244903+00:00",
   "pages_administration": {
     "endpoint": "/projects/87785099/pages",
     "error_kind": "AUTH_DENIED",

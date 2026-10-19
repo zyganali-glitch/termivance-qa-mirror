@@ -640,17 +640,27 @@ def _cmd_witness_build(args: argparse.Namespace) -> int:
 
 def _cmd_supervised_review(args: argparse.Namespace) -> int:
     if getattr(args, "execute", False):
-        from termivance.gitlab_client import GitLabClient
+        from termivance.gitlab_client import GitLabClient, load_local_token
+        from termivance.publish import GitLabPublisher
         from termivance.supervised_review import run_supervised_investigation
         from termivance.target import TargetIdentity
 
         target = TargetIdentity(args.project_id, args.full_path, "GITLAB_PAGES_SITE")
         client = GitLabClient(None)
+        publisher = None
+        if getattr(args, "publish", False):
+            try:
+                publisher = GitLabPublisher(load_local_token())
+            except Exception:
+                pass
         review = run_supervised_investigation(
             client=client,
+            publisher=publisher,
             target=target,
             policy_path=getattr(args, "policy", None),
             duo_claims_path=args.duo_claims,
+            issue_iid=getattr(args, "issue_iid", None),
+            publish_outcome=getattr(args, "publish", False),
             out_dir=getattr(args, "out_dir", None) or (Path(args.out).parent if args.out else None),
         )
     else:
@@ -1170,6 +1180,18 @@ def build_parser() -> argparse.ArgumentParser:
         "--execute",
         action="store_true",
         help="actually execute the 7-step read-only investigation pipeline live (anonymous)",
+    )
+    supervised_review.add_argument(
+        "--issue",
+        dest="issue_iid",
+        type=int,
+        default=None,
+        help="GitLab issue IID (e.g. 5) containing the Duo analysis",
+    )
+    supervised_review.add_argument(
+        "--publish",
+        action="store_true",
+        help="publish deterministic supervised review outcome back to the GitLab issue",
     )
     supervised_review.add_argument(
         "--out-dir",

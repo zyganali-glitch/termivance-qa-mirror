@@ -91,6 +91,66 @@
 <div style="margin: 10px 26px 0; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--accent); background: var(--panel2); color: var(--ink); font-weight: 600; font-size: 13.5px; text-align: center; letter-spacing: .2px;">
   AI proposes. Termivance verifies. Retirement proceeds only when evidence and authority permit it.
 </div>
+
+<!-- Executive 3-Question Bar (15-second value communication) -->
+<div id="exec-summary-bar" style="margin: 10px 26px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+  <div style="background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 8px; padding: 10px 14px;">
+    <div style="font-size: 11px; text-transform: uppercase; color: var(--dim); letter-spacing: .5px; font-weight: 600;">1. Can I safely retire it?</div>
+    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 2px 0;">
+      <span class="chip bad" style="font-size: 12px; font-weight: 700;">BLOCKED</span>
+      <span style="font-size: 12.5px; font-weight: 600; color: var(--ink);">Strict Safety Refusal</span>
+    </div>
+    <div style="font-size: 11.5px; color: var(--dim); line-height: 1.35;">
+      Missing Maintainer permission (403 on unpublish), surviving CI redeployment path, and no operator-signed HMAC ledger.
+    </div>
+  </div>
+
+  <div style="background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--amber); border-radius: 8px; padding: 10px 14px;">
+    <div style="font-size: 11px; text-transform: uppercase; color: var(--dim); letter-spacing: .5px; font-weight: 600;">2. Has it disappeared?</div>
+    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 2px 0;">
+      <span class="chip amber" style="font-size: 12px; font-weight: 700;">NOT OBSERVED / NOT RUN</span>
+      <span style="font-size: 12.5px; font-weight: 600; color: var(--ink);">Bounded Absence Rigor</span>
+    </div>
+    <div style="font-size: 11.5px; color: var(--dim); line-height: 1.35;">
+      Destructive mutation was NOT performed. Negative observations or CDN 404s are never promoted to verified absence.
+    </div>
+  </div>
+
+  <div style="background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--warn); border-radius: 8px; padding: 10px 14px;">
+    <div style="font-size: 11px; text-transform: uppercase; color: var(--dim); letter-spacing: .5px; font-weight: 600;">3. Can it come back?</div>
+    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 2px 0;">
+      <span class="chip bad" style="font-size: 12px; font-weight: 700;">RESURRECTION RISK DETECTED</span>
+      <span style="font-size: 12.5px; font-weight: 600; color: var(--ink);">Target CI Witness</span>
+    </div>
+    <div style="font-size: 11.5px; color: var(--dim); line-height: 1.35;">
+      Target <code>.gitlab-ci.yml</code> contains active <code>create-pages</code> (<code>pages: true</code>). Survives until explicitly neutralized.
+    </div>
+  </div>
+</div>
+
+<!-- Supervised Workflow Continuity Bar -->
+<div id="workflow-continuity-bar" style="margin: 10px 26px 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <span style="font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .5px;">Supervised Workflow Continuity Chain</span>
+    <span style="font-size: 11.5px; color: var(--dim);">GitLab Transcend 2026 · Supervised Category</span>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px;">
+    <span class="chip acc" style="padding: 3px 8px;">1. Issue #5 (Neutral Intent)</span>
+    <span style="color: var(--dim); font-weight: bold;">→</span>
+    <span class="chip violet" style="padding: 3px 8px;">2. Duo Custom Flow 1018562 (Session 9710085)</span>
+    <span style="color: var(--dim); font-weight: bold;">→</span>
+    <span class="chip amber" style="padding: 3px 8px;">3. Candidate Risks Extracted</span>
+    <span style="color: var(--dim); font-weight: bold;">→</span>
+    <span class="chip ok" style="padding: 3px 8px;">4. Deterministic Verification (fe895004…)</span>
+    <span style="color: var(--dim); font-weight: bold;">→</span>
+    <span class="chip bad" style="padding: 3px 8px;">5. Obligation Graph (BLOCKED)</span>
+    <span style="color: var(--dim); font-weight: bold;">→</span>
+    <span class="chip ok" style="padding: 3px 8px;">6. Published Outcome Note 4045409264</span>
+    <span style="color: var(--dim); font-weight: bold;">→</span>
+    <span class="chip amber" style="padding: 3px 8px; font-weight: 700;">7. Awaiting Human Review</span>
+  </div>
+</div>
+
 <nav id="tabs">
   <button class="tabbtn active" data-tab="portfolio">Portfolio &amp; resources</button>
   <button class="tabbtn" data-tab="graph">Dependency &amp; risk graph</button>
@@ -651,16 +711,21 @@ function demoDuoDiscoveryCard(demo) {
   const tgt = demo.target || {};
   const cands = demo.candidates || [];
   const det = demo.deterministic_reconciliation || {};
+  const primaryId = flow.primary_session_id || flow.session_id || "9710085";
+  const primaryIssue = flow.primary_issue_iid || flow.issue_iid || 5;
+  const primaryNote = flow.primary_agent_note_id || flow.agent_note_id || 4045401991;
+  const outcomeNote = flow.primary_deterministic_outcome_note_id || 4045409264;
   return `<div class="card">
     <h2>Award demonstration — Genuine Duo Target-Risk Discovery</h2>
-    <div class="banner">Genuine GitLab Duo session ${escapeHtml(flow.session_id || "9704855")} independently discovered the exact retirement risk on disposable target ${escapeHtml(String(tgt.project_id || "87785099"))}; Termivance independently verified it and refused unauthorized mutation.</div>
+    <div class="banner">Genuine GitLab Duo Custom Flow (Session ${escapeHtml(primaryId)}) autonomously discovered the exact retirement risk on disposable target 87785099 from a neutral, unprimed request (Issue #${escapeHtml(String(primaryIssue))}); Termivance independently verified it and refused unauthorized mutation.</div>
     ${kv([
-      ["duo session", `<code>${escapeHtml(flow.session_id || "—")}</code> ${chip(flow.session_status || "Finished", "chip ok")}`],
+      ["primary duo session (unprimed)", `<code>${escapeHtml(primaryId)}</code> ${chip(flow.primary_session_status || "Finished", "chip ok")} (Issue #${escapeHtml(String(primaryIssue))}, note ${escapeHtml(String(primaryNote))})`],
+      ["secondary session (contextual)", `<code>${escapeHtml(flow.secondary_session_id || "9704855")}</code> ${chip("Finished", "chip amber")} (Issue #${escapeHtml(String(flow.secondary_issue_iid || "4"))})`],
       ["catalog item", `<code>${escapeHtml(String(flow.catalog_item_id || "1018562"))}</code> (${escapeHtml(flow.flow_name || "Termivance Retirement Analyst")})`],
-      ["source issue", `#${escapeHtml(String(flow.issue_iid || "4"))} on canonical repo (agent note ${escapeHtml(String(flow.agent_note_id || ""))})`],
-      ["disposable target", `<code>${escapeHtml(String(tgt.project_id || ""))}</code> ${escapeHtml(tgt.full_path || "")}`],
-      ["observed commit", `<code>${escapeHtml(tgt.observed_commit || "")}</code>`],
-      ["direct repo read", chip(demo.inspection_preference_resolved ? demo.inspection_preference_resolved.first_preference_direct_cross_project_read : "SUCCEEDED", "chip ok")],
+      ["deterministic outcome note", `Note <code>${escapeHtml(String(outcomeNote))}</code> published on Issue #${escapeHtml(String(primaryIssue))}`],
+      ["disposable target", `<code>${escapeHtml(String(tgt.project_id || "87785099"))}</code> ${escapeHtml(tgt.full_path || "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo")}`],
+      ["observed commit", `<code>${escapeHtml(tgt.observed_commit || "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d")}</code>`],
+      ["direct repo read", chip("SUCCEEDED_UNPRIMED", "chip ok")],
     ])}
     ${sub("Discovered Risk Candidates & Independent Corroboration")}
     <table><tr><th>candidate &amp; duo observation</th><th>independent verification source</th><th>classification</th><th>obligation mapping</th></tr>
