@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-19T10:38:44Z",
-  "artifact_sha256": "ce36796510b24074aefffc24eed4317208a58e7cf266fecefa0f67656d07f8f6",
+  "acquired_at_utc": "2026-10-19T10:41:49Z",
+  "artifact_sha256": "4f841eb47e361a1f1e2c0b78dce8e3895120ef712848420af6ab91acf73988d5",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2962698179/jobs",
+  "endpoint": "/projects/87779099/pipelines/2962710220/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17280735953,
+      "id": 17280826088,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "termivance-conduit",
-        "authored_date": "2026-10-19T13:36:35.000+03:00",
-        "committed_date": "2026-10-19T13:36:35.000+03:00",
+        "authored_date": "2026-10-19T13:40:20.000+03:00",
+        "committed_date": "2026-10-19T13:40:20.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "termivance-conduit",
-        "created_at": "2026-10-19T13:36:35.000+03:00",
+        "created_at": "2026-10-19T13:40:20.000+03:00",
         "extended_trailers": {},
-        "id": "36ab7f48634b33d88c8eac12b290682a0ab83b4e",
-        "message": "B4 consolidated QA repair: trust-bound approvals, one-contract ledger, receipt cross-checks, multi-resource portfolio, interactive Control Room v2, genuine Duo session evidence ladder\n",
+        "id": "404c4ae9b8ca39814c8472bd0d26f785a0a17d54",
+        "message": "docs: record verified CI pipeline 2962698179 and QA bridge run 39238884592 for the repair commit\n",
         "parent_ids": [
-          "b13b97b4ba7c17f7d560f4e34c098ef9d60921a6"
+          "36ab7f48634b33d88c8eac12b290682a0ab83b4e"
         ],
-        "short_id": "36ab7f48",
-        "title": "B4 consolidated QA repair: trust-bound approvals, one-contract ledger, receipt cross-checks, multi-resource portfolio, interactive Control Room v2, genuine Duo session evidence ladder",
+        "short_id": "404c4ae9",
+        "title": "docs: record verified CI pipeline 2962698179 and QA bridge run 39238884592 for the repair commit",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/36ab7f48634b33d88c8eac12b290682a0ab83b4e"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/404c4ae9b8ca39814c8472bd0d26f785a0a17d54"
       },
       "coverage": null,
-      "created_at": "2026-10-19T10:36:55.636Z",
-      "duration": 40.370798,
+      "created_at": "2026-10-19T10:40:23.585Z",
+      "duration": 40.314029,
       "erased_at": null,
-      "finished_at": "2026-10-19T10:37:36.411Z",
-      "id": 17280735953,
+      "finished_at": "2026-10-19T10:41:04.233Z",
+      "id": 17280826088,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-19T10:36:55.481Z",
-        "id": 2962698179,
-        "iid": 19,
+        "created_at": "2026-10-19T10:40:23.448Z",
+        "id": 2962710220,
+        "iid": 20,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "36ab7f48634b33d88c8eac12b290682a0ab83b4e",
+        "sha": "404c4ae9b8ca39814c8472bd0d26f785a0a17d54",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-19T10:37:37.804Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2962698179"
+        "updated_at": "2026-10-19T10:41:05.646Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2962710220"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.110148,
+      "queued_duration": 0.067778,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-19T10:38:44.483Z",
-        "created_at": "2026-10-16T16:23:06.741Z",
-        "id": 163225176,
-        "ip_address": "10.218.11.3",
+        "contacted_at": "2026-10-19T10:41:48.921Z",
+        "created_at": "2026-10-16T16:32:09.879Z",
+        "id": 163226633,
+        "ip_address": "10.218.11.18",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_ONXHRWMMB5en",
+        "system_id": "r_zfOmcUBDwI9R",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-19T10:36:56.040Z",
+      "started_at": "2026-10-19T10:40:23.919Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17280735953"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17280826088"
     }
   ]
 }

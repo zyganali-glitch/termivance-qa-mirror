@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-19T10:38:41Z",
-  "artifact_sha256": "080f60f2323f6d443c95419a534d0a008551a8bcaa0162253706d8c06874a3d8",
+  "acquired_at_utc": "2026-10-19T10:41:47Z",
+  "artifact_sha256": "c64873c17d631ac7437630d90745d01cd794039214f2ebf663e153ba0152285c",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/pipelines/2960412852",
   "http_error": null,
