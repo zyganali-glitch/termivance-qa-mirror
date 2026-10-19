@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-19T11:45:20Z",
-  "artifact_sha256": "ce6c97acf72b7ecb89ce1d79592ebe095a700aeaf7b76ccc666527512741065e",
+  "acquired_at_utc": "2026-10-19T11:48:34Z",
+  "artifact_sha256": "6646c33745e3c0c2d1fadece93352848499a977c4e3326a54a017a7dc704bf7f",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2962949256/jobs",
+  "endpoint": "/projects/87779099/pipelines/2962958144/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17282602039,
+      "id": 17282675204,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-19T14:44:22.000+03:00",
-        "committed_date": "2026-10-19T14:44:22.000+03:00",
+        "authored_date": "2026-10-19T14:47:16.000+03:00",
+        "committed_date": "2026-10-19T14:47:16.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-19T14:44:22.000+03:00",
+        "created_at": "2026-10-19T14:47:16.000+03:00",
         "extended_trailers": {},
-        "id": "0022a21e9d7cc10cbf81d38d92e70de971f2b883",
-        "message": "B4 final consolidated closure: QA fixes A-D, evidence-bound Duo reconciliation, resurrection witness\n\nMandatory QA correctness fixes: (A) operator-HMAC not policy-bypassable -- signature_required=false refused at construction and load, verification unconditional; (B) duplicate/conflicting approval binding statements refused as ambiguous, single wrong value refused against exactly-as-required; (C) Pages-endpoint 404 recorded as PAGES_NOT_OBSERVED_404 and never promoted to verified absence; (D) Control Room receipt card driven by a fail-closed classifier -- bare schema presence is INVALID, never a live receipt.\n\nEnhancements: duo_reconciliation.py + reconcile-duo CLI (9 candidate Duo claims over the operator-confirmed ladder; 4 SUPPORTED / 2 UNRESOLVED / 2 NOT_AUTHENTICALLY_ATTRIBUTABLE / 1 UNSUPPORTED; never authoritative); witness.py + witness-build CLI (target-own CI at observed commit 54fcc9ff, MECHANISM_PRESENT_IN_OBSERVED_CONFIG; never claims absence or RESURRECTION_CONTROLLED); capsule-build binds both records with cross-target refusal and capsule-verify checks nested records.\n\nEvidence refreshed live (anonymous GET-only, $0.00); control room rebuilt and DOM-render smoke-tested; suite 306 passed, ruff clean, ci_safety_assertions 40/40; docs reconciled (README, HANDOFF, EVIDENCE_MATRIX, DEMO_SCRIPT, MASTER_PLAN). Still NOT_RUN/BLOCKED: live unpublish, OBSERVED_ABSENT, authenticated Duo note attribution, live tripwire.\n",
+        "id": "be78440d873c43715e09a94ca9009cb8ac812fbd",
+        "message": "docs: record verified B4 closure pipeline 2962949256 and QA bridge run 39246880797\n",
         "parent_ids": [
-          "404c4ae9b8ca39814c8472bd0d26f785a0a17d54"
+          "0022a21e9d7cc10cbf81d38d92e70de971f2b883"
         ],
-        "short_id": "0022a21e",
-        "title": "B4 final consolidated closure: QA fixes A-D, evidence-bound Duo reconciliation, resurrection witness",
+        "short_id": "be78440d",
+        "title": "docs: record verified B4 closure pipeline 2962949256 and QA bridge run 39246880797",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/0022a21e9d7cc10cbf81d38d92e70de971f2b883"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/be78440d873c43715e09a94ca9009cb8ac812fbd"
       },
       "coverage": null,
-      "created_at": "2026-10-19T11:44:37.940Z",
-      "duration": 40.722725,
+      "created_at": "2026-10-19T11:47:23.576Z",
+      "duration": 41.356442,
       "erased_at": null,
-      "finished_at": "2026-10-19T11:45:19.025Z",
-      "id": 17282602039,
+      "finished_at": "2026-10-19T11:48:05.311Z",
+      "id": 17282675204,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-19T11:44:37.805Z",
-        "id": 2962949256,
-        "iid": 21,
+        "created_at": "2026-10-19T11:47:23.433Z",
+        "id": 2962958144,
+        "iid": 22,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "0022a21e9d7cc10cbf81d38d92e70de971f2b883",
+        "sha": "be78440d873c43715e09a94ca9009cb8ac812fbd",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-19T11:45:20.384Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2962949256"
+        "updated_at": "2026-10-19T11:48:06.710Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2962958144"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.092868,
+      "queued_duration": 0.069976,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-19T11:45:20.402Z",
-        "created_at": "2026-10-16T16:27:13.576Z",
-        "id": 163225959,
+        "contacted_at": "2026-10-19T11:48:33.937Z",
+        "created_at": "2026-10-16T16:32:13.306Z",
+        "id": 163226639,
         "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_Yzi5NrpR5DW4",
+        "system_id": "r_RToPSfAN3kXU",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-19T11:44:38.303Z",
+      "started_at": "2026-10-19T11:47:23.955Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17282602039"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17282675204"
     }
   ]
 }
