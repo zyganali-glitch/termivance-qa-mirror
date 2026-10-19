@@ -1,0 +1,205 @@
+{
+  "authority": "NON_AUTHORITATIVE",
+  "autonomy_summary": "1 genuine Duo autonomous step(s), 1 operator-confirmed handoff(s), 5 deterministic automated step(s); the chain is NOT fully autonomous because the Duo output requires operator confirmation before entering the deterministic pipeline",
+  "boundary": "this review connects the genuine Duo analysis to deterministic verification; the AI contribution adds investigation context and risk explanations but cannot award verdicts, modify provider facts, or authorize mutations",
+  "candidate_claims": [
+    {
+      "claim_id": "duo-9671626-01",
+      "corroboration_detail": "the project is publicly readable to this anonymous identity (HTTP 200)",
+      "corroboration_source": "PROJECT_READ",
+      "corroboration_status": "CORROBORATED",
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "retirement_relevance": "MATERIAL",
+      "source_project": 87779099,
+      "text": "project 87779099 is publicly readable (HTTP 200)"
+    },
+    {
+      "claim_id": "duo-9671626-02",
+      "corroboration_detail": "the anonymous issue read confirms every stated field exactly",
+      "corroboration_source": "ISSUE_METADATA",
+      "corroboration_status": "CORROBORATED",
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "retirement_relevance": "MATERIAL",
+      "source_project": null,
+      "text": "issue #3 exists, state opened, title/labels/author match the recorded B3 retirement status thread"
+    },
+    {
+      "claim_id": "duo-9671626-03",
+      "corroboration_detail": "the observable core matches, but 'consistent with' is not proof: the inference is never promoted to SUPPORTED",
+      "corroboration_source": "CONSISTENCY_INFERENCE",
+      "corroboration_status": "UNRESOLVED",
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "retirement_relevance": "MATERIAL",
+      "source_project": null,
+      "text": "issue user_notes_count=3 and updated_at=2026-10-19T08:57:41.500Z are consistent with, but not proof of, the operator-reported new comment window"
+    },
+    {
+      "claim_id": "duo-9671626-04",
+      "corroboration_detail": "the agent-sessions UI is an authenticated surface; the anonymous probe returned 404 \u2014 an access observation that can neither confirm nor deny the session's recorded state, and is never promoted",
+      "corroboration_source": "SESSION_UI_PROBE",
+      "corroboration_status": "UNRESOLVED",
+      "origin": "OPERATOR_CONFIRMED_UI",
+      "retirement_relevance": "PROCEDURAL",
+      "source_project": null,
+      "text": "session id 9671626 exists and Finished in the authenticated automate/agent-sessions UI"
+    },
+    {
+      "claim_id": "duo-9671626-05",
+      "corroboration_detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution \u2014 the claim cannot be attributed",
+      "corroboration_source": "ISSUE_NOTE_READ",
+      "corroboration_status": "NOT_CHECKED",
+      "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
+      "retirement_relevance": "CONTEXTUAL",
+      "source_project": 87779099,
+      "text": "the agent-authored comment note id 4040776241 was published on issue #3 by the GitLab Duo service account"
+    },
+    {
+      "claim_id": "duo-9671626-06",
+      "corroboration_detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution \u2014 the claim cannot be attributed",
+      "corroboration_source": "ISSUE_NOTE_READ",
+      "corroboration_status": "NOT_CHECKED",
+      "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
+      "retirement_relevance": "CONTEXTUAL",
+      "source_project": 87779099,
+      "text": "the six-section analysis content itself and its read-only, non-authoritative character"
+    },
+    {
+      "claim_id": "duo-9671626-07",
+      "corroboration_detail": "flow-execution internals have no independently observable surface; the claim can never be promoted by this tool",
+      "corroboration_source": "FLOW_INTERNALS",
+      "corroboration_status": "NOT_CHECKED",
+      "origin": "OPERATOR_CONFIRMED_UI",
+      "retirement_relevance": "CONTEXTUAL",
+      "source_project": null,
+      "text": "the agent used genuine GitLab tools and stated it did NOT directly query disposable project 87785099"
+    },
+    {
+      "claim_id": "duo-9671626-08",
+      "corroboration_detail": "the anonymous probe reproduces the recorded access observation (HTTP 401)",
+      "corroboration_source": "OBSERVABILITY_PROBE",
+      "corroboration_status": "CORROBORATED",
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "retirement_relevance": "PROCEDURAL",
+      "source_project": null,
+      "text": "note/discussion contents (HTTP 401 to anonymous readers; 401 is an access observation, never absence, never authenticity)"
+    },
+    {
+      "claim_id": "duo-9671626-09",
+      "corroboration_detail": "the anonymous probe reproduces the recorded access observation (HTTP 404)",
+      "corroboration_source": "OBSERVABILITY_PROBE",
+      "corroboration_status": "CORROBORATED",
+      "origin": "ANONYMOUS_API_OBSERVATION",
+      "retirement_relevance": "PROCEDURAL",
+      "source_project": null,
+      "text": "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
+    }
+  ],
+  "counterfactual": {
+    "corroboration_work_changed": true,
+    "deterministic_verdict_changed": false,
+    "investigation_queue_changed": true,
+    "obligation_trace_changed": true,
+    "risk_explanation_changed": true,
+    "summary": "the Duo candidate adds 3 material claim(s) (2 independently corroborated) that enrich the investigation queue, risk explanation and corroboration work; the deterministic verdict remains BLOCKED in both cases because AI input cannot modify authoritative provider facts or obligation graph evaluation",
+    "verdict_with_candidate": "BLOCKED",
+    "verdict_without_candidate": "BLOCKED"
+  },
+  "duo_session": {
+    "catalog_item_id": 1018562,
+    "session_id": "9671626"
+  },
+  "observed_at": "2026-10-19T12:55:01.532547+00:00",
+  "schema": "termivance.supervised_review/v1",
+  "steps": [
+    {
+      "autonomy": "DUO_AUTONOMOUS",
+      "detail": "session 9671626, catalog item 1018562; the flow read project/issue metadata using genuine GitLab tools and produced a non-authoritative six-section analysis",
+      "input_refs": [
+        "issue:87779099:3"
+      ],
+      "output_ref": "evidence/b4/duo_claims.json",
+      "provenance": "OPERATOR_CONFIRMED",
+      "status": "COMPLETED",
+      "step_id": "duo_candidate_analysis",
+      "title": "GitLab Duo Custom Flow candidate analysis"
+    },
+    {
+      "autonomy": "OPERATOR_CONFIRMED_HANDOFF",
+      "detail": "the operator visually confirmed the Duo session output in the authenticated browser UI and transcribed the claims into the structured duo_claims/v1 record; this is a manual handoff, not an autonomous agent-to-agent transfer",
+      "input_refs": [
+        "duo_session:9671626"
+      ],
+      "output_ref": "evidence/b4/duo_claims.json",
+      "provenance": "OPERATOR_CONFIRMED",
+      "status": "COMPLETED",
+      "step_id": "operator_handoff",
+      "title": "Operator confirms Duo output and hands to deterministic pipeline"
+    },
+    {
+      "autonomy": "DETERMINISTIC_AUTOMATED",
+      "detail": "reconciled 9 claims against anonymous read-only GitLab observations; 4 SUPPORTED, findings: NOT_AUTHENTICALLY_ATTRIBUTABLE=2, SUPPORTED=4, UNRESOLVED=2, UNSUPPORTED=1",
+      "input_refs": [
+        "evidence/b4/duo_claims.json"
+      ],
+      "output_ref": "evidence/b4/duo_reconciliation.json",
+      "provenance": "ANONYMOUS_PUBLIC_READ",
+      "status": "COMPLETED",
+      "step_id": "independent_reconciliation",
+      "title": "Anonymous read-only reconciliation of Duo claims"
+    },
+    {
+      "autonomy": "DETERMINISTIC_AUTOMATED",
+      "detail": "read .gitlab-ci.yml at the exact observed commit; resurrection_possible=MECHANISM_PRESENT_IN_OBSERVED_CONFIG",
+      "input_refs": [
+        "project:87785099"
+      ],
+      "output_ref": "evidence/b4/witness_87785099.json",
+      "provenance": "ANONYMOUS_PUBLIC_READ",
+      "status": "COMPLETED",
+      "step_id": "source_corroboration",
+      "title": "Resurrection witness: target's own CI config at observed commit"
+    },
+    {
+      "autonomy": "DETERMINISTIC_AUTOMATED",
+      "detail": "verdict=BLOCKED; the engine evaluates the full obligation graph against the recorded snapshot \u2014 no AI input can modify this verdict",
+      "input_refs": [
+        "evidence/b4/decision.json"
+      ],
+      "output_ref": "evidence/b4/decision.json",
+      "provenance": "DETERMINISTIC",
+      "status": "COMPLETED",
+      "step_id": "deterministic_decision",
+      "title": "Deterministic retirement obligation graph evaluation"
+    },
+    {
+      "autonomy": "DETERMINISTIC_AUTOMATED",
+      "detail": "risk map generated from obligation graph; visualization-ready",
+      "input_refs": [
+        "evidence/b4/decision.json"
+      ],
+      "output_ref": "evidence/b4/risk_map.json",
+      "provenance": "DETERMINISTIC",
+      "status": "COMPLETED",
+      "step_id": "risk_map",
+      "title": "Deterministic risk map from decision obligations"
+    },
+    {
+      "autonomy": "DETERMINISTIC_AUTOMATED",
+      "detail": "capsule assembled; manifest sha256 eeb7a5c9b2b0f903\u2026",
+      "input_refs": [
+        "evidence/b4/decision.json",
+        "evidence/b4/witness_87785099.json",
+        "evidence/b4/duo_reconciliation.json"
+      ],
+      "output_ref": "evidence/b4/proof_capsule.json",
+      "provenance": "DETERMINISTIC",
+      "status": "COMPLETED",
+      "step_id": "proof_capsule",
+      "title": "Tamper-evident proof capsule assembly"
+    }
+  ],
+  "target": {
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+    "project_id": 87785099
+  }
+}

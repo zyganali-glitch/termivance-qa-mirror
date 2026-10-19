@@ -79,7 +79,12 @@ class WorkflowPlan:
     def to_dict(self) -> dict[str, object]:
         return {
             "schema": WORKFLOW_SCHEMA,
-            "mode": "SINGLE_DUO_FLOW",
+            "mode": "SINGLE_AUTHORIZED_FLOW",
+            "mode_note": (
+                "this is a deterministic Python workflow plan, not a GitLab "
+                "Duo Custom Flow executor; the genuine Duo contribution is "
+                "recorded in the duo_reconciliation evidence record"
+            ),
             "target": {
                 "project_id": self.target_project_id,
                 "full_path": self.target_full_path,
@@ -102,14 +107,22 @@ class WorkflowPlan:
         lines.append("")
         lines.append(
             "The destructive step is stage 5 only, and only ever through the "
-            "one real GitLab Duo Custom Flow executor path "
-            "(retire-pages --execute with ledger + GitLab approval record)."
+            "one real authorized executor path "
+            "(retire-pages --execute with --operator-trust + ledger + GitLab "
+            "approval record). This plan is a deterministic Python workflow, "
+            "not itself a GitLab Duo Custom Flow execution."
         )
         return "\n".join(lines)
 
 
 def plan(*, project_id: int, full_path: str, out_dir: str | Path) -> WorkflowPlan:
-    """The canonical stage plan for one exact target (real, runnable commands)."""
+    """The canonical stage plan for one exact target (real, runnable commands).
+
+    The execute stage renders the *complete* mandatory argument set, including
+    ``--operator-trust`` which the CLI correctly refuses to execute without.
+    Placeholder arguments are marked ``<...>`` to prevent accidental execution
+    of an incomplete command.
+    """
     out = Path(out_dir)
     pid = str(project_id)
     return WorkflowPlan(
@@ -147,7 +160,8 @@ def plan(*, project_id: int, full_path: str, out_dir: str | Path) -> WorkflowPla
                 "execute",
                 f"termivance retire-pages --project-id {pid} --url <served-url> "
                 "--marker <marker> --policy <policy.json> --authorization "
-                "<auth.json> --ledger evidence/ledger.json --approval-project-id "
+                "<auth.json> --operator-trust <trust.json> --ledger "
+                f"evidence/ledger.json --approval-project-id "
                 f"{pid} --approval-issue-iid <iid> --execute --json > "
                 f"{out / 'receipt.json'}",
                 "retirement receipt from the ONE real authorized flow",

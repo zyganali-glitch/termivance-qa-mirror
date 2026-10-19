@@ -139,11 +139,11 @@ const escapeHtml = (v) => String(v ?? "")
 
 function chipState(state) {
   const s = String(state ?? "");
-  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE|SUPPORTED)/.test(s)) return "chip ok";
-  if (/^INFERRED|^PROJECTED|^STALE|^UNRESOLVED/.test(s)) return "chip amber";
+  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE|SUPPORTED|CORROBORATED|DETERMINISTIC)/.test(s)) return "chip ok";
+  if (/^INFERRED|^PROJECTED|^STALE|^UNRESOLVED|^OPERATOR_CONFIRMED|^PROCEDURAL/.test(s)) return "chip amber";
   if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT|CONTRADICTED|NOT_AUTHENTICALLY)/.test(s)) return "chip bad";
-  if (/^(UNAVAILABLE|UNKNOWN|UNSUPPORTED)/.test(s)) return "chip dim";
-  if (/^(NOT_AUTHORIZING|READ_ONLY|READ_ONLY_OBSERVATION|AUTHORIZED_FALSE|STRUCTURALLY_REFUSED)/.test(s)) return "chip violet";
+  if (/^(UNAVAILABLE|UNKNOWN|UNSUPPORTED|NOT_CHECKED|CONTEXTUAL)/.test(s)) return "chip dim";
+  if (/^(NOT_AUTHORIZING|READ_ONLY|READ_ONLY_OBSERVATION|AUTHORIZED_FALSE|STRUCTURALLY_REFUSED|DUO_AUTONOMOUS)/.test(s)) return "chip violet";
   /* QA-FIX D: receipt truth states. Provider acceptance is a recorded fact but
      never absence (amber); incoherence is a defect, never evidence (red). */
   if (/^MUTATION_ACCEPTED/.test(s)) return "chip amber";
@@ -585,6 +585,7 @@ function renderProof() {
     </div>
     <div>
       ${sec.decision && sec.decision.verdict ? decisionCard(sec.decision) : missing("Decision")}
+      <div class="card">${supervisedReviewCard(sec.supervised_review)}</div>
       <div class="card"><h2>External evidence — GitLab Duo session 9671626</h2>
         ${duo ? duoLadder(duo) : missing("Duo session evidence")}
       </div>
@@ -656,6 +657,59 @@ function duoReconciliationCard(rc) {
       <td class="muted">${escapeHtml(c.detail)}</td></tr>`).join("")}
     </table>
     <div class="muted">${escapeHtml(rc.boundary || "")}</div>`;
+}
+function supervisedReviewCard(sr) {
+  if (!sr || !sr.steps) {
+    return `<h2>Supervised retirement review &amp; AI boundary</h2>${chip("UNAVAILABLE", "chip dim")}
+      <div class="muted">Supervised review record was not supplied; the causal chain from Duo to deterministic decisions is not assembled here.</div>`;
+  }
+  const cf = sr.counterfactual || {};
+  const steps = sr.steps || [];
+  const claims = sr.candidate_claims || [];
+  return `<h2>Supervised retirement review &amp; AI boundary</h2>
+    <div class="banner">AI proposes candidate claims; deterministic engine owns authorization and verdicts</div>
+    ${sub("Multi-step causal review pipeline")}
+    <table><tr><th>step</th><th>autonomy</th><th>status</th><th>detail &amp; provenance</th></tr>
+    ${steps.map((s) => `<tr>
+      <td><b>${escapeHtml(s.title || s.step_id)}</b><br><code class="muted">${escapeHtml(s.step_id)}</code></td>
+      <td>${chip(s.autonomy)}</td>
+      <td>${chip(s.status)}</td>
+      <td><div>${escapeHtml(s.detail || "")}</div>
+          <div class="muted">provenance: ${escapeHtml(s.provenance || "—")} · in: ${escapeHtml((s.input_refs||[]).join(", "))} · out: ${escapeHtml(s.output_ref || "—")}</div></td></tr>`).join("")}
+    </table>
+
+    ${sub("Candidate claim corroboration matrix")}
+    <table><tr><th>claim</th><th>origin</th><th>proj</th><th>relevance</th><th>corroboration</th><th>evidence note</th></tr>
+    ${claims.map((c) => `<tr>
+      <td><b>${escapeHtml(c.claim_id)}</b><br><span class="muted">${escapeHtml(c.text)}</span></td>
+      <td><span class="muted">${escapeHtml(c.origin)}</span></td>
+      <td><code>${escapeHtml(c.source_project != null ? c.source_project : "—")}</code></td>
+      <td>${chip(c.retirement_relevance)}</td>
+      <td>${chip(c.corroboration_status)}</td>
+      <td class="muted">${escapeHtml(c.corroboration_source ? c.corroboration_source + ": " : "")}${escapeHtml(c.corroboration_detail || "")}</td></tr>`).join("")}
+    </table>
+
+    ${sub("Counterfactual analysis — AI contribution vs deterministic verdict")}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;">
+      <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
+        <div><b>With Duo candidate:</b> ${chip(cf.verdict_with_candidate || "—")}</div>
+        <div class="muted">Investigation queue: enriched (material source claims)</div>
+        <div class="muted">Risk explanation: enriched (CI redeployment mechanics)</div>
+      </div>
+      <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
+        <div><b>Without Duo candidate:</b> ${chip(cf.verdict_without_candidate || "—")}</div>
+        <div class="muted">Investigation queue: baseline</div>
+        <div class="muted">Risk explanation: baseline</div>
+      </div>
+    </div>
+    ${kv([
+      ["deterministic verdict changed", chip(String(cf.deterministic_verdict_changed))],
+      ["investigation queue changed", chip(String(cf.investigation_queue_changed))],
+      ["risk explanation changed", chip(String(cf.risk_explanation_changed))],
+      ["obligation trace changed", chip(String(cf.obligation_trace_changed))],
+      ["corroboration work changed", chip(String(cf.corroboration_work_changed))],
+    ])}
+    <div class="muted" style="margin-top:6px;">${escapeHtml(cf.summary || "")}</div>`;
 }
 function witnessCard(w) {
   if (!w || !w.resurrection_possible) {

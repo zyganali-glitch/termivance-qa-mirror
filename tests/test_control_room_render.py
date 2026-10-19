@@ -103,6 +103,13 @@ console.log(JSON.stringify(out));
     assert "Resurrection counterexample witness" in proof
     assert "MECHANISM_PRESENT_IN_OBSERVED_CONFIG" in proof
     assert "cannot verify this Pages administration surface" in proof
+    assert "Supervised retirement review" in proof
+    assert (
+        "AI proposes candidate claims; deterministic engine owns authorization and verdicts"
+        in proof
+    )
+    assert "Multi-step causal review pipeline" in proof
+    assert "Counterfactual analysis" in proof
     assert "Retirement receipt" in proof
     assert "No live mutation receipt exists" in proof
     assert "(live)" not in proof

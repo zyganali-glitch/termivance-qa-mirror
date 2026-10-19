@@ -640,6 +640,29 @@ def _cmd_witness_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_supervised_review(args: argparse.Namespace) -> int:
+    from termivance.supervised_review import build_supervised_review
+
+    review = build_supervised_review(
+        duo_claims_path=args.duo_claims,
+        duo_reconciliation_path=args.duo_reconciliation,
+        witness_path=args.witness,
+        decision_path=args.decision,
+        risk_map_path=args.risk_map,
+        capsule_path=args.capsule,
+        target_project_id=args.project_id,
+        target_full_path=args.full_path,
+    )
+    payload = review.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(review.render())
+    return 0
+
+
 def _cmd_capsule_build(args: argparse.Namespace) -> int:
     from termivance.capsule import build_capsule, save_capsule
     from termivance.target import TargetIdentity
@@ -1100,6 +1123,32 @@ def build_parser() -> argparse.ArgumentParser:
     witness_build.add_argument("--out", default=None)
     witness_build.add_argument("--json", action="store_true")
 
+    supervised_review = sub.add_parser(
+        "supervised-review",
+        help="build the evidence-bound supervised retirement review from "
+        "recorded Duo claims, reconciliation, witness and decision artifacts",
+    )
+    supervised_review.add_argument(
+        "--duo-claims", dest="duo_claims", default=None,
+        help="recorded termivance.duo_claims/v1 record",
+    )
+    supervised_review.add_argument(
+        "--duo-reconciliation", dest="duo_reconciliation", default=None,
+        help="recorded termivance.duo_reconciliation/v1 record",
+    )
+    supervised_review.add_argument("--witness", default=None, help="resurrection witness record")
+    supervised_review.add_argument("--decision", default=None, help="recorded decision JSON")
+    supervised_review.add_argument("--risk-map", dest="risk_map", default=None)
+    supervised_review.add_argument("--capsule", default=None, help="proof capsule JSON")
+    supervised_review.add_argument("--project-id", type=int, default=87785099)
+    supervised_review.add_argument(
+        "--full-path",
+        default="gitlab-ai-hackathon/transcend-october-2026/39306908/"
+        "termivance-b3-disposable-pages-demo",
+    )
+    supervised_review.add_argument("--out", default=None)
+    supervised_review.add_argument("--json", action="store_true")
+
     return parser
 
 
@@ -1153,6 +1202,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_reconcile_duo(args)
     if args.command == "witness-build":
         return _cmd_witness_build(args)
+    if args.command == "supervised-review":
+        return _cmd_supervised_review(args)
     return 1  # pragma: no cover
 
 

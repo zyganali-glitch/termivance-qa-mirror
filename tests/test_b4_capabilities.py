@@ -352,7 +352,8 @@ def test_capsule_render_reports_verification_and_boundaries(tmp_path, capsys):  
 def test_workflow_plan_lists_seven_stages_in_order():
     plan_ = plan(project_id=PID, full_path=PATH, out_dir="evidence/b4")
     data = plan_.to_dict()
-    assert data["mode"] == "SINGLE_DUO_FLOW"
+    assert data["mode"] == "SINGLE_AUTHORIZED_FLOW"
+    assert "not a GitLab Duo Custom Flow executor" in data["mode_note"]
     stages = [s["stage"] for s in data["stages"]]
     assert stages == [
         "snapshot",
@@ -365,7 +366,9 @@ def test_workflow_plan_lists_seven_stages_in_order():
     ]
     text = plan_.render()
     assert "retire-pages" in text and "--execute" in text
-    assert "no second mutation code path" in text or "one real" in text
+    # Repair B: --operator-trust must be present in the execute command
+    assert "--operator-trust" in text
+    assert "deterministic Python workflow" in text
 
 
 def test_workflow_assessment_reads_recorded_artifacts_only(tmp_path):

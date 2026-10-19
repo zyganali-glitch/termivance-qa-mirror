@@ -10,9 +10,9 @@ demo*, which is itself a product feature (honest evidence states).
 
 ```bash
 python -m pip install -e ".[dev]"
-ruff check . && python -m pytest -q   # 306 passed
+ruff check . && python -m pytest -q   # 327 passed
 python scripts/refresh_b4_evidence.py  # anonymous live refresh (GET-only, $0)
-python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --out-dir control_room
+python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --supervised-review evidence/b4/supervised_review.json --out-dir control_room
 ```
 
 Open `control_room/index.html` in a browser (final shot).
@@ -75,8 +75,11 @@ Open `control_room/index.html` and *use it live*:
    **resurrection witness** card (target 87785099's *own* CI config at the exact
    observed commit carries Pages redeployment signals; its Pages administration
    surface answers 403 → "the observing identity cannot verify this surface";
-   absence claim `NEVER`, control `NOT_CLAIMED`) — plus the escaping self-test
-   rendering as inert text.
+   absence claim `NEVER`, control `NOT_CLAIMED`), the **supervised retirement review**
+   card (7-step visual pipeline from Duo to deterministic verdicts, candidate claims
+   matrix with source-backed corroboration, and counterfactual analysis proving
+   AI input enriches investigation without modifying the deterministic BLOCKED verdict)
+   — plus the escaping self-test rendering as inert text.
 
 ## 5 · Proof Capsule + verify-receipt (≈25 s)
 

@@ -156,6 +156,18 @@ Independent QA of B3 found the GitHub bridge genuinely operational but identifie
 
 **Verification additions:** 22 acceptance tests (`tests/test_b4_duo_witness.py`) + 6 receipt-classifier negatives + 1 Node DOM-render test; 40/40 CI safety assertions now include the A/B/C/D regressions, reconciliation/witness non-authority and shipped-artifact conformance; control room rebuilt (provenance `LIVE_ANONYMOUS`) and DOM-render smoke-tested (proof tab cards present, no "(live)" label).
 
+## B4 Final Integrity Repair & Supervised Workflow Closure (2026-10-19)
+
+**Batch state:** Closed with Mandatory Repair A (receipt provenance classification), Mandatory Repair B (workflow executable contract completeness), Award-Critical Enhancement (Evidence-Bound Supervised Retirement Review), and Control Room investigation view. Suite **327 passed** (21 new adversarial tests in `tests/test_b4_final_repair.py`), `ruff check` clean, `scripts/ci_safety_assertions.py` **40/40 PASS** network-free.
+
+**Mandatory Repair A — Fail-closed receipt provenance (`scripts/build_control_room.py`):** `classify_receipt()` evaluates receipt durable provenance against required authorization binding, operation ID, and execution-time authorization record consistency. Assigns six explicit evidence levels: `NOT_APPLICABLE`, `UNTRUSTED_LOCAL_CLAIM`, `STRUCTURALLY_COHERENT_RECORDED_CLAIM`, `LEDGER_CROSS_VALIDATED`, and unreachable `PROVIDER_ACCEPTED`. A mere local JSON or recalculated SHA-256 manifest can never be promoted to provider-accepted or verified absence; static UI exposes the trust boundary explicitly.
+
+**Mandatory Repair B — Executable workflow contract (`src/termivance/workflow.py`):** `plan()` includes mandatory `--operator-trust <trust.json>` in the generated `retire-pages --execute` command, matching the CLI runtime requirement. Labeled `SINGLE_AUTHORIZED_FLOW` to truthfully state that the plan is a deterministic Python workflow, not itself a GitLab Duo Custom Flow execution.
+
+**Award-Critical Enhancement — Evidence-Bound Supervised Retirement Review (`src/termivance/supervised_review.py`, CLI `supervised-review`; `evidence/b4/supervised_review.json`):** Assembles the complete 7-step causal chain connecting genuine GitLab Duo contribution to the deterministic product: (1) Duo candidate analysis (session 9671626, catalog item 1018562, DUO_AUTONOMOUS) -> (2) Operator confirmation (OPERATOR_CONFIRMED_HANDOFF) -> (3) Anonymous read reconciliation (DETERMINISTIC_AUTOMATED) -> (4) Target CI source witness (DETERMINISTIC_AUTOMATED) -> (5) Deterministic decision (DETERMINISTIC_AUTOMATED, BLOCKED) -> (6) Risk map (DETERMINISTIC_AUTOMATED) -> (7) Tamper-evident proof capsule (DETERMINISTIC_AUTOMATED). Candidate claim corroboration matrix tracks material source claims (disposable target's CI configuration at observed commit). Counterfactual analysis proves AI contribution enriches the investigation queue and risk explanation without modifying the deterministic BLOCKED verdict.
+
+**Control Room UX Enhancement:** `control_room/index.html` updated to display the multi-step causal review pipeline, candidate claim corroboration matrix, and side-by-side counterfactual comparison card. Explicit banner: "AI proposes candidate claims; deterministic engine owns authorization and verdicts". Escaped, static, zero-network contract verified.
+
 ## Minimal bounded-absence receipt fields
 
 `provider=GITLAB_PAGES`, `exact_project_id`, `exact_project_path`, `resource_kind=PAGES_SITE`, `observed_scope`, `observation_time_utc`, `api_request_identity`, `api_status`, `deployment_state`, `served_url`, `http_observation`, `freshness_or_expiry`, `source_sha`, `authorization_binding`, `verdict`.
