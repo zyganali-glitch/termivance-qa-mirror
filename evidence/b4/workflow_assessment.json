@@ -1,0 +1,55 @@
+{
+  "mode": "ARTIFACT_ASSESSMENT",
+  "observed_at": "2026-10-19T07:20:23.469524+00:00",
+  "schema": "termivance.workflow/v1",
+  "stages": [
+    {
+      "detail": "snapshot classification=RECORDED_LIVE",
+      "stage": "snapshot",
+      "state": "COMPLETE"
+    },
+    {
+      "detail": "decision verdict=BLOCKED",
+      "stage": "decision",
+      "state": "COMPLETE"
+    },
+    {
+      "detail": "no artifact supplied for stage 'authorization'",
+      "stage": "authorization",
+      "state": "NOT_RUN"
+    },
+    {
+      "detail": "no artifact supplied for stage 'approval_issue'",
+      "stage": "approval_issue",
+      "state": "NOT_RUN"
+    },
+    {
+      "detail": "no artifact supplied for stage 'execute'",
+      "stage": "execute",
+      "state": "NOT_RUN"
+    },
+    {
+      "detail": "no artifact supplied for stage 'absence'",
+      "stage": "absence",
+      "state": "NOT_RUN"
+    },
+    {
+      "detail": "no artifact supplied for stage 'capsule'",
+      "stage": "capsule",
+      "state": "NOT_RUN"
+    }
+  ],
+  "summary": {
+    "absence": "NOT_RUN",
+    "approval_issue": "NOT_RUN",
+    "authorization": "NOT_RUN",
+    "capsule": "NOT_RUN",
+    "decision": "COMPLETE",
+    "execute": "NOT_RUN",
+    "snapshot": "COMPLETE"
+  },
+  "target": {
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+    "project_id": 87785099
+  }
+}

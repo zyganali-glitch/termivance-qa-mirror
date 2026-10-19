@@ -36,6 +36,8 @@ TARGET = TargetIdentity(12345678, "grp/disposable-pages", "GITLAB_PAGES_SITE")
 URL = "https://disposable-pages.pages.example/"
 MARKER = "TERMIVANCE-B3-DISPOSABLE-MARKER"
 ACTION = "unpublish_pages"
+APPROVAL_IID = 77
+OPERATOR = "termivance-operator"
 
 
 def allow_policy() -> Policy:
@@ -73,23 +75,95 @@ def auth(
     now: datetime = NOW,
     approve: bool = True,
     signature: str | None = None,
+    channel: str = "gitlab_issue",
 ) -> Authorization:
     authorization = Authorization.issue(
         target, action, nonce="op-approval-1", now=now, ttl=ttl, max_uses=max_uses
     )
     if approve:
         authorization.approval = OperatorApproval(
-            operator="termivance-operator",
+            operator=OPERATOR,
             statement=(
                 f"I authorize exactly one {action} operation using "
                 f"{authorization.exact_endpoint} for project {target.project_id}"
             ),
             approved_at=now,
-            channel="operator-channel",
+            channel=channel,
             binding=authorization.binding(),
             signature=signature,
         )
     return authorization
+
+
+def approval_issue_reply(authorization: Authorization, *, author=OPERATOR, state="opened"):
+    """A scripted GitLab approval issue the provider read-back can verify."""
+    body = (
+        "Operator approval — Termivance retirement mutation\n"
+        f"endpoint: {authorization.exact_endpoint}\n"
+        f"action: {authorization.action}\n"
+        f"target: {authorization.target.full_path} (project "
+        f"{authorization.target.project_id}, kind "
+        f"{authorization.target.resource_kind})\n"
+        f"nonce: {authorization.nonce}\n"
+        f"binding: {authorization.binding()}\n"
+        "I authorize exactly one unpublish_pages operation as stated above."
+    )
+    return HttpReply(
+        200,
+        json.dumps(
+            {
+                "iid": APPROVAL_IID,
+                "state": state,
+                "created_at": (NOW - timedelta(seconds=30)).isoformat(),
+                "author": {"username": author},
+                "description": body,
+            }
+        ),
+    )
+
+
+def with_approval(client: GitLabClient, authorization: Authorization, **kw) -> GitLabClient:
+    """Attach the operator approval issue to an existing read-only transport.
+
+    The approval pair is inserted FIRST because FakeTransport matches by
+    insertion order and the generic ``/issues`` fragment would otherwise win
+    over the specific ``/issues/77`` one.
+    """
+    inner = client._transport
+    approval_pair = (
+        "GET",
+        f"/projects/{TARGET.project_id}/issues/{APPROVAL_IID}",
+    )
+    reordered = {approval_pair: approval_issue_reply(authorization, **kw)}
+    for key, value in inner.responses.items():  # type: ignore[attr-defined]
+        if key != approval_pair:
+            reordered[key] = value
+    inner.responses = reordered
+    return client
+
+
+def live_retire(
+    authorization, *, read_client, mutation_transport, ledger_path, **kw
+):
+    """Standard live-mutation invocation with the P0 gates wired in."""
+    from termivance.ledger import AuthorizationLedger
+
+    return retire_pages(
+        TARGET,
+        allow_policy(),
+        authorization,
+        mutation_client=PagesMutationClient("t", transport=mutation_transport),
+        read_client=read_client,
+        served_url=URL,
+        marker=MARKER,
+        control_attestation=control(),
+        ledger=AuthorizationLedger(ledger_path),
+        approval_key=None,
+        approval_project_id=TARGET.project_id,
+        approval_issue_iid=APPROVAL_IID,
+        now=NOW,
+        **kw,
+    )
 
 
 def control() -> ControlAttestation:
@@ -237,7 +311,7 @@ def test_blocked_decision_never_dispatches_delete():
 # -- real transition -----------------------------------------------------------
 
 
-def test_authorized_execute_awards_observed_absent_on_real_transition(monkeypatch):
+def test_authorized_execute_awards_observed_absent_on_real_transition(tmp_path, monkeypatch):
     # publication (initial) + publication (revalidation) + absent read-back
     patch_served(
         monkeypatch, [(200, f"<html>{MARKER}</html>"), (200, f"<html>{MARKER}</html>"), (404, "")]
@@ -245,19 +319,17 @@ def test_authorized_execute_awards_observed_absent_on_real_transition(monkeypatc
     del_transport = FakeTransport(
         {("DELETE", f"/projects/{TARGET.project_id}/pages"): HttpReply(204, "")}
     )
-    read_client = scripted_client(
-        pages_sequence=[published(), published(), published(), published(), gone()]
-    )
-    receipt = retire_pages(
-        TARGET,
-        allow_policy(),
+    read_client = with_approval(
+        scripted_client(
+            pages_sequence=[published(), published(), published(), published(), gone()]
+        ),
         auth(),
-        mutation_client=PagesMutationClient("t", transport=del_transport),
+    )
+    receipt = live_retire(
+        auth(),
         read_client=read_client,
-        served_url=URL,
-        marker=MARKER,
-        control_attestation=control(),
-        now=NOW,
+        mutation_transport=del_transport,
+        ledger_path=tmp_path / "ledger.json",
     )
     assert del_transport.calls and del_transport.calls[0][0] == "DELETE"
     assert receipt.mutation is not None and receipt.mutation.accepted
@@ -314,7 +386,7 @@ def test_never_published_target_never_retires(monkeypatch):
     assert del_transport.calls == []
 
 
-def test_mutation_403_is_inconclusive_not_absent(monkeypatch):
+def test_mutation_403_is_inconclusive_not_absent(tmp_path, monkeypatch):
     patch_served(
         monkeypatch,
         [(200, f"<html>{MARKER}</html>"), (200, f"<html>{MARKER}</html>"), (404, "")],
@@ -322,25 +394,23 @@ def test_mutation_403_is_inconclusive_not_absent(monkeypatch):
     del_transport = FakeTransport(
         {("DELETE", f"/projects/{TARGET.project_id}/pages"): HttpReply(403, "", "403")}
     )
-    read_client = scripted_client(
-        pages_sequence=[published(), published(), published(), published(), gone()]
-    )
-    receipt = retire_pages(
-        TARGET,
-        allow_policy(),
+    read_client = with_approval(
+        scripted_client(
+            pages_sequence=[published(), published(), published(), published(), gone()]
+        ),
         auth(),
-        mutation_client=PagesMutationClient("t", transport=del_transport),
+    )
+    receipt = live_retire(
+        auth(),
         read_client=read_client,
-        served_url=URL,
-        marker=MARKER,
-        control_attestation=control(),
-        now=NOW,
+        mutation_transport=del_transport,
+        ledger_path=tmp_path / "ledger.json",
     )
     assert receipt.mutation is not None and receipt.mutation.accepted is False
     assert receipt.verdict == Verdict.INCONCLUSIVE
 
 
-def test_successful_api_action_without_verified_absence_is_inconclusive(monkeypatch):
+def test_successful_api_action_without_verified_absence_is_inconclusive(tmp_path, monkeypatch):
     """A 204 DELETE plus an unusable served-URL read-back proves no absence."""
     patch_served(
         monkeypatch,
@@ -353,19 +423,17 @@ def test_successful_api_action_without_verified_absence_is_inconclusive(monkeypa
     del_transport = FakeTransport(
         {("DELETE", f"/projects/{TARGET.project_id}/pages"): HttpReply(204, "")}
     )
-    read_client = scripted_client(
-        pages_sequence=[published(), published(), published(), published(), gone()]
-    )
-    receipt = retire_pages(
-        TARGET,
-        allow_policy(),
+    read_client = with_approval(
+        scripted_client(
+            pages_sequence=[published(), published(), published(), published(), gone()]
+        ),
         auth(),
-        mutation_client=PagesMutationClient("t", transport=del_transport),
+    )
+    receipt = live_retire(
+        auth(),
         read_client=read_client,
-        served_url=URL,
-        marker=MARKER,
-        control_attestation=control(),
-        now=NOW,
+        mutation_transport=del_transport,
+        ledger_path=tmp_path / "ledger.json",
     )
     assert receipt.mutation is not None and receipt.mutation.accepted
     assert receipt.verdict == Verdict.INCONCLUSIVE
@@ -459,7 +527,7 @@ def test_target_drift_during_revalidation_blocks_mutation(monkeypatch):
     assert del_transport.calls == []
 
 
-def test_receipt_serialization_includes_boundaries(monkeypatch):
+def test_receipt_serialization_includes_boundaries(tmp_path, monkeypatch):
     patch_served(
         monkeypatch,
         [(200, f"<html>{MARKER}</html>"), (200, f"<html>{MARKER}</html>"), (404, "")],
@@ -467,19 +535,17 @@ def test_receipt_serialization_includes_boundaries(monkeypatch):
     del_transport = FakeTransport(
         {("DELETE", f"/projects/{TARGET.project_id}/pages"): HttpReply(204, "")}
     )
-    read_client = scripted_client(
-        pages_sequence=[published(), published(), published(), published(), gone()]
-    )
-    receipt = retire_pages(
-        TARGET,
-        allow_policy(),
+    read_client = with_approval(
+        scripted_client(
+            pages_sequence=[published(), published(), published(), published(), gone()]
+        ),
         auth(),
-        mutation_client=PagesMutationClient("t", transport=del_transport),
+    )
+    receipt = live_retire(
+        auth(),
         read_client=read_client,
-        served_url=URL,
-        marker=MARKER,
-        control_attestation=control(),
-        now=NOW,
+        mutation_transport=del_transport,
+        ledger_path=tmp_path / "ledger.json",
     )
     data = receipt.to_dict()
     assert data["schema"] == "termivance.retirement_receipt/v2"
@@ -493,43 +559,46 @@ def test_receipt_serialization_includes_boundaries(monkeypatch):
 
 def test_authorization_cannot_be_reused_across_cli_invocations(tmp_path, monkeypatch):
     path = tmp_path / "auth.json"
-    path.write_text(json.dumps(auth().to_dict()), encoding="utf-8")
-    ledger = AuthorizationLedger(tmp_path / "ledger.json")
+    authorization = auth()
+    path.write_text(json.dumps(authorization.to_dict()), encoding="utf-8")
     patch_served(
         monkeypatch,
-        [(200, f"<html>{MARKER}</html>"), (200, f"<html>{MARKER}</html>"), (404, "")],
+        [
+            (200, f"<html>{MARKER}</html>"),
+            (200, f"<html>{MARKER}</html>"),
+            (404, ""),
+            (200, f"<html>{MARKER}</html>"),
+            (200, f"<html>{MARKER}</html>"),
+        ],
     )
 
     first = FakeTransport({("DELETE", f"/projects/{TARGET.project_id}/pages"): HttpReply(204, "")})
-    read_client = scripted_client(
-        pages_sequence=[published(), published(), published(), published(), gone()]
+    read_client = with_approval(
+        scripted_client(
+            pages_sequence=[published(), published(), published(), published(), gone()]
+        ),
+        authorization,
     )
-    receipt = retire_pages(
-        TARGET,
-        allow_policy(),
+    receipt = live_retire(
         load_authorization(path),
-        mutation_client=PagesMutationClient("t", transport=first),
         read_client=read_client,
-        served_url=URL,
-        marker=MARKER,
-        control_attestation=control(),
-        ledger=ledger,
-        approval_key=None,
-        now=NOW,
+        mutation_transport=first,
+        ledger_path=tmp_path / "ledger.json",
     )
     assert receipt.mutation_attempted is True
     assert len(first.calls) == 1
 
-    # A *separate* invocation reloading the same JSON file must be refused.
+    # A *separate* invocation reloading the same JSON file must be refused — and
+    # the refusal must come from the durable ledger, after provenance checks.
     second = FakeTransport({("DELETE", f"/projects/{TARGET.project_id}/pages"): HttpReply(204, "")})
-    again = retire_pages(
-        TARGET,
-        allow_policy(),
+    replay_client = with_approval(
+        scripted_client(pages_sequence=[published(), published()]), authorization
+    )
+    again = live_retire(
         load_authorization(path),
-        mutation_client=PagesMutationClient("t", transport=second),
-        snapshot=make_snapshot(TARGET, operator_control=True),
-        ledger=ledger,
-        now=NOW,
+        read_client=replay_client,
+        mutation_transport=second,
+        ledger_path=tmp_path / "ledger.json",
     )
     assert again.verdict == Verdict.BLOCKED
     assert second.calls == []

@@ -66,9 +66,18 @@ def live_run(
     kind: str = DEFAULT_KIND,
     now: datetime | None = None,
     ttl_seconds: int = DEFAULT_TTL_SECONDS,
+    anonymous: bool = False,
 ) -> LiveRun:
-    """Perform a live, read-only discovery run for one project."""
-    token = load_local_token()
+    """Perform a live, read-only discovery run for one project.
+
+    ``anonymous=True`` never sends a token: only public reads happen and every
+    observation carries the honest error kinds (mostly 403) that anonymous
+    access produces. The recording transport still proves GET-only behaviour.
+    """
+    if anonymous:
+        token = None
+    else:
+        token = load_local_token()
     transport = RecordingTransport(inner=UrllibTransport())
     client = GitLabClient(token, transport=transport)
     target = resolve_target(client, project_id, kind)

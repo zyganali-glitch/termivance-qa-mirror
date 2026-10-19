@@ -1,0 +1,146 @@
+{
+  "action": "unpublish_pages",
+  "classification": "RECORDED_LIVE",
+  "observed_at": "2026-10-19T07:18:29.746582+00:00",
+  "records": [
+    {
+      "detail": {
+        "archived": null,
+        "default_branch": "main",
+        "namespace_full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908",
+        "path_with_namespace": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+        "project_id": 87785099,
+        "visibility": "public",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+      },
+      "endpoint": "/projects/87785099",
+      "error_kind": null,
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "PROJECT_IDENTITY",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "branch": "main",
+        "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
+      },
+      "endpoint": "/projects/87785099/repository/branches/main",
+      "error_kind": null,
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "BRANCH",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "bytes": 320,
+        "file": ".gitlab-ci.yml",
+        "includes_present": false,
+        "pages_mechanism": true,
+        "pages_signals": [
+          "pages_true",
+          "pages_keyword"
+        ],
+        "present": true,
+        "ref": "main",
+        "refs_examined": [
+          "main"
+        ]
+      },
+      "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
+      "error_kind": null,
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "CI_CONFIG",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "latest_id": 2960507698,
+        "latest_status": "success"
+      },
+      "endpoint": "/projects/87785099/pipelines",
+      "error_kind": null,
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "PIPELINE",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "open_count": 0,
+        "retirement_related": []
+      },
+      "endpoint": "/projects/87785099/issues",
+      "error_kind": null,
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "OPEN_ISSUES",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "error": "AUTH_DENIED"
+      },
+      "endpoint": "/projects/87785099/pages",
+      "error_kind": "AUTH_DENIED",
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "PAGES",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 403
+    },
+    {
+      "detail": {
+        "can_manage_pages": false,
+        "effective_access_level": null,
+        "pages_api_error": "AUTH_DENIED",
+        "pages_api_status": 403
+      },
+      "endpoint": "/projects/87785099",
+      "error_kind": null,
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "EFFECTIVE_PERMISSION",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 200
+    },
+    {
+      "detail": {
+        "error": "AUTH_DENIED"
+      },
+      "endpoint": "/projects/87785099/pages",
+      "error_kind": "AUTH_DENIED",
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "PAGES_DEPLOYMENT",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 403
+    },
+    {
+      "detail": {
+        "error": "AUTH_DENIED"
+      },
+      "endpoint": "/projects/87785099/environments",
+      "error_kind": "AUTH_DENIED",
+      "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+      "kind": "ENVIRONMENT",
+      "method": "GET",
+      "observed_at": "2026-10-19T07:18:29.746582+00:00",
+      "status": 401
+    }
+  ],
+  "schema": "termivance.gitlab_snapshot/v1",
+  "target": {
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+    "project_id": 87785099,
+    "resource_kind": "GITLAB_PAGES_SITE"
+  },
+  "ttl_seconds": 900
+}

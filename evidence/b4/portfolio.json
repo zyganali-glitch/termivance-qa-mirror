@@ -1,0 +1,44 @@
+{
+  "assets": [
+    {
+      "archived": null,
+      "description": "Proof-Bounded Software Retirement Protocol (GitLab Transcend 2026, Path A / Start Fresh).",
+      "error_kind": "AUTH_DENIED",
+      "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+      "name": "Termivance",
+      "observed_at": "2026-10-19T07:15:08.771520+00:00",
+      "ok": true,
+      "pages_state": "PAGES_UNVERIFIABLE_403",
+      "project_id": 87779099,
+      "provenance": "ANONYMOUS_PUBLIC_READ",
+      "role": "PROTECTED (canonical Termivance repository is expressly excluded from retirement)",
+      "visibility": "public",
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance"
+    },
+    {
+      "archived": null,
+      "description": "DISPOSABLE B3 demonstration target. Temporary. Safe to retire. Do not treat as canonical.",
+      "error_kind": "AUTH_DENIED",
+      "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+      "name": "termivance-b3-disposable-pages-demo",
+      "observed_at": "2026-10-19T07:15:08.771520+00:00",
+      "ok": true,
+      "pages_state": "PAGES_UNVERIFIABLE_403",
+      "project_id": 87785099,
+      "provenance": "ANONYMOUS_PUBLIC_READ",
+      "role": "APPROVED_RETIREMENT_TARGET",
+      "visibility": "public",
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+    }
+  ],
+  "observed_at": "2026-10-19T07:15:08.771520+00:00",
+  "provenance": "ANONYMOUS_PUBLIC_READ",
+  "schema": "termivance.portfolio/v1",
+  "totals": {
+    "approved_targets": 1,
+    "assets": 2,
+    "pages_sites": 0,
+    "pages_unverifiable": 2,
+    "protected": 1
+  }
+}

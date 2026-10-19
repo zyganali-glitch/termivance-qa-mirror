@@ -21,6 +21,14 @@ This starter pack contains **no live evidence**. `NOT_RUN` != `PASS`. Record evi
 | B3: environment state | Separate environment API or GitLab read | NOT_RUN | `stopped` does not prove Pages site deletion |
 | B3: GitHub QA bridge | Real GitHub Actions run calling live GitLab APIs; mirror SHA == canonical SHA; current pipeline bound to that SHA; fail-closed `qa_status` | PASS (run `39156275572`, `qa_status=PASS`, drift `IN_SYNC`) | Non-canonical; public read-only; Actions never writes to GitLab |
 | B3 optional: resurrection | Subsequent same-target observed redeploy + state downgrade | NOT_RUN | Do not claim `RESURRECTION_CONTROLLED` without control proof |
+| B4: P0 security closure | Durable sealed-reservation ledger, GitLab-issue approval provenance, receipt-bound absence; adversarial tests + CI assertions | PASS (unit + CI assertion; 238 tests) | Local/CI contract; still not a live mutation proof |
+| B4: Portfolio (Capability 1) | GET-only, labeled live snapshot over selected projects | PASS (live anonymous read: `evidence/b4/portfolio.json`) | 403 on `/pages` is an access observation, never a deployment claim |
+| B4: Risk map (Capability 2) | Deterministic map from a recorded decision | PASS (`evidence/b4/risk_map.json`; live-decision-derived) | Adds no new observation; explains one |
+| B4: Simulation (Capability 3) | Same rules as the real engine; zero mutation dispatch | PASS (`evidence/b4/simulation.json`; `PROJECTED_NOT_OBSERVED` labels) | Hypothetical banner; never a completed provider operation |
+| B4: Control Room (Capability 4) | Self-contained static UI from recorded evidence; ~15s comprehension | PASS (`control_room/`; visual render verified) | Shows only what happened; mutation status `NOT_RUN` displayed |
+| B4: Proof Capsule + verify-receipt (Capability 5) | `capsule-build` + `capsule-verify` CLI, tamper-evident manifest | PASS as capability (unit + CLI); **live capsule NOT_RUN** (no live receipt exists) | Integrity verification is not provider re-observation |
+| B4: single Duo flow workflow (Capability 6) | New live, linked Duo session on the workflow | NOT_RUN (requires operator GUI action; B1 session remains the deployed-flow evidence) | AI text non-authoritative; no autonomous mutation |
+| B4: role-dependent 87785099 access re-check | Authenticated `GET /pages` under granted Maintainer role | NOT_RUN (no operator PAT on this machine; only an anonymous 403 was re-observed) | Anonymous 403 ≠ role verdict; blocked stays blocked |
 | B4: judge package | Public evidence UI, integrated pipeline, YouTube <3m, Devpost submission | NOT_RUN | Video must depict actual product |
 
 ## B1 evidence log (2026-10-18, all times UTC)
@@ -68,6 +76,39 @@ Independent QA of B3 found the GitHub bridge genuinely operational but identifie
 - No Pages site, environment, or served URL exists for the canonical project — nothing was published or unpublished in B1.
 
 
+
+## B4 evidence log (2026-10-19, all times UTC)
+
+**Batch state:** implementation complete; consolidated report emitted; independent whole-batch QA next. Full suite **238 passed** (189 pre-B4 → +30 security, +19 capability), `ruff` clean, `scripts/ci_safety_assertions.py` **16/16 PASS** (now covers ledger durability, GitLab-issue approval channel, forged-receipt refusal, capsule tamper detection, lock serialization).
+
+**P0 — security closure (implemented + adversarially tested):**
+
+- **Durable sealed-reservation ledger (ledger v2):** a real mutation requires a ready ledger — `health_check()` runs in the `durable_ledger_required` preflight check; reservation is sealed (`RESERVED_BEFORE_MUTATION`) before dispatch under a cross-process `O_CREAT|O_EXCL` lock (10 s timeout, stale locks refused, never stolen); writes are atomic (temp + fsync + `os.replace`); a malformed ledger is refused, never guessed; `finalize()` records the outcome and unknown outcomes are never retried. Concurrency crash tests prove a second reservation cannot race ahead.
+- **Operator approval provenance (new `approval_source.py`):** only a `gitlab_issue` channel may authorize a real mutation; the executor reads the issue back from the live GitLab API at approval time and binds author, issued `created_at` window, exact endpoint/key, project ID and issue IID; executor-self-signed or JSON-block approvals are refused; every unverifiable provenance fails closed. In dry-run mode the new gates are advisory and clearly labeled.
+- **Receipt-bound absence (new `capsule.py`, rewritten `absence.py`):** `OBSERVED_ABSENT` requires a validated mutation receipt that binds ledger durability, exact endpoint, accepted state, temporal coherence (`requested_at ≥ eligibility.established_at`, ≤ 900 s TTL) and operation ID; caller-supplied `--pre-state` / `--action-accepted` claims were removed from the CLI. The Proof Capsule carries a SHA-256 manifest; `capsule-verify` fails closed on any tampering and is explicitly a local integrity check, not a provider re-observation.
+
+**P1 — six vertical capabilities (implemented, tested, labeled):**
+
+- **Retirement Portfolio** (`portfolio.py`, CLI `portfolio`): GET-only multi-asset discovery; anonymous mode (`GitLabClient(None)`) added to the client; roles resolved from the protected registry + policy (`PROTECTED` / `APPROVED_RETIREMENT_TARGET` / `NON_TARGET`).
+- **Dependency & Risk Map** (`riskmap.py`, CLI `risk-map`): pure function of a recorded decision; RISK/CONTROL/DEPENDENCY nodes and severity from the same evidence; byte-identical output on re-runs.
+- **Retirement Simulation** (`simulation.py`, CLI `simulate`): runs the same deterministic engine; obligation projection table carries `PRESUMED_UNKNOWN_AFTER_UNPUBLISH` and `PROJECTED_NOT_OBSERVED` labels; the module has no mutation import at all (test-proven).
+- **Retirement Control Room** (`control_room/index.html` + `control_room/data.js` via `scripts/build_control_room.py`): single static page, no network fetch at view time, works from `file://`; distinguishes `RECORDED_LIVE` reads from `mutation_status: NOT_RUN`; visual render verified on 2026-10-19 (~07:20 UTC) with the real B4 evidence set.
+- **Proof Capsule + verify-receipt** (`capsule.py`, CLI `capsule-build`, `capsule-verify`, `capsule-render`): manifest-verified package with explicit `NOT_OBSERVED` sections and limitation notices.
+- **Single-flow workflow orchestration** (`workflow.py`, CLI `workflow-plan`, `workflow-status`): 7-stage plan (snapshot → decision → authorization → approval issue → execute → absence → capsule) around the ONE `retire-pages --execute` path — no second mutation code path; stage states are read from recorded artifacts only.
+
+**P2 (conditional)**: `tripwire.py` (resurrection watch) implemented with fail-closed semantics and unit-tested; **live tripwire NOT_RUN** — there is no real retirement to watch.
+
+**Committed B4 evidence artifacts (`evidence/b4/`, all live GitLab reads via `--anonymous` GET-only transport; times above):**
+
+- `portfolio.json` — live anonymous read of projects `87779099` (PROTECTED, canonical) and `87785099` (APPROVED_RETIREMENT_TARGET); both `/pages` reads returned `403` recorded honestly as `PAGES_UNVERIFIABLE_403` (provenance `ANONYMOUS_PUBLIC_READ`).
+- `snapshot.json` — live anonymous discovery of `87785099`: classification `LIVE`, 9 GET-only records, 8 obligations.
+- `decision.json` — deterministic engine on that live snapshot: **`BLOCKED`** — reasons `TARGET_NOT_AUTHORIZED`, `MISSING_EVIDENCE`×3, `REDEPLOYMENT_RISK`; `authoritative: false` (anonymous reads produce advisory evidence only).
+- `risk_map.json`, `simulation.json` — derived from the recorded decision/snapshot with explicit state labels.
+- `workflow_assessment.json` — snapshot + decision `COMPLETE`; authorization, approval_issue, execute, absence, capsule `NOT_RUN` (no operator PAT on this machine; approval issue not yet opened).
+- `proof_capsule.json` — honest **no-mutation-yet** capsule assembled from the recorded BLOCKED decision (`capsule-build` now supports `--decision` + `--target-*` flags); `mutation: NOT_RUN`, `absence/authorization: NOT_OBSERVED`, `capsule-verify` PASS locally.
+- ⚠️ Repository records that depend on credentials: **`NOT_RUN`.** The live Pages unpublish, a real `OBSERVED_ABSENT`, a live capsule, and a role-dependent access re-check on `87785099` all remain blocked on the operator holding a GitLab PAT with Maintainer-level Pages rights. **No absence, no mutation, no receipt is claimed.**
+
+**Duo flow:** the deployed B1 Custom Flow (`flows/termivance_retirement_analyst.yaml`, item `1018562`) is unchanged. No new live Duo session was started in B4 (requires an operator GUI action) → `NOT_RUN` until that session exists.
 
 ## Minimal bounded-absence receipt fields
 

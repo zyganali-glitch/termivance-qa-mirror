@@ -12,6 +12,8 @@ import json
 import platform
 import sys
 from collections.abc import Sequence
+from datetime import datetime
+from pathlib import Path
 
 from termivance import __version__
 from termivance.engine import Decision
@@ -99,7 +101,7 @@ def _cmd_discover(args: argparse.Namespace) -> int:
     from termivance.discovery import graph_from_snapshot, save_snapshot
     from termivance.runtime import live_run
 
-    run = live_run(args.project_id, kind=args.kind)
+    run = live_run(args.project_id, kind=args.kind, anonymous=args.anonymous)
     snapshot = run.snapshot
     if args.save:
         save_snapshot(snapshot, args.save)
@@ -189,10 +191,12 @@ def _cmd_demo_blocked(args: argparse.Namespace) -> int:
     return 0 if decision.verdict.value == "BLOCKED" else 1
 
 
-def _resolve_target(project_id: int, kind: str):
+def _resolve_target(project_id: int, kind: str, *, anonymous: bool = False):
     from termivance.gitlab_client import GitLabClient, load_local_token
     from termivance.runtime import resolve_target
 
+    if anonymous:
+        return resolve_target(GitLabClient(None), project_id, kind)
     return resolve_target(GitLabClient(load_local_token()), project_id, kind)
 
 
@@ -216,8 +220,10 @@ def _cmd_observe_absence(args: argparse.Namespace) -> int:
     import json as _json
 
     from termivance.absence import observe_absence
+    from termivance.capsule import ReceiptValidationError, validate_mutation_receipt
     from termivance.evidence import PagesPreState
     from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.ledger import AuthorizationLedger
 
     target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
     client = GitLabClient(load_local_token())
@@ -225,13 +231,30 @@ def _cmd_observe_absence(args: argparse.Namespace) -> int:
     if args.pre_state:
         with open(args.pre_state, encoding="utf-8") as handle:
             pre_state = PagesPreState.from_dict(_json.load(handle))
+    receipt_binding = None
+    if args.receipt:
+        if not args.ledger:
+            print(
+                "refusing: --receipt also requires --ledger; a durable, sealed "
+                "operation record is mandatory to bind an absence claim (P0-C)",
+                file=sys.stderr,
+            )
+            return 2
+        with open(args.receipt, encoding="utf-8") as handle:
+            receipt_data = _json.load(handle)
+        try:
+            receipt_binding = validate_mutation_receipt(
+                receipt_data, target, ledger=AuthorizationLedger(args.ledger)
+            )
+        except ReceiptValidationError as exc:
+            print(f"receipt refused: {exc}", file=sys.stderr)
+            return 2
     probe = observe_absence(
         client,
         target,
         args.url,
         pre_state=pre_state,
-        action_accepted=bool(args.action_accepted),
-        action_endpoint=args.action_endpoint,
+        mutation_receipt=receipt_binding,
     )
     if args.json:
         print(json.dumps(probe.to_dict(), indent=2, sort_keys=True))
@@ -243,6 +266,27 @@ def _cmd_observe_absence(args: argparse.Namespace) -> int:
             print(f"note: {note}")
         print(f"verdict={probe.verdict.value}")
     return 0 if probe.verdict.value == "OBSERVED_ABSENT" else 1
+
+
+def _cmd_approval_template(args: argparse.Namespace) -> int:
+    import os
+
+    from termivance.approval_source import approval_statement_template
+    from termivance.authorization import APPROVAL_KEY_ENV, load_authorization
+
+    approval_key = os.environ.get(APPROVAL_KEY_ENV) or None
+    authorization = load_authorization(
+        args.authorization, approval_key=approval_key, require_approval=False
+    )
+    print(approval_statement_template(authorization))
+    print()
+    print(
+        "next step (operator, in the GitLab web UI): create a NEW issue in project "
+        f"{authorization.target.project_id}, paste the statement above as the issue "
+        "description, keep the issue OPEN; verify with "
+        f"--approval-project-id {authorization.target.project_id} --approval-issue-iid <iid>"
+    )
+    return 0
 
 
 def _cmd_verify_publication(args: argparse.Namespace) -> int:
@@ -327,6 +371,8 @@ def _cmd_retire_pages(args: argparse.Namespace) -> int:
         control_attestation=control_attestation,
         ledger=ledger,
         approval_key=approval_key,
+        approval_project_id=args.approval_project_id,
+        approval_issue_iid=args.approval_issue_iid,
     )
     payload = receipt.to_dict()
     if args.json:
@@ -381,6 +427,280 @@ def _cmd_provision_pages(args: argparse.Namespace) -> int:
     return 0
 
 
+def _read_json(path: str | None) -> dict[str, object] | None:
+    if path is None:
+        return None
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _write_out(payload: object, out: str | None, plain: str) -> None:
+    if out:
+        path = Path(out)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(f"saved: {path}")
+    if not out:
+        print(plain)
+
+
+def _cmd_portfolio(args: argparse.Namespace) -> int:
+    from termivance.gitlab_client import GitLabClient, TokenUnavailable, load_local_token
+    from termivance.policy import load_policy
+    from termivance.portfolio import observe_portfolio
+
+    if args.anonymous:
+        client = GitLabClient(None)
+    else:
+        try:
+            client = GitLabClient(load_local_token())
+        except TokenUnavailable as exc:
+            print(f"no GitLab token ({exc}); use --anonymous for public reads", file=sys.stderr)
+            return 2
+    policy = load_policy(args.policy) if args.policy else None
+    ids = [int(x) for x in str(args.project_ids).split(",") if x.strip()]
+    snapshot = observe_portfolio(client, ids, policy=policy)
+    payload = snapshot.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(snapshot.render())
+    return 0 if all(asset.ok for asset in snapshot.assets) else 1
+
+
+def _cmd_risk_map(args: argparse.Namespace) -> int:
+    from termivance.riskmap import risk_map_from_record
+
+    decision = _read_json(args.decision)
+    if decision is None:
+        print("--decision is required", file=sys.stderr)
+        return 2
+    try:
+        risk_map = risk_map_from_record(decision)
+    except ValueError as exc:
+        print(f"decision record unusable: {exc}", file=sys.stderr)
+        return 2
+    payload = risk_map.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(risk_map.render())
+    return 0
+
+
+def _cmd_simulate(args: argparse.Namespace) -> int:
+    from termivance.discovery import discover_live, graph_from_snapshot, load_snapshot
+    from termivance.gitlab_client import GitLabClient, TokenUnavailable, load_local_token
+    from termivance.policy import load_policy
+    from termivance.simulation import simulate_retirement
+
+    policy = load_policy(args.policy) if args.policy else None
+    if args.from_record:
+        snapshot = load_snapshot(args.from_record)
+        graph = graph_from_snapshot(snapshot)
+    else:
+        if args.anonymous:
+            client = GitLabClient(None)
+        else:
+            try:
+                client = GitLabClient(load_local_token())
+            except TokenUnavailable as exc:
+                print(f"no GitLab token ({exc}); use --from-record or --anonymous", file=sys.stderr)
+                return 2
+        from termivance.discovery import discover_live
+
+        target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE")
+        snapshot = discover_live(client, target)
+        graph = graph_from_snapshot(snapshot)
+    policy = policy or load_policy("config/retirement_policy.b3_disposable.json")
+    result = simulate_retirement(graph, policy=policy)
+    payload = result.to_dict()
+    payload["target_project_id"] = args.project_id
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(result.render())
+    return 0
+
+
+def _cmd_capsule_build(args: argparse.Namespace) -> int:
+    from termivance.capsule import build_capsule, save_capsule
+    from termivance.target import TargetIdentity
+
+    receipt = _read_json(args.receipt)
+    decision = _read_json(args.decision)
+    if receipt is not None:
+        target_data = receipt.get("target")
+    elif decision is not None:
+        # Honest no-mutation-yet capsule: assembled from the recorded BLOCKED
+        # decision; no mutation/absence section can exist without a real receipt.
+        target_data = {
+            "project_id": args.target_project_id,
+            "full_path": args.target_full_path,
+            "resource_kind": args.target_kind,
+        }
+    else:
+        print(
+            "--receipt is required, or --decision with --target-* flags to "
+            "assemble a no-mutation-yet capsule over recorded BLOCKED evidence",
+            file=sys.stderr,
+        )
+        return 2
+    if not isinstance(target_data, dict):
+        print("receipt or decision carries no usable target", file=sys.stderr)
+        return 2
+    target = TargetIdentity.from_dict(target_data)
+    mutation = receipt.get("mutation") if (
+        receipt is not None and isinstance(receipt.get("mutation"), dict)
+    ) else None
+    # Authorization provenance: read back the approval checks recorded in the
+    # receipt's preflight (never invented here).
+    preflight_data = receipt.get("preflight") if receipt is not None else None
+    authorization_section: dict[str, object] | None = None
+    if isinstance(preflight_data, dict):
+        checks = preflight_data.get("checks")
+        if isinstance(checks, list):
+            authorization_section = {
+                "present": True,
+                "binding": receipt.get("authorization_binding"),
+                "approval_checks": [
+                    {"check": c.get("check"), "ok": c.get("ok"), "detail": c.get("detail")}
+                    for c in checks
+                    if isinstance(c, dict)
+                    and str(c.get("check"))
+                    in {"operator_approval_verified", "approval_provenance_gitlab",
+                        "gitlab_approval_record_verified"}
+                ],
+            }
+    notes = tuple(
+        note.strip() for note in str(args.notes or "").split(";") if note.strip()
+    )
+    if receipt is None:
+        default_notes = (
+            "no-mutation-yet capsule: assembled from a recorded deterministic "
+            "decision only; no Pages unpublication is claimed",
+            "mutation and absence sections are NOT_OBSERVED by design until a "
+            "real authorized receipt exists",
+        )
+    else:
+        default_notes = (
+            "built from recorded artifacts only; no section was invented",
+            "Pages unpublication claim status is carried verbatim from the receipt",
+        )
+    capsule = build_capsule(
+        target=target,
+        decision=decision,
+        mutation=mutation,
+        absence=None if receipt is None else _read_json(args.absence),
+        authorization=authorization_section,
+        notes=tuple(dict.fromkeys(notes + default_notes)),
+    )
+    path = save_capsule(capsule, args.out)
+    if args.json:
+        print(json.dumps({"saved": str(path), "manifest_digest": capsule["manifest_digest"]}))
+    else:
+        print(f"capsule saved: {path}")
+        print(f"manifest: sha256 {capsule['manifest_digest'][:32]}…")
+    return 0
+
+
+def _cmd_capsule_verify(args: argparse.Namespace) -> int:
+    from termivance.capsule import CapsuleError, load_capsule, verify_capsule
+
+    try:
+        capsule = load_capsule(args.path)
+        report = verify_capsule(capsule)
+    except (CapsuleError, KeyError, ValueError) as exc:
+        print(f"CAPSULE INVALID: {exc}", file=sys.stderr)
+        return 1
+    if args.json:
+        print(json.dumps(report, indent=2, sort_keys=True))
+    else:
+        print("CAPSULE VALID (local integrity only — no GitLab re-observation)")
+        print(f"manifest: sha256 {report['manifest_sha256'][:32]}…")
+        print(f"sections: {', '.join(report['sections_verified'])}")
+    return 0
+
+
+def _cmd_capsule_render(args: argparse.Namespace) -> int:
+    from termivance.capsule import load_capsule, render_capsule
+
+    try:
+        capsule = load_capsule(args.path)
+    except (ValueError, KeyError) as exc:
+        print(f"capsule unreadable: {exc}", file=sys.stderr)
+        return 2
+    print(render_capsule(capsule))
+    return 0
+
+
+def _cmd_workflow_plan(args: argparse.Namespace) -> int:
+    from termivance.workflow import plan as build_plan
+
+    plan_ = build_plan(
+        project_id=args.project_id, full_path=args.full_path, out_dir=args.out_dir
+    )
+    payload = plan_.to_dict()
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(plan_.render())
+    return 0
+
+
+def _cmd_workflow_status(args: argparse.Namespace) -> int:
+    from termivance.workflow import assess, render_assessment
+    from termivance.workflow import plan as build_plan
+
+    plan_ = build_plan(
+        project_id=args.project_id, full_path=args.full_path, out_dir=args.out_dir
+    )
+    out_dir = Path(args.out_dir)
+    artifacts = {
+        "snapshot": out_dir / args.snapshot,
+        "decision": out_dir / args.decision,
+        "receipt": out_dir / args.receipt,
+        "absence": out_dir / args.absence,
+        "capsule": out_dir / args.capsule,
+    }
+    if args.authorization:
+        artifacts["authorization"] = Path(args.authorization)
+    if args.approval:
+        artifacts["approval_issue"] = Path(args.approval)
+    assessment = assess(artifacts, plan_)
+    if args.out:
+        _write_out(assessment, args.out, "")
+    if args.json:
+        print(json.dumps(assessment, indent=2, sort_keys=True))
+    else:
+        print(render_assessment(assessment))
+    return 0
+
+
+def _cmd_tripwire(args: argparse.Namespace) -> int:
+    from termivance.target import TargetIdentity
+    from termivance.tripwire import TripwireReading, check_tripwire
+
+    def reading(path: str) -> TripwireReading:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        return TripwireReading(
+            target=TargetIdentity.from_dict(dict(data["target"])),
+            served_url=str(data["served_url"]),
+            publication_observed=bool(data["publication_observed"]),
+            observed_at=datetime.fromisoformat(str(data["observed_at"])),
+        )
+
+    report = check_tripwire(reading(args.earlier), reading(args.later))
+    if args.json:
+        print(json.dumps(report.to_dict(), indent=2, sort_keys=True))
+    else:
+        print(report.render())
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="termivance",
@@ -404,6 +724,7 @@ def build_parser() -> argparse.ArgumentParser:
     discover.add_argument("--project-id", type=int, required=True)
     discover.add_argument("--kind", default="GITLAB_PAGES_SITE")
     discover.add_argument("--save", default=None, help="save the raw snapshot JSON")
+    discover.add_argument("--anonymous", action="store_true", help="unauthenticated public reads")
     discover.add_argument("--json", action="store_true")
 
     evaluate = sub.add_parser("evaluate", help="deterministic retirement decision")
@@ -429,11 +750,25 @@ def build_parser() -> argparse.ArgumentParser:
     absence.add_argument(
         "--pre-state",
         default=None,
-        help="recorded pre-retirement publication proof (required to claim OBSERVED_ABSENT)",
+        help="recorded pre-retirement publication proof (context only)",
     )
-    absence.add_argument("--action-endpoint", default=None)
-    absence.add_argument("--action-accepted", action="store_true")
+    absence.add_argument(
+        "--receipt",
+        default=None,
+        help="recorded retirement receipt JSON binding the claim to the real mutation",
+    )
+    absence.add_argument(
+        "--ledger",
+        default=None,
+        help="durable authorization ledger JSON (mandatory with --receipt)",
+    )
     absence.add_argument("--json", action="store_true")
+
+    approval_tpl = sub.add_parser(
+        "approval-template",
+        help="print the exact operator approval statement for a GitLab approval issue",
+    )
+    approval_tpl.add_argument("--authorization", required=True, help="authorization JSON")
 
     publication = sub.add_parser(
         "verify-publication", help="prove a Pages site is genuinely published before retiring it"
@@ -452,6 +787,8 @@ def build_parser() -> argparse.ArgumentParser:
     retire.add_argument("--marker", default=None, help="distinctive content marker")
     retire.add_argument("--policy", default=None)
     retire.add_argument("--authorization", default=None, help="operator authorization JSON")
+    retire.add_argument("--approval-project-id", type=int, default=None)
+    retire.add_argument("--approval-issue-iid", type=int, default=None)
     retire.add_argument(
         "--control-attestation",
         default=None,
@@ -471,6 +808,92 @@ def build_parser() -> argparse.ArgumentParser:
     provision.add_argument("--description", default="Disposable Termivance B3 Pages demo target")
     provision.add_argument("--json", action="store_true")
 
+    portfolio = sub.add_parser("portfolio", help="read-only multi-asset portfolio overview")
+    portfolio.add_argument("--project-ids", required=True, help="comma-separated project ids")
+    portfolio.add_argument("--policy", default=None, help="policy used only to label targets")
+    portfolio.add_argument("--anonymous", action="store_true", help="unauthenticated public reads")
+    portfolio.add_argument("--out", default=None, help="write the portfolio JSON record")
+    portfolio.add_argument("--json", action="store_true")
+
+    risk_map = sub.add_parser("risk-map", help="deterministic risk map for a recorded decision")
+    risk_map.add_argument("--decision", required=True, help="recorded decision JSON")
+    risk_map.add_argument("--out", default=None)
+    risk_map.add_argument("--json", action="store_true")
+
+    simulate = sub.add_parser(
+        "simulate", help='hypothetical "what if we retire this?" analysis (never mutates)'
+    )
+    simulate.add_argument("--project-id", type=int, required=True)
+    simulate.add_argument("--policy", default=None)
+    simulate.add_argument("--from-record", default=None, help="recorded snapshot to analyze")
+    simulate.add_argument("--anonymous", action="store_true", help="unauthenticated live reads")
+    simulate.add_argument("--json", action="store_true")
+
+    capsule_build = sub.add_parser(
+        "capsule-build", help="assemble the tamper-evident proof capsule from recorded artifacts"
+    )
+    capsule_build.add_argument("--receipt", default=None, help="retirement receipt JSON")
+    capsule_build.add_argument("--absence", default=None, help="recorded absence probe JSON")
+    capsule_build.add_argument("--decision", default=None, help="recorded decision JSON")
+    capsule_build.add_argument(
+        "--target-project-id", type=int, default=None,
+        help="with --decision: target identity for a no-mutation-yet capsule",
+    )
+    capsule_build.add_argument(
+        "--target-full-path", default=None, help="with --decision: full path"
+    )
+    capsule_build.add_argument(
+        "--target-kind", default="GITLAB_PAGES_SITE",
+        help="resource kind for a no-mutation-yet capsule",
+    )
+    capsule_build.add_argument(
+        "--notes", default=None, help="semicolon-separated limitation notes"
+    )
+    capsule_build.add_argument("--out", required=True)
+    capsule_build.add_argument("--json", action="store_true")
+
+    capsule_verify = sub.add_parser(
+        "capsule-verify", help="integrity-verify a proof capsule (local check only)"
+    )
+    capsule_verify.add_argument("path", help="capsule JSON path")
+    capsule_verify.add_argument("--json", action="store_true")
+
+    capsule_render = sub.add_parser(
+        "capsule-render", help="render a proof capsule as judge-facing text"
+    )
+    capsule_render.add_argument("path", help="capsule JSON path")
+
+    workflow_plan = sub.add_parser("workflow-plan", help="the single-flow retirement stage plan")
+    workflow_plan.add_argument("--project-id", type=int, required=True)
+    workflow_plan.add_argument("--full-path", required=True)
+    workflow_plan.add_argument("--out-dir", required=True)
+    workflow_plan.add_argument("--json", action="store_true")
+
+    workflow_status = sub.add_parser(
+        "workflow-status", help="classify workflow stages from recorded artifacts"
+    )
+    workflow_status.add_argument("--project-id", type=int, required=True)
+    workflow_status.add_argument("--full-path", required=True)
+    workflow_status.add_argument("--out-dir", required=True)
+    workflow_status.add_argument("--snapshot", default="snapshot.json")
+    workflow_status.add_argument("--decision", default="decision.json")
+    workflow_status.add_argument("--authorization", default=None)
+    workflow_status.add_argument("--approval", default=None, help="JSON holding issue_iid")
+    workflow_status.add_argument("--receipt", default="receipt.json")
+    workflow_status.add_argument("--absence", default="absence.json")
+    workflow_status.add_argument("--capsule", default="proof_capsule.json")
+    workflow_status.add_argument(
+        "--out", default=None, help="save the assessment JSON (beware: --out-dir also exists)"
+    )
+    workflow_status.add_argument("--json", action="store_true")
+
+    tripwire = sub.add_parser(
+        "tripwire-check", help="compare two recorded passes for resurrection (P2)"
+    )
+    tripwire.add_argument("--earlier", required=True, help="earlier tripwire reading JSON")
+    tripwire.add_argument("--later", required=True, help="later tripwire reading JSON")
+    tripwire.add_argument("--json", action="store_true")
+
     return parser
 
 
@@ -484,6 +907,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_policy_check(args.path, args.json)
     if args.command == "doctor":
         return _cmd_doctor(args.json)
+    if args.command == "approval-template":
+        return _cmd_approval_template(args)
     if args.command == "discover":
         return _cmd_discover(args)
     if args.command == "evaluate":
@@ -500,6 +925,24 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_retire_pages(args)
     if args.command == "provision-pages":
         return _cmd_provision_pages(args)
+    if args.command == "portfolio":
+        return _cmd_portfolio(args)
+    if args.command == "risk-map":
+        return _cmd_risk_map(args)
+    if args.command == "simulate":
+        return _cmd_simulate(args)
+    if args.command == "capsule-build":
+        return _cmd_capsule_build(args)
+    if args.command == "capsule-verify":
+        return _cmd_capsule_verify(args)
+    if args.command == "capsule-render":
+        return _cmd_capsule_render(args)
+    if args.command == "workflow-plan":
+        return _cmd_workflow_plan(args)
+    if args.command == "workflow-status":
+        return _cmd_workflow_status(args)
+    if args.command == "tripwire-check":
+        return _cmd_tripwire(args)
     return 1  # pragma: no cover
 
 

@@ -113,11 +113,17 @@ class ApiResult:
 
 
 class GitLabClient:
-    """Read-only GitLab REST client."""
+    """Read-only GitLab REST client.
+
+    ``token=None`` enables *anonymous mode*: no ``PRIVATE-TOKEN`` header is
+    sent at all and only public reads can succeed. Provenance of every result
+    stays explicit — callers must label observations made anonymously as
+    ``ANONYMOUS``/``RECORDED_LIVE`` rather than authenticated live reads.
+    """
 
     def __init__(
         self,
-        token: str,
+        token: str | None,
         *,
         base_url: str = DEFAULT_BASE_URL,
         transport: Transport | None = None,
@@ -129,12 +135,19 @@ class GitLabClient:
         self._timeout = timeout
 
     @property
+    def token(self) -> str | None:
+        return self._token
+
+    @property
     def base_url(self) -> str:
         return self._base_url
 
     def _headers(self) -> dict[str, str]:
         # Least-privilege read header. The token is never logged or stored.
-        return {"PRIVATE-TOKEN": self._token, "Accept": "application/json"}
+        headers = {"Accept": "application/json"}
+        if self._token:
+            headers["PRIVATE-TOKEN"] = self._token
+        return headers
 
     def get_json(self, endpoint: str, *, params: Mapping[str, object] | None = None) -> ApiResult:
         return self._request("GET", endpoint, params=params)

@@ -40,12 +40,28 @@ def test_retire_pages_parser_accepts_repair_flags():
     assert args.marker == "MARKER"
 
 
-def test_observe_absence_parser_requires_pre_state_flag():
+def test_observe_absence_parser_receipt_options():
     args = build_parser().parse_args(
         ["observe-absence", "--project-id", "87785099", "--url", "https://x/"]
     )
     assert args.pre_state is None
-    assert args.action_accepted is False
+    assert args.receipt is None
+    assert args.ledger is None
+    args_bound = build_parser().parse_args(
+        [
+            "observe-absence",
+            "--project-id",
+            "87785099",
+            "--url",
+            "https://x/",
+            "--receipt",
+            "receipt.json",
+            "--ledger",
+            "ledger.json",
+        ]
+    )
+    assert args_bound.receipt == "receipt.json"
+    assert args_bound.ledger == "ledger.json"
 
 
 def test_verify_publication_parser_has_marker():

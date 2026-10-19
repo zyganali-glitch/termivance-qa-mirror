@@ -39,8 +39,10 @@ from termivance.absence import (
     observe_absence,
     publication_pre_state,
 )
+from termivance.approval_source import TRUSTED_CHANNEL, ApprovalProvenance, verify_approval_source
 from termivance.attestation import ControlAttestation
 from termivance.authorization import Authorization, AuthorizationError
+from termivance.capsule import MutationBinding
 from termivance.discovery import (
     Snapshot,
     discover_live,
@@ -108,8 +110,20 @@ def preflight(
     action: str = DEFAULT_ACTION,
     now: datetime | None = None,
     approval_key: str | None = None,
+    ledger: AuthorizationLedger | None = None,
+    mutation_intent: bool = False,
+    approval_project_id: int | None = None,
+    approval_issue_iid: int | None = None,
+    approval_client: GitLabClient | None = None,
 ) -> Preflight:
-    """Evaluate every static precondition. Never mutates. Returns a check log."""
+    """Evaluate every static precondition. Never mutates. Returns a check log.
+
+    ``mutation_intent=True`` is the *real* execution posture (a mutation
+    executor is wired in): the durable-ledger, trusted-channel and
+    GitLab-authenticated-provenance gates are then hard requirements. In dry
+    runs the same gates are reported as advisories so rehearsal never modifies
+    anything and never pretends an approval exists.
+    """
     now = _utc(now)
     checks: list[dict[str, object]] = []
 
@@ -158,6 +172,129 @@ def preflight(
         except AuthorizationError as exc:
             provenance_detail = str(exc)
     checks.append(_check("operator_approval_verified", provenance_ok, provenance_detail))
+
+    # -- P0-B: only a GitLab-authenticated operator record can authorize a real
+    #    mutation; every other channel is advisory in dry runs and forbidden live.
+    if authorization is not None:
+        channel = authorization.approval.channel if authorization.approval else None
+        if mutation_intent and channel != TRUSTED_CHANNEL:
+            checks.append(
+                _check(
+                    "approval_provenance_gitlab",
+                    False,
+                    f"approval channel {channel!r} cannot authorize a real mutation; "
+                    "only a GitLab-authenticated operator issue can "
+                    f"(channel must be {TRUSTED_CHANNEL!r})",
+                )
+            )
+        elif not mutation_intent:
+            checks.append(
+                _check(
+                    "approval_provenance_gitlab",
+                    True,
+                    f"advisory in dry runs: channel {channel!r} would still refuse a real "
+                    f"mutation unless backed by a GitLab-authenticated operator issue "
+                    f"({TRUSTED_CHANNEL!r})",
+                )
+            )
+        else:
+            checks.append(
+                _check(
+                    "approval_provenance_gitlab",
+                    True,
+                    f"approval channel is {TRUSTED_CHANNEL!r}; provider read-back "
+                    "performed below",
+                )
+            )
+    else:
+        checks.append(
+            _check(
+                "approval_provenance_gitlab",
+                mutation_intent is False,
+                "no authorization supplied",
+            )
+        )
+
+    approval_record: ApprovalProvenance | None = None
+    if authorization is not None and authorization.approval is not None:
+        if mutation_intent:
+            gate_ok = False
+            gate_detail = ""
+            if approval_project_id is None or approval_issue_iid is None:
+                gate_detail = (
+                    "a real mutation requires the GitLab approval record reference "
+                    "(--approval-project-id / --approval-issue-iid) to verify the "
+                    "operator-issued GitLab issue out-of-band"
+                )
+            elif approval_client is None:
+                gate_detail = (
+                    "no GitLab read access was supplied to read back the operator "
+                    "approval record; provenance cannot be verified"
+                )
+            else:
+                try:
+                    approval_record = verify_approval_source(
+                        approval_client,
+                        authorization,
+                        project_id=approval_project_id,
+                        issue_iid=approval_issue_iid,
+                        now=now,
+                    )
+                except AuthorizationError as exc:
+                    gate_detail = str(exc)
+                else:
+                    gate_ok = True
+                    gate_detail = (
+                        "GitLab-authenticated operator approval verified: issue "
+                        f"{approval_record.issue_iid} in project "
+                        f"{approval_record.project_id}, author "
+                        f"{approval_record.author_username!r}, created "
+                        f"{approval_record.created_at.isoformat()}"
+                    )
+            checks.append(_check("gitlab_approval_record_verified", gate_ok, gate_detail))
+        else:
+            checks.append(
+                _check(
+                    "gitlab_approval_record_verified",
+                    True,
+                    "advisory in dry runs: a real mutation additionally verifies the "
+                    f"operator-issued {TRUSTED_CHANNEL!r} issue by reading it back "
+                    "from GitLab immediately before dispatch",
+                )
+            )
+
+    # -- P0-A: a real mutation requires a durable, single-use ledger.
+    if mutation_intent:
+        if ledger is None:
+            ledger_ok, ledger_detail = False, (
+                "no durable single-use authorization ledger was supplied; a real "
+                "mutation can never execute without one (--ledger)"
+            )
+        elif not ledger.path_is_durable():
+            ledger_ok, ledger_detail = False, (
+                f"ledger path {ledger.path!s} is not durable (terminal/wastebin/dead "
+                "storage)"
+            )
+        else:
+            try:
+                ledger.health_check()
+            except LedgerError as exc:
+                ledger_ok, ledger_detail = False, str(exc)
+            else:
+                ledger_ok, ledger_detail = True, (
+                    f"durable ledger present and ready at {ledger.path}; the "
+                    "single-use reservation is sealed immediately before dispatch"
+                )
+        checks.append(_check("durable_ledger_required", ledger_ok, ledger_detail))
+    else:
+        checks.append(
+            _check(
+                "durable_ledger_required",
+                True,
+                "advisory in dry runs: a real mutation additionally requires a durable, "
+                "single-use authorization ledger",
+            )
+        )
 
     ok = all(bool(c["ok"]) for c in checks)
     return Preflight(
@@ -354,6 +491,8 @@ def retire_pages(
     control_attestation: ControlAttestation | None = None,
     ledger: AuthorizationLedger | None = None,
     approval_key: str | None = None,
+    approval_project_id: int | None = None,
+    approval_issue_iid: int | None = None,
     operation_id: str | None = None,
     now: datetime | None = None,
     action: str = DEFAULT_ACTION,
@@ -364,21 +503,43 @@ def retire_pages(
     mutation is possible. A dry run still requires fresh discovery (``read_client``)
     or a recorded ``snapshot``: without either, eligibility cannot be established
     and the receipt is ``BLOCKED``.
+
+    A *real* mutation (``mutation_client is not None``) additionally requires,
+    in this order and failing closed:
+
+    1. a trustworthy operator approval whose provenance is verified by reading
+       the operator-issued GitLab approval issue back from the provider;
+    2. a durable single-use authorization ledger (``ledger``) that passes its
+       readiness self-check — then reserved, revalidated and consumed.
     """
     observed = _utc(now)
     op_id = operation_id or f"op-{secrets.token_hex(8)}"
     ledger_path = str(ledger.path) if ledger is not None else None
+    mutation_intent = mutation_client is not None
 
     pre = preflight(
-        target, policy, authorization, action=action, now=observed, approval_key=approval_key
+        target,
+        policy,
+        authorization,
+        action=action,
+        now=observed,
+        approval_key=approval_key,
+        ledger=ledger,
+        mutation_intent=mutation_intent,
+        approval_project_id=approval_project_id,
+        approval_issue_iid=approval_issue_iid,
+        approval_client=read_client,
     )
     if not pre.ok:
+        notes = ["static preflight refused the mutation"]
+        failed = [str(c["detail"]) for c in pre.checks if not c["ok"]]
+        notes.extend(f"  - {d}" for d in failed)
         return _blocked(
             target,
             action,
             pre,
             operation_id=op_id,
-            notes=("static preflight refused the mutation",),
+            notes=tuple(notes),
             ledger_path=ledger_path,
         )
 
@@ -482,20 +643,33 @@ def retire_pages(
 
     # Durable single-use reservation. Written before the mutation; a crash after
     # this point burns the authorization (conservative).
-    if ledger is not None:
-        try:
-            ledger.consume(authorization, operation_id=op_id, now=observed)
-        except LedgerError as exc:
-            return _blocked(
-                target,
-                action,
-                pre,
-                operation_id=op_id,
-                eligibility=eligibility,
-                revalidation=revalidation,
-                notes=(f"durable authorization reservation refused: {exc}",),
-                ledger_path=ledger_path,
-            )
+    assert ledger is not None and authorization is not None  # preflight guarantees both
+    try:
+        ledger.health_check()
+    except LedgerError as exc:
+        return _blocked(
+            target,
+            action,
+            pre,
+            operation_id=op_id,
+            eligibility=eligibility,
+            revalidation=revalidation,
+            notes=(f"durable authorization ledger is not ready: {exc}",),
+            ledger_path=ledger_path,
+        )
+    try:
+        ledger.consume(authorization, operation_id=op_id, now=observed)
+    except LedgerError as exc:
+        return _blocked(
+            target,
+            action,
+            pre,
+            operation_id=op_id,
+            eligibility=eligibility,
+            revalidation=revalidation,
+            notes=(f"durable authorization reservation refused: {exc}",),
+            ledger_path=ledger_path,
+        )
 
     # Revalidate and consume immediately before mutation.
     authorization.consume(observed, target, action)
@@ -504,13 +678,36 @@ def retire_pages(
 
     absence: AbsenceProbe | None = None
     if mutation.accepted and read_client is not None and served_url:
+        # The live dispatch binding is the strongest provenance a claim can
+        # carry: this process itself issued the accepted, endpoint-restricted
+        # mutation and the ledger sealed it durably beforehand.
+        assert ledger is not None and authorization is not None  # preflight guarantees
+        binding = MutationBinding(
+            target=target,
+            action=action,
+            endpoint=mutation.endpoint,
+            operation_id=op_id,
+            authorization_binding=pre.authorization_binding,
+            accepted=mutation.accepted,
+            status=mutation.status,
+            pre_state=eligibility.pre_state or PagesPreState(
+                served_url=served_url,
+                marker=marker or "",
+                marker_observed=False,
+                deployment_present=False,
+                observed_at=observed,
+            ),
+            ledger_entry=ledger.consumption_record(
+                authorization.binding(), operation_id=op_id
+            ),
+            source="live_dispatch",
+        )
         absence = observe_absence(
             read_client,
             target,
             served_url,
             pre_state=eligibility.pre_state,
-            action_accepted=mutation.accepted,
-            action_endpoint=mutation.endpoint,
+            mutation_receipt=binding,
             now=observed,
         )
 

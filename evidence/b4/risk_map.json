@@ -1,0 +1,200 @@
+{
+  "edges": [
+    {
+      "dst": "obl:ownership_authorization",
+      "relation": "impacts",
+      "src": "risk:target_not_authorized"
+    },
+    {
+      "dst": "obl:pages_published",
+      "relation": "impacts",
+      "src": "risk:missing_evidence"
+    },
+    {
+      "dst": "obl:provider_observation",
+      "relation": "impacts",
+      "src": "risk:missing_evidence"
+    },
+    {
+      "dst": "obl:redeployment_path",
+      "relation": "impacts",
+      "src": "risk:redeployment_risk"
+    },
+    {
+      "dst": "obl:retirement_permission",
+      "relation": "impacts",
+      "src": "risk:missing_evidence"
+    },
+    {
+      "dst": "obl:ownership_authorization",
+      "relation": "impacts",
+      "src": "obligation-violation:obl:ownership_authorization"
+    },
+    {
+      "dst": "obl:pages_published",
+      "relation": "impacts",
+      "src": "obligation-unknown:obl:pages_published"
+    },
+    {
+      "dst": "obl:provider_observation",
+      "relation": "impacts",
+      "src": "obligation-unknown:obl:provider_observation"
+    },
+    {
+      "dst": "obl:redeployment_path",
+      "relation": "impacts",
+      "src": "obligation-violation:obl:redeployment_path"
+    },
+    {
+      "dst": "obl:retirement_permission",
+      "relation": "impacts",
+      "src": "obligation-unknown:obl:retirement_permission"
+    }
+  ],
+  "nodes": [
+    {
+      "impacts": [
+        "obl:pages_published"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "obligation-unknown:obl:pages_published",
+      "severity": "MEDIUM",
+      "state": "status=UNKNOWN",
+      "title": "obligation PAGES_PUBLISHED is unverifiable"
+    },
+    {
+      "impacts": [
+        "obl:provider_observation"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "obligation-unknown:obl:provider_observation",
+      "severity": "MEDIUM",
+      "state": "status=UNKNOWN",
+      "title": "obligation PROVIDER_OBSERVATION is unverifiable"
+    },
+    {
+      "impacts": [
+        "obl:retirement_permission"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "obligation-unknown:obl:retirement_permission",
+      "severity": "MEDIUM",
+      "state": "status=UNKNOWN",
+      "title": "obligation RETIREMENT_PERMISSION is unverifiable"
+    },
+    {
+      "impacts": [
+        "obl:ownership_authorization"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "obligation-violation:obl:ownership_authorization",
+      "severity": "HIGH",
+      "state": "status=VIOLATED",
+      "title": "obligation OWNERSHIP_AUTHORIZATION is violated"
+    },
+    {
+      "impacts": [
+        "obl:redeployment_path"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "obligation-violation:obl:redeployment_path",
+      "severity": "HIGH",
+      "state": "status=VIOLATED",
+      "title": "obligation REDEPLOYMENT_PATH is violated"
+    },
+    {
+      "impacts": [
+        "obl:pages_published"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "risk:missing_evidence",
+      "severity": "MEDIUM",
+      "state": "publication evidence is RECORDED_LIVE, not live",
+      "title": "required evidence is missing"
+    },
+    {
+      "impacts": [
+        "obl:provider_observation"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "risk:missing_evidence",
+      "severity": "MEDIUM",
+      "state": "provider evidence is RECORDED_LIVE, not a live observation; fixtures and records cannot satisfy a live requirement",
+      "title": "required evidence is missing"
+    },
+    {
+      "impacts": [
+        "obl:retirement_permission"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "risk:missing_evidence",
+      "severity": "MEDIUM",
+      "state": "permission evidence is RECORDED_LIVE, not a live observation",
+      "title": "required evidence is missing"
+    },
+    {
+      "impacts": [
+        "obl:redeployment_path"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "risk:redeployment_risk",
+      "severity": "MEDIUM",
+      "state": "1 observed redeployment/recreation mechanism(s)",
+      "title": "an active redeployment path can resurrect the site"
+    },
+    {
+      "impacts": [
+        "obl:ownership_authorization"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "risk:target_not_authorized",
+      "severity": "MEDIUM",
+      "state": "no bound authorization supplied",
+      "title": "target lies outside the authorized retirement scope"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:identity_binding",
+      "severity": "NONE",
+      "state": "status=SATISFIED via controlled evidence",
+      "title": "obligation IDENTITY_BINDING is satisfied"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:target_scope",
+      "severity": "NONE",
+      "state": "status=SATISFIED via controlled evidence",
+      "title": "obligation TARGET_SCOPE is satisfied"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:unresolved_work",
+      "severity": "NONE",
+      "state": "status=SATISFIED via controlled evidence",
+      "title": "obligation UNRESOLVED_WORK is satisfied"
+    }
+  ],
+  "schema": "termivance.risk_map/v1",
+  "target": {
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+    "project_id": 87785099,
+    "resource_kind": "GITLAB_PAGES_SITE"
+  },
+  "verdict": "BLOCKED"
+}
