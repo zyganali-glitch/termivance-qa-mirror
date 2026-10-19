@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-19T13:33:06Z",
-  "artifact_sha256": "fd198ed85376633872395355e3f9bc0bf8194e25ad366f56129905d6fe12a60b",
+  "acquired_at_utc": "2026-10-19T16:42:35Z",
+  "artifact_sha256": "680fd48fd701773a865fbfbcbea42683fa14015c8d099319a4f80a7af50c4d39",
   "classification": "NOT_OBSERVED",
   "endpoint": "/projects/87779099/duo_workflows",
   "http_error": "HTTP 404",
