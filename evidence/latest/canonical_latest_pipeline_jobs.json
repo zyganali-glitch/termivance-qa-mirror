@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-19T07:31:01Z",
-  "artifact_sha256": "8907349eba5023669a8bc952fa74a1830179a0bb8a36e5c3071d4a85d245e7ba",
+  "acquired_at_utc": "2026-10-19T10:38:44Z",
+  "artifact_sha256": "ce36796510b24074aefffc24eed4317208a58e7cf266fecefa0f67656d07f8f6",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2962015682/jobs",
+  "endpoint": "/projects/87779099/pipelines/2962698179/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17275646103,
+      "id": 17280735953,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -33,46 +33,46 @@
       "artifacts_expire_at": null,
       "commit": {
         "author_email": "[REDACTED]",
-        "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-19T10:28:56.000+03:00",
-        "committed_date": "2026-10-19T10:28:56.000+03:00",
+        "author_name": "termivance-conduit",
+        "authored_date": "2026-10-19T13:36:35.000+03:00",
+        "committed_date": "2026-10-19T13:36:35.000+03:00",
         "committer_email": "[REDACTED]",
-        "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-19T10:28:56.000+03:00",
+        "committer_name": "termivance-conduit",
+        "created_at": "2026-10-19T13:36:35.000+03:00",
         "extended_trailers": {},
-        "id": "b13b97b4ba7c17f7d560f4e34c098ef9d60921a6",
-        "message": "B4: close P0 security defects and deliver the six-capability Retirement Control Plane\n\nP0 security closure:\n- ledger v2: durable sealed-reservation design (atomic fsync writes, O_CREAT|O_EXCL\n  cross-process lock, health check inside the durable_ledger_required preflight,\n  malformed ledgers refused, sealed CONSUMED records never overwritten)\n- approval_source.py: only a gitlab_issue channel authorizes real mutations, with\n  live provider read-back of author/timestamps/endpoint binding; executor-invented\n  approvals refused; dry-run keeps new gates advisory\n- capsule.py + rewritten absence.py: OBSERVED_ABSENT requires a validated mutation\n  receipt (durable ledger seal, exact endpoint, temporal coherence, operation id);\n  caller --pre-state/--action-accepted claims removed from the CLI\n\nP1 capabilities (all read-only or recorded-artifact driven):\n- portfolio.py + CLI portfolio (GET-only, anonymous mode via GitLabClient(None))\n- riskmap.py + CLI risk-map (pure function of a recorded decision)\n- simulation.py + CLI simulate (same engine, PROJECTED_NOT_OBSERVED labels, no\n  mutation import at all)\n- workflow.py + CLI workflow-plan/workflow-status (7 stages around the ONE\n  retire-pages --execute path; stage states read from recorded artifacts only)\n- capsule CLI: capsule-build (receipt or no-mutation-yet decision capsules),\n  capsule-verify (fail-closed integrity), capsule-render\n- control_room/ static Control Room + scripts/build_control_room.py\n- tripwire.py (P2 resurrection watch, fail-closed)\n\nEvidence (live, GET-only, anonymous): evidence/b4/ portfolio, snapshot, BLOCKED\ndecision, risk map, simulation, workflow assessment, no-mutation-yet proof capsule.\nControl Room built from those files (RECORDED_LIVE reads, mutation_status NOT_RUN).\n\nDocs: single B4 reconciliation (README, HANDOFF, EVIDENCE_MATRIX B4 log,\nMASTER_PLAN B4 status, new docs/DEMO_SCRIPT.md).\n\nTests: 239 passed; ruff clean; scripts/ci_safety_assertions.py 16/16.\n",
+        "id": "36ab7f48634b33d88c8eac12b290682a0ab83b4e",
+        "message": "B4 consolidated QA repair: trust-bound approvals, one-contract ledger, receipt cross-checks, multi-resource portfolio, interactive Control Room v2, genuine Duo session evidence ladder\n",
         "parent_ids": [
-          "56d3ea3a811c4c0df3ba9bd916feaaec1450b1f4"
+          "b13b97b4ba7c17f7d560f4e34c098ef9d60921a6"
         ],
-        "short_id": "b13b97b4",
-        "title": "B4: close P0 security defects and deliver the six-capability Retirement Control Plane",
+        "short_id": "36ab7f48",
+        "title": "B4 consolidated QA repair: trust-bound approvals, one-contract ledger, receipt cross-checks, multi-resource portfolio, interactive Control Room v2, genuine Duo session evidence ladder",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/b13b97b4ba7c17f7d560f4e34c098ef9d60921a6"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/36ab7f48634b33d88c8eac12b290682a0ab83b4e"
       },
       "coverage": null,
-      "created_at": "2026-10-19T07:29:09.712Z",
-      "duration": 37.681805,
+      "created_at": "2026-10-19T10:36:55.636Z",
+      "duration": 40.370798,
       "erased_at": null,
-      "finished_at": "2026-10-19T07:29:47.813Z",
-      "id": 17275646103,
+      "finished_at": "2026-10-19T10:37:36.411Z",
+      "id": 17280735953,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-19T07:29:09.580Z",
-        "id": 2962015682,
-        "iid": 17,
+        "created_at": "2026-10-19T10:36:55.481Z",
+        "id": 2962698179,
+        "iid": 19,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "b13b97b4ba7c17f7d560f4e34c098ef9d60921a6",
+        "sha": "36ab7f48634b33d88c8eac12b290682a0ab83b4e",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-19T07:29:49.244Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2962015682"
+        "updated_at": "2026-10-19T10:37:37.804Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2962698179"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.12292,
+      "queued_duration": 0.110148,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-19T07:31:01.119Z",
-        "created_at": "2026-10-16T16:25:49.230Z",
-        "id": 163225810,
+        "contacted_at": "2026-10-19T10:38:44.483Z",
+        "created_at": "2026-10-16T16:23:06.741Z",
+        "id": 163225176,
         "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_GOHleVFqxiiU",
+        "system_id": "r_ONXHRWMMB5en",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-19T07:29:10.131Z",
+      "started_at": "2026-10-19T10:36:56.040Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17275646103"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17280735953"
     }
   ]
 }
