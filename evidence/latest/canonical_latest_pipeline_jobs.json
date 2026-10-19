@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-19T13:14:07Z",
-  "artifact_sha256": "20ef257f3f259d4827a79f77824e67aa900f77e6bc5e89d4a534d192422541c5",
+  "acquired_at_utc": "2026-10-19T13:17:52Z",
+  "artifact_sha256": "6de506de9cfbe9c7b322b94e97b15df5ecd3a9f738f84f1a109da160745b37d6",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2963303827/jobs",
+  "endpoint": "/projects/87779099/pipelines/2963321463/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17285304117,
+      "id": 17285442740,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-19T16:12:06.000+03:00",
-        "committed_date": "2026-10-19T16:12:06.000+03:00",
+        "authored_date": "2026-10-19T16:16:20.000+03:00",
+        "committed_date": "2026-10-19T16:16:20.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-19T16:12:06.000+03:00",
+        "created_at": "2026-10-19T16:16:20.000+03:00",
         "extended_trailers": {},
-        "id": "54a854ef18432c57984e5fcd542039fce80b289e",
-        "message": "B4 final integrity repair & supervised workflow closure: Repair A receipt provenance, Repair B workflow safety, Award-critical Supervised Review\n\nMandatory Repair A: fail-closed receipt provenance in scripts/build_control_room.py (distinguishes UNTRUSTED_LOCAL_CLAIM, STRUCTURALLY_COHERENT_RECORDED_CLAIM, LEDGER_CROSS_VALIDATED; locally supplied JSON or recalculated hash never promotes to provider proof; static UI exposes trust boundaries).\n\nMandatory Repair B: workflow executable contract in src/termivance/workflow.py renders mandatory --operator-trust <trust.json> in execute stage command; mode labeled SINGLE_AUTHORIZED_FLOW with note clarifying deterministic Python execution, not Duo flow executor.\n\nAward-Critical Enhancement: src/termivance/supervised_review.py and CLI subcommand supervised-review assemble the 7-step causal chain from genuine GitLab Duo Custom Flow (catalog item 1018562, session 9671626) -> Operator handoff -> Anonymous read reconciliation -> Target CI source witness -> Deterministic decision -> Risk map -> Proof capsule. Honest autonomy classification (DUO_AUTONOMOUS, OPERATOR_CONFIRMED_HANDOFF, DETERMINISTIC_AUTOMATED). Counterfactual analysis proves AI input enriches investigation queue and risk explanation without modifying deterministic BLOCKED verdict.\n\nControl Room v2: updated with investigation view (multi-step pipeline, candidate claim corroboration matrix, counterfactual analysis card, explicit AI boundary banner). DOM-render verified under Node.\n\nTest suite: 327 passed (21 new adversarial tests in test_b4_final_repair.py), ruff clean, ci_safety_assertions 40/40 PASS network-free. Evidence refreshed (\\.00). Docs reconciled. Live unpublish remains legitimately BLOCKED on Developer-level permissions.\n",
+        "id": "a2ba50ba31460176951aab9356a54747f3db7c35",
+        "message": "docs: record verified B4 integrity closure pipeline 2963303827 and QA bridge run 39258354791\n",
         "parent_ids": [
-          "be78440d873c43715e09a94ca9009cb8ac812fbd"
+          "54a854ef18432c57984e5fcd542039fce80b289e"
         ],
-        "short_id": "54a854ef",
-        "title": "B4 final integrity repair & supervised workflow closure: Repair A receipt provenance, Repair B workflow safety, Award-critical Supervised Review",
+        "short_id": "a2ba50ba",
+        "title": "docs: record verified B4 integrity closure pipeline 2963303827 and QA bridge run 39258354791",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/54a854ef18432c57984e5fcd542039fce80b289e"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/a2ba50ba31460176951aab9356a54747f3db7c35"
       },
       "coverage": null,
-      "created_at": "2026-10-19T13:12:19.165Z",
-      "duration": 41.563207,
+      "created_at": "2026-10-19T13:16:28.173Z",
+      "duration": 41.709928,
       "erased_at": null,
-      "finished_at": "2026-10-19T13:13:01.158Z",
-      "id": 17285304117,
+      "finished_at": "2026-10-19T13:17:10.271Z",
+      "id": 17285442740,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-19T13:12:19.018Z",
-        "id": 2963303827,
-        "iid": 23,
+        "created_at": "2026-10-19T13:16:28.023Z",
+        "id": 2963321463,
+        "iid": 24,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "54a854ef18432c57984e5fcd542039fce80b289e",
+        "sha": "a2ba50ba31460176951aab9356a54747f3db7c35",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-19T13:13:03.014Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2963303827"
+        "updated_at": "2026-10-19T13:17:14.739Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2963321463"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.125565,
+      "queued_duration": 0.078044,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-19T13:14:07.381Z",
-        "created_at": "2026-10-19T13:00:36.742Z",
-        "id": 163765052,
-        "ip_address": "10.218.11.3",
+        "contacted_at": "2026-10-19T13:17:51.583Z",
+        "created_at": "2026-10-19T13:12:43.361Z",
+        "id": 163766983,
+        "ip_address": "10.218.11.18",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_pmyD6JeD2qzq",
+        "system_id": "r_4bDnvNfCVsHI",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-19T13:12:19.595Z",
+      "started_at": "2026-10-19T13:16:28.561Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17285304117"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17285442740"
     }
   ]
 }

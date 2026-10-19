@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-19T13:14:00Z",
-  "artifact_sha256": "5b69a8cdcb6c9c60ec80232a638d07c8ae19dd4cc49e6004e932c79f20b4c08a",
+  "acquired_at_utc": "2026-10-19T13:17:45Z",
+  "artifact_sha256": "f5e340b51532137c92b73b53325831307f0bf7c814c9d2f343ea443794f3ecd3",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-19T16:12:06.000+03:00",
-      "committed_date": "2026-10-19T16:12:06.000+03:00",
+      "authored_date": "2026-10-19T16:16:20.000+03:00",
+      "committed_date": "2026-10-19T16:16:20.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-19T16:12:06.000+03:00",
+      "created_at": "2026-10-19T16:16:20.000+03:00",
       "extended_trailers": {},
-      "id": "54a854ef18432c57984e5fcd542039fce80b289e",
-      "message": "B4 final integrity repair & supervised workflow closure: Repair A receipt provenance, Repair B workflow safety, Award-critical Supervised Review\n\nMandatory Repair A: fail-closed receipt provenance in scripts/build_control_room.py (distinguishes UNTRUSTED_LOCAL_CLAIM, STRUCTURALLY_COHERENT_RECORDED_CLAIM, LEDGER_CROSS_VALIDATED; locally supplied JSON or recalculated hash never promotes to provider proof; static UI exposes trust boundaries).\n\nMandatory Repair B: workflow executable contract in src/termivance/workflow.py renders mandatory --operator-trust <trust.json> in execute stage command; mode labeled SINGLE_AUTHORIZED_FLOW with note clarifying deterministic Python execution, not Duo flow executor.\n\nAward-Critical Enhancement: src/termivance/supervised_review.py and CLI subcommand supervised-review assemble the 7-step causal chain from genuine GitLab Duo Custom Flow (catalog item 1018562, session 9671626) -> Operator handoff -> Anonymous read reconciliation -> Target CI source witness -> Deterministic decision -> Risk map -> Proof capsule. Honest autonomy classification (DUO_AUTONOMOUS, OPERATOR_CONFIRMED_HANDOFF, DETERMINISTIC_AUTOMATED). Counterfactual analysis proves AI input enriches investigation queue and risk explanation without modifying deterministic BLOCKED verdict.\n\nControl Room v2: updated with investigation view (multi-step pipeline, candidate claim corroboration matrix, counterfactual analysis card, explicit AI boundary banner). DOM-render verified under Node.\n\nTest suite: 327 passed (21 new adversarial tests in test_b4_final_repair.py), ruff clean, ci_safety_assertions 40/40 PASS network-free. Evidence refreshed (\\.00). Docs reconciled. Live unpublish remains legitimately BLOCKED on Developer-level permissions.\n",
+      "id": "a2ba50ba31460176951aab9356a54747f3db7c35",
+      "message": "docs: record verified B4 integrity closure pipeline 2963303827 and QA bridge run 39258354791\n",
       "parent_ids": [
-        "be78440d873c43715e09a94ca9009cb8ac812fbd"
+        "54a854ef18432c57984e5fcd542039fce80b289e"
       ],
-      "short_id": "54a854ef",
-      "title": "B4 final integrity repair & supervised workflow closure: Repair A receipt provenance, Repair B workflow safety, Award-critical Supervised Review",
+      "short_id": "a2ba50ba",
+      "title": "docs: record verified B4 integrity closure pipeline 2963303827 and QA bridge run 39258354791",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/54a854ef18432c57984e5fcd542039fce80b289e"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/a2ba50ba31460176951aab9356a54747f3db7c35"
     },
     "default": true,
     "developers_can_merge": true,
