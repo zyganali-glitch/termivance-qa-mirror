@@ -85,12 +85,15 @@ class TestFabricatedReceiptNeverBecomesProof:
         payload = _build_control_room(tmp_path, receipt)
         classification = payload["sections"]["receipt"]
         assert classification["evidence_level"] == "UNTRUSTED_LOCAL_CLAIM"
-        assert "fabricated" in classification["evidence_level_detail"] or \
-               "no authorization_binding" in classification["evidence_level_detail"]
+        assert (
+            "fabricated" in classification["evidence_level_detail"]
+            or "no authorization_binding" in classification["evidence_level_detail"]
+        )
 
     def test_fabricated_observed_absent_cannot_manufacture_absence(self, tmp_path):
         """Even with OBSERVED_ABSENT verdict, a fabricated receipt must show
-        its trust limitation."""
+        an UNVERIFIED_RECORDED_CLAIM and never promote the primary receipt_state
+        or Control Room mutation_status to OBSERVED_ABSENT."""
         receipt = _v3_receipt(
             mutation_attempted=True,
             verdict="OBSERVED_ABSENT",
@@ -98,12 +101,16 @@ class TestFabricatedReceiptNeverBecomesProof:
         )
         payload = _build_control_room(tmp_path, receipt)
         classification = payload["sections"]["receipt"]
-        # The receipt_state may display the recorded verdict, but evidence_level
-        # must expose the trust boundary
+        assert classification["receipt_state"] == "UNVERIFIED_RECORDED_CLAIM"
+        assert classification["display_verdict"] == "UNVERIFIED_RECORDED_CLAIM"
+        assert classification["claimed_verdict"] == "OBSERVED_ABSENT"
+        assert classification["absence_evidence"] == "UNVERIFIED"
         assert classification["evidence_level"] in (
             "UNTRUSTED_LOCAL_CLAIM",
-            "STRUCTURALLY_COHERENT_RECORDED_CLAIM",
+            "UNVERIFIED_RECORDED_CLAIM",
         )
+        assert payload["mutation_status"] == "UNVERIFIED_RECORDED_CLAIM"
+        assert payload["provenance_label"] != "RECORDED_LIVE"
 
     def test_fabricated_receipt_with_fake_authorization_is_untrusted(self, tmp_path):
         """A receipt with a fabricated authorization_binding but no
@@ -140,16 +147,10 @@ class TestFabricatedReceiptNeverBecomesProof:
         assert classification["evidence_level"] == "UNTRUSTED_LOCAL_CLAIM"
         assert "disagrees" in classification["evidence_level_detail"]
 
-    def test_structurally_complete_fabricated_receipt_is_ledger_cross_validated_not_proven(
-        self, tmp_path
-    ):
+    def test_structurally_complete_fabricated_receipt_without_ledger_is_unverified(self, tmp_path):
         """A receipt with all cross-validation fields internally consistent
-        is LEDGER_CROSS_VALIDATED — but NOT provider-proven.
-
-        Note: MUTATION_ACCEPTED is a classify_receipt *output* state, not a
-        valid receipt verdict.  We use INCONCLUSIVE here so the receipt passes
-        the verdict-recognition gate and the provenance validation is reached.
-        """
+        but no durable ledger file read is UNVERIFIED_RECORDED_CLAIM, never
+        claimed to be validated against a ledger."""
         receipt = _v3_receipt(
             mutation_attempted=True,
             verdict="INCONCLUSIVE",
@@ -160,16 +161,16 @@ class TestFabricatedReceiptNeverBecomesProof:
                 "binding": "bind-X",
                 "nonce": "nonce-1",
                 "action": "unpublish_pages",
-                "target_key": f"[{PID},\"{PATH}\",\"GITLAB_PAGES_SITE\"]",
+                "target_key": f'[{PID},"{PATH}","GITLAB_PAGES_SITE"]',
             },
-            ledger_path="evidence/ledger.json",
+            ledger_path=str(tmp_path / "nonexistent_ledger.json"),
         )
         payload = _build_control_room(tmp_path, receipt)
         classification = payload["sections"]["receipt"]
-        assert classification["evidence_level"] == "LEDGER_CROSS_VALIDATED"
-        # Even at this level, the UI must not claim provider truth
-        assert "static build" in classification["evidence_level_detail"]
-        assert "provider" in classification["evidence_level_detail"]
+        assert classification["evidence_level"] == "UNVERIFIED_RECORDED_CLAIM"
+        assert classification["ledger_validation"] == "UNVERIFIED_NO_LEDGER"
+        assert classification["display_verdict"] == "UNVERIFIED_RECORDED_CLAIM"
+        assert payload["mutation_status"] == "UNVERIFIED_RECORDED_CLAIM"
 
 
 class TestMissingLedgerExposesLimit:
@@ -192,8 +193,9 @@ class TestMissingLedgerExposesLimit:
         )
         payload = _build_control_room(tmp_path, receipt)
         classification = payload["sections"]["receipt"]
-        assert classification["evidence_level"] == "LEDGER_CROSS_VALIDATED"
-        assert "no ledger path" in classification["evidence_level_detail"]
+        assert classification["evidence_level"] == "UNVERIFIED_RECORDED_CLAIM"
+        assert classification["ledger_validation"] == "UNVERIFIED_NO_LEDGER"
+        assert classification["display_verdict"] == "UNVERIFIED_RECORDED_CLAIM"
 
 
 class TestWrongTargetAndEndpoint:
@@ -207,8 +209,11 @@ class TestWrongTargetAndEndpoint:
             verdict="OBSERVED_ABSENT",
             mutation={"accepted": True, "status": 204, "method": "DELETE"},
             # Different target in the receipt body
-            target={"project_id": 99999999, "full_path": "other/project",
-                     "resource_kind": "GITLAB_PAGES_SITE"},
+            target={
+                "project_id": 99999999,
+                "full_path": "other/project",
+                "resource_kind": "GITLAB_PAGES_SITE",
+            },
         )
         payload = _build_control_room(tmp_path, receipt)
         classification = payload["sections"]["receipt"]
@@ -305,11 +310,14 @@ class TestMissingOperatorTrustBlocks:
 
         parser = build_parser()
         # The parser should accept --operator-trust
-        args = parser.parse_args([
-            "retire-pages",
-            "--project-id", str(PID),
-            "--execute",
-        ])
+        args = parser.parse_args(
+            [
+                "retire-pages",
+                "--project-id",
+                str(PID),
+                "--execute",
+            ]
+        )
         assert args.execute is True
         assert args.operator_trust is None
         # The actual command would refuse at runtime (tested in test_retirement.py)
@@ -409,15 +417,20 @@ class TestNoNewDestructivePath:
 
     def test_supervised_review_has_no_mutation_surface(self):
         import termivance.supervised_review as mod
+
         names = dir(mod)
-        assert not any("unpublish" in n or "mutate" in n or "delete" in n.lower()
-                       for n in names if not n.startswith("_"))
+        assert not any(
+            "unpublish" in n or "mutate" in n or "delete" in n.lower()
+            for n in names
+            if not n.startswith("_")
+        )
 
     def test_supervised_review_has_no_network_calls(self):
         """The supervised review module only reads local files."""
         import inspect
 
         import termivance.supervised_review as mod
+
         source = inspect.getsource(mod)
         # Must not import or reference GitLabClient, requests, urllib
         assert "GitLabClient" not in source

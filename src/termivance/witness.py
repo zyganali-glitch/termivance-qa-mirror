@@ -178,8 +178,7 @@ def build_witness(
 
     config_ref = commit_sha or default_branch or "HEAD"
     config_endpoint = (
-        f"/projects/{target.project_id}/repository/files/.gitlab-ci.yml/raw"
-        f"?ref={config_ref}"
+        f"/projects/{target.project_id}/repository/files/.gitlab-ci.yml/raw?ref={config_ref}"
     )
     config = client.get_text(
         f"/projects/{target.project_id}/repository/files/.gitlab-ci.yml/raw",

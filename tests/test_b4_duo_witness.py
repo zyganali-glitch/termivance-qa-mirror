@@ -261,9 +261,7 @@ class _FakeClient:
 
 def test_cli_reconcile_duo_writes_record(tmp_path, monkeypatch):
     monkeypatch.setattr("termivance.gitlab_client.GitLabClient", _FakeClient)
-    monkeypatch.setattr(
-        "termivance.duo_reconciliation.probe_web_status", lambda url, **kw: 404
-    )
+    monkeypatch.setattr("termivance.duo_reconciliation.probe_web_status", lambda url, **kw: 404)
     out = tmp_path / "duo_reconciliation.json"
     rc = main(
         [
@@ -390,10 +388,7 @@ def test_witness_unreadable_config_is_unknown_never_safe():
     client = GitLabClient(None, transport=_witness_transport(config_status=403))
     witness = build_witness(client, _target(), now=NOW)
     payload = witness.to_dict()
-    assert (
-        payload["resurrection_possible"]
-        == ResurrectionPossibility.CONFIG_NOT_OBSERVED.value
-    )
+    assert payload["resurrection_possible"] == ResurrectionPossibility.CONFIG_NOT_OBSERVED.value
     joined = " ".join(payload["counterexamples"])
     assert "cannot be excluded" in joined
 
@@ -432,9 +427,7 @@ def test_capsule_embeds_reconciliation_and_witness():
     assert "witness" in report["sections_verified"]
     assert capsule["sections"]["duo_reconciliation"]["state"] == "RECONCILED"
     assert capsule["sections"]["witness"]["state"] == "RECORDED"
-    assert (
-        capsule["sections"]["duo_reconciliation"]["authority"] == "NON_AUTHORITATIVE"
-    )
+    assert capsule["sections"]["duo_reconciliation"]["authority"] == "NON_AUTHORITATIVE"
 
 
 def test_capsule_refuses_a_witness_for_a_different_target():

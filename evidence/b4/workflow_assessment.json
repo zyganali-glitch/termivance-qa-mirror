@@ -1,6 +1,6 @@
 {
   "mode": "ARTIFACT_ASSESSMENT",
-  "observed_at": "2026-10-19T13:00:17.794369+00:00",
+  "observed_at": "2026-10-19T16:26:15.357109+00:00",
   "schema": "termivance.workflow/v1",
   "stages": [
     {
@@ -34,16 +34,16 @@
       "state": "NOT_RUN"
     },
     {
-      "detail": "manifest digest sha256 eeb7a5c9b2b0f903\u2026",
+      "detail": "no artifact supplied for stage 'capsule'",
       "stage": "capsule",
-      "state": "COMPLETE"
+      "state": "NOT_RUN"
     }
   ],
   "summary": {
     "absence": "NOT_RUN",
     "approval_issue": "NOT_RUN",
     "authorization": "NOT_RUN",
-    "capsule": "COMPLETE",
+    "capsule": "NOT_RUN",
     "decision": "COMPLETE",
     "execute": "NOT_RUN",
     "snapshot": "COMPLETE"

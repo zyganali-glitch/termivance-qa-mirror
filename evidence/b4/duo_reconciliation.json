@@ -7,7 +7,7 @@
       "claim_id": "duo-9671626-01",
       "detail": "the project is publicly readable to this anonymous identity (HTTP 200)",
       "observed": {
-        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "observed_at": "2026-10-19T16:26:02.530404+00:00",
         "project_read_status": 200
       },
       "origin": "ANONYMOUS_API_OBSERVATION",
@@ -23,7 +23,7 @@
         "issue_metadata": {
           "author": {
             "id": 39306908,
-            "name": "Mehmet Aydoğan",
+            "name": "Mehmet Aydo\u011fan",
             "username": "zyganali"
           },
           "created_at": "2026-10-18T18:56:41.601Z",
@@ -37,7 +37,7 @@
           "user_notes_count": 3
         },
         "issue_read_status": 200,
-        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+        "observed_at": "2026-10-19T16:26:02.530404+00:00"
       },
       "origin": "ANONYMOUS_API_OBSERVATION",
       "source_ladder": "independently_observed_anonymous_api[1]",
@@ -52,7 +52,7 @@
         "issue_metadata": {
           "author": {
             "id": 39306908,
-            "name": "Mehmet Aydoğan",
+            "name": "Mehmet Aydo\u011fan",
             "username": "zyganali"
           },
           "created_at": "2026-10-18T18:56:41.601Z",
@@ -66,7 +66,7 @@
           "user_notes_count": 3
         },
         "issue_read_status": 200,
-        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+        "observed_at": "2026-10-19T16:26:02.530404+00:00"
       },
       "origin": "ANONYMOUS_API_OBSERVATION",
       "source_ladder": "independently_observed_anonymous_api[2]",
@@ -76,9 +76,9 @@
     {
       "check_kind": "SESSION_UI_PROBE",
       "claim_id": "duo-9671626-04",
-      "detail": "the agent-sessions UI is an authenticated surface; the anonymous probe returned 404 — an access observation that can neither confirm nor deny the session's recorded state, and is never promoted",
+      "detail": "the agent-sessions UI is an authenticated surface; the anonymous probe returned 404 \u2014 an access observation that can neither confirm nor deny the session's recorded state, and is never promoted",
       "observed": {
-        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "observed_at": "2026-10-19T16:26:02.530404+00:00",
         "session_ui_status": 404,
         "session_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626"
       },
@@ -90,11 +90,11 @@
     {
       "check_kind": "ISSUE_NOTE_READ",
       "claim_id": "duo-9671626-05",
-      "detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution — the claim cannot be attributed",
+      "detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution \u2014 the claim cannot be attributed",
       "observed": {
         "note_id_claimed": 4040776241,
         "notes_read_status": 401,
-        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+        "observed_at": "2026-10-19T16:26:02.530404+00:00"
       },
       "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
       "source_ladder": "operator_confirmed_only[1]",
@@ -104,11 +104,11 @@
     {
       "check_kind": "ISSUE_NOTE_READ",
       "claim_id": "duo-9671626-06",
-      "detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution — the claim cannot be attributed",
+      "detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution \u2014 the claim cannot be attributed",
       "observed": {
         "note_id_claimed": 4040776241,
         "notes_read_status": 401,
-        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+        "observed_at": "2026-10-19T16:26:02.530404+00:00"
       },
       "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
       "source_ladder": "operator_confirmed_only[2]",
@@ -120,7 +120,7 @@
       "claim_id": "duo-9671626-07",
       "detail": "flow-execution internals have no independently observable surface; the claim can never be promoted by this tool",
       "observed": {
-        "observed_at": "2026-10-19T11:31:49.660547+00:00"
+        "observed_at": "2026-10-19T16:26:02.530404+00:00"
       },
       "origin": "OPERATOR_CONFIRMED_UI",
       "source_ladder": "operator_confirmed_only[3]",
@@ -134,7 +134,7 @@
       "observed": {
         "actual_status": 401,
         "expected_status": 401,
-        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "observed_at": "2026-10-19T16:26:02.530404+00:00",
         "surface": "notes"
       },
       "origin": "ANONYMOUS_API_OBSERVATION",
@@ -149,7 +149,7 @@
       "observed": {
         "actual_status": 404,
         "expected_status": 404,
-        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "observed_at": "2026-10-19T16:26:02.530404+00:00",
         "surface": "session_ui"
       },
       "origin": "ANONYMOUS_API_OBSERVATION",
@@ -158,11 +158,11 @@
       "text": "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
     }
   ],
-  "claims_source": "evidence/b4/duo_session_9671626_readback.json",
+  "claims_source": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_session_9671626_readback.json",
   "duo_session_id": "9671626",
   "flow_catalog_item_id": 1018562,
-  "fresh_until": "2026-10-19T11:46:49.660547+00:00",
-  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+  "fresh_until": "2026-10-19T16:41:02.530404+00:00",
+  "observed_at": "2026-10-19T16:26:02.530404+00:00",
   "schema": "termivance.duo_reconciliation/v1",
   "surface": {
     "discussions_read_status": 401,
@@ -170,7 +170,7 @@
     "issue_metadata": {
       "author": {
         "id": 39306908,
-        "name": "Mehmet Aydoğan",
+        "name": "Mehmet Aydo\u011fan",
         "username": "zyganali"
       },
       "created_at": "2026-10-18T18:56:41.601Z",
@@ -185,7 +185,7 @@
     },
     "issue_read_status": 200,
     "notes_read_status": 401,
-    "observed_at": "2026-10-19T11:31:49.660547+00:00",
+    "observed_at": "2026-10-19T16:26:02.530404+00:00",
     "project_id": 87779099,
     "project_read_status": 200,
     "provenance": "ANONYMOUS_PUBLIC_READ",

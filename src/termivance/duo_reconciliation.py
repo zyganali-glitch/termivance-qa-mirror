@@ -211,9 +211,7 @@ def _issue_fields(data: dict[str, object]) -> dict[str, object]:
             keep[key] = data[key]
     author = data.get("author")
     if isinstance(author, dict):
-        keep["author"] = {
-            k: author.get(k) for k in ("username", "id", "name") if k in author
-        }
+        keep["author"] = {k: author.get(k) for k in ("username", "id", "name") if k in author}
     return keep
 
 
@@ -443,8 +441,7 @@ def _reconcile_claim(
             else:
                 status, detail = (
                     ClaimStatus.CONTRADICTED,
-                    "the observable core conflicts with the claim on: "
-                    + ", ".join(mismatches),
+                    "the observable core conflicts with the claim on: " + ", ".join(mismatches),
                 )
         else:
             status, detail = (
@@ -500,14 +497,12 @@ def _reconcile_claim(
         if actual is None:
             status, detail = (
                 ClaimStatus.UNRESOLVED,
-                "no observation was recorded for this surface; unknown is never "
-                "promoted to proof",
+                "no observation was recorded for this surface; unknown is never promoted to proof",
             )
         elif actual == expected_status:
             status, detail = (
                 ClaimStatus.SUPPORTED,
-                f"the anonymous probe reproduces the recorded access observation "
-                f"(HTTP {actual})",
+                f"the anonymous probe reproduces the recorded access observation (HTTP {actual})",
             )
         else:
             status, detail = (
@@ -611,9 +606,7 @@ def reconcile_duo(
     evaluated = _utc(now)
     fresh_until = _utc(surface.observed_at) + timedelta(seconds=ttl_seconds)
     stale = evaluated > fresh_until
-    results = tuple(
-        _reconcile_claim(claim, surface, stale=stale) for claim in claims
-    )
+    results = tuple(_reconcile_claim(claim, surface, stale=stale) for claim in claims)
     return DuoReconciliation(
         claims_source=claims_source,
         duo_session_id=str(claims_data.get("duo_session_id") or ""),

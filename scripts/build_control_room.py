@@ -65,9 +65,7 @@ RECOGNIZED_RECEIPT_SCHEMAS = frozenset({"termivance.retirement_receipt/v3"})
 #: Verdicts that assert an evidence-backed retirement outcome. These may be
 #: displayed only because a *coherent recognized* receipt itself records the
 #: deterministic code's verdict; the Control Room re-verifies nothing.
-AUTHORITATIVE_VERDICTS = frozenset(
-    {"RETIRED", "OBSERVED_ABSENT", "RESURRECTION_CONTROLLED"}
-)
+AUTHORITATIVE_VERDICTS = frozenset({"RETIRED", "OBSERVED_ABSENT", "RESURRECTION_CONTROLLED"})
 KNOWN_VERDICTS = frozenset(
     {
         "NOT_RUN",
@@ -81,57 +79,56 @@ KNOWN_VERDICTS = frozenset(
 )
 
 
-def _validate_receipt_durable_provenance(receipt: dict[str, object]) -> tuple[str, str]:
+def _validate_receipt_durable_provenance(
+    receipt: dict[str, object],
+    *,
+    ledger: object | None = None,
+    target: object | None = None,
+) -> tuple[str, str, str]:
     """Check whether the receipt carries the durable provenance chain required
-    to distinguish a locally fabricated JSON from a credible recorded claim.
+    to distinguish a locally fabricated JSON from an authenticated ledger record.
 
-    Returns ``(evidence_level, detail)`` where evidence_level is one of:
+    Returns ``(evidence_level, ledger_validation, detail)``.
 
-    * ``UNTRUSTED_LOCAL_CLAIM`` — the receipt-shaped object lacks mandatory
-      cross-validation fields; it could have been constructed by any code.
-    * ``STRUCTURALLY_COHERENT_RECORDED_CLAIM`` — the receipt has the correct
-      structure but its provenance has not been independently verified against
-      a durable ledger or the provider; it is a *recorded claim*, not proof.
-    * ``LEDGER_CROSS_VALIDATED`` — a structurally coherent receipt whose
-      execution-time authorization record, operation ID, target key and nonce
-      are all present and internally consistent (could be validated against a
-      durable ledger); this is the strongest level the static Control Room can
-      assess without actually reading the ledger file.
+    A locally supplied JSON object, even one with internally consistent fields,
+    must NOT receive a label claiming actual ledger validation unless the actual
+    durable ledger file has been read and authenticated using the established
+    receipt/ledger contracts.
 
-    The static build can never reach ``PROVIDER_ACCEPTED`` — that requires an
-    independent provider read-back at observation time, which the static page
-    does not perform and must not pretend to.
+    If genuine validation cannot occur in the static builder, the result is
+    explicitly labeled as an internally consistent but unverified recorded claim.
+    A user-supplied ledger path string is not evidence that the file was read.
     """
-    # Mandatory cross-validation fields
     authorization_binding = receipt.get("authorization_binding")
     authorization_record = receipt.get("authorization_record")
     operation_id = receipt.get("operation_id")
-    ledger_path = receipt.get("ledger_path")
 
-    # Level 1: must have basic structural completeness
+    # Level 1: mandatory binding and operation ID
     if not isinstance(authorization_binding, str) or not authorization_binding:
         return (
             "UNTRUSTED_LOCAL_CLAIM",
+            "UNVERIFIED_NO_LEDGER",
             "the receipt carries no authorization_binding; a receipt without an "
             "authorization chain could have been fabricated by any code",
         )
     if not isinstance(operation_id, str) or not operation_id:
         return (
             "UNTRUSTED_LOCAL_CLAIM",
+            "UNVERIFIED_NO_LEDGER",
             "the receipt carries no operation_id; without a unique operation "
             "identifier the claim cannot be bound to any ledger record",
         )
 
-    # Level 2: structurally coherent — has all expected fields
+    # Level 2: structural record completeness
     if not isinstance(authorization_record, dict):
         return (
-            "STRUCTURALLY_COHERENT_RECORDED_CLAIM",
+            "UNVERIFIED_RECORDED_CLAIM",
+            "UNVERIFIED_NO_LEDGER",
             "the receipt has an authorization binding and operation ID but no "
-            "execution-time authorization record; the v3 cross-validation "
-            "fields are incomplete — this is a recorded claim, not proof",
+            "execution-time authorization record; unverified recorded claim",
         )
 
-    # Level 3: cross-validation — check internal consistency
+    # Level 3: internal consistency of authorization record fields
     record_binding = authorization_record.get("binding")
     record_nonce = authorization_record.get("nonce")
     record_action = authorization_record.get("action")
@@ -142,67 +139,108 @@ def _validate_receipt_durable_provenance(receipt: dict[str, object]) -> tuple[st
         for v in (record_binding, record_nonce, record_action, record_target_key)
     ):
         return (
-            "STRUCTURALLY_COHERENT_RECORDED_CLAIM",
+            "UNVERIFIED_RECORDED_CLAIM",
+            "UNVERIFIED_NO_LEDGER",
             "the execution-time authorization record is incomplete; the receipt "
-            "is a recorded claim whose provenance cannot be cross-validated",
+            "is an unverified recorded claim whose provenance cannot be validated",
         )
     if str(record_binding) != authorization_binding:
         return (
             "UNTRUSTED_LOCAL_CLAIM",
+            "LEDGER_VERIFICATION_FAILED",
             "the execution-time authorization record disagrees with the "
             "receipt's authorization_binding; internal inconsistency makes "
             "this an untrusted local claim",
         )
 
-    # Consistent — but still only a local claim without ledger verification
-    ledger_note = (
-        f" ledger_path={ledger_path!r}" if ledger_path else
-        " (no ledger path recorded)"
-    )
+    # Level 4: genuine durable ledger verification
+    ledger_obj = ledger
+    if isinstance(ledger_obj, (str, Path)):
+        p = Path(ledger_obj)
+        if p.exists() and p.is_file():
+            try:
+                from termivance.ledger import AuthorizationLedger
+
+                l_cand = AuthorizationLedger(p)
+                l_cand.health_check()
+                ledger_obj = l_cand
+            except Exception as exc:
+                return (
+                    "UNTRUSTED_LOCAL_CLAIM",
+                    "LEDGER_VERIFICATION_FAILED",
+                    f"durable ledger path exists but failed health check: {exc}",
+                )
+
+    if ledger_obj is not None:
+        try:
+            from termivance.capsule import validate_mutation_receipt
+            from termivance.target import TargetIdentity
+
+            target_to_use = target
+            if target_to_use is None and isinstance(receipt.get("target"), dict):
+                target_to_use = TargetIdentity.from_dict(dict(receipt["target"]))  # type: ignore[arg-type]
+
+            if target_to_use is not None:
+                validate_mutation_receipt(receipt, target_to_use, ledger=ledger_obj)
+                return (
+                    "LEDGER_VALIDATED",
+                    "LEDGER_VALIDATED",
+                    "the receipt was authenticated against the durable ledger; "
+                    f"operation {operation_id} is verified in state CONSUMED_ACCEPTED",
+                )
+            return (
+                "UNVERIFIED_RECORDED_CLAIM",
+                "UNVERIFIED_NO_LEDGER",
+                "target identity could not be resolved to validate against ledger",
+            )
+        except Exception as exc:
+            return (
+                "UNTRUSTED_LOCAL_CLAIM",
+                "LEDGER_VERIFICATION_FAILED",
+                f"durable ledger verification failed: {exc}",
+            )
+
+    # No durable ledger was read or authenticated
     return (
-        "LEDGER_CROSS_VALIDATED",
-        f"the receipt's execution-time authorization record is internally "
-        f"consistent (binding, nonce, action, target_key all present and "
-        f"agreeing);{ledger_note} — this is the strongest level a static "
-        "build can assess; actual ledger and provider verification require "
-        "the runtime, not this display page",
+        "UNVERIFIED_RECORDED_CLAIM",
+        "UNVERIFIED_NO_LEDGER",
+        "the receipt carries internally consistent authorization fields, but "
+        "no durable ledger was read or authenticated; this is an unverified "
+        "recorded claim, not proof",
     )
 
 
-def classify_receipt(receipt: object) -> dict[str, object]:
+def classify_receipt(
+    receipt: object,
+    *,
+    ledger: object | None = None,
+    target: object | None = None,
+) -> dict[str, object]:
     """Classify a supplied receipt artifact into its honest truth state.
 
-    Repair A: the classifier now distinguishes six evidence levels:
+    Strictly separates:
+    1. claimed_verdict: what the local receipt asserts
+    2. receipt_integrity: whether its structure and integrity checks pass
+    3. ledger_validation: whether the actual durable ledger has been validated
+    4. mutation_evidence: whether a provider-accepted mutation is genuinely established
+    5. absence_evidence: whether bounded absence is supported by provider read-back
+    6. display_verdict: the strongest legitimately displayable conclusion
 
-    1. **No receipt** → ``NOT_RUN``
-    2. **Not a recognized coherent receipt** → ``INVALID``
-    3. **Coherent non-attempt** → the recorded verdict exactly
-    4. **Attempted but not accepted** → ``ATTEMPT_NOT_ACCEPTED``
-    5. **Accepted mutation (coherent)** → ``MUTATION_ACCEPTED`` (never absence)
-    6. **Authoritative verdict** → the recorded verdict (``OBSERVED_ABSENT`` etc.)
-
-    Additionally, every classification now carries ``evidence_level`` which
-    marks the trust boundary between:
-
-    * ``UNTRUSTED_LOCAL_CLAIM`` — a locally supplied JSON or fabricated object
-    * ``STRUCTURALLY_COHERENT_RECORDED_CLAIM`` — has the right shape but no
-      independent verification
-    * ``LEDGER_CROSS_VALIDATED`` — internally consistent with authorization
-      record cross-checks (the strongest a static build can show)
-    * ``NOT_APPLICABLE`` — for NOT_RUN / INVALID states
-
-    A locally supplied receipt-shaped JSON can NEVER become trusted provider
-    evidence. Even ``LEDGER_CROSS_VALIDATED`` is explicitly marked as a local
-    consistency check — the Control Room does not re-read the ledger at build
-    time and cannot prove authenticity. Only the runtime's
-    ``validate_mutation_receipt`` against a real durable ledger, plus the
-    independent post-mutation read-back in ``observe_absence``, can establish
-    provider-grade evidence.
+    Never promotes a claimed verdict into a verified outcome.
+    If verification is unavailable, uses UNVERIFIED_RECORDED_CLAIM.
+    The UI must not show OBSERVED_ABSENT, RESURRECTION_CONTROLLED, MUTATION_ACCEPTED,
+    or RECORDED_LIVE as verified outcomes merely because a supplied JSON document
+    contains those fields.
     """
-
     if receipt is None:
         return {
             "receipt_state": "NOT_RUN",
+            "display_verdict": "NOT_RUN",
+            "claimed_verdict": None,
+            "receipt_integrity": "NOT_RUN",
+            "ledger_validation": "NOT_APPLICABLE",
+            "mutation_evidence": "NOT_RUN",
+            "absence_evidence": "NOT_RUN",
             "evidence_level": "NOT_APPLICABLE",
             "evidence_level_detail": "no receipt to classify",
             "mutation_attempted": None,
@@ -217,6 +255,12 @@ def classify_receipt(receipt: object) -> dict[str, object]:
     if not isinstance(receipt, dict):
         return {
             "receipt_state": "INVALID",
+            "display_verdict": "INVALID",
+            "claimed_verdict": None,
+            "receipt_integrity": "INVALID",
+            "ledger_validation": "NOT_APPLICABLE",
+            "mutation_evidence": "INVALID",
+            "absence_evidence": "INVALID",
             "evidence_level": "NOT_APPLICABLE",
             "evidence_level_detail": "not a JSON object",
             "mutation_attempted": None,
@@ -232,6 +276,12 @@ def classify_receipt(receipt: object) -> dict[str, object]:
     if schema not in RECOGNIZED_RECEIPT_SCHEMAS:
         return {
             "receipt_state": "INVALID",
+            "display_verdict": "INVALID",
+            "claimed_verdict": str(receipt.get("verdict") or "") or None,
+            "receipt_integrity": "INVALID",
+            "ledger_validation": "NOT_APPLICABLE",
+            "mutation_evidence": "INVALID",
+            "absence_evidence": "INVALID",
             "evidence_level": "UNTRUSTED_LOCAL_CLAIM",
             "evidence_level_detail": (
                 "unrecognized schema; this object could have been fabricated "
@@ -251,6 +301,12 @@ def classify_receipt(receipt: object) -> dict[str, object]:
     if verdict not in KNOWN_VERDICTS:
         return {
             "receipt_state": "INVALID",
+            "display_verdict": "INVALID",
+            "claimed_verdict": verdict,
+            "receipt_integrity": "INVALID",
+            "ledger_validation": "NOT_APPLICABLE",
+            "mutation_evidence": "INVALID",
+            "absence_evidence": "INVALID",
             "evidence_level": "UNTRUSTED_LOCAL_CLAIM",
             "evidence_level_detail": (
                 "the receipt carries no recognized verdict; even with the right "
@@ -269,11 +325,15 @@ def classify_receipt(receipt: object) -> dict[str, object]:
     mutation = receipt.get("mutation")
     accepted = isinstance(mutation, dict) and mutation.get("accepted") is True
     status = mutation.get("status") if isinstance(mutation, dict) else None
-    if attempted and accepted and not (
-        isinstance(status, int) and 200 <= status < 300
-    ):
+    if attempted and accepted and not (isinstance(status, int) and 200 <= status < 300):
         return {
             "receipt_state": "INVALID",
+            "display_verdict": "INVALID",
+            "claimed_verdict": verdict,
+            "receipt_integrity": "INVALID",
+            "ledger_validation": "NOT_APPLICABLE",
+            "mutation_evidence": "INVALID",
+            "absence_evidence": "INVALID",
             "evidence_level": "UNTRUSTED_LOCAL_CLAIM",
             "evidence_level_detail": (
                 "claims accepted mutation without integer 2xx status; "
@@ -290,12 +350,25 @@ def classify_receipt(receipt: object) -> dict[str, object]:
             ),
         }
 
-    # For structurally coherent receipts, assess the durable provenance level
-    evidence_level, evidence_detail = _validate_receipt_durable_provenance(receipt)
+    # Structurally coherent: assess durable provenance
+    evidence_level, ledger_val, evidence_detail = _validate_receipt_durable_provenance(
+        receipt, ledger=ledger, target=target
+    )
 
     if not attempted:
+        display = (
+            "BLOCKED"
+            if verdict == "BLOCKED"
+            else ("UNVERIFIED_RECORDED_CLAIM" if verdict in AUTHORITATIVE_VERDICTS else verdict)
+        )
         return {
-            "receipt_state": verdict,
+            "receipt_state": display,
+            "display_verdict": display,
+            "claimed_verdict": verdict,
+            "receipt_integrity": "STRUCTURALLY_COHERENT",
+            "ledger_validation": "NOT_APPLICABLE",
+            "mutation_evidence": "NOT_ATTEMPTED",
+            "absence_evidence": "NOT_OBSERVED",
             "evidence_level": evidence_level,
             "evidence_level_detail": evidence_detail,
             "mutation_attempted": False,
@@ -304,12 +377,19 @@ def classify_receipt(receipt: object) -> dict[str, object]:
             "record": receipt,
             "note": (
                 "the recorded run did not attempt the destructive action; its "
-                "recorded verdict is surfaced exactly, never promoted"
+                "recorded verdict is surfaced, never promoted"
             ),
         }
+
     if not accepted:
         return {
             "receipt_state": "ATTEMPT_NOT_ACCEPTED",
+            "display_verdict": "ATTEMPT_NOT_ACCEPTED",
+            "claimed_verdict": verdict,
+            "receipt_integrity": "STRUCTURALLY_COHERENT",
+            "ledger_validation": ledger_val,
+            "mutation_evidence": "ATTEMPT_NOT_ACCEPTED",
+            "absence_evidence": "NOT_OBSERVED",
             "evidence_level": evidence_level,
             "evidence_level_detail": evidence_detail,
             "mutation_attempted": True,
@@ -318,27 +398,22 @@ def classify_receipt(receipt: object) -> dict[str, object]:
             "record": receipt,
             "note": (
                 "the run attempted the DELETE but the provider did not accept "
-                "it; the recorded verdict is surfaced, never promoted"
+                "it; recorded verdict is surfaced, never promoted"
             ),
         }
-    if verdict in AUTHORITATIVE_VERDICTS:
-        return {
-            "receipt_state": verdict,
-            "evidence_level": evidence_level,
-            "evidence_level_detail": evidence_detail,
-            "mutation_attempted": True,
-            "mutation_accepted": True,
-            "recorded_verdict": verdict,
-            "record": receipt,
-            "note": (
-                "the coherent receipt itself records this deterministic verdict; "
-                "this page displays the recorded verdict — the evidence_level "
-                "indicates the trust boundary of this locally supplied claim "
-                "(a static build cannot re-verify provider facts)"
-            ),
-        }
+
+    # Attempted and claims accepted:
+    # A locally supplied JSON receipt in the static builder can NEVER establish
+    # verified absence or provider truth. It is an UNVERIFIED_RECORDED_CLAIM.
+    mutation_ev = "LEDGER_RECORDED_ACCEPTED" if ledger_val == "LEDGER_VALIDATED" else "CLAIM_ONLY"
     return {
-        "receipt_state": "MUTATION_ACCEPTED",
+        "receipt_state": "UNVERIFIED_RECORDED_CLAIM",
+        "display_verdict": "UNVERIFIED_RECORDED_CLAIM",
+        "claimed_verdict": verdict,
+        "receipt_integrity": "STRUCTURALLY_COHERENT",
+        "ledger_validation": ledger_val,
+        "mutation_evidence": mutation_ev,
+        "absence_evidence": "UNVERIFIED",
         "evidence_level": evidence_level,
         "evidence_level_detail": evidence_detail,
         "mutation_attempted": True,
@@ -346,13 +421,12 @@ def classify_receipt(receipt: object) -> dict[str, object]:
         "recorded_verdict": verdict,
         "record": receipt,
         "note": (
-            "provider accepted the DELETE — provider action-acceptance only, "
-            "never absence; absence requires proven pre-publication, accepted "
-            "authorized unpublish and independent read-back; evidence_level "
-            "indicates the trust boundary of this recorded claim"
+            f"the receipt asserts verdict {verdict!r} with accepted mutation, "
+            "but without independent provider read-back and ledger verification "
+            "this is an UNVERIFIED_RECORDED_CLAIM; the UI displays the asserted "
+            "verdict only as an untrusted recorded claim, not as verified provider truth"
         ),
     }
-
 
 
 def _load(path: str | None) -> object:
@@ -435,31 +509,26 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
             return record
         return None
 
-    reconciliation_section = _recognized(
-        duo_reconciliation, "termivance.duo_reconciliation/v1"
-    )
+    reconciliation_section = _recognized(duo_reconciliation, "termivance.duo_reconciliation/v1")
     witness_section = _recognized(witness, "termivance.resurrection_witness/v1")
-    supervised_review_section = _recognized(
-        supervised_review, "termivance.supervised_review/v1"
-    )
+    supervised_review_section = _recognized(supervised_review, "termivance.supervised_review/v1")
 
-    # QA-FIX D: receipt truth is decided by the fail-closed classifier — mere
-    # schema presence is never live evidence and never flips RECORDED_LIVE.
-    classification = classify_receipt(receipt)
-    receipt_state = str(classification["receipt_state"])
-    receipt_records_live_event = receipt_state == "MUTATION_ACCEPTED" or (
-        receipt_state in AUTHORITATIVE_VERDICTS and classification.get("mutation_accepted") is True
+    # QA-FIX D & Defect A: receipt truth is decided by the fail-closed classifier.
+    # A locally supplied JSON receipt in the static builder can never raise top-level
+    # provenance to RECORDED_LIVE and can never display unverified absence.
+    ledger_path_arg = getattr(args, "ledger", None)
+    classification = classify_receipt(receipt, ledger=ledger_path_arg)
+    receipt_state = str(
+        classification.get("display_verdict") or classification.get("receipt_state") or "NOT_RUN"
     )
     read_provenance = _portfolio_read_provenance(portfolio)
-    provenance = "RECORDED_LIVE" if receipt_records_live_event else read_provenance
+    provenance = read_provenance
 
     data: dict[str, object] = {
         "schema": "termivance.control_room/v2",
         "provenance_label": provenance,
         "read_provenance": read_provenance,
-        "mutation_status": (
-            NOT_OBSERVED if receipt_state == "NOT_RUN" else receipt_state
-        ),
+        "mutation_status": (NOT_OBSERVED if receipt_state == "NOT_RUN" else receipt_state),
         "built_at": datetime.now(tz=UTC).isoformat(),
         "interactive_contract": {
             "page_is_static": True,
@@ -472,9 +541,7 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
         },
         "sections": {
             "decision": decision if isinstance(decision, dict) else {"state": UNAVAILABLE},
-            "portfolio": (
-                {"state": UNAVAILABLE} if not isinstance(portfolio, dict) else portfolio
-            ),
+            "portfolio": ({"state": UNAVAILABLE} if not isinstance(portfolio, dict) else portfolio),
             "risk_map": risk_map if isinstance(risk_map, dict) else {"state": UNAVAILABLE},
             "receipt": classification,
             "capsule": capsule if isinstance(capsule, dict) else {"state": UNAVAILABLE},
@@ -483,27 +550,29 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
                 if reconciliation_section is not None
                 else {"state": UNAVAILABLE}
             ),
-            "witness": (
-                witness_section if witness_section is not None else {"state": UNAVAILABLE}
-            ),
+            "witness": (witness_section if witness_section is not None else {"state": UNAVAILABLE}),
             "supervised_review": (
                 supervised_review_section
                 if supervised_review_section is not None
                 else {"state": UNAVAILABLE}
             ),
-            "simulation": (
-                simulation if isinstance(simulation, dict) else {"state": UNAVAILABLE}
-            ),
+            "simulation": (simulation if isinstance(simulation, dict) else {"state": UNAVAILABLE}),
             "workflow": workflow if isinstance(workflow, dict) else {"state": UNAVAILABLE},
             "tripwire": tripwire if isinstance(tripwire, dict) else {"state": UNAVAILABLE},
         },
         "authorization_gates": _gates(classification),
         # Rendered as inert text by the page: live proof that provider-shaped
         # content is escaped, never interpreted as HTML.
-        "escape_probe": '<img src=x onerror=alert(1)>&"\'',
+        "escape_probe": "<img src=x onerror=alert(1)>&\"'",
         "external_evidence": {
             "duo_session": (
-                duo_evidence
+                (
+                    {**_load(duo_evidence.get("source_record")), **duo_evidence}  # type: ignore[dict-item]
+                    if isinstance(duo_evidence, dict)
+                    and "evidence_ladder" not in duo_evidence
+                    and isinstance(_load(duo_evidence.get("source_record")), dict)
+                    else duo_evidence
+                )
                 if isinstance(duo_evidence, dict)
                 else {"state": UNAVAILABLE}
             ),
@@ -558,6 +627,7 @@ def main() -> int:
         "duo-reconciliation",
         "witness",
         "supervised-review",
+        "ledger",
     ):
         parser.add_argument(f"--{name}", dest=name.replace("-", "_"), default=None)
     parser.add_argument("--out-dir", default="control_room")

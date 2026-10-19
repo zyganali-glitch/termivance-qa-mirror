@@ -48,7 +48,9 @@ termivance workflow-status --project-id 87785099 --full-path gitlab-ai-hackathon
 termivance reconcile-duo --claims evidence/b4/duo_claims.json --project-id 87779099 --issue-iid 3 --session-url https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626 --out evidence/b4/duo_reconciliation.json
 # resurrection counterexample witness for the exact disposable target (its own CI config at the exact commit):
 termivance witness-build --project-id 87785099 --full-path gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo --out evidence/b4/witness_87785099.json
-# supervised retirement review: assemble the multi-step causal chain from Duo to deterministic verdicts:
+# supervised retirement review: genuinely execute the 7-step read-only investigation live (anonymous):
+termivance supervised-review --execute --target 87785099
+# or inspect recorded evidence without network access:
 termivance supervised-review --duo-claims evidence/b4/duo_claims.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --decision evidence/b4/decision.json --risk-map evidence/b4/risk_map.json --capsule evidence/b4/proof_capsule.json --out evidence/b4/supervised_review.json
 # judge control room v2 (rebuild data, then open control_room/index.html in a browser):
 python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --supervised-review evidence/b4/supervised_review.json

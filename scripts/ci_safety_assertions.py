@@ -375,13 +375,13 @@ def main() -> int:
         path = Path(tmp) / "ledger.json"
         ledger = AuthorizationLedger(path)
         consumption = ledger.consume(build_auth(), operation_id="one-way-ci", now=NOW)
-        state_before = ledger.consumption_record(
-            consumption.binding, operation_id="one-way-ci"
-        )["state"]
+        state_before = ledger.consumption_record(consumption.binding, operation_id="one-way-ci")[
+            "state"
+        ]
         ledger.finalize(consumption.binding, outcome="ACCEPTED")
-        state_after = ledger.consumption_record(
-            consumption.binding, operation_id="one-way-ci"
-        )["state"]
+        state_after = ledger.consumption_record(consumption.binding, operation_id="one-way-ci")[
+            "state"
+        ]
         check(
             "ledger states are one-way RESERVED -> CONSUMED_ACCEPTED",
             state_before == "RESERVED_BEFORE_MUTATION" and state_after == "CONSUMED_ACCEPTED",
@@ -407,8 +407,7 @@ def main() -> int:
         records = [r for a in portfolio.get("assets", []) for r in a.get("resources", [])]
         check(
             "every control-room resource record stays NOT_AUTHORIZING",
-            records
-            and all(r.get("mutation_capability") == "NOT_AUTHORIZING" for r in records),
+            records and all(r.get("mutation_capability") == "NOT_AUTHORIZING" for r in records),
         )
         check(
             "control-room access limits are never promoted to absence",
@@ -434,7 +433,7 @@ def main() -> int:
             and "fetch(" not in stripped,
         )
         duo = (payload.get("external_evidence") or {}).get("duo_session") or {}
-        ladder = (duo.get("evidence_ladder") or {})
+        ladder = duo.get("evidence_ladder") or {}
         check(
             "control room keeps the Duo evidence ladder honest",
             bool(ladder.get("operator_confirmed_only"))
@@ -536,9 +535,7 @@ def main() -> int:
 
     try:
         _require_exact_lines(
-            _provenance(
-                "endpoint: /projects/87785099/pages\nendpoint: /projects/999/pages\n"
-            ),
+            _provenance("endpoint: /projects/87785099/pages\nendpoint: /projects/999/pages\n"),
             {"endpoint": "/projects/87785099/pages"},
         )
         check("B: duplicated binding lines are refused as ambiguous", False)
@@ -565,9 +562,7 @@ def main() -> int:
             if url.rstrip("/").endswith("/87785099"):
                 return HttpReply(
                     200,
-                    json.dumps(
-                        {"id": 87785099, "path_with_namespace": "x/y", "name": "y"}
-                    ),
+                    json.dumps({"id": 87785099, "path_with_namespace": "x/y", "name": "y"}),
                     None,
                 )
             if "/repository/files/" in url:
@@ -598,8 +593,7 @@ def main() -> int:
     check(
         "D: schema presence alone is INVALID, never a live receipt",
         classify(None)["receipt_state"] == "NOT_RUN"
-        and classify({"schema": "termivance.retirement_receipt/v3"})["receipt_state"]
-        == "INVALID"
+        and classify({"schema": "termivance.retirement_receipt/v3"})["receipt_state"] == "INVALID"
         and classify(
             {
                 "schema": "termivance.retirement_receipt/v3",
@@ -620,7 +614,16 @@ def main() -> int:
                 "mutation": {"accepted": True, "status": 202},
             }
         )["receipt_state"]
-        == "MUTATION_ACCEPTED",
+        == "UNVERIFIED_RECORDED_CLAIM"
+        and classify(
+            {
+                "schema": "termivance.retirement_receipt/v3",
+                "verdict": "INCONCLUSIVE",
+                "mutation_attempted": True,
+                "mutation": {"accepted": True, "status": 202},
+            }
+        )["absence_evidence"]
+        == "UNVERIFIED",
     )
 
     # 27-29. the enhancement records stay non-authoritative by construction.
@@ -648,8 +651,11 @@ def main() -> int:
         (
             DuoClaim("ci-1", "flow internals", "OPERATOR_CONFIRMED_UI", "FLOW_INTERNALS", {}),
             DuoClaim(
-                "ci-2", "notes deny anonymous", "ANONYMOUS_API_OBSERVATION",
-                "OBSERVABILITY_PROBE", {"surface": "notes", "status": 401},
+                "ci-2",
+                "notes deny anonymous",
+                "ANONYMOUS_API_OBSERVATION",
+                "OBSERVABILITY_PROBE",
+                {"surface": "notes", "status": 401},
             ),
         ),
         ci_surface,
@@ -716,8 +722,7 @@ def main() -> int:
             duo_payload.get("authority") == "NON_AUTHORITATIVE"
             and duo_claims
             and all(
-                r["status"]
-                in {s.value for s in ClaimStatus}
+                r["status"] in {s.value for s in ClaimStatus}
                 and r["status"]
                 not in {"SAFE_TO_RETIRE", "RETIRED", "OBSERVED_ABSENT", "RESURRECTION_CONTROLLED"}
                 for r in duo_claims.values()

@@ -69,9 +69,7 @@ class CrossResourceView:
 
     @property
     def pages_observed_somewhere(self) -> bool:
-        return any(
-            r.kind == KIND_PAGES and r.support == SUPPORT_OBSERVED for r in self.nodes
-        )
+        return any(r.kind == KIND_PAGES and r.support == SUPPORT_OBSERVED for r in self.nodes)
 
     def as_risk_nodes(self, target: dict[str, object]) -> tuple[dict[str, object], ...]:
         """Judge-facing dependency/risk node dicts with full provenance.
@@ -99,9 +97,7 @@ class CrossResourceView:
                             f"[{record.provenance}, fresh until {fresh_until}]"
                         ),
                         "impacts": (),
-                        "mitigations": (
-                            "observation only; mutation_capability=NOT_AUTHORIZING",
-                        ),
+                        "mitigations": ("observation only; mutation_capability=NOT_AUTHORIZING",),
                         "support": record.support,
                         "resource": record.to_dict(),
                         "target": target,
@@ -119,9 +115,7 @@ class CrossResourceView:
                             f"[{record.provenance}]; a 401/403/404 is never absence"
                         ),
                         "impacts": (),
-                        "mitigations": (
-                            "re-check via an authorized read when credentials permit",
-                        ),
+                        "mitigations": ("re-check via an authorized read when credentials permit",),
                         "support": record.support,
                         "resource": record.to_dict(),
                         "target": target,

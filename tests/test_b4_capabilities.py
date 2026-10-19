@@ -514,9 +514,7 @@ def test_control_room_receipt_schema_presence_is_never_live(tmp_path):
     assert receipt["receipt_state"] == "INVALID"
     assert payload["mutation_status"] == "INVALID"
     assert payload["provenance_label"] != "RECORDED_LIVE"
-    gate = next(
-        g for g in payload["authorization_gates"] if "87785099" in str(g["gate"])
-    )
+    gate = next(g for g in payload["authorization_gates"] if "87785099" in str(g["gate"]))
     assert gate["state"] == "INVALID"
 
 
@@ -550,10 +548,13 @@ def test_control_room_accepted_mutation_is_action_acceptance_never_absence(tmp_p
         ),
     )
     receipt = payload["sections"]["receipt"]
-    assert receipt["receipt_state"] == "MUTATION_ACCEPTED"
-    assert receipt["mutation_accepted"] is True
-    assert payload["mutation_status"] == "MUTATION_ACCEPTED"
-    # Acceptance is not absence: the data must not claim an absence outcome.
+    # A locally supplied JSON without durable ledger verification is an UNVERIFIED_RECORDED_CLAIM.
+    # The UI never promotes it to an authoritative outcome.
+    assert receipt["receipt_state"] == "UNVERIFIED_RECORDED_CLAIM"
+    assert receipt["display_verdict"] == "UNVERIFIED_RECORDED_CLAIM"
+    assert receipt["claimed_verdict"] == "INCONCLUSIVE"
+    assert payload["mutation_status"] == "UNVERIFIED_RECORDED_CLAIM"
+    assert payload["provenance_label"] != "RECORDED_LIVE"
     raw = json.dumps(payload)
     assert "OBSERVED_ABSENT" not in raw
     assert "RESURRECTION_CONTROLLED" not in raw
@@ -569,8 +570,12 @@ def test_control_room_observed_absent_only_from_receipt_verdict(tmp_path):
         ),
     )
     receipt = payload["sections"]["receipt"]
-    assert receipt["receipt_state"] == "OBSERVED_ABSENT"
-    assert receipt["recorded_verdict"] == "OBSERVED_ABSENT"
+    # Even when a JSON asserts OBSERVED_ABSENT, it remains UNVERIFIED_RECORDED_CLAIM
+    assert receipt["receipt_state"] == "UNVERIFIED_RECORDED_CLAIM"
+    assert receipt["display_verdict"] == "UNVERIFIED_RECORDED_CLAIM"
+    assert receipt["claimed_verdict"] == "OBSERVED_ABSENT"
+    assert payload["mutation_status"] == "UNVERIFIED_RECORDED_CLAIM"
+    assert payload["provenance_label"] != "RECORDED_LIVE"
 
 
 def test_control_room_incoherent_acceptance_without_2xx_is_invalid(tmp_path):
@@ -825,9 +830,7 @@ def test_portfolio_v2_multi_resource_records_carry_exact_facts():
         assert record.mutation_capability == NOT_AUTHORIZING
         if record.kind not in {KIND_PAGES, KIND_CI_REDEPLOY}:
             assert record.ref.split(":")[1] == "12345678"
-    envs = sorted(
-        (r for r in asset.resources if r.kind == KIND_ENVIRONMENT), key=lambda r: r.ref
-    )
+    envs = sorted((r for r in asset.resources if r.kind == KIND_ENVIRONMENT), key=lambda r: r.ref)
     env = envs[0]
     assert env.ref == "environment:12345678:11"
     assert env.state == "available"
@@ -993,9 +996,7 @@ def test_riskmap_appends_cross_nodes_but_decision_facts_unchanged():
     assert "resource:pages:12345678" in cross_ids
     assert len(cross_ids) == len(set(cross_ids)), "risk nodes must be uniquely identified"
     rel_edges = [
-        e
-        for e in cross.edges
-        if e.src.startswith("resource:") and e.dst.startswith("resource:")
+        e for e in cross.edges if e.src.startswith("resource:") and e.dst.startswith("resource:")
     ]
     assert rel_edges
     assert {e.relation for e in rel_edges} == {"deployed_to", "recreates", "obligates"}
@@ -1029,16 +1030,12 @@ def test_riskmap_edges_reference_existing_nodes():
     )
     for rm in legacies:
         ids = {n.node_id for n in rm.nodes}
-        dangling = [
-            (e.src, e.dst) for e in rm.edges if e.src not in ids or e.dst not in ids
-        ]
+        dangling = [(e.src, e.dst) for e in rm.edges if e.src not in ids or e.dst not in ids]
         assert not dangling, f"dangling edges: {dangling}"
         assert any(e.dst in ids for e in rm.edges), "no resolvable edges at all"
         # decision-side chains must actually connect: at least one reason edge
         # lands on the obligation a reason declares.
-        reaches = [
-            e for e in rm.edges if e.relation == "impacts" and e.dst.startswith("obl:")
-        ]
+        reaches = [e for e in rm.edges if e.relation == "impacts" and e.dst.startswith("obl:")]
         assert reaches
 
 
@@ -1080,4 +1077,3 @@ def test_cli_portfolio_v2_prints_resource_totals(tmp_path, capsys):  # type: ign
     rendered = rebuilt.render()
     assert "NOT_AUTHORIZING" in rendered
     assert "resources NOT_OBSERVED" not in rendered  # everything observed in this fixture
-

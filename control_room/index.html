@@ -88,6 +88,9 @@
   <span id="hdr-chips"></span>
   <div class="sub" id="hdr-sub"></div>
 </header>
+<div style="margin: 10px 26px 0; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--accent); background: var(--panel2); color: var(--ink); font-weight: 600; font-size: 13.5px; text-align: center; letter-spacing: .2px;">
+  AI proposes. Termivance verifies. Retirement proceeds only when evidence and authority permit it.
+</div>
 <nav id="tabs">
   <button class="tabbtn active" data-tab="portfolio">Portfolio &amp; resources</button>
   <button class="tabbtn" data-tab="graph">Dependency &amp; risk graph</button>
@@ -139,17 +142,12 @@ const escapeHtml = (v) => String(v ?? "")
 
 function chipState(state) {
   const s = String(state ?? "");
-  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE|SUPPORTED|CORROBORATED|DETERMINISTIC)/.test(s)) return "chip ok";
-  if (/^INFERRED|^PROJECTED|^STALE|^UNRESOLVED|^OPERATOR_CONFIRMED|^PROCEDURAL/.test(s)) return "chip amber";
-  if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT|CONTRADICTED|NOT_AUTHENTICALLY)/.test(s)) return "chip bad";
-  if (/^(UNAVAILABLE|UNKNOWN|UNSUPPORTED|NOT_CHECKED|CONTEXTUAL)/.test(s)) return "chip dim";
-  if (/^(NOT_AUTHORIZING|READ_ONLY|READ_ONLY_OBSERVATION|AUTHORIZED_FALSE|STRUCTURALLY_REFUSED|DUO_AUTONOMOUS)/.test(s)) return "chip violet";
-  /* QA-FIX D: receipt truth states. Provider acceptance is a recorded fact but
-     never absence (amber); incoherence is a defect, never evidence (red). */
+  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE|SUPPORTED|CORROBORATED|DETERMINISTIC|EXECUTED_NOW|LEDGER_VALIDATED)/.test(s)) return "chip ok";
+  if (/^(INFERRED|PROJECTED|STALE|UNRESOLVED|OPERATOR_CONFIRMED|PROCEDURAL|RECORDED_HISTORICAL|RECORDED_INPUT_USED|UNVERIFIED|UNVERIFIED_RECORDED_CLAIM|UNVERIFIED_NO_LEDGER)/.test(s)) return "chip amber";
+  if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT|CONTRADICTED|NOT_AUTHENTICALLY|STRUCTURALLY_REFUSED|LEDGER_VERIFICATION_FAILED|INVALID|ATTEMPT_NOT_ACCEPTED|MALFORMED)/.test(s)) return "chip bad";
+  if (/^(UNAVAILABLE|UNKNOWN|UNSUPPORTED|NOT_CHECKED|CONTEXTUAL|UNCHANGED|NOT_DEMONSTRATED)/.test(s)) return "chip dim";
+  if (/^(NOT_AUTHORIZING|READ_ONLY|READ_ONLY_OBSERVATION|AUTHORIZED_FALSE|DUO_AUTONOMOUS)/.test(s)) return "chip violet";
   if (/^MUTATION_ACCEPTED/.test(s)) return "chip amber";
-  if (/^(INVALID|ATTEMPT_NOT_ACCEPTED|MALFORMED)/.test(s)) return "chip bad";
-  /* Witness truth states: an observed mechanism is a live counterexample
-     (amber); an unobserved config is unknown, never safe (dim). */
   if (/^MECHANISM_PRESENT|^MECHANISM_NOT_FOUND/.test(s)) return "chip amber";
   if (/^CONFIG_NOT_OBSERVED/.test(s)) return "chip dim";
   return "chip acc";
@@ -620,19 +618,25 @@ function proofCapsule(c) {
     </table>` : ""}`;
 }
 function receiptCard(rc) {
-  /* QA-FIX D: the truth state comes from the build-time fail-closed classifier.
+  /* QA-FIX D & Defect A: the truth state comes from the build-time fail-closed classifier.
      Schema presence alone is never evidence; acceptance is never absence. */
   const r = rc.record || {};
-  const state = rc.receipt_state || "INVALID";
+  const state = rc.display_verdict || rc.receipt_state || "INVALID";
   const recordedOnly = state !== "NOT_RUN" && state !== "INVALID";
   return `<div class="card"><h2>Retirement receipt${recordedOnly ? " (recorded artifact)" : ""}</h2>${chip(state)}
-    ${rc.recorded_verdict && rc.recorded_verdict !== state ? chip("recorded verdict: " + rc.recorded_verdict) : ""}
+    ${rc.claimed_verdict && rc.claimed_verdict !== state ? chip("claimed verdict: " + rc.claimed_verdict, "chip amber") : ""}
+    ${rc.evidence_level ? chip("evidence: " + rc.evidence_level) : ""}
+    ${rc.ledger_validation ? chip("ledger: " + rc.ledger_validation) : ""}
     ${kv([
       ["schema", escapeHtml(r.schema || "—")],
       ["action", escapeHtml(r.action || "—")],
       ["target project", escapeHtml((r.target || {}).project_id ?? "—")],
-      ["mutation attempted", escapeHtml(String(rc.mutation_attempted))],
-      ["mutation accepted", escapeHtml(String(rc.mutation_accepted))],
+      ["claimed verdict", escapeHtml(rc.claimed_verdict || "—")],
+      ["receipt integrity", escapeHtml(rc.receipt_integrity || "—")],
+      ["ledger validation", escapeHtml(rc.ledger_validation || "—")],
+      ["mutation evidence", escapeHtml(rc.mutation_evidence || "—")],
+      ["absence evidence", escapeHtml(rc.absence_evidence || "—")],
+      ["display verdict", escapeHtml(rc.display_verdict || "—")],
     ])}
     <div class="muted">${escapeHtml(rc.note || "")}</div>
     ${state === "NOT_RUN" ? `<div class="muted">No live mutation receipt exists: the
@@ -668,10 +672,17 @@ function supervisedReviewCard(sr) {
   const claims = sr.candidate_claims || [];
   return `<h2>Supervised retirement review &amp; AI boundary</h2>
     <div class="banner">AI proposes candidate claims; deterministic engine owns authorization and verdicts</div>
+    ${kv([
+      ["execution id", `<code>${escapeHtml(sr.execution_id || "RECORDED_ARTIFACTS")}</code>`],
+      ["investigation mode", chip(sr.investigation_mode || "RECORDED_INPUT_USED")],
+      ["target", `<code>${escapeHtml((sr.target || {}).project_id || "")}</code> ${escapeHtml((sr.target || {}).full_path || "")}`],
+      ["observed at", escapeHtml(sr.observed_at || "—")],
+    ])}
     ${sub("Multi-step causal review pipeline")}
-    <table><tr><th>step</th><th>autonomy</th><th>status</th><th>detail &amp; provenance</th></tr>
+    <table><tr><th>step</th><th>execution</th><th>autonomy</th><th>status</th><th>detail &amp; provenance</th></tr>
     ${steps.map((s) => `<tr>
       <td><b>${escapeHtml(s.title || s.step_id)}</b><br><code class="muted">${escapeHtml(s.step_id)}</code></td>
+      <td>${chip(s.execution_mode || "RECORDED_INPUT_USED")}</td>
       <td>${chip(s.autonomy)}</td>
       <td>${chip(s.status)}</td>
       <td><div>${escapeHtml(s.detail || "")}</div>
@@ -679,27 +690,28 @@ function supervisedReviewCard(sr) {
     </table>
 
     ${sub("Candidate claim corroboration matrix")}
-    <table><tr><th>claim</th><th>origin</th><th>proj</th><th>relevance</th><th>corroboration</th><th>evidence note</th></tr>
+    <table><tr><th>claim</th><th>origin</th><th>proj</th><th>relevance</th><th>corroboration</th><th>causal attribution &amp; note</th></tr>
     ${claims.map((c) => `<tr>
       <td><b>${escapeHtml(c.claim_id)}</b><br><span class="muted">${escapeHtml(c.text)}</span></td>
       <td><span class="muted">${escapeHtml(c.origin)}</span></td>
       <td><code>${escapeHtml(c.source_project != null ? c.source_project : "—")}</code></td>
       <td>${chip(c.retirement_relevance)}</td>
       <td>${chip(c.corroboration_status)}</td>
-      <td class="muted">${escapeHtml(c.corroboration_source ? c.corroboration_source + ": " : "")}${escapeHtml(c.corroboration_detail || "")}</td></tr>`).join("")}
+      <td class="muted"><div><b>${escapeHtml(c.causal_attribution || "")}</b></div>
+          <div>${escapeHtml(c.corroboration_source ? c.corroboration_source + ": " : "")}${escapeHtml(c.corroboration_detail || "")}</div></td></tr>`).join("")}
     </table>
 
     ${sub("Counterfactual analysis — AI contribution vs deterministic verdict")}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;">
       <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
         <div><b>With Duo candidate:</b> ${chip(cf.verdict_with_candidate || "—")}</div>
-        <div class="muted">Investigation queue: enriched (material source claims)</div>
-        <div class="muted">Risk explanation: enriched (CI redeployment mechanics)</div>
+        <div class="muted">Investigation queue: enriched (9 candidate claims)</div>
+        <div class="muted">Corroboration work: 9 API surface checks executed</div>
       </div>
       <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
         <div><b>Without Duo candidate:</b> ${chip(cf.verdict_without_candidate || "—")}</div>
         <div class="muted">Investigation queue: baseline</div>
-        <div class="muted">Risk explanation: baseline</div>
+        <div class="muted">Corroboration work: 0 candidate surface checks</div>
       </div>
     </div>
     ${kv([

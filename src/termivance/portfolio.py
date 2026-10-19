@@ -303,24 +303,28 @@ def _pages_record(
     provenance: str,
     error_kind: str | None,
 ) -> ResourceRecord:
-    return ResourceRecord(
-        kind=KIND_PAGES,
-        ref=f"pages:{project_id}",
-        state=pages_state,
-        endpoint=endpoint,
-        observed_at=observed_at,
-        fresh_until=observed_at + timedelta(seconds=PORTFOLIO_TTL_SECONDS),
-        provenance=provenance,
-        detail={"project_id": project_id, "served_url": served_url},
-        operation_supported="UNPUBLISH_PAGES (authorized path only)",
-        mutation_capability=NOT_AUTHORIZING,
-    ) if _pages_support(pages_state) else ResourceRecord.not_observed(
-        kind=KIND_PAGES,
-        project_id=project_id,
-        endpoint=endpoint,
-        error_kind=error_kind,
-        observed_at=observed_at,
-        provenance=provenance,
+    return (
+        ResourceRecord(
+            kind=KIND_PAGES,
+            ref=f"pages:{project_id}",
+            state=pages_state,
+            endpoint=endpoint,
+            observed_at=observed_at,
+            fresh_until=observed_at + timedelta(seconds=PORTFOLIO_TTL_SECONDS),
+            provenance=provenance,
+            detail={"project_id": project_id, "served_url": served_url},
+            operation_supported="UNPUBLISH_PAGES (authorized path only)",
+            mutation_capability=NOT_AUTHORIZING,
+        )
+        if _pages_support(pages_state)
+        else ResourceRecord.not_observed(
+            kind=KIND_PAGES,
+            project_id=project_id,
+            endpoint=endpoint,
+            error_kind=error_kind,
+            observed_at=observed_at,
+            provenance=provenance,
+        )
     )
 
 
@@ -564,13 +568,15 @@ def observe_asset(
     ci_endpoint = f"/projects/{project_id}/repository/files/.gitlab-ci.yml/raw"
     ci_body = client.get_text(ci_endpoint)
     if ci_body.ok and isinstance(ci_body.data, str):
-        ci = (_ci_records(
-            ci_body.data,
-            project_id=project_id,
-            endpoint=ci_endpoint,
-            observed_at=observed,
-            provenance=provenance,
-        ),)
+        ci = (
+            _ci_records(
+                ci_body.data,
+                project_id=project_id,
+                endpoint=ci_endpoint,
+                observed_at=observed,
+                provenance=provenance,
+            ),
+        )
     else:
         ci = (
             ResourceRecord.not_observed(
@@ -746,7 +752,8 @@ class PortfolioSnapshot:
                 "protected": sum(1 for a in self.assets if a.role.startswith("PROTECTED")),
                 "resources_observed": sum(observed_counts.values()),
                 "resources_not_observed": sum(
-                    1 for r in [r for a in self.assets for r in a.resources]
+                    1
+                    for r in [r for a in self.assets for r in a.resources]
                     if r.support == SUPPORT_NOT_OBSERVED
                 ),
                 "resource_kinds_observed": dict(

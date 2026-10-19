@@ -1,7 +1,7 @@
 {
   "action": "unpublish_pages",
   "classification": "LIVE",
-  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+  "observed_at": "2026-10-19T16:26:02.530404+00:00",
   "records": [
     {
       "detail": {
@@ -15,10 +15,10 @@
       },
       "endpoint": "/projects/87785099",
       "error_kind": null,
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "PROJECT_IDENTITY",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 200
     },
     {
@@ -28,10 +28,10 @@
       },
       "endpoint": "/projects/87785099/repository/branches/main",
       "error_kind": null,
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "BRANCH",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 200
     },
     {
@@ -52,10 +52,10 @@
       },
       "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
       "error_kind": null,
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "CI_CONFIG",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 200
     },
     {
@@ -65,10 +65,10 @@
       },
       "endpoint": "/projects/87785099/pipelines",
       "error_kind": null,
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "PIPELINE",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 200
     },
     {
@@ -78,10 +78,10 @@
       },
       "endpoint": "/projects/87785099/issues",
       "error_kind": null,
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "OPEN_ISSUES",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 200
     },
     {
@@ -90,10 +90,10 @@
       },
       "endpoint": "/projects/87785099/pages",
       "error_kind": "AUTH_DENIED",
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "PAGES",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 403
     },
     {
@@ -105,10 +105,10 @@
       },
       "endpoint": "/projects/87785099",
       "error_kind": null,
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "EFFECTIVE_PERMISSION",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 200
     },
     {
@@ -117,10 +117,10 @@
       },
       "endpoint": "/projects/87785099/pages",
       "error_kind": "AUTH_DENIED",
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "PAGES_DEPLOYMENT",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 403
     },
     {
@@ -129,10 +129,10 @@
       },
       "endpoint": "/projects/87785099/environments",
       "error_kind": "AUTH_DENIED",
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
       "kind": "ENVIRONMENT",
       "method": "GET",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "status": 401
     }
   ],

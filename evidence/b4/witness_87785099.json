@@ -1,7 +1,7 @@
 {
   "absence_claim": "NEVER_FROM_THIS_WITNESS",
   "authority": "NON_AUTHORITATIVE",
-  "boundary": "this witness lists resurrection counterexamples; it never claims absence and never awards RESURRECTION_CONTROLLED — that verdict additionally requires live monitoring/control evidence this read-only sweep cannot provide",
+  "boundary": "this witness lists resurrection counterexamples; it never claims absence and never awards RESURRECTION_CONTROLLED \u2014 that verdict additionally requires live monitoring/control evidence this read-only sweep cannot provide",
   "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
   "config": {
     "configuration_complete": true,
@@ -22,8 +22,8 @@
     "cached or edge-replicated copies of previously served content can remain reachable after the provider state changes"
   ],
   "default_branch": "main",
-  "fresh_until": "2026-10-19T11:46:49.660547+00:00",
-  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+  "fresh_until": "2026-10-19T16:41:02.530404+00:00",
+  "observed_at": "2026-10-19T16:26:02.530404+00:00",
   "pages_administration": {
     "endpoint": "/projects/87785099/pages",
     "error_kind": "AUTH_DENIED",

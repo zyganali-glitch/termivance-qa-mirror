@@ -27,7 +27,7 @@ window.TERMIVANCE_DATA = {
     "Unpublishing targets exactly one disposable Pages project; the canonical repository and every other project are out of scope.",
     "Unsigned SHA-256 digests in the ledger are local tamper evidence, never cryptographic authentication of provider events."
   ],
-  "built_at": "2026-10-19T13:00:23.194637+00:00",
+  "built_at": "2026-10-19T16:26:45.058977+00:00",
   "escape_probe": "<img src=x onerror=alert(1)>&\"'",
   "external_evidence": {
     "duo_session": {
@@ -101,16 +101,16 @@ window.TERMIVANCE_DATA = {
         "sections": {
           "absence": "39eeab2a4f3f78cd4f0282f33bf7b190571ec528c74b01fbfe65e4a57ab9dad6",
           "authorization": "31067f2c9a69e8451fc5a278856f3929c0703aa7132301423f0cce564637e48c",
-          "decision": "6379a5dd5992a341347f197e57ebcaa57ebfbfacd4896d6938d544ec5d87b26e",
-          "duo_reconciliation": "481118324a1a80b0c2c74cd9dcf798fcf6d92e69a12ddeb09fb01b8c9c084b77",
-          "identity": "7b04231f420af1f176664f2674da54d6ce77187d2ad823d5fdc8b534732866bd",
-          "limitation_notice": "aec3c0abde7da82f52808b624d8edcc562004a2cfcc1981b40cabf89463018cc",
+          "decision": "7e62d6e520d40755b4fb6edea3338ad4634daec810c97e428beb96c5b23b3582",
+          "duo_reconciliation": "34494e8709727fe50d9688b4933fdc402cab3cc6a54a2242f14f6f5b238afefc",
+          "identity": "b2992477361e5fbe033dbc95c4065a09c60c3c68cd94ad18fdd35aceb3727dce",
+          "limitation_notice": "c2bad2bfa858918529257e76a40339cc6984b4f11f8d79936c39cf2fccc041b2",
           "mutation": "8233bc272138a9c113143e1842426f82c3412faede769c095d7ee9bb74ad004e",
           "source_evidence": "58227fbfa8e806878a27d5fca70d4a1e96b2ca8b98c1d80739dffa7bb35dcbc0",
-          "witness": "a754e56d6c1012552b095a3b8a4838714a3d1d75747045ece79d4700708c8b56"
+          "witness": "4cfa521ce75574ff7d89bec3e8b739720b90a7f3b06d9a52827a59cf3dfeb1c4"
         }
       },
-      "manifest_digest": "eeb7a5c9b2b0f9030af42a3cf342a1cbf51081d1818f97581f467f30d95b5e93",
+      "manifest_digest": "a048225b1a7933a43d1cf9f6f604c4e4dd06449e51ecd6e41c745ac516b1284a",
       "schema": "termivance.proof_capsule/v1",
       "sections": {
         "absence": {
@@ -124,7 +124,7 @@ window.TERMIVANCE_DATA = {
         "decision": {
           "action": "unpublish_pages",
           "authoritative": false,
-          "evaluated_at": "2026-10-19T11:31:49.660547+00:00",
+          "evaluated_at": "2026-10-19T16:26:02.530404+00:00",
           "graph": {
             "dependencies": [
               {
@@ -246,14 +246,14 @@ window.TERMIVANCE_DATA = {
                   "branch": "main",
                   "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
                 },
-                "digest": "2d1a4da8f838bf34063af2ba9873d03d7e822a598a2f9718536792b668413a4d",
+                "digest": "eb9cfc2afc35c683236b7039907219287a34030e88481b928a5069ed021b5405",
                 "endpoint": "/projects/87785099/repository/branches/main",
                 "error_kind": null,
                 "evidence_id": "ev:branch",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "BRANCH",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -278,14 +278,14 @@ window.TERMIVANCE_DATA = {
                     "main"
                   ]
                 },
-                "digest": "ec4b9bfc4f53c8a9c03bec0f29d2009007d247a5b087520870ecd1e35979d1a1",
+                "digest": "9dae9e0998cdd48b2824d9e5ea1596ad92a5eb253c1348d094529fc5f120c059",
                 "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
                 "error_kind": null,
                 "evidence_id": "ev:ci_config",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "CI_CONFIG",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -301,14 +301,14 @@ window.TERMIVANCE_DATA = {
                   "pages_api_error": "AUTH_DENIED",
                   "pages_api_status": 403
                 },
-                "digest": "fde2561e2a6a3b5d81f40f98bd60ea62f0ded97c525ac3d22a8551a99341a5ca",
+                "digest": "34ecaa191945b51cfce19480db35f7800f8def1af9a099582532005ed36128e9",
                 "endpoint": "/projects/87785099",
                 "error_kind": null,
                 "evidence_id": "ev:effective_permission",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "EFFECTIVE_PERMISSION",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -321,14 +321,14 @@ window.TERMIVANCE_DATA = {
                 "detail": {
                   "error": "AUTH_DENIED"
                 },
-                "digest": "fa6671e54026523149f34dee20cd8ecf649f73f4778ad226a0e388fe1413e3f6",
+                "digest": "19c2c36ee6de0b9e42cbc7e1f144c598c3358767511dcc44bcca41e69b0ad217",
                 "endpoint": "/projects/87785099/environments",
                 "error_kind": "AUTH_DENIED",
                 "evidence_id": "ev:environment",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "ENVIRONMENT",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 401,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -342,14 +342,14 @@ window.TERMIVANCE_DATA = {
                   "open_count": 0,
                   "retirement_related": []
                 },
-                "digest": "dc00d4c79a990f6978bb16cea104d9c4cfc4ac532dbd81c16f34371243b08ccd",
+                "digest": "b60de7c031b71fdd0b7e22297fd25bcaa2aabcac22765982cf82f76b524da035",
                 "endpoint": "/projects/87785099/issues",
                 "error_kind": null,
                 "evidence_id": "ev:open_issues",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "OPEN_ISSUES",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -362,14 +362,14 @@ window.TERMIVANCE_DATA = {
                 "detail": {
                   "error": "AUTH_DENIED"
                 },
-                "digest": "cee8711db1d2ed6aa8ea9c2b34c447798250dfe548a7aced30ec2192fa4f2d0b",
+                "digest": "dc3d9c9cd1a6fcd5c3a575f523c7d28e5ce739a18e0136dc42df91b2b81b316c",
                 "endpoint": "/projects/87785099/pages",
                 "error_kind": "AUTH_DENIED",
                 "evidence_id": "ev:pages",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "PAGES",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 403,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -382,14 +382,14 @@ window.TERMIVANCE_DATA = {
                 "detail": {
                   "error": "AUTH_DENIED"
                 },
-                "digest": "79b82c3251e98db8962ebdf7cd387975b0cf44b577692ae239605c56fcd2b408",
+                "digest": "b1cc1fcf256f0003a43555a21b87f53e7df1dca1c505910cf2f0ba12cf4713fe",
                 "endpoint": "/projects/87785099/pages",
                 "error_kind": "AUTH_DENIED",
                 "evidence_id": "ev:pages_deployment",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "PAGES_DEPLOYMENT",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 403,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -403,14 +403,14 @@ window.TERMIVANCE_DATA = {
                   "latest_id": 2960507698,
                   "latest_status": "success"
                 },
-                "digest": "0a88559cf5cfc76ef095be86f68c37c4961bfd0607e18619f63570e74d61c3b4",
+                "digest": "b0999df6401f7d01f0bbcf895713bdb7e16a78b0da7b0ef8055c71cfa2616df8",
                 "endpoint": "/projects/87785099/pipelines",
                 "error_kind": null,
                 "evidence_id": "ev:pipeline",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "PIPELINE",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -429,14 +429,14 @@ window.TERMIVANCE_DATA = {
                   "visibility": "public",
                   "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
                 },
-                "digest": "76ac708a6c9508c964c0e6540a936555271adc6babeeea8f23b4dad230bb8155",
+                "digest": "db05e0450c28ba879bee9b5b136c9c23ee42c80378eedde1c76c8dcb9f3f3375",
                 "endpoint": "/projects/87785099",
                 "error_kind": null,
                 "evidence_id": "ev:project_identity",
-                "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+                "fresh_until": "2026-10-19T16:41:02.530404+00:00",
                 "kind": "PROJECT_IDENTITY",
                 "method": "GET",
-                "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                "observed_at": "2026-10-19T16:26:02.530404+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -606,7 +606,7 @@ window.TERMIVANCE_DATA = {
                 "claim_id": "duo-9671626-01",
                 "detail": "the project is publicly readable to this anonymous identity (HTTP 200)",
                 "observed": {
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00",
                   "project_read_status": 200
                 },
                 "origin": "ANONYMOUS_API_OBSERVATION",
@@ -636,7 +636,7 @@ window.TERMIVANCE_DATA = {
                     "user_notes_count": 3
                   },
                   "issue_read_status": 200,
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00"
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00"
                 },
                 "origin": "ANONYMOUS_API_OBSERVATION",
                 "source_ladder": "independently_observed_anonymous_api[1]",
@@ -665,7 +665,7 @@ window.TERMIVANCE_DATA = {
                     "user_notes_count": 3
                   },
                   "issue_read_status": 200,
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00"
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00"
                 },
                 "origin": "ANONYMOUS_API_OBSERVATION",
                 "source_ladder": "independently_observed_anonymous_api[2]",
@@ -677,7 +677,7 @@ window.TERMIVANCE_DATA = {
                 "claim_id": "duo-9671626-04",
                 "detail": "the agent-sessions UI is an authenticated surface; the anonymous probe returned 404 — an access observation that can neither confirm nor deny the session's recorded state, and is never promoted",
                 "observed": {
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00",
                   "session_ui_status": 404,
                   "session_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626"
                 },
@@ -693,7 +693,7 @@ window.TERMIVANCE_DATA = {
                 "observed": {
                   "note_id_claimed": 4040776241,
                   "notes_read_status": 401,
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00"
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00"
                 },
                 "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
                 "source_ladder": "operator_confirmed_only[1]",
@@ -707,7 +707,7 @@ window.TERMIVANCE_DATA = {
                 "observed": {
                   "note_id_claimed": 4040776241,
                   "notes_read_status": 401,
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00"
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00"
                 },
                 "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
                 "source_ladder": "operator_confirmed_only[2]",
@@ -719,7 +719,7 @@ window.TERMIVANCE_DATA = {
                 "claim_id": "duo-9671626-07",
                 "detail": "flow-execution internals have no independently observable surface; the claim can never be promoted by this tool",
                 "observed": {
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00"
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00"
                 },
                 "origin": "OPERATOR_CONFIRMED_UI",
                 "source_ladder": "operator_confirmed_only[3]",
@@ -733,7 +733,7 @@ window.TERMIVANCE_DATA = {
                 "observed": {
                   "actual_status": 401,
                   "expected_status": 401,
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00",
                   "surface": "notes"
                 },
                 "origin": "ANONYMOUS_API_OBSERVATION",
@@ -748,7 +748,7 @@ window.TERMIVANCE_DATA = {
                 "observed": {
                   "actual_status": 404,
                   "expected_status": 404,
-                  "observed_at": "2026-10-19T11:31:49.660547+00:00",
+                  "observed_at": "2026-10-19T16:26:02.530404+00:00",
                   "surface": "session_ui"
                 },
                 "origin": "ANONYMOUS_API_OBSERVATION",
@@ -757,11 +757,11 @@ window.TERMIVANCE_DATA = {
                 "text": "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
               }
             ],
-            "claims_source": "evidence/b4/duo_session_9671626_readback.json",
+            "claims_source": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_session_9671626_readback.json",
             "duo_session_id": "9671626",
             "flow_catalog_item_id": 1018562,
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "schema": "termivance.duo_reconciliation/v1",
             "surface": {
               "discussions_read_status": 401,
@@ -784,7 +784,7 @@ window.TERMIVANCE_DATA = {
               },
               "issue_read_status": 200,
               "notes_read_status": 401,
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "project_id": 87779099,
               "project_read_status": 200,
               "provenance": "ANONYMOUS_PUBLIC_READ",
@@ -801,7 +801,7 @@ window.TERMIVANCE_DATA = {
           "state": "RECONCILED"
         },
         "identity": {
-          "generated_at": "2026-10-19T11:31:49.660547+00:00",
+          "generated_at": "2026-10-19T16:26:02.530404+00:00",
           "provider": "GITLAB",
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -817,8 +817,8 @@ window.TERMIVANCE_DATA = {
           ],
           "not_to_be_claimed": "Integrity verification is a local byte-level check; it never re-observes GitLab and never extends the bounded verdict beyond its stated evidence, scope and freshness.",
           "notes": [
-            "assembled by scripts/refresh_b4_evidence.py from anonymous live reads",
-            "no mutation was attempted; no absence is claimed and no control is asserted anywhere in this capsule"
+            "assembled by run_supervised_investigation (inv-20261019162602-bfbcf3) from anonymous live reads",
+            "no mutation was attempted; no absence is claimed and no control is asserted"
           ]
         },
         "mutation": {
@@ -853,8 +853,8 @@ window.TERMIVANCE_DATA = {
               "cached or edge-replicated copies of previously served content can remain reachable after the provider state changes"
             ],
             "default_branch": "main",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "pages_administration": {
               "endpoint": "/projects/87785099/pages",
               "error_kind": "AUTH_DENIED",
@@ -878,7 +878,7 @@ window.TERMIVANCE_DATA = {
     "decision": {
       "action": "unpublish_pages",
       "authoritative": false,
-      "evaluated_at": "2026-10-19T11:31:49.660547+00:00",
+      "evaluated_at": "2026-10-19T16:26:02.530404+00:00",
       "graph": {
         "dependencies": [
           {
@@ -1000,14 +1000,14 @@ window.TERMIVANCE_DATA = {
               "branch": "main",
               "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
             },
-            "digest": "2d1a4da8f838bf34063af2ba9873d03d7e822a598a2f9718536792b668413a4d",
+            "digest": "eb9cfc2afc35c683236b7039907219287a34030e88481b928a5069ed021b5405",
             "endpoint": "/projects/87785099/repository/branches/main",
             "error_kind": null,
             "evidence_id": "ev:branch",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "BRANCH",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1032,14 +1032,14 @@ window.TERMIVANCE_DATA = {
                 "main"
               ]
             },
-            "digest": "ec4b9bfc4f53c8a9c03bec0f29d2009007d247a5b087520870ecd1e35979d1a1",
+            "digest": "9dae9e0998cdd48b2824d9e5ea1596ad92a5eb253c1348d094529fc5f120c059",
             "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
             "error_kind": null,
             "evidence_id": "ev:ci_config",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "CI_CONFIG",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1055,14 +1055,14 @@ window.TERMIVANCE_DATA = {
               "pages_api_error": "AUTH_DENIED",
               "pages_api_status": 403
             },
-            "digest": "fde2561e2a6a3b5d81f40f98bd60ea62f0ded97c525ac3d22a8551a99341a5ca",
+            "digest": "34ecaa191945b51cfce19480db35f7800f8def1af9a099582532005ed36128e9",
             "endpoint": "/projects/87785099",
             "error_kind": null,
             "evidence_id": "ev:effective_permission",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "EFFECTIVE_PERMISSION",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1075,14 +1075,14 @@ window.TERMIVANCE_DATA = {
             "detail": {
               "error": "AUTH_DENIED"
             },
-            "digest": "fa6671e54026523149f34dee20cd8ecf649f73f4778ad226a0e388fe1413e3f6",
+            "digest": "19c2c36ee6de0b9e42cbc7e1f144c598c3358767511dcc44bcca41e69b0ad217",
             "endpoint": "/projects/87785099/environments",
             "error_kind": "AUTH_DENIED",
             "evidence_id": "ev:environment",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "ENVIRONMENT",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 401,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1096,14 +1096,14 @@ window.TERMIVANCE_DATA = {
               "open_count": 0,
               "retirement_related": []
             },
-            "digest": "dc00d4c79a990f6978bb16cea104d9c4cfc4ac532dbd81c16f34371243b08ccd",
+            "digest": "b60de7c031b71fdd0b7e22297fd25bcaa2aabcac22765982cf82f76b524da035",
             "endpoint": "/projects/87785099/issues",
             "error_kind": null,
             "evidence_id": "ev:open_issues",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "OPEN_ISSUES",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1116,14 +1116,14 @@ window.TERMIVANCE_DATA = {
             "detail": {
               "error": "AUTH_DENIED"
             },
-            "digest": "cee8711db1d2ed6aa8ea9c2b34c447798250dfe548a7aced30ec2192fa4f2d0b",
+            "digest": "dc3d9c9cd1a6fcd5c3a575f523c7d28e5ce739a18e0136dc42df91b2b81b316c",
             "endpoint": "/projects/87785099/pages",
             "error_kind": "AUTH_DENIED",
             "evidence_id": "ev:pages",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "PAGES",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 403,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1136,14 +1136,14 @@ window.TERMIVANCE_DATA = {
             "detail": {
               "error": "AUTH_DENIED"
             },
-            "digest": "79b82c3251e98db8962ebdf7cd387975b0cf44b577692ae239605c56fcd2b408",
+            "digest": "b1cc1fcf256f0003a43555a21b87f53e7df1dca1c505910cf2f0ba12cf4713fe",
             "endpoint": "/projects/87785099/pages",
             "error_kind": "AUTH_DENIED",
             "evidence_id": "ev:pages_deployment",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "PAGES_DEPLOYMENT",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 403,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1157,14 +1157,14 @@ window.TERMIVANCE_DATA = {
               "latest_id": 2960507698,
               "latest_status": "success"
             },
-            "digest": "0a88559cf5cfc76ef095be86f68c37c4961bfd0607e18619f63570e74d61c3b4",
+            "digest": "b0999df6401f7d01f0bbcf895713bdb7e16a78b0da7b0ef8055c71cfa2616df8",
             "endpoint": "/projects/87785099/pipelines",
             "error_kind": null,
             "evidence_id": "ev:pipeline",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "PIPELINE",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1183,14 +1183,14 @@ window.TERMIVANCE_DATA = {
               "visibility": "public",
               "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
             },
-            "digest": "76ac708a6c9508c964c0e6540a936555271adc6babeeea8f23b4dad230bb8155",
+            "digest": "db05e0450c28ba879bee9b5b136c9c23ee42c80378eedde1c76c8dcb9f3f3375",
             "endpoint": "/projects/87785099",
             "error_kind": null,
             "evidence_id": "ev:project_identity",
-            "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+            "fresh_until": "2026-10-19T16:41:02.530404+00:00",
             "kind": "PROJECT_IDENTITY",
             "method": "GET",
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1358,7 +1358,7 @@ window.TERMIVANCE_DATA = {
           "claim_id": "duo-9671626-01",
           "detail": "the project is publicly readable to this anonymous identity (HTTP 200)",
           "observed": {
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "project_read_status": 200
           },
           "origin": "ANONYMOUS_API_OBSERVATION",
@@ -1388,7 +1388,7 @@ window.TERMIVANCE_DATA = {
               "user_notes_count": 3
             },
             "issue_read_status": 200,
-            "observed_at": "2026-10-19T11:31:49.660547+00:00"
+            "observed_at": "2026-10-19T16:26:02.530404+00:00"
           },
           "origin": "ANONYMOUS_API_OBSERVATION",
           "source_ladder": "independently_observed_anonymous_api[1]",
@@ -1417,7 +1417,7 @@ window.TERMIVANCE_DATA = {
               "user_notes_count": 3
             },
             "issue_read_status": 200,
-            "observed_at": "2026-10-19T11:31:49.660547+00:00"
+            "observed_at": "2026-10-19T16:26:02.530404+00:00"
           },
           "origin": "ANONYMOUS_API_OBSERVATION",
           "source_ladder": "independently_observed_anonymous_api[2]",
@@ -1429,7 +1429,7 @@ window.TERMIVANCE_DATA = {
           "claim_id": "duo-9671626-04",
           "detail": "the agent-sessions UI is an authenticated surface; the anonymous probe returned 404 — an access observation that can neither confirm nor deny the session's recorded state, and is never promoted",
           "observed": {
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "session_ui_status": 404,
             "session_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626"
           },
@@ -1445,7 +1445,7 @@ window.TERMIVANCE_DATA = {
           "observed": {
             "note_id_claimed": 4040776241,
             "notes_read_status": 401,
-            "observed_at": "2026-10-19T11:31:49.660547+00:00"
+            "observed_at": "2026-10-19T16:26:02.530404+00:00"
           },
           "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
           "source_ladder": "operator_confirmed_only[1]",
@@ -1459,7 +1459,7 @@ window.TERMIVANCE_DATA = {
           "observed": {
             "note_id_claimed": 4040776241,
             "notes_read_status": 401,
-            "observed_at": "2026-10-19T11:31:49.660547+00:00"
+            "observed_at": "2026-10-19T16:26:02.530404+00:00"
           },
           "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
           "source_ladder": "operator_confirmed_only[2]",
@@ -1471,7 +1471,7 @@ window.TERMIVANCE_DATA = {
           "claim_id": "duo-9671626-07",
           "detail": "flow-execution internals have no independently observable surface; the claim can never be promoted by this tool",
           "observed": {
-            "observed_at": "2026-10-19T11:31:49.660547+00:00"
+            "observed_at": "2026-10-19T16:26:02.530404+00:00"
           },
           "origin": "OPERATOR_CONFIRMED_UI",
           "source_ladder": "operator_confirmed_only[3]",
@@ -1485,7 +1485,7 @@ window.TERMIVANCE_DATA = {
           "observed": {
             "actual_status": 401,
             "expected_status": 401,
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "surface": "notes"
           },
           "origin": "ANONYMOUS_API_OBSERVATION",
@@ -1500,7 +1500,7 @@ window.TERMIVANCE_DATA = {
           "observed": {
             "actual_status": 404,
             "expected_status": 404,
-            "observed_at": "2026-10-19T11:31:49.660547+00:00",
+            "observed_at": "2026-10-19T16:26:02.530404+00:00",
             "surface": "session_ui"
           },
           "origin": "ANONYMOUS_API_OBSERVATION",
@@ -1509,11 +1509,11 @@ window.TERMIVANCE_DATA = {
           "text": "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
         }
       ],
-      "claims_source": "evidence/b4/duo_session_9671626_readback.json",
+      "claims_source": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_session_9671626_readback.json",
       "duo_session_id": "9671626",
       "flow_catalog_item_id": 1018562,
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "schema": "termivance.duo_reconciliation/v1",
       "surface": {
         "discussions_read_status": 401,
@@ -1536,7 +1536,7 @@ window.TERMIVANCE_DATA = {
         },
         "issue_read_status": 200,
         "notes_read_status": 401,
-        "observed_at": "2026-10-19T11:31:49.660547+00:00",
+        "observed_at": "2026-10-19T16:26:02.530404+00:00",
         "project_id": 87779099,
         "project_read_status": 200,
         "provenance": "ANONYMOUS_PUBLIC_READ",
@@ -1558,7 +1558,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "AUTH_DENIED",
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/showcase",
           "name": "Showcase",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "ok": true,
           "pages_state": "PAGES_UNVERIFIABLE_403",
           "project_id": 87777871,
@@ -1569,10 +1569,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/pages",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87777871:not_observed",
@@ -1584,10 +1584,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/repository/files/.gitlab-ci.yml/raw",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "CI_REDEPLOYMENT_MECHANISM",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "ci_redeployment_mechanism:87777871:not_observed",
@@ -1599,10 +1599,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/environments",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "ENVIRONMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "environment:87777871:not_observed",
@@ -1614,10 +1614,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/deployments",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "DEPLOYMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "deployment:87777871:not_observed",
@@ -1633,10 +1633,10 @@ window.TERMIVANCE_DATA = {
                 "title": "Welcome to the Transcend Hackathon 🎉"
               },
               "endpoint": "/projects/87777871/issues?state=opened",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87777871:1",
@@ -1654,7 +1654,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "AUTH_DENIED",
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
           "name": "Termivance",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "ok": true,
           "pages_state": "PAGES_UNVERIFIABLE_403",
           "project_id": 87779099,
@@ -1665,10 +1665,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87779099
               },
               "endpoint": "/projects/87779099/pages",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87779099:not_observed",
@@ -1682,10 +1682,10 @@ window.TERMIVANCE_DATA = {
                 "signals": []
               },
               "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "CI_REDEPLOYMENT_MECHANISM",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "ci_redeployment:87779099",
@@ -1697,10 +1697,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87779099
               },
               "endpoint": "/projects/87779099/environments",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "ENVIRONMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "environment:87779099:not_observed",
@@ -1712,10 +1712,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87779099
               },
               "endpoint": "/projects/87779099/deployments",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "DEPLOYMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "deployment:87779099:not_observed",
@@ -1734,10 +1734,10 @@ window.TERMIVANCE_DATA = {
                 "title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:3",
@@ -1756,10 +1756,10 @@ window.TERMIVANCE_DATA = {
                 "title": "B2 retirement decision: BLOCKED (deterministic, read-only)"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:2",
@@ -1778,10 +1778,10 @@ window.TERMIVANCE_DATA = {
                 "title": "B1 retirement-analysis request (harmless, non-authoritative)"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:1",
@@ -1799,7 +1799,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "AUTH_DENIED",
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
           "name": "termivance-b3-disposable-pages-demo",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "ok": true,
           "pages_state": "PAGES_UNVERIFIABLE_403",
           "project_id": 87785099,
@@ -1810,10 +1810,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87785099
               },
               "endpoint": "/projects/87785099/pages",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87785099:not_observed",
@@ -1830,10 +1830,10 @@ window.TERMIVANCE_DATA = {
                 ]
               },
               "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "CI_REDEPLOYMENT_MECHANISM",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "ci_redeployment:87785099",
@@ -1845,10 +1845,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87785099
               },
               "endpoint": "/projects/87785099/environments",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "ENVIRONMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "environment:87785099:not_observed",
@@ -1860,10 +1860,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87785099
               },
               "endpoint": "/projects/87785099/deployments",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "DEPLOYMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "deployment:87785099:not_observed",
@@ -1881,7 +1881,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "NOT_FOUND",
           "full_path": "projects/87786164",
           "name": "(unreadable)",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "ok": false,
           "pages_state": "UNKNOWN",
           "project_id": 87786164,
@@ -1892,10 +1892,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87786164
               },
               "endpoint": "/projects/87786164/pages",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87786164:not_observed",
@@ -1908,7 +1908,7 @@ window.TERMIVANCE_DATA = {
           "web_url": ""
         }
       ],
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "provenance": "ANONYMOUS_PUBLIC_READ",
       "relations": [
         {
@@ -1955,11 +1955,17 @@ window.TERMIVANCE_DATA = {
       }
     },
     "receipt": {
+      "absence_evidence": "NOT_RUN",
+      "claimed_verdict": null,
+      "display_verdict": "NOT_RUN",
       "evidence_level": "NOT_APPLICABLE",
       "evidence_level_detail": "no receipt to classify",
+      "ledger_validation": "NOT_APPLICABLE",
       "mutation_accepted": null,
       "mutation_attempted": null,
+      "mutation_evidence": "NOT_RUN",
       "note": "no receipt artifact was supplied; the runtime records no mutation attempt and this page will not pretend otherwise",
+      "receipt_integrity": "NOT_RUN",
       "receipt_state": "NOT_RUN",
       "record": null,
       "recorded_verdict": null
@@ -2245,7 +2251,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:ci_redeployment:87779099",
           "severity": "LOW",
-          "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG via GET /projects/87779099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T11:46:49.660547+00:00]",
+          "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG via GET /projects/87779099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T16:41:02.530404+00:00]",
           "title": "CI_REDEPLOYMENT_MECHANISM NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG"
         },
         {
@@ -2256,7 +2262,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:ci_redeployment:87785099",
           "severity": "HIGH",
-          "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT via GET /projects/87785099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T11:46:49.660547+00:00]",
+          "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT via GET /projects/87785099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T16:41:02.530404+00:00]",
           "title": "CI_REDEPLOYMENT_MECHANISM PAGES_REDEPLOYMENT_SIGNAL_PRESENT"
         },
         {
@@ -2267,7 +2273,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87777871:1",
           "severity": "LOW",
-          "state": "opened via GET /projects/87777871/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T11:46:49.660547+00:00]",
+          "state": "opened via GET /projects/87777871/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T16:41:02.530404+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2278,7 +2284,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:1",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T11:46:49.660547+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T16:41:02.530404+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2289,7 +2295,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:2",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T11:46:49.660547+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T16:41:02.530404+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2300,7 +2306,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:3",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T11:46:49.660547+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T16:41:02.530404+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2388,9 +2394,9 @@ window.TERMIVANCE_DATA = {
       "banner": "HYPOTHETICAL SIMULATION — no request was sent, nothing was mutated, no verdict was earned",
       "cross_resource_factors": [
         {
-          "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+          "fresh_until": "2026-10-19T16:41:02.530404+00:00",
           "kind": "CI_REDEPLOYMENT_MECHANISM",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "observed_state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; CI_REDEPLOYMENT_MECHANISM observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "ci_redeployment:87779099",
@@ -2398,9 +2404,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+          "fresh_until": "2026-10-19T16:41:02.530404+00:00",
           "kind": "CI_REDEPLOYMENT_MECHANISM",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "observed_state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; CI_REDEPLOYMENT_MECHANISM observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "ci_redeployment:87785099",
@@ -2408,9 +2414,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+          "fresh_until": "2026-10-19T16:41:02.530404+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87777871:1",
@@ -2418,9 +2424,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+          "fresh_until": "2026-10-19T16:41:02.530404+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:1",
@@ -2428,9 +2434,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+          "fresh_until": "2026-10-19T16:41:02.530404+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:2",
@@ -2438,9 +2444,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+          "fresh_until": "2026-10-19T16:41:02.530404+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T11:31:49.660547+00:00",
+          "observed_at": "2026-10-19T16:26:02.530404+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:3",
@@ -2459,7 +2465,7 @@ window.TERMIVANCE_DATA = {
       "decision": {
         "action": "unpublish_pages",
         "authoritative": false,
-        "evaluated_at": "2026-10-19T11:31:49.660547+00:00",
+        "evaluated_at": "2026-10-19T16:26:02.530404+00:00",
         "graph": {
           "dependencies": [
             {
@@ -2581,14 +2587,14 @@ window.TERMIVANCE_DATA = {
                 "branch": "main",
                 "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
               },
-              "digest": "2d1a4da8f838bf34063af2ba9873d03d7e822a598a2f9718536792b668413a4d",
+              "digest": "eb9cfc2afc35c683236b7039907219287a34030e88481b928a5069ed021b5405",
               "endpoint": "/projects/87785099/repository/branches/main",
               "error_kind": null,
               "evidence_id": "ev:branch",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "BRANCH",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2613,14 +2619,14 @@ window.TERMIVANCE_DATA = {
                   "main"
                 ]
               },
-              "digest": "ec4b9bfc4f53c8a9c03bec0f29d2009007d247a5b087520870ecd1e35979d1a1",
+              "digest": "9dae9e0998cdd48b2824d9e5ea1596ad92a5eb253c1348d094529fc5f120c059",
               "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
               "error_kind": null,
               "evidence_id": "ev:ci_config",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "CI_CONFIG",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2636,14 +2642,14 @@ window.TERMIVANCE_DATA = {
                 "pages_api_error": "AUTH_DENIED",
                 "pages_api_status": 403
               },
-              "digest": "fde2561e2a6a3b5d81f40f98bd60ea62f0ded97c525ac3d22a8551a99341a5ca",
+              "digest": "34ecaa191945b51cfce19480db35f7800f8def1af9a099582532005ed36128e9",
               "endpoint": "/projects/87785099",
               "error_kind": null,
               "evidence_id": "ev:effective_permission",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "EFFECTIVE_PERMISSION",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2656,14 +2662,14 @@ window.TERMIVANCE_DATA = {
               "detail": {
                 "error": "AUTH_DENIED"
               },
-              "digest": "fa6671e54026523149f34dee20cd8ecf649f73f4778ad226a0e388fe1413e3f6",
+              "digest": "19c2c36ee6de0b9e42cbc7e1f144c598c3358767511dcc44bcca41e69b0ad217",
               "endpoint": "/projects/87785099/environments",
               "error_kind": "AUTH_DENIED",
               "evidence_id": "ev:environment",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "ENVIRONMENT",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 401,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2677,14 +2683,14 @@ window.TERMIVANCE_DATA = {
                 "open_count": 0,
                 "retirement_related": []
               },
-              "digest": "dc00d4c79a990f6978bb16cea104d9c4cfc4ac532dbd81c16f34371243b08ccd",
+              "digest": "b60de7c031b71fdd0b7e22297fd25bcaa2aabcac22765982cf82f76b524da035",
               "endpoint": "/projects/87785099/issues",
               "error_kind": null,
               "evidence_id": "ev:open_issues",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "OPEN_ISSUES",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2697,14 +2703,14 @@ window.TERMIVANCE_DATA = {
               "detail": {
                 "error": "AUTH_DENIED"
               },
-              "digest": "cee8711db1d2ed6aa8ea9c2b34c447798250dfe548a7aced30ec2192fa4f2d0b",
+              "digest": "dc3d9c9cd1a6fcd5c3a575f523c7d28e5ce739a18e0136dc42df91b2b81b316c",
               "endpoint": "/projects/87785099/pages",
               "error_kind": "AUTH_DENIED",
               "evidence_id": "ev:pages",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PAGES",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 403,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2717,14 +2723,14 @@ window.TERMIVANCE_DATA = {
               "detail": {
                 "error": "AUTH_DENIED"
               },
-              "digest": "79b82c3251e98db8962ebdf7cd387975b0cf44b577692ae239605c56fcd2b408",
+              "digest": "b1cc1fcf256f0003a43555a21b87f53e7df1dca1c505910cf2f0ba12cf4713fe",
               "endpoint": "/projects/87785099/pages",
               "error_kind": "AUTH_DENIED",
               "evidence_id": "ev:pages_deployment",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PAGES_DEPLOYMENT",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 403,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2738,14 +2744,14 @@ window.TERMIVANCE_DATA = {
                 "latest_id": 2960507698,
                 "latest_status": "success"
               },
-              "digest": "0a88559cf5cfc76ef095be86f68c37c4961bfd0607e18619f63570e74d61c3b4",
+              "digest": "b0999df6401f7d01f0bbcf895713bdb7e16a78b0da7b0ef8055c71cfa2616df8",
               "endpoint": "/projects/87785099/pipelines",
               "error_kind": null,
               "evidence_id": "ev:pipeline",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PIPELINE",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2764,14 +2770,14 @@ window.TERMIVANCE_DATA = {
                 "visibility": "public",
                 "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
               },
-              "digest": "76ac708a6c9508c964c0e6540a936555271adc6babeeea8f23b4dad230bb8155",
+              "digest": "db05e0450c28ba879bee9b5b136c9c23ee42c80378eedde1c76c8dcb9f3f3375",
               "endpoint": "/projects/87785099",
               "error_kind": null,
               "evidence_id": "ev:project_identity",
-              "fresh_until": "2026-10-19T11:46:49.660547+00:00",
+              "fresh_until": "2026-10-19T16:41:02.530404+00:00",
               "kind": "PROJECT_IDENTITY",
               "method": "GET",
-              "observed_at": "2026-10-19T11:31:49.660547+00:00",
+              "observed_at": "2026-10-19T16:26:02.530404+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -3018,94 +3024,112 @@ window.TERMIVANCE_DATA = {
     },
     "supervised_review": {
       "authority": "NON_AUTHORITATIVE",
-      "autonomy_summary": "1 genuine Duo autonomous step(s), 1 operator-confirmed handoff(s), 5 deterministic automated step(s); the chain is NOT fully autonomous because the Duo output requires operator confirmation before entering the deterministic pipeline",
+      "autonomy_summary": "1 genuine Duo autonomous step, 1 operator-confirmed handoff, 5 deterministic automated step(s) EXECUTED NOW; the chain is NOT fully autonomous because Duo output requires operator confirmation before pipeline ingestion",
       "boundary": "this review connects the genuine Duo analysis to deterministic verification; the AI contribution adds investigation context and risk explanations but cannot award verdicts, modify provider facts, or authorize mutations",
       "candidate_claims": [
         {
+          "causal_attribution": "GENUINE_DUO_CONTEXTUAL_CONTRIBUTION: canonical project/issue coordination context; no causal attribution of disposable target risk to Duo",
           "claim_id": "duo-9671626-01",
           "corroboration_detail": "the project is publicly readable to this anonymous identity (HTTP 200)",
           "corroboration_source": "PROJECT_READ",
           "corroboration_status": "CORROBORATED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "ANONYMOUS_API_OBSERVATION",
-          "retirement_relevance": "MATERIAL",
+          "retirement_relevance": "CONTEXTUAL",
           "source_project": 87779099,
           "text": "project 87779099 is publicly readable (HTTP 200)"
         },
         {
+          "causal_attribution": "GENUINE_DUO_CONTEXTUAL_CONTRIBUTION",
           "claim_id": "duo-9671626-02",
           "corroboration_detail": "the anonymous issue read confirms every stated field exactly",
           "corroboration_source": "ISSUE_METADATA",
           "corroboration_status": "CORROBORATED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "ANONYMOUS_API_OBSERVATION",
-          "retirement_relevance": "MATERIAL",
+          "retirement_relevance": "CONTEXTUAL",
           "source_project": null,
           "text": "issue #3 exists, state opened, title/labels/author match the recorded B3 retirement status thread"
         },
         {
+          "causal_attribution": "GENUINE_DUO_CONTEXTUAL_CONTRIBUTION",
           "claim_id": "duo-9671626-03",
           "corroboration_detail": "the observable core matches, but 'consistent with' is not proof: the inference is never promoted to SUPPORTED",
           "corroboration_source": "CONSISTENCY_INFERENCE",
           "corroboration_status": "UNRESOLVED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "ANONYMOUS_API_OBSERVATION",
-          "retirement_relevance": "MATERIAL",
+          "retirement_relevance": "CONTEXTUAL",
           "source_project": null,
           "text": "issue user_notes_count=3 and updated_at=2026-10-19T08:57:41.500Z are consistent with, but not proof of, the operator-reported new comment window"
         },
         {
+          "causal_attribution": "OPERATOR_CONFIRMED_UI_SESSION",
           "claim_id": "duo-9671626-04",
           "corroboration_detail": "the agent-sessions UI is an authenticated surface; the anonymous probe returned 404 — an access observation that can neither confirm nor deny the session's recorded state, and is never promoted",
           "corroboration_source": "SESSION_UI_PROBE",
           "corroboration_status": "UNRESOLVED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "OPERATOR_CONFIRMED_UI",
           "retirement_relevance": "PROCEDURAL",
           "source_project": null,
           "text": "session id 9671626 exists and Finished in the authenticated automate/agent-sessions UI"
         },
         {
+          "causal_attribution": "GENUINE_DUO_CONTEXTUAL_CONTRIBUTION: canonical project/issue coordination context; no causal attribution of disposable target risk to Duo",
           "claim_id": "duo-9671626-05",
           "corroboration_detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution — the claim cannot be attributed",
           "corroboration_source": "ISSUE_NOTE_READ",
           "corroboration_status": "NOT_CHECKED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
           "retirement_relevance": "CONTEXTUAL",
           "source_project": 87779099,
           "text": "the agent-authored comment note id 4040776241 was published on issue #3 by the GitLab Duo service account"
         },
         {
+          "causal_attribution": "GENUINE_DUO_CONTEXTUAL_CONTRIBUTION: canonical project/issue coordination context; no causal attribution of disposable target risk to Duo",
           "claim_id": "duo-9671626-06",
           "corroboration_detail": "note/discussion reads returned 401 to this anonymous identity; an access observation is not absence and is certainly not attribution — the claim cannot be attributed",
           "corroboration_source": "ISSUE_NOTE_READ",
           "corroboration_status": "NOT_CHECKED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "OPERATOR_CONFIRMED_NOTE_CONTENT",
           "retirement_relevance": "CONTEXTUAL",
           "source_project": 87779099,
           "text": "the six-section analysis content itself and its read-only, non-authoritative character"
         },
         {
+          "causal_attribution": "GENUINE_DUO_BOUNDARY_ASSERTION: Duo confirmed it did NOT directly query disposable target",
           "claim_id": "duo-9671626-07",
           "corroboration_detail": "flow-execution internals have no independently observable surface; the claim can never be promoted by this tool",
           "corroboration_source": "FLOW_INTERNALS",
           "corroboration_status": "NOT_CHECKED",
+          "exact_target_relationship": "TARGET_BOUND_NEGATIVE_ASSERTION",
           "origin": "OPERATOR_CONFIRMED_UI",
-          "retirement_relevance": "CONTEXTUAL",
+          "retirement_relevance": "PROCEDURAL",
           "source_project": null,
           "text": "the agent used genuine GitLab tools and stated it did NOT directly query disposable project 87785099"
         },
         {
+          "causal_attribution": "INDEPENDENT_OBSERVABILITY_PROBE: anonymous access boundary check only, never absence",
           "claim_id": "duo-9671626-08",
           "corroboration_detail": "the anonymous probe reproduces the recorded access observation (HTTP 401)",
           "corroboration_source": "OBSERVABILITY_PROBE",
           "corroboration_status": "CORROBORATED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "ANONYMOUS_API_OBSERVATION",
           "retirement_relevance": "PROCEDURAL",
           "source_project": null,
           "text": "note/discussion contents (HTTP 401 to anonymous readers; 401 is an access observation, never absence, never authenticity)"
         },
         {
+          "causal_attribution": "INDEPENDENT_OBSERVABILITY_PROBE: anonymous access boundary check only, never absence",
           "claim_id": "duo-9671626-09",
           "corroboration_detail": "the anonymous probe reproduces the recorded access observation (HTTP 404)",
           "corroboration_source": "OBSERVABILITY_PROBE",
           "corroboration_status": "CORROBORATED",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
           "origin": "ANONYMOUS_API_OBSERVATION",
           "retirement_relevance": "PROCEDURAL",
           "source_project": null,
@@ -3116,9 +3140,9 @@ window.TERMIVANCE_DATA = {
         "corroboration_work_changed": true,
         "deterministic_verdict_changed": false,
         "investigation_queue_changed": true,
-        "obligation_trace_changed": true,
-        "risk_explanation_changed": true,
-        "summary": "the Duo candidate adds 3 material claim(s) (2 independently corroborated) that enrich the investigation queue, risk explanation and corroboration work; the deterministic verdict remains BLOCKED in both cases because AI input cannot modify authoritative provider facts or obligation graph evaluation",
+        "obligation_trace_changed": false,
+        "risk_explanation_changed": false,
+        "summary": "Computed counterfactual comparison under identical provider facts (target 87785099): deterministic verdict is BLOCKED in both cases (deterministic_verdict_changed=False). Obligation trace and target risk map are identical (obligation_trace_changed=False, risk_explanation_changed=False). Candidate presence added 9 contextual claim(s) to the investigation queue requiring independent reconciliation work (investigation_queue_changed=True, corroboration_work_changed=True), demonstrating genuine Duo contextual contribution without non-authoritative decision influence.",
         "verdict_with_candidate": "BLOCKED",
         "verdict_without_candidate": "BLOCKED"
       },
@@ -3126,40 +3150,51 @@ window.TERMIVANCE_DATA = {
         "catalog_item_id": 1018562,
         "session_id": "9671626"
       },
-      "observed_at": "2026-10-19T12:55:01.532547+00:00",
+      "execution_id": "inv-20261019162602-bfbcf3",
+      "investigation_mode": "EXECUTED_NOW",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "schema": "termivance.supervised_review/v1",
       "steps": [
         {
           "autonomy": "DUO_AUTONOMOUS",
-          "detail": "session 9671626, catalog item 1018562; the flow read project/issue metadata using genuine GitLab tools and produced a non-authoritative six-section analysis",
+          "detail": "session 9671626, catalog item 1018562; historical genuine GitLab Duo Custom Flow run preserved with original timestamps",
+          "executed_at": "2026-10-19T08:57:41Z",
+          "execution_id": "inv-20261019162602-bfbcf3",
+          "execution_mode": "RECORDED_HISTORICAL",
           "input_refs": [
             "issue:87779099:3"
           ],
-          "output_ref": "evidence/b4/duo_claims.json",
+          "output_ref": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_claims.json",
           "provenance": "OPERATOR_CONFIRMED",
-          "status": "COMPLETED",
+          "status": "RECORDED_INPUT_USED",
           "step_id": "duo_candidate_analysis",
           "title": "GitLab Duo Custom Flow candidate analysis"
         },
         {
           "autonomy": "OPERATOR_CONFIRMED_HANDOFF",
-          "detail": "the operator visually confirmed the Duo session output in the authenticated browser UI and transcribed the claims into the structured duo_claims/v1 record; this is a manual handoff, not an autonomous agent-to-agent transfer",
+          "detail": "the operator confirmed the Duo output in the authenticated UI and transcribed candidate claims; manual handoff boundary explicitly preserved",
+          "executed_at": "2026-10-19T08:58:00Z",
+          "execution_id": "inv-20261019162602-bfbcf3",
+          "execution_mode": "RECORDED_HISTORICAL",
           "input_refs": [
             "duo_session:9671626"
           ],
-          "output_ref": "evidence/b4/duo_claims.json",
+          "output_ref": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_claims.json",
           "provenance": "OPERATOR_CONFIRMED",
-          "status": "COMPLETED",
+          "status": "OPERATOR_CONFIRMED",
           "step_id": "operator_handoff",
           "title": "Operator confirms Duo output and hands to deterministic pipeline"
         },
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
-          "detail": "reconciled 9 claims against anonymous read-only GitLab observations; 4 SUPPORTED, findings: NOT_AUTHENTICALLY_ATTRIBUTABLE=2, SUPPORTED=4, UNRESOLVED=2, UNSUPPORTED=1",
+          "detail": "EXECUTED NOW: reconciled 9 candidate claims against anonymous read-only GitLab endpoints; 4 supported findings",
+          "executed_at": "2026-10-19T16:26:02.530404+00:00",
+          "execution_id": "inv-20261019162602-bfbcf3",
+          "execution_mode": "EXECUTED_NOW",
           "input_refs": [
-            "evidence/b4/duo_claims.json"
+            "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_claims.json"
           ],
-          "output_ref": "evidence/b4/duo_reconciliation.json",
+          "output_ref": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_reconciliation.json",
           "provenance": "ANONYMOUS_PUBLIC_READ",
           "status": "COMPLETED",
           "step_id": "independent_reconciliation",
@@ -3167,11 +3202,14 @@ window.TERMIVANCE_DATA = {
         },
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
-          "detail": "read .gitlab-ci.yml at the exact observed commit; resurrection_possible=MECHANISM_PRESENT_IN_OBSERVED_CONFIG",
+          "detail": "EXECUTED NOW: observed commit 54fcc9ff2b…; resurrection_possible=MECHANISM_PRESENT_IN_OBSERVED_CONFIG",
+          "executed_at": "2026-10-19T16:26:02.530404+00:00",
+          "execution_id": "inv-20261019162602-bfbcf3",
+          "execution_mode": "EXECUTED_NOW",
           "input_refs": [
             "project:87785099"
           ],
-          "output_ref": "evidence/b4/witness_87785099.json",
+          "output_ref": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\witness_87785099.json",
           "provenance": "ANONYMOUS_PUBLIC_READ",
           "status": "COMPLETED",
           "step_id": "source_corroboration",
@@ -3179,11 +3217,14 @@ window.TERMIVANCE_DATA = {
         },
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
-          "detail": "verdict=BLOCKED; the engine evaluates the full obligation graph against the recorded snapshot — no AI input can modify this verdict",
+          "detail": "EXECUTED NOW: verdict=BLOCKED; obligation graph evaluated with zero non-authoritative modification",
+          "executed_at": "2026-10-19T16:26:02.530404+00:00",
+          "execution_id": "inv-20261019162602-bfbcf3",
+          "execution_mode": "EXECUTED_NOW",
           "input_refs": [
-            "evidence/b4/decision.json"
+            "project:87785099"
           ],
-          "output_ref": "evidence/b4/decision.json",
+          "output_ref": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\decision.json",
           "provenance": "DETERMINISTIC",
           "status": "COMPLETED",
           "step_id": "deterministic_decision",
@@ -3191,11 +3232,14 @@ window.TERMIVANCE_DATA = {
         },
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
-          "detail": "risk map generated from obligation graph; visualization-ready",
+          "detail": "EXECUTED NOW: built risk map with 33 nodes and 12 edges",
+          "executed_at": "2026-10-19T16:26:02.530404+00:00",
+          "execution_id": "inv-20261019162602-bfbcf3",
+          "execution_mode": "EXECUTED_NOW",
           "input_refs": [
-            "evidence/b4/decision.json"
+            "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\decision.json"
           ],
-          "output_ref": "evidence/b4/risk_map.json",
+          "output_ref": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\risk_map.json",
           "provenance": "DETERMINISTIC",
           "status": "COMPLETED",
           "step_id": "risk_map",
@@ -3203,13 +3247,16 @@ window.TERMIVANCE_DATA = {
         },
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
-          "detail": "capsule assembled; manifest sha256 eeb7a5c9b2b0f903…",
+          "detail": "EXECUTED NOW: capsule assembled; manifest sha256 a048225b1a7933a4…",
+          "executed_at": "2026-10-19T16:26:02.530404+00:00",
+          "execution_id": "inv-20261019162602-bfbcf3",
+          "execution_mode": "EXECUTED_NOW",
           "input_refs": [
-            "evidence/b4/decision.json",
-            "evidence/b4/witness_87785099.json",
-            "evidence/b4/duo_reconciliation.json"
+            "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\decision.json",
+            "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\witness_87785099.json",
+            "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_reconciliation.json"
           ],
-          "output_ref": "evidence/b4/proof_capsule.json",
+          "output_ref": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\proof_capsule.json",
           "provenance": "DETERMINISTIC",
           "status": "COMPLETED",
           "step_id": "proof_capsule",
@@ -3219,6 +3266,11 @@ window.TERMIVANCE_DATA = {
       "target": {
         "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
         "project_id": 87785099
+      },
+      "target_validation": {
+        "checks_passed": true,
+        "mismatches": [],
+        "target_project_id": 87785099
       }
     },
     "tripwire": {
@@ -3248,8 +3300,8 @@ window.TERMIVANCE_DATA = {
         "cached or edge-replicated copies of previously served content can remain reachable after the provider state changes"
       ],
       "default_branch": "main",
-      "fresh_until": "2026-10-19T11:46:49.660547+00:00",
-      "observed_at": "2026-10-19T11:31:49.660547+00:00",
+      "fresh_until": "2026-10-19T16:41:02.530404+00:00",
+      "observed_at": "2026-10-19T16:26:02.530404+00:00",
       "pages_administration": {
         "endpoint": "/projects/87785099/pages",
         "error_kind": "AUTH_DENIED",
@@ -3268,7 +3320,7 @@ window.TERMIVANCE_DATA = {
     },
     "workflow": {
       "mode": "ARTIFACT_ASSESSMENT",
-      "observed_at": "2026-10-19T13:00:17.794369+00:00",
+      "observed_at": "2026-10-19T16:26:15.357109+00:00",
       "schema": "termivance.workflow/v1",
       "stages": [
         {
@@ -3302,16 +3354,16 @@ window.TERMIVANCE_DATA = {
           "state": "NOT_RUN"
         },
         {
-          "detail": "manifest digest sha256 eeb7a5c9b2b0f903…",
+          "detail": "no artifact supplied for stage 'capsule'",
           "stage": "capsule",
-          "state": "COMPLETE"
+          "state": "NOT_RUN"
         }
       ],
       "summary": {
         "absence": "NOT_RUN",
         "approval_issue": "NOT_RUN",
         "authorization": "NOT_RUN",
-        "capsule": "COMPLETE",
+        "capsule": "NOT_RUN",
         "decision": "COMPLETE",
         "execute": "NOT_RUN",
         "snapshot": "COMPLETE"

@@ -191,6 +191,19 @@ def main() -> int:  # type: ignore[no-untyped-def]
     capsule_path = save_capsule(capsule, out_dir / "proof_capsule.json")
     print(f"  wrote {capsule_path.name}")
 
+    print("10/10 supervised review execution trace (live read-only investigation) …")
+    from termivance.supervised_review import run_supervised_investigation
+
+    review = run_supervised_investigation(
+        client=client,
+        target=target,
+        policy_path=ROOT / "config" / "retirement_policy.b3_disposable.json",
+        duo_claims_path=out_dir / "duo_claims.json",
+        out_dir=out_dir,
+        now=observed,
+    )
+    _write(out_dir / "supervised_review.json", review.to_dict())
+
     print("done — all reads anonymous; zero mutations; zero spend")
     return 0
 
