@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-19T10:41:44Z",
-  "artifact_sha256": "dd808a48f83a1fbcb535267c318bc8d2355206f4d710743bd5a2b48d5a1e992a",
+  "acquired_at_utc": "2026-10-19T11:45:16Z",
+  "artifact_sha256": "ce29009f4d9d21905b2121eaf13ad28d3dfb55e7657b9d38264f85c9c53066a7",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -17,22 +17,22 @@
     "can_push": false,
     "commit": {
       "author_email": "[REDACTED]",
-      "author_name": "termivance-conduit",
-      "authored_date": "2026-10-19T13:40:20.000+03:00",
-      "committed_date": "2026-10-19T13:40:20.000+03:00",
+      "author_name": "Mehmet Aydo\u011fan",
+      "authored_date": "2026-10-19T14:44:22.000+03:00",
+      "committed_date": "2026-10-19T14:44:22.000+03:00",
       "committer_email": "[REDACTED]",
-      "committer_name": "termivance-conduit",
-      "created_at": "2026-10-19T13:40:20.000+03:00",
+      "committer_name": "Mehmet Aydo\u011fan",
+      "created_at": "2026-10-19T14:44:22.000+03:00",
       "extended_trailers": {},
-      "id": "404c4ae9b8ca39814c8472bd0d26f785a0a17d54",
-      "message": "docs: record verified CI pipeline 2962698179 and QA bridge run 39238884592 for the repair commit\n",
+      "id": "0022a21e9d7cc10cbf81d38d92e70de971f2b883",
+      "message": "B4 final consolidated closure: QA fixes A-D, evidence-bound Duo reconciliation, resurrection witness\n\nMandatory QA correctness fixes: (A) operator-HMAC not policy-bypassable -- signature_required=false refused at construction and load, verification unconditional; (B) duplicate/conflicting approval binding statements refused as ambiguous, single wrong value refused against exactly-as-required; (C) Pages-endpoint 404 recorded as PAGES_NOT_OBSERVED_404 and never promoted to verified absence; (D) Control Room receipt card driven by a fail-closed classifier -- bare schema presence is INVALID, never a live receipt.\n\nEnhancements: duo_reconciliation.py + reconcile-duo CLI (9 candidate Duo claims over the operator-confirmed ladder; 4 SUPPORTED / 2 UNRESOLVED / 2 NOT_AUTHENTICALLY_ATTRIBUTABLE / 1 UNSUPPORTED; never authoritative); witness.py + witness-build CLI (target-own CI at observed commit 54fcc9ff, MECHANISM_PRESENT_IN_OBSERVED_CONFIG; never claims absence or RESURRECTION_CONTROLLED); capsule-build binds both records with cross-target refusal and capsule-verify checks nested records.\n\nEvidence refreshed live (anonymous GET-only, $0.00); control room rebuilt and DOM-render smoke-tested; suite 306 passed, ruff clean, ci_safety_assertions 40/40; docs reconciled (README, HANDOFF, EVIDENCE_MATRIX, DEMO_SCRIPT, MASTER_PLAN). Still NOT_RUN/BLOCKED: live unpublish, OBSERVED_ABSENT, authenticated Duo note attribution, live tripwire.\n",
       "parent_ids": [
-        "36ab7f48634b33d88c8eac12b290682a0ab83b4e"
+        "404c4ae9b8ca39814c8472bd0d26f785a0a17d54"
       ],
-      "short_id": "404c4ae9",
-      "title": "docs: record verified CI pipeline 2962698179 and QA bridge run 39238884592 for the repair commit",
+      "short_id": "0022a21e",
+      "title": "B4 final consolidated closure: QA fixes A-D, evidence-bound Duo reconciliation, resurrection witness",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/404c4ae9b8ca39814c8472bd0d26f785a0a17d54"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/0022a21e9d7cc10cbf81d38d92e70de971f2b883"
     },
     "default": true,
     "developers_can_merge": true,
