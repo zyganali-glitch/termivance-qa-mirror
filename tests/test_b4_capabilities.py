@@ -13,11 +13,23 @@ from conftest import NOW, FakeTransport
 
 from termivance.authorization import Authorization
 from termivance.cli import build_parser, main
+from termivance.dependencies import cross_resource_view
 from termivance.gitlab_client import GitLabClient, HttpReply
 from termivance.portfolio import (
+    KIND_CI_REDEPLOY,
+    KIND_DEPLOYMENT,
+    KIND_ENVIRONMENT,
+    KIND_ISSUE,
+    KIND_PACKAGE,
+    KIND_PAGES,
+    KIND_RELEASE,
+    NOT_AUTHORIZING,
     PAGES_ABSENT,
     PAGES_PRESENT,
     PAGES_UNVERIFIABLE,
+    SUPPORT_INFERRED,
+    SUPPORT_NOT_OBSERVED,
+    SUPPORT_OBSERVED,
     observe_portfolio,
     portfolio_from_data,
 )
@@ -164,10 +176,16 @@ def decision_record(verdict="BLOCKED", statuses=None):  # type: ignore[no-untype
             }
         ],
         "obligations": [
-            {"obligation_id": "obl:target_scope", "kind": "TARGET_SCOPE",
-             "status": (statuses or {}).get("scope", "SATISFIED")},
-            {"obligation_id": "obl:redeployment_path", "kind": "REDEPLOYMENT_PATH",
-             "status": (statuses or {}).get("red", "UNKNOWN")},
+            {
+                "obligation_id": "obl:target_scope",
+                "kind": "TARGET_SCOPE",
+                "status": (statuses or {}).get("scope", "SATISFIED"),
+            },
+            {
+                "obligation_id": "obl:redeployment_path",
+                "kind": "REDEPLOYMENT_PATH",
+                "status": (statuses or {}).get("red", "UNKNOWN"),
+            },
         ],
     }
 
@@ -175,12 +193,16 @@ def decision_record(verdict="BLOCKED", statuses=None):  # type: ignore[no-untype
 def test_risk_map_is_deterministic_and_complete():
     record = decision_record()
     first = build_risk_map(
-        verdict=record["verdict"], target=record["target"],
-        reasons=record["reasons"], obligations=record["obligations"],
+        verdict=record["verdict"],
+        target=record["target"],
+        reasons=record["reasons"],
+        obligations=record["obligations"],
     )
     second = build_risk_map(
-        verdict=record["verdict"], target=record["target"],
-        reasons=record["reasons"], obligations=record["obligations"],
+        verdict=record["verdict"],
+        target=record["target"],
+        reasons=record["reasons"],
+        obligations=record["obligations"],
     )
     assert first.to_dict() == second.to_dict()
     kinds = {n.kind for n in first.nodes}
@@ -192,12 +214,12 @@ def test_risk_map_is_deterministic_and_complete():
 
 
 def test_risk_map_distinguishes_satisfied_violated_unknown():
-    record = decision_record(
-        statuses={"scope": "SATISFIED", "red": "VIOLATED"}
-    )
+    record = decision_record(statuses={"scope": "SATISFIED", "red": "VIOLATED"})
     risk_map = build_risk_map(
-        verdict=record["verdict"], target=record["target"],
-        reasons=record["reasons"], obligations=record["obligations"],
+        verdict=record["verdict"],
+        target=record["target"],
+        reasons=record["reasons"],
+        obligations=record["obligations"],
     )
     titles = " | ".join(n.title for n in risk_map.nodes)
     assert "TARGET_SCOPE is satisfied" in titles
@@ -215,9 +237,7 @@ def test_simulation_runs_on_graph_and_stays_hypothetical(allow_policy, pages_tar
 
     graph = graph_from_snapshot(snapshot)
     policy = replace(allow_policy, mutation_enabled=True)
-    authorization = Authorization.issue(
-        pages_target, "unpublish_pages", nonce="sim-1", now=NOW
-    )
+    authorization = Authorization.issue(pages_target, "unpublish_pages", nonce="sim-1", now=NOW)
     result = simulate_retirement(graph, policy=policy, now=NOW, authorization=authorization)
     data = result.to_dict()
     assert data["hypothetical"] is True
@@ -321,8 +341,13 @@ def test_workflow_plan_lists_seven_stages_in_order():
     assert data["mode"] == "SINGLE_DUO_FLOW"
     stages = [s["stage"] for s in data["stages"]]
     assert stages == [
-        "snapshot", "decision", "authorization", "approval_issue",
-        "execute", "absence", "capsule",
+        "snapshot",
+        "decision",
+        "authorization",
+        "approval_issue",
+        "execute",
+        "absence",
+        "capsule",
     ]
     text = plan_.render()
     assert "retire-pages" in text and "--execute" in text
@@ -368,8 +393,11 @@ def test_workflow_assessment_reads_recorded_artifacts_only(tmp_path):
 
 def test_workflow_serializer_round_trip():
     plan_ = plan(project_id=PID, full_path=PATH, out_dir="evidence/b4")
-    assert WorkflowPlan.from_dict(plan_.to_dict()).to_dict() == plan_.to_dict() \
-        if hasattr(WorkflowPlan, "from_dict") else True
+    assert (
+        WorkflowPlan.from_dict(plan_.to_dict()).to_dict() == plan_.to_dict()
+        if hasattr(WorkflowPlan, "from_dict")
+        else True
+    )
 
 
 # -- Control Room build script -----------------------------------------------------
@@ -380,27 +408,47 @@ def test_control_room_build_writes_embedded_data(tmp_path):
     evidence.mkdir()
     (evidence / "decision.json").write_text(json.dumps(decision_record()), encoding="utf-8")
     record = build_risk_map(
-        verdict="BLOCKED", target=TARGET.to_dict(),
-        reasons=decision_record()["reasons"], obligations=decision_record()["obligations"],
+        verdict="BLOCKED",
+        target=TARGET.to_dict(),
+        reasons=decision_record()["reasons"],
+        obligations=decision_record()["obligations"],
     )
     (evidence / "risk_map.json").write_text(json.dumps(record.to_dict()), encoding="utf-8")
     out_dir = tmp_path / "control_room"
     proc = subprocess.run(
         [
-            sys.executable, "scripts/build_control_room.py",
-            "--decision", str(evidence / "decision.json"),
-            "--risk-map", str(evidence / "risk_map.json"),
-            "--out-dir", str(out_dir),
+            sys.executable,
+            "scripts/build_control_room.py",
+            "--decision",
+            str(evidence / "decision.json"),
+            "--risk-map",
+            str(evidence / "risk_map.json"),
+            "--out-dir",
+            str(out_dir),
         ],
-        capture_output=True, text=True, cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        cwd=Path(__file__).parents[1],
         check=False,
     )
     assert proc.returncode == 0, proc.stderr
     data_js = (out_dir / "data.js").read_text(encoding="utf-8")
     assert data_js.startswith("window.TERMIVANCE_DATA =")
-    assert '"FIXTURE"' in data_js  # no live receipt supplied
+    assert '"termivance.control_room/v2"' in data_js
+    # No live receipt supplied → mutation observable stays NOT_RUN, never PASS.
+    assert '"mutation_status": "NOT_OBSERVED"' in data_js
+    assert '"destructive_buttons": 0' in data_js
+    payload = json.loads(data_js.removeprefix("window.TERMIVANCE_DATA = ").removesuffix(";\n"))
+    assert payload["sections"]["decision"]["verdict"] == "BLOCKED"
+    assert payload["sections"]["risk_map"]["schema"].startswith("termivance.risk")
+    gates = [g["gate"] for g in payload["authorization_gates"]]
+    assert any("87785099" in g for g in gates)
+    assert any("STRUCTURALLY_REFUSED" == g["state"] for g in payload["authorization_gates"])
     index = (out_dir / "index.html").read_text(encoding="utf-8")
-    assert "TERMIVANCE_DATA" in index and "Verify in 60s" in index
+    assert "TERMIVANCE_DATA" in index
+    # The interactive contract is visible in the page itself.
+    assert "What if we retire this?" in index or "What-if" in index
+    assert "escapeHtml" in index and "<script>" in index
 
 
 # -- P2: tripwire ------------------------------------------------------------------
@@ -409,23 +457,28 @@ def test_control_room_build_writes_embedded_data(tmp_path):
 def reading(target, *, page, at, url="https://grp.gitlab.io/x/"):  # type: ignore[no-untyped-def]
     from termivance.tripwire import TripwireReading
 
-    return TripwireReading(
-        target=target, served_url=url, publication_observed=page, observed_at=at
-    )
+    return TripwireReading(target=target, served_url=url, publication_observed=page, observed_at=at)
 
 
 def test_no_mutation_yet_capsule_from_decision(tmp_path):  # type: ignore[no-untyped-def]
     decision_path = tmp_path / "decision.json"
     decision_path.write_text(json.dumps(decision_record()), encoding="utf-8")
     out = tmp_path / "blocked_capsule.json"
-    rc = main([
-        "capsule-build",
-        "--decision", str(decision_path),
-        "--target-project-id", str(PID),
-        "--target-full-path", PATH,
-        "--target-kind", "GITLAB_PAGES_SITE",
-        "--out", str(out),
-    ])
+    rc = main(
+        [
+            "capsule-build",
+            "--decision",
+            str(decision_path),
+            "--target-project-id",
+            str(PID),
+            "--target-full-path",
+            PATH,
+            "--target-kind",
+            "GITLAB_PAGES_SITE",
+            "--out",
+            str(out),
+        ]
+    )
     assert rc == 0
     from termivance.capsule import load_capsule, verify_capsule
 
@@ -500,7 +553,9 @@ def test_cli_portfolio_anonymous_parser_and_command(monkeypatch, capsys):  # typ
     monkeypatch.setattr(gl_module, "UrllibTransport", _TransportFactory)
     args = build_parser().parse_args(
         [
-            "portfolio", "--project-ids", f"{PID},{OTHER_PID}",
+            "portfolio",
+            "--project-ids",
+            f"{PID},{OTHER_PID}",
             "--anonymous",
         ]
     )
@@ -516,3 +571,377 @@ def test_cli_risk_map_multiline_output(tmp_path, capsys):  # type: ignore[no-unt
     assert main(["risk-map", "--decision", str(path)]) == 0
     out = capsys.readouterr().out
     assert "REDEPLOYMENT_RISK" in out or "redeployment" in out
+
+
+# -- multi-resource portfolio (consolidated repair, Defect B) ---------------------
+
+
+def _resource_transport() -> FakeTransport:
+    """A complete read-only project surface for multi-resource portfolio tests."""
+    body = (
+        "stages:\n"
+        "  - deploy\n"
+        "pages:\n"
+        "  stage: deploy\n"
+        "  script:\n"
+        "    - echo deploying the site\n"
+        "  artifacts:\n"
+        "    paths:\n"
+        "      - public\n"
+    )
+    return FakeTransport(
+        {
+            ("GET", f"/projects/{PID}/pages"): HttpReply(
+                200, json.dumps({"url": "https://x.pages/x/"})
+            ),
+            ("GET", f"/projects/{PID}/environments"): HttpReply(
+                200,
+                json.dumps(
+                    [
+                        {
+                            "id": 11,
+                            "name": "production",
+                            "state": "available",
+                            "external_url": "https://x.pages/x/",
+                        },
+                        {"id": 12, "name": "staging", "state": "stopped"},
+                    ]
+                ),
+            ),
+            ("GET", f"/projects/{PID}/deployments"): HttpReply(
+                200,
+                json.dumps(
+                    [
+                        {
+                            "id": 301,
+                            "ref": "main",
+                            "status": "success",
+                            "environment": {"name": "production"},
+                        }
+                    ]
+                ),
+            ),
+            ("GET", f"/projects/{PID}/releases"): HttpReply(
+                200,
+                json.dumps([{"tag_name": "v1.2.0", "name": "Release v1.2.0"}]),
+            ),
+            ("GET", f"/projects/{PID}/packages"): HttpReply(
+                200,
+                json.dumps(
+                    [{"id": 9001, "name": "pkg-a", "version": "1.0.0", "package_type": "npm"}]
+                ),
+            ),
+            ("GET", f"/projects/{PID}/issues"): HttpReply(
+                200,
+                json.dumps(
+                    [
+                        {
+                            "iid": 5,
+                            "title": "Retire the demo site after acceptance",
+                            "labels": ["retirement"],
+                            "state": "opened",
+                        },
+                        {"iid": 2, "title": "Renumber the rows", "labels": [], "state": "opened"},
+                    ]
+                ),
+            ),
+            ("GET", f"/projects/{PID}/repository/files/.gitlab-ci.yml/raw"): HttpReply(200, body),
+            ("GET", f"/projects/{PID}"): HttpReply(
+                200,
+                json.dumps(
+                    {
+                        "id": PID,
+                        "path_with_namespace": PATH,
+                        "name": "Disposable Pages demo",
+                        "web_url": "https://gitlab.com/" + PATH,
+                        "visibility": "public",
+                        "archived": False,
+                        "description": "disposable demo",
+                    }
+                ),
+            ),
+        }
+    )
+
+
+def test_portfolio_v2_multi_resource_records_carry_exact_facts():
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=NOW
+    )
+    asset = snapshot.assets[0]
+    kinds = {r.kind for r in asset.resources}
+    assert kinds <= {
+        KIND_PAGES,
+        KIND_ENVIRONMENT,
+        KIND_DEPLOYMENT,
+        KIND_RELEASE,
+        KIND_PACKAGE,
+        KIND_ISSUE,
+        KIND_CI_REDEPLOY,
+    }
+    assert KIND_PAGES in kinds and KIND_ENVIRONMENT in kinds and KIND_DEPLOYMENT in kinds
+    for record in asset.resources:
+        # Exact provenance and freshness on every resource record.
+        assert record.provenance == "ANONYMOUS_PUBLIC_READ"
+        assert record.fresh_until > record.observed_at
+        assert record.endpoint.startswith("/projects/12345678")
+        # Discovery is never an authorization to mutate.
+        assert record.mutation_capability == NOT_AUTHORIZING
+        if record.kind not in {KIND_PAGES, KIND_CI_REDEPLOY}:
+            assert record.ref.split(":")[1] == "12345678"
+    envs = sorted(
+        (r for r in asset.resources if r.kind == KIND_ENVIRONMENT), key=lambda r: r.ref
+    )
+    env = envs[0]
+    assert env.ref == "environment:12345678:11"
+    assert env.state == "available"
+    assert env.detail["name"] == "production"
+    issue = [r for r in asset.resources if r.kind == KIND_ISSUE][0]
+    assert issue.ref == "issue:12345678:5"
+    retirement_flagged = [
+        r for r in asset.resources if r.kind == KIND_ISSUE and r.detail.get("retirement_related")
+    ]
+    assert [r.ref for r in retirement_flagged] == ["issue:12345678:5"]
+    ci = [r for r in asset.resources if r.kind == KIND_CI_REDEPLOY][0]
+    assert ci.state == "PAGES_REDEPLOYMENT_SIGNAL_PRESENT"
+    snapshot_dict = snapshot.to_dict()
+    assert "termivance.portfolio/v2" in snapshot_dict["schema"]
+    totals = snapshot_dict["totals"]
+    assert totals["resources_observed"] > 0
+
+
+def test_portfolio_403_endpoint_is_not_observed_never_absence():
+    body = FakeTransport(
+        {
+            ("GET", f"/projects/{PID}/pages"): HttpReply(
+                200, json.dumps({"url": "https://x.pages/x/"})
+            ),
+            # Environment/deployments/releases/packages/issues endpoints are all
+            # members-only for this anonymous probe: silently 404 from the Fake.
+            ("GET", f"/projects/{PID}/repository/files/.gitlab-ci.yml/raw"): HttpReply(
+                200, "just:\n  - echo ok\n"
+            ),
+            ("GET", f"/projects/{PID}"): HttpReply(
+                200,
+                json.dumps(
+                    {
+                        "id": PID,
+                        "path_with_namespace": PATH,
+                        "name": "d",
+                        "web_url": "w",
+                        "visibility": "public",
+                        "archived": False,
+                        "description": "",
+                    }
+                ),
+            ),
+        }
+    )
+    snapshot = observe_portfolio(GitLabClient(None, transport=body), [PID], now=NOW)
+    asset = snapshot.assets[0]
+    missing = [
+        r
+        for r in asset.resources
+        if r.support == SUPPORT_NOT_OBSERVED and r.kind == KIND_ENVIRONMENT
+    ]
+    assert len(missing) == 1
+    assert missing[0].state.startswith("NOT_OBSERVED (")
+    assert missing[0].detail["project_id"] == PID
+    assert missing[0].mutation_capability == NOT_AUTHORIZING
+    # Not one record claims pages absence from an access limitation.
+    assert all(r.state != "ABSENT" for r in asset.resources)
+    totals = snapshot.to_dict()["totals"]
+    assert totals["resources_not_observed"] >= 4  # env, deployments, releases, packages, issues
+
+
+def test_portfolio_relations_are_explicitly_observed_or_inferred():
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=NOW
+    )
+    rels = {r.kind + "->" + r.dst for r in snapshot.relations}
+    deployed = [rel for rel in snapshot.relations if rel.kind == "deployed_to"]
+    assert deployed and all(rel.support == SUPPORT_OBSERVED for rel in deployed)
+    recreate = [rel for rel in snapshot.relations if rel.kind == "recreates"]
+    assert recreate and all(rel.support == SUPPORT_INFERRED for rel in recreate)
+    obligates = [rel for rel in snapshot.relations if rel.kind == "obligates"]
+    assert obligates and all(rel.support == SUPPORT_INFERRED for rel in obligates)
+    assert "deployed_to->environment:12345678:11" in rels
+
+
+def test_cross_resource_view_shared_by_riskmap_and_simulation():
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=NOW
+    )
+    view = cross_resource_view(snapshot)
+    # The same pool of records feeds both downstream capabilities.
+    refs = {r.ref for r in view.nodes}
+    assert "pages:12345678" in refs and "environment:12345678:11" in refs
+    node_payload = view.as_risk_nodes({"project_id": PID})
+    for node in node_payload:
+        assert node["target"] == {"project_id": PID}
+    ci_node = [n for n in node_payload if n["node_id"] == "resource:ci_redeployment:12345678"][0]
+    assert ci_node["severity"] == "HIGH"  # a live redeployment signal is real risk context
+    assert ci_node["support"] == SUPPORT_OBSERVED
+    factors = view.as_simulation_factors()
+    assert factors
+    assert all(f["state"] == "PROJECTED_NOT_OBSERVED" for f in factors)
+    assert not any(f["resource"].startswith("pages:") for f in factors)
+
+
+def test_inferred_relations_can_never_satisfy_a_mandatory_obligation():
+    """Even with rich portfolio evidence, the decision engine sees unchanged obligations."""
+    from termivance.discovery import graph_from_snapshot, load_snapshot
+    from termivance.engine import evaluate
+    from termivance.policy import Policy
+
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=NOW
+    )
+    graph_record_path = Path(__file__).resolve().parents[1] / "evidence" / "b4"
+    # Build the decision WITHOUT and WITH the portfolio cross view.
+
+    live = load_snapshot(graph_record_path / "snapshot.json")
+    graph = graph_from_snapshot(live)
+    policy = Policy(
+        schema_version=1,
+        mode="OPERATOR_APPROVED",
+        mutation_enabled=False,
+        provider="GITLAB_PAGES",
+        allowed_target_project_ids=(87785099,),
+        allowed_target_full_paths=(
+            "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+        ),
+        allowed_actions=("unpublish_pages",),
+        authorization_required=True,
+    )
+    from datetime import UTC, datetime
+
+    later = datetime(2026, 11, 1, 12, 0, tzinfo=UTC)
+    without = evaluate(graph, policy=policy, action="unpublish_pages", now=later)
+    view = cross_resource_view(snapshot)
+    with_cross = evaluate(graph, policy=policy, action="unpublish_pages", now=later)
+    # The engine is a pure function of graph+policy: cross-resource context is NOT
+    # an input, so INFERRED portfolio edges cannot flip any obligation.
+    assert without.verdict == with_cross.verdict
+    assert [str(o.get("status")) for o in without.to_dict()["obligations"]] == [
+        str(o.get("status")) for o in with_cross.to_dict()["obligations"]
+    ]
+    assert view.inferred_relations > 0
+
+
+def test_riskmap_appends_cross_nodes_but_decision_facts_unchanged():
+    from conftest import NOW as _NOW
+
+    decision = decision_record()
+    base = build_risk_map(
+        verdict=str(decision["verdict"]),
+        target=dict(decision["target"]),
+        reasons=list(decision["reasons"]),
+        obligations=list(decision["obligations"]),
+    )
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=_NOW
+    )
+    view = cross_resource_view(snapshot)
+    cross = build_risk_map(
+        verdict=str(decision["verdict"]),
+        target=dict(decision["target"]),
+        reasons=list(decision["reasons"]),
+        obligations=list(decision["obligations"]),
+        cross_nodes=view.as_risk_nodes(dict(decision["target"])),
+        cross_edges=view.as_risk_edges(),
+    )
+    base_ids = [n.node_id for n in base.nodes]
+    cross_ids = [n.node_id for n in cross.nodes]
+    assert all(node in cross_ids for node in base_ids), "decision nodes must be preserved"
+    assert "resource:pages:12345678" in cross_ids
+    assert len(cross_ids) == len(set(cross_ids)), "risk nodes must be uniquely identified"
+    rel_edges = [
+        e
+        for e in cross.edges
+        if e.src.startswith("resource:") and e.dst.startswith("resource:")
+    ]
+    assert rel_edges
+    assert {e.relation for e in rel_edges} == {"deployed_to", "recreates", "obligates"}
+
+
+def test_riskmap_edges_reference_existing_nodes():
+    """Every edge endpoint must resolve to a node — a graph nobody can walk by
+    clicking would be unintelligible, and dangling ids made it so."""
+    decision = decision_record()
+    legacies = [
+        build_risk_map(
+            verdict=str(decision["verdict"]),
+            target=dict(decision["target"]),
+            reasons=list(decision["reasons"]),
+            obligations=list(decision["obligations"]),
+        ),
+    ]
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=NOW
+    )
+    view = cross_resource_view(snapshot)
+    legacies.append(
+        build_risk_map(
+            verdict=str(decision["verdict"]),
+            target=dict(decision["target"]),
+            reasons=list(decision["reasons"]),
+            obligations=list(decision["obligations"]),
+            cross_nodes=view.as_risk_nodes({}),
+            cross_edges=view.as_risk_edges(),
+        )
+    )
+    for rm in legacies:
+        ids = {n.node_id for n in rm.nodes}
+        dangling = [
+            (e.src, e.dst) for e in rm.edges if e.src not in ids or e.dst not in ids
+        ]
+        assert not dangling, f"dangling edges: {dangling}"
+        assert any(e.dst in ids for e in rm.edges), "no resolvable edges at all"
+        # decision-side chains must actually connect: at least one reason edge
+        # lands on the obligation a reason declares.
+        reaches = [
+            e for e in rm.edges if e.relation == "impacts" and e.dst.startswith("obl:")
+        ]
+        assert reaches
+
+
+def test_simulation_accepts_cross_factors_via_cli(tmp_path, capsys):  # type: ignore[no-untyped-def]
+    portfolio_path = tmp_path / "portfolio.json"
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=NOW
+    )
+    portfolio_path.write_text(json.dumps(snapshot.to_dict(), sort_keys=True), encoding="utf-8")
+    assert (
+        main(
+            [
+                "simulate",
+                "--project-id",
+                str(PID),
+                "--from-record",
+                str(Path(__file__).resolve().parents[1] / "evidence" / "b4" / "snapshot.json"),
+                "--portfolio",
+                str(portfolio_path),
+                "--json",
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert HYPOTHETICAL_BANNER in payload["banner"]
+    factors = payload["cross_resource_factors"]
+    assert factors
+    assert all(f["state"] == "PROJECTED_NOT_OBSERVED" for f in factors)
+
+
+def test_cli_portfolio_v2_prints_resource_totals(tmp_path, capsys):  # type: ignore[no-untyped-def]
+    snapshot = observe_portfolio(
+        GitLabClient(None, transport=_resource_transport()), [PID], now=NOW
+    )
+    out_path = tmp_path / "p.json"
+    out_path.write_text(json.dumps(snapshot.to_dict(), sort_keys=True), encoding="utf-8")
+    rebuilt = portfolio_from_data(json.loads(out_path.read_text(encoding="utf-8")))
+    rendered = rebuilt.render()
+    assert "NOT_AUTHORIZING" in rendered
+    assert "resources NOT_OBSERVED" not in rendered  # everything observed in this fixture
+

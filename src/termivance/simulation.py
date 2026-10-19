@@ -26,8 +26,7 @@ from termivance.verdicts import Verdict
 
 SIMULATION_SCHEMA = "termivance.retirement_simulation/v1"
 HYPOTHETICAL_BANNER = (
-    "HYPOTHETICAL SIMULATION — no request was sent, nothing was mutated, "
-    "no verdict was earned"
+    "HYPOTHETICAL SIMULATION — no request was sent, nothing was mutated, no verdict was earned"
 )
 
 
@@ -68,6 +67,10 @@ class SimulationResult:
     projected_provider_effects: tuple[dict[str, object], ...]
     redeployment_risk: str
     hypothetical: bool = True
+    #: Resource-level projection factors derived from the *same*, observed
+    #: portfolio snapshot the Portfolio and Risk Map surfaced (never re-derived,
+    #: never invented inside the simulation).
+    cross_resource_factors: tuple[dict[str, object], ...] = ()
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -79,6 +82,7 @@ class SimulationResult:
             "obligation_projections": [p.to_dict() for p in self.projections],
             "projected_provider_effects": list(self.projected_provider_effects),
             "redeployment_risk": self.redeployment_risk,
+            "cross_resource_factors": list(self.cross_resource_factors),
         }
 
     def render(self) -> str:
@@ -98,6 +102,13 @@ class SimulationResult:
                 f"{projection.projected_status:<24} {projection.consequence}"
             )
         lines.append(f"redeployment risk: {self.redeployment_risk}")
+        if self.cross_resource_factors:
+            lines.append("Cross-resource projection (same observed portfolio evidence):")
+            for factor in self.cross_resource_factors:
+                lines.append(
+                    f"  [{factor.get('kind'):<26}] {str(factor.get('resource')):<40} "
+                    f"[{factor.get('state')}]"
+                )
         lines.append("-" * 78)
         lines.append(
             "boundary: every 'projected' item is a rule-based expectation; only a "
@@ -162,8 +173,15 @@ def simulate_retirement(
     action: str = "unpublish_pages",
     now: datetime | None = None,
     authorization: object | None = None,
+    cross: object | None = None,
 ) -> SimulationResult:
-    """Project the consequences of an authorized retirement. Purely hypothetical."""
+    """Project the consequences of an authorized retirement. Purely hypothetical.
+
+    ``cross`` is the shared :class:`termivance.dependencies.CrossResourceView`
+    derived from the same observed portfolio snapshot; its factors are appended
+    verbatim and are projective context — they never create eligibility, never
+    satisfy an obligation and never mint a verdict.
+    """
     observed = _utc(now)
     from termivance.authorization import Authorization
 
@@ -220,12 +238,16 @@ def simulate_retirement(
         else "No active redeployment mechanism proven from evidence; this is NOT "
         "evidence that none exists — a later redeployment is always possible"
     )
+    cross_factors: tuple[dict[str, object], ...] = ()
+    if cross is not None and hasattr(cross, "as_simulation_factors"):
+        cross_factors = tuple(dict(f) for f in cross.as_simulation_factors())
     return SimulationResult(
         evaluable=decision.verdict in {Verdict.SAFE_TO_RETIRE, Verdict.BLOCKED},
         decision_record=record,
         projections=projections,
         projected_provider_effects=tuple(effects),
         redeployment_risk=redeployment_risk,
+        cross_resource_factors=cross_factors,
     )
 
 

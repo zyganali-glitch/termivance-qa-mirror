@@ -8,11 +8,21 @@ Core concepts: **Retirement Obligation Graph**, **Bounded Absence**, and **Retir
 
 ## Status
 
-**B4 implemented (2026-10-19); independent batch QA next.** B1 (live Duo Custom Flow) and B2 (deterministic BLOCKED gate) stand; B3's deterministic executor and bounded absence stand, with the live unpublish still **`BLOCKED` on a real access boundary**. B4 closes the P0 security defects (durable sealed-reservation ledger, GitLab-issue approval provenance, receipt-bound absence) and adds the six-capability **Retirement Control Plane**: read-only Portfolio, deterministic Risk Map, hypothetical Simulation, judge-facing Control Room, tamper-evident Proof Capsule with `capsule-verify`, and a 7-stage single-flow workflow orchestration. Suite: **238 tests**, ruff clean, **16/16** network-free CI safety assertions.
+**B4 consolidated QA repair completed (2026-10-19)** after independent batch QA. B1 (live Duo Custom Flow) and B2 (deterministic BLOCKED gate) stand; B3's deterministic executor and bounded absence stand, with the live unpublish still **`BLOCKED` on a real access boundary**; a genuine operator-triggered B4 Duo session (`9671626`, judge-facing analysis, read-only) exists on canonical issue #3. The repair closes the QA's material defects:
+
+- **Trust-bound approvals** — approval identity must match an operator-held trust policy (username **and** provider-issued user ID, project allowlist, freshness, revocation, operator-held HMAC); `retire-pages --execute` refuses without `--operator-trust`.
+- **One-contract ledger** — every mutating ledger operation is consolidated under the exclusive lock with per-entry digests and a one-way `RESERVED_BEFORE_MUTATION → CONSUMED_<outcome>` state machine; consumed/ambiguous authorizations can never be re-enabled; legacy v1 ledgers and locally edited entries are refused on load.
+- **Receipts that cross-check** — receipts fail closed unless they match a durable ledger entry (binding, nonce, action, target, `CONSUMED_ACCEPTED`, 2xx, pre-state marker); unsigned SHA-256 is local tamper evidence, never authentication.
+- **Multi-resource Portfolio + shared evidence** — v2 observes environments, deployments, releases, packages, issues, CI Pages mechanisms and Pages per project (each record `mutation_capability: NOT_AUTHORIZING`); one `CrossResourceView` feeds both the risk map and the simulation, `INFERRED` edges never satisfy obligations, and a single interactive **Control Room v2** renders it (clickable graph + resource drilldown + read-only "What if", zero network/destructive controls).
+
+Suite: **277 tests**, ruff clean, **22/22** network-free CI safety assertions.
+
+B4 also closes the P0 security defects (durable sealed-reservation ledger, GitLab-issue approval provenance, receipt-bound absence) and adds the six-capability **Retirement Control Plane**: read-only Portfolio, deterministic Risk Map, hypothetical Simulation, judge-facing Control Room, tamper-evident Proof Capsule with `capsule-verify`, and a 7-stage single-flow workflow orchestration.
 
 - Canonical repo: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance
 - QA bridge (non-canonical): https://github.com/zyganali-glitch/termivance-qa-mirror
 - Live B1 session: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9650440
+- Operator-confirmed B4 Duo session (read-only, non-authoritative): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626 (agent comment on issue #3; contents not independently observable anonymously — see evidence ladder)
 
 **The live retirement remains `BLOCKED` on a real, verified access boundary**, not on
 the engine: the operator holds only `Developer` on the competition subgroup, GitLab's
@@ -24,17 +34,17 @@ authorization. See `docs/HANDOFF.md` and `docs/EVIDENCE_MATRIX.md`.
 
 ```bash
 python -m pip install -e ".[dev]"
-# live anonymous portfolio over the two real projects (GET-only, no token):
-termivance portfolio --project-ids 87785099,87779099 --anonymous --policy config/retirement_policy.b3_disposable.json
-# deterministic risk map for a recorded decision:
-termivance risk-map --decision evidence/b4/decision.json
-# hypothetical what-if (never mutates):
-termivance simulate --project-id 87785099 --from-record evidence/b4/snapshot.json
+# live anonymous multi-resource portfolio over the four real projects (GET-only, no token):
+termivance portfolio --project-ids 87785099,87779099,87777871,87786164 --anonymous --policy config/retirement_policy.b3_disposable.json
+# deterministic risk map for a recorded decision, with the same portfolio evidence as context:
+termivance risk-map --decision evidence/b4/decision.json --portfolio evidence/b4/portfolio.json
+# hypothetical what-if (never mutates), sharing the portfolio snapshot as projection factors:
+termivance simulate --project-id 87785099 --from-record evidence/b4/snapshot.json --portfolio evidence/b4/portfolio.json
 # single-flow workflow plan and artifact assessment:
 termivance workflow-plan --project-id 87785099 --full-path gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo --out-dir evidence/b4
 termivance workflow-status --project-id 87785099 --full-path gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo --out-dir evidence/b4
-# judge control room (rebuild data, then open control_room/index.html in a browser):
-python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json
+# judge control room v2 (rebuild data, then open control_room/index.html in a browser):
+python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json
 # proof capsule (local integrity only):
 termivance capsule-build --receipt <receipt.json> --out proof_capsule.json
 termivance capsule-verify proof_capsule.json

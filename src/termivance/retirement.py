@@ -39,7 +39,12 @@ from termivance.absence import (
     observe_absence,
     publication_pre_state,
 )
-from termivance.approval_source import TRUSTED_CHANNEL, ApprovalProvenance, verify_approval_source
+from termivance.approval_source import (
+    TRUSTED_CHANNEL,
+    ApprovalProvenance,
+    OperatorTrustPolicy,
+    verify_approval_source,
+)
 from termivance.attestation import ControlAttestation
 from termivance.authorization import Authorization, AuthorizationError
 from termivance.capsule import MutationBinding
@@ -102,6 +107,17 @@ def _check(name: str, ok: bool, detail: str) -> dict[str, object]:
     return {"check": name, "ok": ok, "detail": detail}
 
 
+def describe_trust(trust: OperatorTrustPolicy) -> str:
+    """A bounded description of the independent operator trust policy in use."""
+    return (
+        "independent operator trust policy in use: "
+        + trust.describe()
+        + " — the executor cannot manufacture an operator identity because the "
+        "policy and (by default) its operator-held signature key live outside "
+        "the executor's control"
+    )
+
+
 def preflight(
     target: TargetIdentity,
     policy: Policy,
@@ -115,14 +131,16 @@ def preflight(
     approval_project_id: int | None = None,
     approval_issue_iid: int | None = None,
     approval_client: GitLabClient | None = None,
+    operator_trust: OperatorTrustPolicy | None = None,
 ) -> Preflight:
     """Evaluate every static precondition. Never mutates. Returns a check log.
 
     ``mutation_intent=True`` is the *real* execution posture (a mutation
-    executor is wired in): the durable-ledger, trusted-channel and
-    GitLab-authenticated-provenance gates are then hard requirements. In dry
-    runs the same gates are reported as advisories so rehearsal never modifies
-    anything and never pretends an approval exists.
+    executor is wired in): the durable-ledger, trusted-channel,
+    GitLab-authenticated-provenance and *independent operator trust policy*
+    gates are then hard requirements. In dry runs the same gates are reported
+    as advisories so rehearsal never modifies anything and never pretends an
+    approval exists.
     """
     now = _utc(now)
     checks: list[dict[str, object]] = []
@@ -202,8 +220,7 @@ def preflight(
                 _check(
                     "approval_provenance_gitlab",
                     True,
-                    f"approval channel is {TRUSTED_CHANNEL!r}; provider read-back "
-                    "performed below",
+                    f"approval channel is {TRUSTED_CHANNEL!r}; provider read-back performed below",
                 )
             )
     else:
@@ -218,6 +235,24 @@ def preflight(
     approval_record: ApprovalProvenance | None = None
     if authorization is not None and authorization.approval is not None:
         if mutation_intent:
+            # -- A3: an executor-controlled operator name is not consent. A real
+            #    mutation additionally requires the independent, operator-owned
+            #    trust policy; the provider read-back then binds the author to it.
+            trust_ok = operator_trust is not None
+            checks.append(
+                _check(
+                    "operator_trust_policy_verified",
+                    trust_ok,
+                    describe_trust(operator_trust)
+                    if trust_ok
+                    else (
+                        "no independent operator trust policy was supplied; an "
+                        "approval whose operator identity is defined only by files "
+                        "the coding agent itself controls can never authorize a "
+                        "real mutation (--operator-trust)"
+                    ),
+                )
+            )
             gate_ok = False
             gate_detail = ""
             if approval_project_id is None or approval_issue_iid is None:
@@ -238,6 +273,8 @@ def preflight(
                         authorization,
                         project_id=approval_project_id,
                         issue_iid=approval_issue_iid,
+                        trust=operator_trust,  # type: ignore[arg-type]
+                        approval_key=approval_key,
                         now=now,
                     )
                 except AuthorizationError as exc:
@@ -255,6 +292,15 @@ def preflight(
         else:
             checks.append(
                 _check(
+                    "operator_trust_policy_verified",
+                    True,
+                    "advisory in dry runs: a real mutation additionally requires the "
+                    "independent operator trust policy to bind the approval author "
+                    "to an operator-held identity the executor does not control",
+                )
+            )
+            checks.append(
+                _check(
                     "gitlab_approval_record_verified",
                     True,
                     "advisory in dry runs: a real mutation additionally verifies the "
@@ -266,14 +312,17 @@ def preflight(
     # -- P0-A: a real mutation requires a durable, single-use ledger.
     if mutation_intent:
         if ledger is None:
-            ledger_ok, ledger_detail = False, (
-                "no durable single-use authorization ledger was supplied; a real "
-                "mutation can never execute without one (--ledger)"
+            ledger_ok, ledger_detail = (
+                False,
+                (
+                    "no durable single-use authorization ledger was supplied; a real "
+                    "mutation can never execute without one (--ledger)"
+                ),
             )
         elif not ledger.path_is_durable():
-            ledger_ok, ledger_detail = False, (
-                f"ledger path {ledger.path!s} is not durable (terminal/wastebin/dead "
-                "storage)"
+            ledger_ok, ledger_detail = (
+                False,
+                (f"ledger path {ledger.path!s} is not durable (terminal/wastebin/dead storage)"),
             )
         else:
             try:
@@ -281,9 +330,12 @@ def preflight(
             except LedgerError as exc:
                 ledger_ok, ledger_detail = False, str(exc)
             else:
-                ledger_ok, ledger_detail = True, (
-                    f"durable ledger present and ready at {ledger.path}; the "
-                    "single-use reservation is sealed immediately before dispatch"
+                ledger_ok, ledger_detail = (
+                    True,
+                    (
+                        f"durable ledger present and ready at {ledger.path}; the "
+                        "single-use reservation is sealed immediately before dispatch"
+                    ),
                 )
         checks.append(_check("durable_ledger_required", ledger_ok, ledger_detail))
     else:
@@ -407,14 +459,19 @@ class RetirementReceipt:
     verdict: Verdict
     operation_id: str
     ledger_path: str | None = None
+    #: Execution-time identity of the authorization used, recorded at dispatch
+    #: time. Receipt validation re-derives it against the durable ledger entry
+    #: so a saved file cannot silently swap operation metadata (P0-B/A2).
+    authorization_record: dict[str, object] | None = None
     notes: tuple[str, ...] = field(default_factory=tuple)
 
     def to_dict(self) -> dict[str, object]:
         return {
-            "schema": "termivance.retirement_receipt/v2",
+            "schema": "termivance.retirement_receipt/v3",
             "target": self.target.to_dict(),
             "action": self.action,
             "authorization_binding": self.authorization_binding,
+            "authorization_record": self.authorization_record,
             "operation_id": self.operation_id,
             "mutation_attempted": self.mutation_attempted,
             "verdict": self.verdict.value,
@@ -436,6 +493,18 @@ class RetirementReceipt:
         }
 
 
+def _authorization_record(authorization: Authorization | None) -> dict[str, object] | None:
+    """The execution-time identity block of the authorization actually used."""
+    if authorization is None:
+        return None
+    return {
+        "binding": authorization.binding(),
+        "nonce": authorization.nonce,
+        "action": authorization.action,
+        "target_key": authorization.target.key_string(),
+    }
+
+
 def _blocked(
     target: TargetIdentity,
     action: str,
@@ -448,6 +517,7 @@ def _blocked(
     mutation: MutationResult | None = None,
     notes: tuple[str, ...] = (),
     ledger_path: str | None = None,
+    authorization: Authorization | None = None,
 ) -> RetirementReceipt:
     return RetirementReceipt(
         target=target,
@@ -462,6 +532,7 @@ def _blocked(
         verdict=verdict,
         operation_id=operation_id,
         ledger_path=ledger_path,
+        authorization_record=_authorization_record(authorization),
         notes=notes,
     )
 
@@ -493,6 +564,7 @@ def retire_pages(
     approval_key: str | None = None,
     approval_project_id: int | None = None,
     approval_issue_iid: int | None = None,
+    operator_trust: OperatorTrustPolicy | None = None,
     operation_id: str | None = None,
     now: datetime | None = None,
     action: str = DEFAULT_ACTION,
@@ -529,6 +601,7 @@ def retire_pages(
         approval_project_id=approval_project_id,
         approval_issue_iid=approval_issue_iid,
         approval_client=read_client,
+        operator_trust=operator_trust,
     )
     if not pre.ok:
         notes = ["static preflight refused the mutation"]
@@ -541,6 +614,7 @@ def retire_pages(
             operation_id=op_id,
             notes=tuple(notes),
             ledger_path=ledger_path,
+            authorization=authorization,
         )
 
     eligibility: Eligibility | None = None
@@ -581,6 +655,7 @@ def retire_pages(
                 "cannot be established, so no mutation may be attempted",
             ),
             ledger_path=ledger_path,
+            authorization=authorization,
         )
 
     assert eligibility is not None
@@ -593,6 +668,7 @@ def retire_pages(
             eligibility=eligibility,
             notes=(_decision_note(eligibility),),
             ledger_path=ledger_path,
+            authorization=authorization,
         )
 
     if mutation_client is None:
@@ -606,6 +682,7 @@ def retire_pages(
             verdict=Verdict.SAFE_TO_RETIRE,
             notes=("dry run: no mutation executor was supplied",),
             ledger_path=ledger_path,
+            authorization=authorization,
         )
 
     # Immediate revalidation against the live provider, after the durable
@@ -635,6 +712,7 @@ def retire_pages(
                     "immediate revalidation refused the mutation: " + _decision_note(revalidation),
                 ),
                 ledger_path=ledger_path,
+                authorization=authorization,
             )
     else:
         revalidation = eligibility
@@ -656,6 +734,7 @@ def retire_pages(
             revalidation=revalidation,
             notes=(f"durable authorization ledger is not ready: {exc}",),
             ledger_path=ledger_path,
+            authorization=authorization,
         )
     try:
         ledger.consume(authorization, operation_id=op_id, now=observed)
@@ -669,7 +748,42 @@ def retire_pages(
             revalidation=revalidation,
             notes=(f"durable authorization reservation refused: {exc}",),
             ledger_path=ledger_path,
+            authorization=authorization,
         )
+
+    # P0-B (A3): re-verify the operator approval against the provider
+    # immediately before dispatch. Nothing proven at preflight time is assumed
+    # to still hold at execution time. (If it fails here the authorization was
+    # already reserved — the conservative burn stands.)
+    if (
+        operator_trust is not None
+        and approval_project_id is not None
+        and approval_issue_iid is not None
+    ):
+        try:
+            verify_approval_source(
+                read_client,  # type: ignore[arg-type]
+                authorization,
+                project_id=approval_project_id,
+                issue_iid=approval_issue_iid,
+                trust=operator_trust,
+                approval_key=approval_key,
+                now=observed,
+            )
+        except AuthorizationError as exc:
+            return _blocked(
+                target,
+                action,
+                pre,
+                operation_id=op_id,
+                eligibility=eligibility,
+                revalidation=revalidation,
+                notes=(
+                    f"operator approval failed re-verification immediately before dispatch: {exc}",
+                ),
+                ledger_path=ledger_path,
+                authorization=authorization,
+            )
 
     # Revalidate and consume immediately before mutation.
     authorization.consume(observed, target, action)
@@ -690,16 +804,15 @@ def retire_pages(
             authorization_binding=pre.authorization_binding,
             accepted=mutation.accepted,
             status=mutation.status,
-            pre_state=eligibility.pre_state or PagesPreState(
+            pre_state=eligibility.pre_state
+            or PagesPreState(
                 served_url=served_url,
                 marker=marker or "",
                 marker_observed=False,
                 deployment_present=False,
                 observed_at=observed,
             ),
-            ledger_entry=ledger.consumption_record(
-                authorization.binding(), operation_id=op_id
-            ),
+            ledger_entry=ledger.consumption_record(authorization.binding(), operation_id=op_id),
             source="live_dispatch",
         )
         absence = observe_absence(
@@ -750,6 +863,7 @@ def retire_pages(
         verdict=verdict,
         operation_id=op_id,
         ledger_path=ledger_path,
+        authorization_record=_authorization_record(authorization),
         notes=tuple(notes),
     )
 

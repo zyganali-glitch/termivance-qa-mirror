@@ -1,10 +1,10 @@
 {
   "mode": "ARTIFACT_ASSESSMENT",
-  "observed_at": "2026-10-19T07:20:23.469524+00:00",
+  "observed_at": "2026-10-19T10:21:19.527116+00:00",
   "schema": "termivance.workflow/v1",
   "stages": [
     {
-      "detail": "snapshot classification=RECORDED_LIVE",
+      "detail": "snapshot classification=LIVE",
       "stage": "snapshot",
       "state": "COMPLETE"
     },

@@ -6,206 +6,669 @@
 <title>Termivance Control Room</title>
 <style>
   :root {
-    --bg: #0d1117; --panel: #161b22; --line: #30363d; --ink: #e6edf3;
-    --dim: #9aa7b4; --ok: #3fb950; --warn: #d29922; --bad: #f85149;
-    --accent: #58a6ff; --caution: #db6d28;
+    --bg: #0d1117; --panel: #161b22; --panel2: #10151c; --line: #30363d;
+    --ink: #e6edf3; --dim: #9aa7b4; --ok: #3fb950; --warn: #d29922;
+    --bad: #f85149; --accent: #58a6ff; --amber: #db6d28; --violet: #bc8cff;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 15px/1.5 "Segoe UI", system-ui, sans-serif; }
-  header { padding: 18px 28px; border-bottom: 1px solid var(--line); display: flex;
-           align-items: center; gap: 16px; flex-wrap: wrap; }
+         font: 15px/1.55 "Segoe UI", system-ui, sans-serif; }
+  header { padding: 14px 26px; border-bottom: 1px solid var(--line);
+           display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
   header h1 { font-size: 19px; margin: 0; letter-spacing: .3px; }
-  .chip { display: inline-block; padding: 3px 12px; border-radius: 999px;
-          font-size: 12.5px; font-weight: 600; border: 1px solid var(--line); }
-  .chip.ok { color: var(--ok); } .chip.warn { color: var(--warn); }
-  .chip.bad { color: var(--bad); } .chip.dim { color: var(--dim); }
-  .chip.accent { color: var(--accent); }
-  main { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; padding: 16px 28px; }
-  @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+  header .sub { color: var(--dim); font-size: 12.5px; width: 100%; }
+  .chip { display: inline-block; padding: 2px 11px; border-radius: 999px;
+          font-size: 12px; font-weight: 600; border: 1px solid var(--line);
+          white-space: nowrap; }
+  .chip.ok   { color: var(--ok); }
+  .chip.warn { color: var(--warn); }
+  .chip.bad  { color: var(--bad); }
+  .chip.dim  { color: var(--dim); }
+  .chip.acc  { color: var(--accent); border-color: #1f4c7a; }
+  .chip.amber{ color: var(--amber); border-color: #6b3a17; }
+  .chip.violet { color: var(--violet); }
+  nav { display: flex; gap: 8px; padding: 10px 26px 0; flex-wrap: wrap; }
+  .tabbtn { background: var(--panel2); color: var(--dim); border: 1px solid var(--line);
+            border-bottom: none; border-radius: 8px 8px 0 0; padding: 8px 16px;
+            font: inherit; font-weight: 600; cursor: pointer; }
+  .tabbtn.active { color: var(--ink); background: var(--panel); }
+  .panel { display: none; padding: 16px 26px 30px; }
+  .panel.active { display: block; }
+  .grid { display: grid; grid-template-columns: 1.35fr .95fr; gap: 16px; }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
   .card { background: var(--panel); border: 1px solid var(--line);
-          border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
-  .card h2 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase;
-             letter-spacing: 1.2px; color: var(--dim); }
-  .verdict { font-size: 30px; font-weight: 700; margin: 4px 0 6px; }
-  .sub { color: var(--dim); font-size: 13px; }
-  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
-  th, td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--line);
+          border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .card h2 { font-size: 15px; margin: 0 0 8px; letter-spacing: .3px; }
+  .card h3 { font-size: 13px; color: var(--dim); margin: 12px 0 6px; }
+  .muted { color: var(--dim); font-size: 13px; }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; font-size: 13.5px; }
+  .kv dt { color: var(--dim); } .kv dd { margin: 0; word-break: break-word; }
+  select, .btn { background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+                 border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13.5px; }
+  .btn { cursor: pointer; }
+  .btn.on { color: var(--ink); border-color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border: 1px solid var(--line); padding: 5px 9px; text-align: left;
            vertical-align: top; }
-  th { color: var(--dim); font-weight: 600; font-size: 12px; letter-spacing: .6px; }
-  code { background: #0b0f14; border: 1px solid var(--line); padding: 1px 6px;
-         border-radius: 4px; font-size: 12.5px; color: #a5d6ff; }
-  .state { font-weight: 700; }
-  .s-BLOCKED, .s-RESURRECTION_NOT_CONTROLLED, .s-HIGH { color: var(--bad); }
-  .s-NOT_RUN, .s-NOT_OBSERVED, .s-UNKNOWN, .s-INCONCLUSIVE, .s-MEDIUM { color: var(--warn); }
-  .s-COMPLETE, .s-SATISFIED, .s-OBSERVED_ABSENT, .s-RETIRED, .s-LOW, .s-DEPLOYMENT_PRESENT
-    { color: var(--ok); }
-  footer { padding: 10px 28px 26px; color: var(--dim); font-size: 12.5px; }
-  ul { margin: 6px 0; padding-left: 20px; }
-  li { margin: 2px 0; }
-  .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; }
-  .pill { border-radius: 6px; padding: 1px 8px; font-size: 12px;
-          border: 1px solid var(--line); display: inline-block; margin: 1px 3px 1px 0; }
+  th { color: var(--dim); font-weight: 600; background: var(--panel2); }
+  .res { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px;
+         margin: 6px 0; background: var(--panel2); cursor: pointer; font-size: 13.5px; }
+  .res:hover { border-color: var(--accent); }
+  .res.sel { border-color: var(--accent); background: #101d2c; }
+  .res .ref { font-family: Consolas, monospace; font-size: 12.5px; color: var(--accent); }
+  #graph-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 10px;
+                background: var(--panel2); }
+  svg { display: block; }
+  .lnode { cursor: pointer; }
+  .lnode rect { fill: #12161d; stroke-width: 2; }
+  .lnode text { fill: var(--ink); font-size: 11px; font-family: "Segoe UI", sans-serif; }
+  .lnode.dim { opacity: .28; }
+  .ledge { stroke: #6e7681; stroke-width: 1.4; fill: none; }
+  .ledge.obs { stroke: var(--accent); stroke-width: 1.8; }
+  .ledge.inf { stroke: var(--amber); stroke-dasharray: 5 4; }
+  .ledge.hot { stroke: var(--ok); stroke-width: 2.4; }
+  .ledge.dim { opacity: .18; }
+  .lagend { font-size: 12px; fill: var(--dim); }
+  pre { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+        padding: 10px 12px; overflow: auto; font-size: 12.5px; color: #c9d1d9; }
+  code { font-family: Consolas, monospace; }
+  .factor { border-left: 3px solid var(--amber); padding: 6px 12px; margin: 8px 0;
+            background: var(--panel2); border-radius: 0 8px 8px 0; font-size: 13.5px; }
+  ul.tight { margin: 6px 0; padding-left: 22px; font-size: 13.5px; }
+  .banner { border: 1px dashed var(--warn); color: var(--warn); border-radius: 8px;
+            padding: 7px 12px; font-weight: 600; font-size: 13px; margin-bottom: 10px; }
+  footer { border-top: 1px solid var(--line); padding: 14px 26px 26px; color: var(--dim);
+           font-size: 12.5px; }
 </style>
 </head>
 <body>
 <header>
   <h1>Termivance Control Room</h1>
-  <span id="provenance" class="chip accent"></span>
-  <span id="verdict-chip" class="chip dim"></span>
-  <span class="chip dim" id="built-at"></span>
+  <span id="hdr-chips"></span>
+  <div class="sub" id="hdr-sub"></div>
 </header>
-<main>
-  <div>
-    <section class="card" id="card-target">
-      <h2>Target &amp; verdict</h2>
-      <div id="target-body"></div>
-    </section>
-    <section class="card" id="card-portfolio">
-      <h2>Portfolio (read-only)</h2>
-      <div id="portfolio-body"></div>
-    </section>
-    <section class="card" id="card-simulation">
-      <h2>Simulation — what if we retire this?</h2>
-      <div id="simulation-body"></div>
-    </section>
+<nav id="tabs">
+  <button class="tabbtn active" data-tab="portfolio">Portfolio &amp; resources</button>
+  <button class="tabbtn" data-tab="graph">Dependency &amp; risk graph</button>
+  <button class="tabbtn" data-tab="whatif">What-if (read-only)</button>
+  <button class="tabbtn" data-tab="proof">Proof, gates &amp; evidence</button>
+</nav>
+
+<section class="panel active" id="tab-portfolio"></section>
+<section class="panel" id="tab-graph">
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Interaction</h2>
+        <span class="muted">Click a node to highlight its edges and see its recorded
+        payload. Use the buttons to zoom. This graph is rendered from the recorded
+        risk map only — it has no live connection to GitLab.</span>
+        <p>
+          <button class="btn" id="zoom-out">− zoom out</button>
+          <button class="btn" id="zoom-in">+ zoom in</button>
+          <button class="btn" id="zoom-reset">reset</button>
+          <button class="btn" id="graph-clear">clear highlight</button>
+        </p>
+        <p class="muted" id="graph-stats"></p>
+      </div>
+      <div id="graph-wrap"></div>
+    </div>
+    <div class="card" id="graph-detail">
+      <h2>Node details</h2>
+      <span class="muted">Select a node in the graph.</span>
+    </div>
   </div>
-  <div>
-    <section class="card" id="card-risk">
-      <h2>Risk map</h2>
-      <div id="risk-body"></div>
-    </section>
-    <section class="card" id="card-receipt">
-      <h2>One real flow — receipt &amp; capsule</h2>
-      <div id="receipt-body"></div>
-    </section>
-    <section class="card" id="card-workflow">
-      <h2>Workflow stages</h2>
-      <div id="workflow-body"></div>
-    </section>
-  </div>
-</main>
-<footer>
-  <div id="boundaries"></div>
-  <div style="margin-top:8px"><strong>Verify in 60s:</strong> <code id="verify-cmd"></code>
-    <span class="sub" id="verify-note"></span></div>
-</footer>
+</section>
+<section class="panel" id="tab-whatif"></section>
+<section class="panel" id="tab-proof"></section>
+
+<footer id="footer"></footer>
+
 <script src="data.js"></script>
 <script>
-(function () {
-  const D = window.TERMIVANCE_DATA || {};
-  const S = D.sections || {};
-  const $ = (id) => document.getElementById(id);
+"use strict";
+/* Termivance Control Room — static read-only viewer.
+   Everything is rendered from window.TERMIVANCE_DATA (recorded artifacts).
+   No fetch(), no eval, no mutation endpoints: this page can trigger nothing. */
 
-  const chip = (text, cls) => `<span class="chip ${cls || "dim"}">${text}</span>`;
-  const stateChip = (value) => `<span class="state s-${value}">${value}</span>`;
+const D = window.TERMIVANCE_DATA || {};
+const escapeHtml = (v) => String(v ?? "")
+  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
-  $("provenance").textContent = (D.provenance_label || "NO_DATA") + (D.built_at ? "" : "");
-  $("built-at").textContent = D.built_at ? "built " + D.built_at.replace("T", " ").slice(0, 19) + "Z" : "";
+function chipState(state) {
+  const s = String(state ?? "");
+  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE)/.test(s)) return "chip ok";
+  if (/^INFERRED|^PROJECTED/.test(s)) return "chip amber";
+  if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT)/.test(s)) return "chip bad";
+  if (/^(UNAVAILABLE|UNKNOWN)/.test(s)) return "chip dim";
+  if (/^(NOT_AUTHORIZING|READ_ONLY|READ_ONLY_OBSERVATION|AUTHORIZED_FALSE|STRUCTURALLY_REFUSED)/.test(s)) return "chip violet";
+  return "chip acc";
+}
+const chip = (label, cls) => `<span class="${cls || chipState(label)}">${escapeHtml(label)}</span>`;
 
-  // --- decision ------------------------------------------------------------
-  const dec = S.decision || {};
-  const verdict = dec.verdict || "NOT_OBSERVED";
-  $("verdict-chip").textContent = "verdict: " + verdict;
-  $("verdict-chip").className = "chip " +
-    (verdict === "SAFE_TO_RETIRE" ? "ok" : verdict === "BLOCKED" ? "bad" : "warn");
-  let t = dec.target || {};
-  $("target-body").innerHTML =
-    `<div class="verdict">${verdict}</div>` +
-    `<div class="sub">project ${t.project_id ?? "?"} — ${t.full_path ?? "?"} ` +
-    `<span class="chip dim">${t.resource_kind ?? ""}</span></div>` +
-    (dec.reasons || []).map(r =>
-      `<div class="sub">• <span class="state s-HIGH">${r.code}</span> — ${r.detail || ""}</div>`).join("");
-  if (S.receipt && S.receipt.target) {
-    t = S.receipt.target;
-    $("target-body").innerHTML +=
-      `<div class="sub" style="margin-top:6px">receipt: mutation ` +
-      `${S.receipt.mutation_attempted === true ? stateChip("ATTEMPTED") : stateChip("NOT_ATTEMPTED")}` +
-      `</span> ledger: <span class="mono">${S.receipt.ledger_path || "—"}</span></div>`;
+function kv(pairs) {
+  return `<dl class="kv">${pairs.map(([k, v]) =>
+    `<dt>${escapeHtml(k)}</dt><dd>${v}</dd>`).join("")}</dl>`;
+}
+function sub(label) { return `<h3>${escapeHtml(label)}</h3>`; }
+function missing(name) {
+  return `<div class="card"><h2>${escapeHtml(name)}</h2>${chip("UNAVAILABLE", "chip dim")}
+    <span class="muted"> — the artifact was not supplied to the builder; it is
+    deliberately not invented here.</span></div>`;
+}
+
+/* ---------- header ---------- */
+function renderHeader() {
+  const prov = D.read_provenance || "UNAVAILABLE";
+  const mut = D.mutation_status || "UNAVAILABLE";
+  document.getElementById("hdr-chips").innerHTML =
+    `${chip("EVIDENCE: " + prov)} ${chip("MUTATION: " + mut)}
+     ${chip("CONTROL ROOM: " + String(D.schema || "v2"))}`;
+  document.getElementById("hdr-sub").textContent =
+    "Recorded artifacts only — built " + String(D.built_at || "unknown") +
+    " by " + String(D.generated_by || "unknown") +
+    " · no network fetch at view time · no destructive control exists on this page";
+}
+
+/* ---------- portfolio tab ---------- */
+let selectedAsset = null;
+let selectedResource = null;
+
+function assets() { return (D.sections && D.sections.portfolio && Array.isArray(D.sections.portfolio.assets)) ? D.sections.portfolio.assets : []; }
+function totals() { return (D.sections && D.sections.portfolio && D.sections.portfolio.totals) || {}; }
+
+function resourceRows(asset) {
+  const rs = asset.resources || [];
+  if (!rs.length) return `<p class="muted">No resource records for this asset.</p>`;
+  return rs.map((r) => `
+    <div class="res ${selectedResource === r.ref ? "sel" : ""}" data-ref="${escapeHtml(r.ref)}">
+      <div>${chip(r.kind, "chip acc")} ${chip(r.state)} ${chip("support: " + (r.support || "—"))}
+        ${chip(r.mutation_capability)}</div>
+      <div class="ref">${escapeHtml(r.ref)}</div>
+      <div class="muted">GET ${escapeHtml(r.endpoint)} · observed ${escapeHtml(r.observed_at)} · fresh until ${escapeHtml(r.fresh_until)} · ${escapeHtml(r.provenance)}</div>
+      <div class="muted">detail: ${escapeHtml(Object.entries(r.detail || {}).map(([k, v]) => k + "=" + JSON.stringify(v)).join(", "))}</div>
+    </div>`).join("");
+}
+
+function renderPortfolio() {
+  const el = document.getElementById("tab-portfolio");
+  const pf = D.sections && D.sections.portfolio;
+  if (!pf || !pf.assets) { el.innerHTML = missing("Portfolio"); return; }
+  const t = totals();
+  el.innerHTML = `
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Observed assets (${escapeHtml(pf.assets.length)}) — pick one to inspect its resources</h2>
+        <p>${pf.assets.map((a) => `
+          <button class="btn ${selectedAsset === a.project_id ? "on" : ""}" data-asset="${a.project_id}">
+            ${escapeHtml(a.project_id)} · ${escapeHtml((a.full_path || "").split("/").pop())}
+          </button>`).join(" ")}
+        </p>
+        ${kv([
+          ["provenance", chip(pf.provenance || "UNAVAILABLE")],
+          ["pages sites present", escapeHtml(t.pages_sites_present ?? "—")],
+          ["pages unverifiable", escapeHtml(t.pages_unverifiable ?? "—")],
+          ["resources observed", escapeHtml(t.resources_observed ?? "—")],
+          ["resources NOT observed", escapeHtml(t.resources_not_observed ?? "—")],
+          ["observed / inferred relations", escapeHtml(t.observed_relations ?? "—") + " / " + escapeHtml(t.inferred_relations ?? "—")],
+        ])}
+      </div>
+      <div class="card" id="asset-card"></div>
+      <div class="card"><h2>Relations from the same snapshot</h2>
+        <div id="relations"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h2>Portfolio counts by kind</h2>
+        <table><tr><th>kind</th><th>count</th></tr>
+        ${Object.entries(t.resource_kinds_observed || {}).map(([k, v]) =>
+          `<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join("") ||
+          "<tr><td colspan=2>none observed</td></tr>"}
+        </table>
+        <p class="muted">Every resource record carries mutation_capability =
+        ${chip("NOT_AUTHORIZING")}: discovery of these facts is not an
+        authorization to change anything.</p>
+      </div>
+      <div class="card"><h2>Support legend</h2>
+        ${chip("OBSERVED")} <span class="muted">provider-returned fact at an exact endpoint</span><br>
+        ${chip("INFERRED", "chip amber")} <span class="muted">reasoned link between observed facts — never decision evidence</span><br>
+        ${chip("NOT_OBSERVED")} <span class="muted">401/403/404 or missing data — never absence</span><br>
+        ${chip("NOT_RUN")} <span class="muted">an action the runtime did not perform</span>
+      </div>
+    </div>
+  </div>`;
+  renderAsset();
+  el.querySelectorAll("[data-asset]").forEach((b) =>
+    b.addEventListener("click", () => { selectedAsset = Number(b.dataset.asset); selectedResource = null; renderPortfolio(); }));
+  el.querySelectorAll("[data-ref]").forEach((n) =>
+    n.addEventListener("click", () => { selectedResource = n.dataset.ref; renderPortfolio(); }));
+}
+
+function renderAsset() {
+  const card = document.getElementById("asset-card");
+  const rel = document.getElementById("relations");
+  const a = assets().find((x) => x.project_id === selectedAsset) || assets()[0];
+  selectedAsset = a ? a.project_id : null;
+  if (!a) { card.innerHTML = `<p class="muted">No assets recorded.</p>`; }
+  else {
+    card.innerHTML = `
+      <h2>${escapeHtml(a.project_id)} — ${escapeHtml(a.full_path || "")}</h2>
+      ${chip("PAGES: " + (a.pages_state || "—"))}
+      ${kv([
+        ["role", escapeHtml(a.role || "—")],
+        ["visibility", escapeHtml(a.visibility || "—")],
+        ["archived", escapeHtml(String(a.archived))],
+        ["web url", a.web_url ? `<a href="${escapeHtml(a.web_url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(a.web_url)}</a>` : "—"],
+        ["observed at", escapeHtml(a.observed_at || "—")],
+        ["provenance", chip(a.provenance || "—")],
+      ])}
+      ${sub("Resource records (click one)")}
+      ${resourceRows(a)}`;
   }
+  const relations = (D.sections.portfolio.relations || []);
+  rel.innerHTML = relations.length ? relations.map((r) => `
+    <div class="res">
+      ${chip(r.kind, "chip acc")} ${chip("support: " + (r.support || "—"))}
+      <div class="ref">${escapeHtml(r.src)} → ${escapeHtml(r.dst)}</div>
+    </div>`).join("") : `<p class="muted">No relations recorded.</p>`;
+}
 
-  // --- portfolio -----------------------------------------------------------
-  const pf = S.portfolio || {};
-  if (pf.assets) {
-    $("portfolio-body").innerHTML =
-      `<div class="sub">${pf.provenance || ""}</div><table><tr><th>ID</th><th>Role</th>` +
-      `<th>Pages</th><th>Path</th></tr>` +
-      pf.assets.map(a => `<tr><td>${a.project_id}</td><td>${a.role}</td>` +
-        `<td>${stateChip(a.pages_state)}</td><td class="mono">${a.full_path}</td></tr>`).join("") +
-      `</table><div class="sub">totals: ${JSON.stringify(pf.totals)}</div>`;
-  } else { $("portfolio-body").innerHTML = stateChip(NOT_OBSERVED); }
+/* ---------- graph tab ---------- */
+let layout = null;      // {nodes:[{id,x,y,w,h,node}], edges:[{...}]}
+let selectedNode = null;
+let zoom = 1;
 
-  // --- risk map ------------------------------------------------------------
-  const rm = S.risk_map || {};
-  if (rm.nodes) {
-    $("risk-body").innerHTML =
-      `<table><tr><th>Severity</th><th>Risk</th></tr>` +
-      rm.nodes.filter(n => n.kind !== "CONTROL").slice(0, 8)
-        .map(n => `<tr><td>${stateChip(n.severity)}</td><td>${n.title}` +
-          `<div class="sub">${n.state || ""}</div></td></tr>`).join("") +
-      `</table>`;
-  } else { $("risk-body").innerHTML = stateChip(NOT_OBSERVED); }
+function nodeClass(kind, id) {
+  if (id.startsWith("resource-unobserved:")) return "unobs";
+  if (kind === "RISK") return "risk";
+  if (kind === "CONTROL") return "control";
+  if (kind === "DEPENDENCY") return "dep";
+  return "other";
+}
+const NODE_COLORS = { risk: "#f85149", control: "#58a6ff", dep: "#3fb950",
+                      unobs: "#db6d28", other: "#9aa7b4" };
 
-  // --- receipt / capsule ---------------------------------------------------
-  const rc = S.receipt || {}, cp = S.capsule || {};
-  let receiptHtml = stateChip(rc.state || "NOT_OBSERVED");
-  if (rc.verdict !== undefined) {
-    const mu = rc.mutation || {};
-    receiptHtml =
-      `<div>executor verdict: <span class="verdict" style="font-size:20px">${rc.verdict}</span></div>` +
-      `<div class="sub">mutation ${mu.method || "—"} ${mu.endpoint || "—"} → ` +
-      `HTTP ${mu.status ?? "—"} (${mu.accepted === true ? "accepted" : "refused"})</div>` +
-      `<div class="sub">operation <span class="mono">${rc.operation_id || "—"}</span> · ` +
-      `attempted ${rc.mutation_attempted === true ? "yes" : "no"}</div>`;
+function computeLayout() {
+  const rm = D.sections && D.sections.risk_map;
+  if (!rm || !Array.isArray(rm.nodes)) return null;
+  const seen = new Set();
+  const nodes = [];
+  for (const n of rm.nodes) {
+    if (seen.has(n.node_id)) continue;   // torn-read guard, keeps first
+    seen.add(n.node_id);
+    nodes.push(n);
   }
-  if (cp.manifest_digest) {
-    receiptHtml += `<div style="margin-top:6px">capsule ${chip("integrity verifiable", "ok")}` +
-      `<div class="mono">sha256 ${cp.manifest_digest.slice(0, 32)}…</div></div>`;
+  const edges = (rm.edges || []).filter((e) =>
+    nodes.some((n) => n.node_id === e.src) && nodes.some((n) => n.node_id === e.dst));
+  const isDecision = (id) => !(id.startsWith("resource") || id.startsWith("not-observed:"));
+  const W = 168, H = 46, GAP = 18, ROW = H + 46;
+  const cl = nodes.filter((n) => isDecision(n.node_id));
+  const cx = nodes.filter((n) => !isDecision(n.node_id));
+  const columns = [
+    cl.filter((n) => n.node_id.startsWith("obligation-")),
+    cl.filter((n) => n.node_id.startsWith("obl:")),
+    cl.filter((n) => n.node_id.startsWith("risk:") || n.node_id.startsWith("control:")),
+  ];
+  const pos = new Map();
+  let x = 30;
+  for (const col of columns) {
+    col.forEach((n, i) => pos.set(n.node_id, { x: x, y: 46 + i * ROW }));
+    x += W + GAP + 96;
   }
-  $("receipt-body").innerHTML = receiptHtml;
-  const ab = (S.receipt && S.receipt.absence) || {};
-  if (ab.verdict) {
-    $("receipt-body").innerHTML +=
-      `<div class="sub" style="margin-top:6px">bounded absence: ${stateChip(ab.verdict)} ` +
-      `<span class="mono">api=${(ab.pages_api && ab.pages_api.status) ?? "—"} ` +
-      `http=${(ab.served_url && ab.served_url.http_status) ?? "—"}</span></div>`;
-  }
+  // cross-resource nodes: grid below the decision cluster
+  const perRow = 5;
+  cx.forEach((n, i) => {
+    pos.set(n.node_id, {
+      x: 30 + (i % perRow) * (W + GAP),
+      y: 120 + Math.max(0, ...columns.map((c) => c.length)) * ROW + Math.floor(i / perRow) * ROW,
+    });
+  });
+  const height = 140 + Math.max(0, ...columns.map((c) => c.length)) * ROW +
+                 Math.ceil(cx.length / perRow) * ROW;
+  const width = Math.max(x, perRow * (W + GAP) + 30);
+  return { nodes, edges, pos, W, H, height, width };
+}
 
-  // --- simulation ----------------------------------------------------------
-  const sim = S.simulation || {};
-  if (sim.obligation_projections) {
-    $("simulation-body").innerHTML =
-      `<div class="sub">${sim.banner || ""}</div><table><tr><th>Obligation</th>` +
-      `<th>Now</th><th>Projected</th></tr>` +
-      sim.obligation_projections.map(p =>
-        `<tr><td>${p.obligation_kind}</td><td>${stateChip(p.current_status)}</td>` +
-        `<td>${p.projected_status}</td></tr>`).join("") + `</table>` +
-      `<div class="sub">${sim.redeployment_risk || ""}</div>`;
-  } else {
-    $("simulation-body").innerHTML = stateChip(NOT_OBSERVED) +
-      `<div class="sub">run <code>termivance simulate --project-id &lt;id&gt;</code></div>`;
-  }
+function truncate(s, n) { s = String(s ?? ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; }
 
-  // --- workflow ------------------------------------------------------------
-  const wf = S.workflow || {};
-  if (wf.stages) {
-    $("workflow-body").innerHTML =
-      wf.stages.map(s =>
-        `<div><span class="pill">${s.state}</span> <strong>${s.stage}</strong>` +
-        `<div class="sub">${s.detail || ""}</div></div>`).join("");
-  } else { $("workflow-body").innerHTML = stateChip(NOT_OBSERVED); }
-  const tw = S.tripwire || {};
-  if (tw.state) {
-    $("workflow-body").innerHTML +=
-      `<div style="margin-top:8px">tripwire: ${stateChip(tw.state)} ` +
-      `<div class="sub">${tw.explanation || ""}</div></div>`;
+function renderGraph() {
+  layout = computeLayout();
+  if (!layout) {
+    document.getElementById("graph-wrap").innerHTML =
+      `<p style="padding:16px" class="muted">Risk map UNAVAILABLE — nothing to draw.</p>`;
+    return;
   }
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  const { nodes, edges, pos, W, H, height, width } = layout;
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("width", String(Math.min(width, 1180)));
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Recorded risk map graph");
 
-  // --- boundaries / verify -------------------------------------------------
-  $("boundaries").innerHTML = (D.boundaries || []).map(b => `<div>⚠ ${b}</div>`).join("");
-  $("verify-cmd").textContent = (D.verify && D.verify.command) || "";
-  $("verify-note").textContent = "— " + ((D.verify && D.verify.note) || "");
-})();
+  const defs = document.createElementNS(NS, "defs");
+  defs.innerHTML = `<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+     markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+     <path d="M 0 0 L 10 5 L 0 10 z" fill="#6e7681"></path></marker>`;
+  svg.appendChild(defs);
+  const title = document.createElementNS(NS, "text");
+  title.setAttribute("class", "lagend"); title.setAttribute("x", "14"); title.setAttribute("y", "22");
+  title.textContent = "Recorded risk map — decision facts (top) + cross-resource context (bottom). Both endpoint labels: OBSERVED solid blue · INFERRED dashed amber.";
+  svg.appendChild(title);
+
+  for (const e of edges) {
+    const a = pos.get(e.src), b = pos.get(e.dst);
+    if (!a || !b) continue;
+    const line = document.createElementNS(NS, "line");
+    line.setAttribute("class", "ledge " + (e.support === "OBSERVED" ? "obs" :
+      (e.support === "INFERRED" ? "inf" : "")));
+    line.setAttribute("x1", String(a.x + W / 2)); line.setAttribute("y1", String(a.y + H));
+    line.setAttribute("x2", String(b.x + W / 2)); line.setAttribute("y2", String(b.y));
+    line.setAttribute("marker-end", "url(#arrow)");
+    line.dataset.src = e.src; line.dataset.dst = e.dst;
+    const lbl = document.createElementNS(NS, "title");
+    lbl.textContent = `${e.relation}${e.support ? " (" + e.support + ")" : ""}`;
+    line.appendChild(lbl);
+    svg.appendChild(line);
+  }
+  for (const n of nodes) {
+    const p = pos.get(n.node_id); if (!p) continue;
+    const g = document.createElementNS(NS, "g");
+    g.setAttribute("class", "lnode");
+    g.dataset.id = n.node_id;
+    const rect = document.createElementNS(NS, "rect");
+    rect.setAttribute("x", String(p.x)); rect.setAttribute("y", String(p.y));
+    rect.setAttribute("width", String(W)); rect.setAttribute("height", String(H));
+    rect.setAttribute("rx", "9");
+    rect.setAttribute("stroke", NODE_COLORS[nodeClass(n.kind, n.node_id)]);
+    g.appendChild(rect);
+    const t1 = document.createElementNS(NS, "text");
+    t1.setAttribute("x", String(p.x + 10)); t1.setAttribute("y", String(p.y + 19));
+    t1.textContent = truncate(n.title || n.node_id, 26);
+    g.appendChild(t1);
+    const t2 = document.createElementNS(NS, "text");
+    t2.setAttribute("x", String(p.x + 10)); t2.setAttribute("y", String(p.y + 36));
+    t2.setAttribute("fill", "#9aa7b4");
+    t2.textContent = truncate(n.node_id, 28);
+    g.appendChild(t2);
+    const tip = document.createElementNS(NS, "title");
+    tip.textContent = `${n.title}\n${n.node_id}\n${n.state || ""}`;
+    g.appendChild(tip);
+    g.addEventListener("click", (ev) => { ev.stopPropagation(); selectNode(n.node_id); });
+    svg.appendChild(g);
+  }
+  const wrap = document.getElementById("graph-wrap");
+  wrap.textContent = ""; wrap.appendChild(svg);
+  document.getElementById("graph-stats").textContent =
+    `${layout.nodes.length} uniquely identified nodes · ${layout.edges.length} edges · ` +
+    `duplicates refused: ${((D.sections.risk_map.nodes || []).length) - layout.nodes.length}`;
+  wireGraphButtons();
+}
+
+function wireGraphButtons() {
+  document.getElementById("zoom-in").onclick = () => { zoom = Math.min(2.6, zoom * 1.25); applyZoom(); };
+  document.getElementById("zoom-out").onclick = () => { zoom = Math.max(0.4, zoom / 1.25); applyZoom(); };
+  document.getElementById("zoom-reset").onclick = () => { zoom = 1; applyZoom(); };
+  document.getElementById("graph-clear").onclick = () => { selectNode(null); };
+  addEventListener("keydown", (ev) => { if (ev.key === "Escape") selectNode(null); });
+}
+function applyZoom() {
+  const svg = document.querySelector("#graph-wrap svg");
+  if (!svg) return;
+  svg.style.transform = `scale(${zoom})`;
+  svg.style.transformOrigin = "top left";
+}
+
+function selectNode(id) {
+  selectedNode = id;
+  const detail = document.getElementById("graph-detail");
+  const svg = document.querySelector("#graph-wrap svg");
+  if (!layout || !svg) return;
+  for (const g of svg.querySelectorAll(".lnode")) {
+    g.classList.toggle("sel", g.dataset.id === id);
+  }
+  const touching = new Set();
+  for (const line of svg.querySelectorAll(".ledge")) {
+    const hot = id && (line.dataset.src === id || line.dataset.dst === id);
+    line.classList.toggle("hot", Boolean(hot));
+    line.classList.toggle("dim", Boolean(id && !hot));
+    if (hot) { touching.add(line.dataset.src); touching.add(line.dataset.dst); }
+  }
+  for (const g of svg.querySelectorAll(".lnode")) {
+    g.classList.toggle("dim", Boolean(id && !touching.has(g.dataset.id)));
+  }
+  if (!id) {
+    detail.innerHTML = `<h2>Node details</h2><span class="muted">Select a node in the graph.</span>`;
+    return;
+  }
+  const node = layout.nodes.find((n) => n.node_id === id);
+  const related = layout.edges.filter((e) => e.src === id || e.dst === id);
+  detail.innerHTML = `
+    <h2>Node details</h2>
+    ${chip(node.kind, "chip acc")} ${chip(node.severity || "—")}
+    ${node.support ? chip("support: " + node.support) : ""}
+    ${kv([
+      ["node id", `<code>${escapeHtml(node.node_id)}</code>`],
+      ["title", escapeHtml(node.title || "")],
+      ["state", escapeHtml(node.state || "")],
+    ])}
+    ${sub("Edges touching this node")}
+    ${related.length ? `<ul class="tight">${related.map((e) =>
+      `<li>${escapeHtml(e.src)} <b>${escapeHtml(e.relation)}</b> ${escapeHtml(e.dst)}${e.support ? " " + escapeHtml(e.support) : ""}</li>`).join("")}</ul>`
+      : `<p class="muted">No edges recorded for this node.</p>`}
+    ${sub("Recorded payload")}
+    <pre>${escapeHtml(JSON.stringify(node, null, 2))}</pre>`;
+}
+
+/* ---------- what-if tab ---------- */
+function sim() { return (D.sections && D.sections.simulation) || null; }
+
+function renderWhatIf() {
+  const el = document.getElementById("tab-whatif");
+  const s = sim();
+  if (!s) { el.innerHTML = missing("Simulation"); return; }
+  const factors = s.cross_resource_factors || [];
+  const proj = s.obligation_projections || [];
+  const eff = s.projected_provider_effects || [];
+  el.innerHTML = `
+      <div class="banner">HYPOTHETICAL — every projected value shown on this tab is
+      PROJECTED_NOT_OBSERVED. ${escapeHtml(String(s.banner || ""))}</div>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>"What if we retire this?" — pick a resource</h2>
+        <p class="muted">The page shows <b>precomputed deterministic factors</b> from
+        the recorded simulation; it runs no engine, observes nothing and has no
+        execute button by design.</p>
+        <select id="wi-select">
+          <option value="">— select a resource —</option>
+          ${assets().map((a) =>
+            `<optgroup label="${escapeHtml(a.project_id + " — " + (a.full_path || ""))}">` +
+            (a.resources || []).map((r) =>
+              `<option value="${escapeHtml(r.ref)}"${selectedResource === r.ref ? " selected" : ""}>
+                ${escapeHtml(r.kind + " · " + r.ref + " · " + r.state)}</option>`).join("") +
+            `</optgroup>`).join("")}
+        </select>
+        <div id="wi-factors"></div>
+      </div>
+      <div class="card">
+        <h2>Projected provider effects of the single authorized endpoint</h2>
+        ${eff.length ? eff.map((f) => `
+          <div class="factor">${chip(f.state || "PROJECTED_NOT_OBSERVED")}
+            <div>${escapeHtml(f.effect || "")}</div></div>`).join("")
+          : `<p class="muted">None recorded.</p>`}
+        ${sub("Redeployment risk")}<p>${chip(s.redeployment_risk || "—")}</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h2>Obligation projections (precomputed)</h2>
+        ${proj.length ? `<table><tr><th>obligation</th><th>now</th><th>projected</th><th>why</th></tr>
+          ${proj.map((p) => `<tr>
+            <td>${escapeHtml(p.obligation_id || "")}</td>
+            <td>${chip(p.status || "")}</td>
+            <td>${chip(p.projected || "")}</td>
+            <td>${escapeHtml(p.consequence || "")}</td></tr>`).join("")}</table>`
+          : `<p class="muted">No projections recorded.</p>`}
+      </div>
+      <div class="card">
+        <h2>Cross-resource factors (same observed portfolio evidence)</h2>
+        <p class="muted">${factors.length} factors; all labelled
+        ${chip("PROJECTED_NOT_OBSERVED", "chip amber")} — projections never create
+        eligibility or mint verdicts.</p>
+        <div id="wi-all-factors">
+        ${factors.map((f) => `
+          <div class="factor">${chip(f.state, "chip amber")}
+            <div><b>${escapeHtml(f.kind)}</b> <span class="ref" style="font-family:Consolas,monospace;color:var(--accent)">${escapeHtml(f.resource)}</span></div>
+            <div class="muted">observed ${escapeHtml(f.observed_at || "")} → fresh until ${escapeHtml(f.fresh_until || "")}</div>
+            <div>${escapeHtml(f.projection || "")}</div>
+          </div>`).join("")}
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const sel = document.getElementById("wi-select");
+  sel.addEventListener("change", () => {
+    selectedResource = sel.value || null;
+    const box = document.getElementById("wi-factors");
+    if (!sel.value) { box.innerHTML = ""; return; }
+    const matching = factors.filter((f) => f.resource === sel.value);
+    const isPages = sel.value.startsWith("pages");
+    box.innerHTML = matching.length ? matching.map((f) => `
+      <div class="factor">${chip(f.state, "chip amber")}
+        <div><b>${escapeHtml(f.kind)}</b> ${escapeHtml(f.resource)}</div>
+        <div>${escapeHtml(f.projection || "")}</div></div>`).join("")
+      : (isPages
+        ? `<div class="factor">${chip("NOT_RUN")}
+           <div>The authorized action acts on the Pages resource itself — a live
+           unpublish has <b>not been run</b> (no credential, no execution). Any
+           post-action state must come from a fresh provider read, never from
+           this page.</div></div>`
+        : `<div class="factor">${chip("NOT_OBSERVED (NO MATCHING FACTOR)", "chip dim")}
+           <div>No recorded projection factor for this reference. Nothing is
+           invented here.</div></div>`);
+  });
+}
+
+/* ---------- proof tab ---------- */
+function renderProof() {
+  const el = document.getElementById("tab-proof");
+  const sec = D.sections || {};
+  const duo = (D.external_evidence && D.external_evidence.duo_session) || null;
+  const gates = D.authorization_gates || [];
+  el.innerHTML = `
+  <div class="grid">
+    <div>
+      <div class="card"><h2>Authorization gates</h2>
+        ${gates.map((g) => `${chip(g.state)}
+          <div><b>${escapeHtml(g.gate)}</b></div><div class="muted">${escapeHtml(g.detail)}</div><p></p>`).join("")}
+      </div>
+      <div class="card">${proofCapsule(sec.capsule)}</div>
+      ${sec.receipt && sec.receipt.schema ? receiptCard(sec.receipt) : `
+        <div class="card"><h2>Retirement receipt</h2>${chip("NOT_RUN")}
+        <div class="muted">No live mutation receipt exists: the runtime never
+        executed the destructive step, and this page will not pretend
+        otherwise.</div></div>`}
+    </div>
+    <div>
+      ${sec.decision && sec.decision.verdict ? decisionCard(sec.decision) : missing("Decision")}
+      <div class="card"><h2>External evidence — GitLab Duo session 9671626</h2>
+        ${duo ? duoLadder(duo) : missing("Duo session evidence")}
+      </div>
+      <div class="card"><h2>Escaping self-test</h2>
+        <p class="muted">The raw string below is rendered as inert text (not as
+        HTML) to demonstrate that provider-shaped content is always escaped:</p>
+        <pre>${escapeHtml(JSON.stringify(D.escape_probe || "", null, 0))}</pre>
+        <div id="escape-probe"></div>
+      </div>
+    </div>
+  </div>`;
+  const probe = document.getElementById("escape-probe");
+  probe.textContent = D.escape_probe || "";
+  probe.className = "muted";
+}
+
+function proofCapsule(c) {
+  return `<h2>Proof capsule</h2>
+    ${c && c.sections ? chip("RECORDED") : chip("UNAVAILABLE", "chip dim")}
+    ${!(c && c.sections) ? `<div class="muted">Capsule artifact was not supplied; it is not invented here.</div>` : ""}
+    ${c && c.sections ? kv([
+      ["schema", escapeHtml(c.schema || "—")],
+      ["capsule id", `<code>${escapeHtml(c.capsule_id || "")}</code>`],
+      ["verify", `<code>${escapeHtml((D.verify || {}).command || "—")}</code>`],
+      ["note", escapeHtml((D.verify || {}).note || "")],
+    ]) : ""}
+    ${c && c.sections ? `
+    <table><tr><th>section</th><th>state</th></tr>
+    ${Object.entries(c.sections).map(([k, v]) =>
+      `<tr><td>${escapeHtml(k)}</td><td>${chip((v && v.state) || "—")}</td></tr>`).join("")}
+    </table>` : ""}`;
+}
+function receiptCard(r) {
+  return `<div class="card"><h2>Retirement receipt (live)</h2>${chip("RECORDED_LIVE")}
+    ${kv([
+      ["schema", escapeHtml(r.schema || "")],
+      ["action", escapeHtml(r.action || "")],
+      ["verdict", chip((r.verification && r.verification.verdict) || r.verdict || "—")],
+    ])}</div>`;
+}
+function decisionCard(d) {
+  return `<div class="card"><h2>Deterministic decision</h2>${chip(d.verdict)}
+    ${kv([
+      ["target", `<code>${escapeHtml((d.target || {}).project_id || "")}</code> ${escapeHtml((d.target || {}).full_path || "")}`],
+      ["action", escapeHtml(d.action || "")],
+    ])}
+    ${sub("Why")}<ul class="tight">${(d.reasons || []).map((r) =>
+      `<li>${escapeHtml(r.code || "")} — ${escapeHtml(r.explanation || "")}</li>`).join("")}</ul>`;
+}
+function duoLadder(duo) {
+  const rows = [["Independently observed (anonymous API)", duo.evidence_ladder && duo.evidence_ladder.independently_observed_anonymous_api, "chip ok"],
+    ["Operator-confirmed only", duo.evidence_ladder && duo.evidence_ladder.operator_confirmed_only, "chip amber"],
+    ["Not independently observable & never promoted", duo.evidence_ladder && duo.evidence_ladder.not_independently_observable_and_never_promoted, "chip bad"]];
+  return `
+    ${kv([
+      ["flow item", escapeHtml(duo.flow_catalog_item_id || "—")],
+      ["session", escapeHtml((duo.duo_session || {}).session_id || "—") + " " + chip((duo.duo_session || {}).status || "—")],
+      ["source issue", `#${escapeHtml((duo.issue_binding || {}).issue_iid || "—")} on project ${escapeHtml((duo.issue_binding || {}).project_id || "—")}`],
+      ["captured", escapeHtml(duo.captured_at_utc || "—")],
+    ])}
+    ${rows.map(([head, items, cls]) => `
+      ${sub(head)}
+      <ul class="tight">${(items || []).map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`).join("")}
+    <div class="banner">${escapeHtml(duo.determinism_boundary || "")}</div>`;
+}
+
+/* ---------- footer & wiring ---------- */
+function renderFooter() {
+  const ic = D.interactive_contract || {};
+  document.getElementById("footer").innerHTML = `
+    <b>Static page contract:</b> ${escapeHtml(String(ic.page_is_static))} static ·
+    network fetches at view time: <b>${escapeHtml(String(ic.network_fetches_at_view_time))}</b> ·
+    destructive buttons: <b>${escapeHtml(String(ic.destructive_buttons))}</b><br>
+    ${escapeHtml(ic.note || "")}
+    <p>${(D.boundaries || []).map((b) => "⚠ " + escapeHtml(b)).join("<br>")}</p>
+    <p data-probe="rendered">${escapeHtml(String(D.escape_probe || ""))}</p>`;
+}
+
+document.querySelectorAll(".tabbtn").forEach((b) =>
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".tabbtn").forEach((x) => x.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    const panel = document.getElementById("tab-" + b.dataset.tab);
+    panel.classList.add("active");
+    if (b.dataset.tab === "graph" && !layout) renderGraph();
+  }));
+
+renderHeader();
+renderPortfolio();
+renderWhatIf();
+renderProof();
+renderFooter();
 </script>
 </body>
 </html>

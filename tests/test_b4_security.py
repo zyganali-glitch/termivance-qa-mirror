@@ -1,4 +1,4 @@
-﻿"""B4 P0 adversarial security tests.
+"""B4 P0 adversarial security tests.
 
 Each test proves one refused path of the three closed P0 defects:
 
@@ -21,9 +21,11 @@ import pytest
 from conftest import FakeTransport, ScriptedTransport, live_responses, patch_served
 from test_retirement import (
     APPROVAL_IID,
+    APPROVAL_KEY,
     MARKER,
     NOW,
     OPERATOR,
+    OPERATOR_USER_ID,
     TARGET,
     URL,
     allow_policy,
@@ -31,6 +33,7 @@ from test_retirement import (
     auth,
     control,
     live_retire,
+    operator_trust,
     published,
     scripted_client,
     with_approval,
@@ -52,7 +55,7 @@ def _live_ledger(tmp_path):
     return AuthorizationLedger(tmp_path / "ledger.json")
 
 
-def healthy_delivery(tmp_path, monkeypatch):
+def healthy_delivery(tmp_path, monkeypatch, **kw):
     """A fraud-free baseline: one authorized, executed, durably-sealed mutation."""
     patch_served(
         monkeypatch,
@@ -68,6 +71,7 @@ def healthy_delivery(tmp_path, monkeypatch):
         read_client=read_client,
         mutation_transport=FakeTransport(MUTATION_OK),
         ledger_path=tmp_path / "ledger.json",
+        **kw,
     )
 
 
@@ -205,7 +209,15 @@ def test_tampered_record_cannot_reenable_the_authorization(tmp_path, monkeypatch
     data["consumed"][binding]["state"] = "CONSUMED_ACCEPTED"
     data["consumed"][binding]["operation_id"] = "op-forged"
     (tmp_path / "ledger.json").write_text(json.dumps(data), encoding="utf-8")
-    assert ledger.consumption_record(binding, operation_id="op-forged") is not None
+    # A locally edited record no longer "reads back": the integrity digest over
+    # the recorded content no longer matches, so the whole ledger refuses to be
+    # consumed as evidence (fail closed) instead of serving the forged state.
+    with pytest.raises(LedgerError):
+        ledger.consumption_record(binding, operation_id="op-forged")
+    with pytest.raises(LedgerError):
+        ledger._read()
+    # And no path can re-enable it: consumption refuses because it cannot
+    # honestly read the durable state either.
     with pytest.raises(LedgerError):
         ledger.consume(authorization, operation_id="op-reuse", now=NOW)
 
@@ -221,10 +233,19 @@ def approval_client(record, *, project_id=None, iid=APPROVAL_IID):
     )
 
 
-def approval_record(authorization, *, author=OPERATOR, state="opened", offset=None):
+def approval_record(
+    authorization,
+    *,
+    author: str = OPERATOR,
+    user_id: int = OPERATOR_USER_ID,
+    state: str = "opened",
+    offset=None,
+):
     record = json.loads(approval_issue_reply(authorization).body)
     if author != OPERATOR:
         record["author"]["username"] = author
+    if user_id != OPERATOR_USER_ID:
+        record["author"]["id"] = user_id
     if state != "opened":
         record["state"] = state
     if offset is not None:
@@ -239,7 +260,13 @@ def test_approval_from_a_divergent_author_is_refused():
     client = approval_client(approval_record(authorization, author="model-impersonating-op"))
     with pytest.raises(AuthorizationError):
         verify_approval_source(
-            client, authorization, project_id=TARGET.project_id, issue_iid=APPROVAL_IID, now=NOW
+            client,
+            authorization,
+            project_id=TARGET.project_id,
+            issue_iid=APPROVAL_IID,
+            trust=operator_trust(),
+            approval_key=APPROVAL_KEY,
+            now=NOW,
         )
 
 
@@ -255,6 +282,8 @@ def test_tampered_approval_body_is_refused():
             authorization,
             project_id=TARGET.project_id,
             issue_iid=APPROVAL_IID,
+            trust=operator_trust(),
+            approval_key=APPROVAL_KEY,
             now=NOW,
         )
 
@@ -266,7 +295,13 @@ def test_closed_approval_issue_is_refused():
     client = approval_client(approval_record(authorization, state="closed"))
     with pytest.raises(AuthorizationError):
         verify_approval_source(
-            client, authorization, project_id=TARGET.project_id, issue_iid=APPROVAL_IID, now=NOW
+            client,
+            authorization,
+            project_id=TARGET.project_id,
+            issue_iid=APPROVAL_IID,
+            trust=operator_trust(),
+            approval_key=APPROVAL_KEY,
+            now=NOW,
         )
 
 
@@ -277,7 +312,13 @@ def test_missing_approval_issue_is_refused():
     client = GitLabClient("t", transport=FakeTransport({}))
     with pytest.raises(AuthorizationError):
         verify_approval_source(
-            client, authorization, project_id=TARGET.project_id, issue_iid=APPROVAL_IID, now=NOW
+            client,
+            authorization,
+            project_id=TARGET.project_id,
+            issue_iid=APPROVAL_IID,
+            trust=operator_trust(),
+            approval_key=APPROVAL_KEY,
+            now=NOW,
         )
 
 
@@ -315,13 +356,25 @@ def test_early_or_late_approval_window_is_refused():
     client = approval_client(approval_record(authorization, offset=-timedelta(hours=3)))
     with pytest.raises(AuthorizationError):
         verify_approval_source(
-            client, authorization, project_id=TARGET.project_id, issue_iid=APPROVAL_IID, now=NOW
+            client,
+            authorization,
+            project_id=TARGET.project_id,
+            issue_iid=APPROVAL_IID,
+            trust=operator_trust(),
+            approval_key=APPROVAL_KEY,
+            now=NOW,
         )
     late = auth()
     client_late = approval_client(approval_record(late, offset=timedelta(hours=2)))
     with pytest.raises(AuthorizationError):
         verify_approval_source(
-            client_late, late, project_id=TARGET.project_id, issue_iid=APPROVAL_IID, now=NOW
+            client_late,
+            late,
+            project_id=TARGET.project_id,
+            issue_iid=APPROVAL_IID,
+            trust=operator_trust(),
+            approval_key=APPROVAL_KEY,
+            now=NOW,
         )
 
 
@@ -330,9 +383,7 @@ def test_early_or_late_approval_window_is_refused():
 
 def test_valid_round_trip_of_a_real_receipt_binds(tmp_path, monkeypatch):
     receipt = healthy_delivery(tmp_path, monkeypatch)
-    binding = validate_mutation_receipt(
-        receipt.to_dict(), TARGET, ledger=_live_ledger(tmp_path)
-    )
+    binding = validate_mutation_receipt(receipt.to_dict(), TARGET, ledger=_live_ledger(tmp_path))
     assert binding.accepted is True
     assert binding.durable is True
 
@@ -366,9 +417,7 @@ def test_receipt_with_swapped_target_is_refused(tmp_path, monkeypatch):
     receipt = healthy_delivery(tmp_path, monkeypatch)
     other = TargetIdentity(99999999, "grp/other-pages", "GITLAB_PAGES_SITE")
     with pytest.raises(ReceiptValidationError):
-        validate_mutation_receipt(
-            receipt.to_dict(), other, ledger=_live_ledger(tmp_path)
-        )
+        validate_mutation_receipt(receipt.to_dict(), other, ledger=_live_ledger(tmp_path))
 
 
 def test_receipt_with_swapped_endpoint_is_refused(tmp_path, monkeypatch):
@@ -401,9 +450,7 @@ def test_stale_observation_cannot_be_promoted(tmp_path, monkeypatch):
     from termivance.evidence import PagesObservation, bounded_absence
 
     receipt = healthy_delivery(tmp_path, monkeypatch)
-    binding = validate_mutation_receipt(
-        receipt.to_dict(), TARGET, ledger=_live_ledger(tmp_path)
-    )
+    binding = validate_mutation_receipt(receipt.to_dict(), TARGET, ledger=_live_ledger(tmp_path))
     stale_time = NOW - timedelta(hours=24)
     observation = PagesObservation(
         target=TARGET,

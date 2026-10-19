@@ -8,12 +8,7 @@
     {
       "dst": "obl:pages_published",
       "relation": "impacts",
-      "src": "risk:missing_evidence"
-    },
-    {
-      "dst": "obl:provider_observation",
-      "relation": "impacts",
-      "src": "risk:missing_evidence"
+      "src": "risk:insufficient_provider_access"
     },
     {
       "dst": "obl:redeployment_path",
@@ -23,7 +18,7 @@
     {
       "dst": "obl:retirement_permission",
       "relation": "impacts",
-      "src": "risk:missing_evidence"
+      "src": "risk:insufficient_permission"
     },
     {
       "dst": "obl:ownership_authorization",
@@ -36,11 +31,6 @@
       "src": "obligation-unknown:obl:pages_published"
     },
     {
-      "dst": "obl:provider_observation",
-      "relation": "impacts",
-      "src": "obligation-unknown:obl:provider_observation"
-    },
-    {
       "dst": "obl:redeployment_path",
       "relation": "impacts",
       "src": "obligation-violation:obl:redeployment_path"
@@ -48,10 +38,151 @@
     {
       "dst": "obl:retirement_permission",
       "relation": "impacts",
-      "src": "obligation-unknown:obl:retirement_permission"
+      "src": "obligation-violation:obl:retirement_permission"
+    },
+    {
+      "dst": "not-observed:pages_site:87779099:not_observed",
+      "relation": "obligates",
+      "src": "resource:issue:87779099:3"
+    },
+    {
+      "dst": "not-observed:pages_site:87779099:not_observed",
+      "relation": "obligates",
+      "src": "resource:issue:87779099:2"
+    },
+    {
+      "dst": "not-observed:pages_site:87779099:not_observed",
+      "relation": "obligates",
+      "src": "resource:issue:87779099:1"
+    },
+    {
+      "dst": "not-observed:pages_site:87785099:not_observed",
+      "relation": "recreates",
+      "src": "resource:ci_redeployment:87785099"
     }
   ],
   "nodes": [
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:ci_redeployment_mechanism:87777871:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (NOT_FOUND) via GET /projects/87777871/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "CI_REDEPLOYMENT_MECHANISM was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:deployment:87777871:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87777871/deployments [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "DEPLOYMENT was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:deployment:87779099:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87779099/deployments [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "DEPLOYMENT was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:deployment:87785099:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87785099/deployments [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "DEPLOYMENT was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:environment:87777871:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87777871/environments [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "ENVIRONMENT was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:environment:87779099:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87779099/environments [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "ENVIRONMENT was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:environment:87785099:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87785099/environments [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "ENVIRONMENT was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:pages_site:87777871:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87777871/pages [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "PAGES_SITE was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:pages_site:87779099:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87779099/pages [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "PAGES_SITE was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:pages_site:87785099:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (AUTH_DENIED) via GET /projects/87785099/pages [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "PAGES_SITE was NOT_OBSERVED at the provider"
+    },
+    {
+      "impacts": [],
+      "kind": "RISK",
+      "mitigations": [
+        "re-check via an authorized read when credentials permit"
+      ],
+      "node_id": "not-observed:pages_site:87786164:not_observed",
+      "severity": "MEDIUM",
+      "state": "NOT_OBSERVED (NOT_FOUND) via GET /projects/87786164/pages [ANONYMOUS_PUBLIC_READ]; a 401/403/404 is never absence",
+      "title": "PAGES_SITE was NOT_OBSERVED at the provider"
+    },
     {
       "impacts": [
         "obl:pages_published"
@@ -62,28 +193,6 @@
       "severity": "MEDIUM",
       "state": "status=UNKNOWN",
       "title": "obligation PAGES_PUBLISHED is unverifiable"
-    },
-    {
-      "impacts": [
-        "obl:provider_observation"
-      ],
-      "kind": "RISK",
-      "mitigations": [],
-      "node_id": "obligation-unknown:obl:provider_observation",
-      "severity": "MEDIUM",
-      "state": "status=UNKNOWN",
-      "title": "obligation PROVIDER_OBSERVATION is unverifiable"
-    },
-    {
-      "impacts": [
-        "obl:retirement_permission"
-      ],
-      "kind": "RISK",
-      "mitigations": [],
-      "node_id": "obligation-unknown:obl:retirement_permission",
-      "severity": "MEDIUM",
-      "state": "status=UNKNOWN",
-      "title": "obligation RETIREMENT_PERMISSION is unverifiable"
     },
     {
       "impacts": [
@@ -109,25 +218,14 @@
     },
     {
       "impacts": [
-        "obl:pages_published"
+        "obl:retirement_permission"
       ],
       "kind": "RISK",
       "mitigations": [],
-      "node_id": "risk:missing_evidence",
-      "severity": "MEDIUM",
-      "state": "publication evidence is RECORDED_LIVE, not live",
-      "title": "required evidence is missing"
-    },
-    {
-      "impacts": [
-        "obl:provider_observation"
-      ],
-      "kind": "RISK",
-      "mitigations": [],
-      "node_id": "risk:missing_evidence",
-      "severity": "MEDIUM",
-      "state": "provider evidence is RECORDED_LIVE, not a live observation; fixtures and records cannot satisfy a live requirement",
-      "title": "required evidence is missing"
+      "node_id": "obligation-violation:obl:retirement_permission",
+      "severity": "HIGH",
+      "state": "status=VIOLATED",
+      "title": "obligation RETIREMENT_PERMISSION is violated"
     },
     {
       "impacts": [
@@ -135,10 +233,21 @@
       ],
       "kind": "RISK",
       "mitigations": [],
-      "node_id": "risk:missing_evidence",
+      "node_id": "risk:insufficient_permission",
       "severity": "MEDIUM",
-      "state": "permission evidence is RECORDED_LIVE, not a live observation",
-      "title": "required evidence is missing"
+      "state": "the acting identity lacks Maintainer/Owner Pages administration on the target",
+      "title": "operator permission missing or insufficient"
+    },
+    {
+      "impacts": [
+        "obl:pages_published"
+      ],
+      "kind": "RISK",
+      "mitigations": [],
+      "node_id": "risk:insufficient_provider_access",
+      "severity": "MEDIUM",
+      "state": "publication could not be observed (AUTH_DENIED)",
+      "title": "provider access cannot verify state"
     },
     {
       "impacts": [
@@ -164,12 +273,123 @@
     },
     {
       "impacts": [],
+      "kind": "DEPENDENCY",
+      "mitigations": [
+        "observation only; mutation_capability=NOT_AUTHORIZING"
+      ],
+      "node_id": "resource:ci_redeployment:87779099",
+      "severity": "LOW",
+      "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG via GET /projects/87779099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T10:36:07.237741+00:00]",
+      "title": "CI_REDEPLOYMENT_MECHANISM NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG"
+    },
+    {
+      "impacts": [],
+      "kind": "DEPENDENCY",
+      "mitigations": [
+        "observation only; mutation_capability=NOT_AUTHORIZING"
+      ],
+      "node_id": "resource:ci_redeployment:87785099",
+      "severity": "HIGH",
+      "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT via GET /projects/87785099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T10:36:07.237741+00:00]",
+      "title": "CI_REDEPLOYMENT_MECHANISM PAGES_REDEPLOYMENT_SIGNAL_PRESENT"
+    },
+    {
+      "impacts": [],
+      "kind": "DEPENDENCY",
+      "mitigations": [
+        "observation only; mutation_capability=NOT_AUTHORIZING"
+      ],
+      "node_id": "resource:issue:87777871:1",
+      "severity": "LOW",
+      "state": "opened via GET /projects/87777871/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T10:36:07.237741+00:00]",
+      "title": "OPEN_ISSUE opened"
+    },
+    {
+      "impacts": [],
+      "kind": "DEPENDENCY",
+      "mitigations": [
+        "observation only; mutation_capability=NOT_AUTHORIZING"
+      ],
+      "node_id": "resource:issue:87779099:1",
+      "severity": "LOW",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T10:36:07.237741+00:00]",
+      "title": "OPEN_ISSUE opened"
+    },
+    {
+      "impacts": [],
+      "kind": "DEPENDENCY",
+      "mitigations": [
+        "observation only; mutation_capability=NOT_AUTHORIZING"
+      ],
+      "node_id": "resource:issue:87779099:2",
+      "severity": "LOW",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T10:36:07.237741+00:00]",
+      "title": "OPEN_ISSUE opened"
+    },
+    {
+      "impacts": [],
+      "kind": "DEPENDENCY",
+      "mitigations": [
+        "observation only; mutation_capability=NOT_AUTHORIZING"
+      ],
+      "node_id": "resource:issue:87779099:3",
+      "severity": "LOW",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T10:36:07.237741+00:00]",
+      "title": "OPEN_ISSUE opened"
+    },
+    {
+      "impacts": [],
       "kind": "CONTROL",
       "mitigations": [],
       "node_id": "obl:identity_binding",
       "severity": "NONE",
       "state": "status=SATISFIED via controlled evidence",
       "title": "obligation IDENTITY_BINDING is satisfied"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:ownership_authorization",
+      "severity": "NONE",
+      "state": "status=VIOLATED",
+      "title": "obligation OWNERSHIP_AUTHORIZATION must hold"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:pages_published",
+      "severity": "NONE",
+      "state": "status=UNKNOWN",
+      "title": "obligation PAGES_PUBLISHED must hold"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:provider_observation",
+      "severity": "NONE",
+      "state": "status=SATISFIED via controlled evidence",
+      "title": "obligation PROVIDER_OBSERVATION is satisfied"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:redeployment_path",
+      "severity": "NONE",
+      "state": "status=VIOLATED",
+      "title": "obligation REDEPLOYMENT_PATH must hold"
+    },
+    {
+      "impacts": [],
+      "kind": "CONTROL",
+      "mitigations": [],
+      "node_id": "obl:retirement_permission",
+      "severity": "NONE",
+      "state": "status=VIOLATED",
+      "title": "obligation RETIREMENT_PERMISSION must hold"
     },
     {
       "impacts": [],

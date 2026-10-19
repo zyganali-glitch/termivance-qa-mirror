@@ -343,6 +343,22 @@ def _cmd_retire_pages(args: argparse.Namespace) -> int:
 
     policy = load_policy_file(args.policy)
     approval_key = os.environ.get(APPROVAL_KEY_ENV) or None
+    operator_trust = None
+    trust_path = getattr(args, "operator_trust", None)
+    if trust_path:
+        from termivance.approval_source import load_operator_trust
+
+        operator_trust = load_operator_trust(trust_path)
+    elif args.execute:
+        from termivance.approval_source import TRUST_SCHEMA
+
+        print(
+            "refusing --execute: an independent operator trust policy is required "
+            f"for a real mutation (pass --operator-trust PATH pointing at a "
+            f"{TRUST_SCHEMA} document)",
+            file=sys.stderr,
+        )
+        return 2
     authorization = (
         load_authorization(args.authorization, approval_key=approval_key)
         if args.authorization
@@ -373,6 +389,7 @@ def _cmd_retire_pages(args: argparse.Namespace) -> int:
         approval_key=approval_key,
         approval_project_id=args.approval_project_id,
         approval_issue_iid=args.approval_issue_iid,
+        operator_trust=operator_trust,
     )
     payload = receipt.to_dict()
     if args.json:
@@ -476,8 +493,23 @@ def _cmd_risk_map(args: argparse.Namespace) -> int:
     if decision is None:
         print("--decision is required", file=sys.stderr)
         return 2
+    cross_nodes, cross_edges = (), ()
+    portfolio_path = getattr(args, "portfolio", None)
+    if portfolio_path:
+        from termivance.dependencies import cross_resource_view
+        from termivance.portfolio import portfolio_from_data
+
+        portfolio_data = _read_json(portfolio_path)
+        if portfolio_data is None:
+            print(f"portfolio snapshot unreadable: {portfolio_path}", file=sys.stderr)
+            return 2
+        view = cross_resource_view(portfolio_from_data(portfolio_data))
+        cross_nodes = view.as_risk_nodes(decision.get("target") or {})
+        cross_edges = view.as_risk_edges()
     try:
-        risk_map = risk_map_from_record(decision)
+        risk_map = risk_map_from_record(
+            decision, cross_nodes=cross_nodes, cross_edges=cross_edges
+        )
     except ValueError as exc:
         print(f"decision record unusable: {exc}", file=sys.stderr)
         return 2
@@ -516,7 +548,18 @@ def _cmd_simulate(args: argparse.Namespace) -> int:
         snapshot = discover_live(client, target)
         graph = graph_from_snapshot(snapshot)
     policy = policy or load_policy("config/retirement_policy.b3_disposable.json")
-    result = simulate_retirement(graph, policy=policy)
+    cross = None
+    portfolio_path = getattr(args, "portfolio", None)
+    if portfolio_path:
+        from termivance.dependencies import cross_resource_view
+        from termivance.portfolio import portfolio_from_data
+
+        portfolio_data = _read_json(portfolio_path)
+        if portfolio_data is None:
+            print(f"portfolio snapshot unreadable: {portfolio_path}", file=sys.stderr)
+            return 2
+        cross = cross_resource_view(portfolio_from_data(portfolio_data))
+    result = simulate_retirement(graph, policy=policy, cross=cross)
     payload = result.to_dict()
     payload["target_project_id"] = args.project_id
     if args.json:
@@ -553,9 +596,11 @@ def _cmd_capsule_build(args: argparse.Namespace) -> int:
         print("receipt or decision carries no usable target", file=sys.stderr)
         return 2
     target = TargetIdentity.from_dict(target_data)
-    mutation = receipt.get("mutation") if (
-        receipt is not None and isinstance(receipt.get("mutation"), dict)
-    ) else None
+    mutation = (
+        receipt.get("mutation")
+        if (receipt is not None and isinstance(receipt.get("mutation"), dict))
+        else None
+    )
     # Authorization provenance: read back the approval checks recorded in the
     # receipt's preflight (never invented here).
     preflight_data = receipt.get("preflight") if receipt is not None else None
@@ -571,13 +616,14 @@ def _cmd_capsule_build(args: argparse.Namespace) -> int:
                     for c in checks
                     if isinstance(c, dict)
                     and str(c.get("check"))
-                    in {"operator_approval_verified", "approval_provenance_gitlab",
-                        "gitlab_approval_record_verified"}
+                    in {
+                        "operator_approval_verified",
+                        "approval_provenance_gitlab",
+                        "gitlab_approval_record_verified",
+                    }
                 ],
             }
-    notes = tuple(
-        note.strip() for note in str(args.notes or "").split(";") if note.strip()
-    )
+    notes = tuple(note.strip() for note in str(args.notes or "").split(";") if note.strip())
     if receipt is None:
         default_notes = (
             "no-mutation-yet capsule: assembled from a recorded deterministic "
@@ -640,9 +686,7 @@ def _cmd_capsule_render(args: argparse.Namespace) -> int:
 def _cmd_workflow_plan(args: argparse.Namespace) -> int:
     from termivance.workflow import plan as build_plan
 
-    plan_ = build_plan(
-        project_id=args.project_id, full_path=args.full_path, out_dir=args.out_dir
-    )
+    plan_ = build_plan(project_id=args.project_id, full_path=args.full_path, out_dir=args.out_dir)
     payload = plan_.to_dict()
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
@@ -655,9 +699,7 @@ def _cmd_workflow_status(args: argparse.Namespace) -> int:
     from termivance.workflow import assess, render_assessment
     from termivance.workflow import plan as build_plan
 
-    plan_ = build_plan(
-        project_id=args.project_id, full_path=args.full_path, out_dir=args.out_dir
-    )
+    plan_ = build_plan(project_id=args.project_id, full_path=args.full_path, out_dir=args.out_dir)
     out_dir = Path(args.out_dir)
     artifacts = {
         "snapshot": out_dir / args.snapshot,
@@ -790,6 +832,13 @@ def build_parser() -> argparse.ArgumentParser:
     retire.add_argument("--approval-project-id", type=int, default=None)
     retire.add_argument("--approval-issue-iid", type=int, default=None)
     retire.add_argument(
+        "--operator-trust",
+        default=None,
+        dest="operator_trust",
+        help="path to the operator-owned trust policy "
+        "(termivance.operator_trust/v1) required for --execute",
+    )
+    retire.add_argument(
         "--control-attestation",
         default=None,
         help="operator-supplied redeployment-control attestation JSON",
@@ -817,6 +866,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     risk_map = sub.add_parser("risk-map", help="deterministic risk map for a recorded decision")
     risk_map.add_argument("--decision", required=True, help="recorded decision JSON")
+    risk_map.add_argument(
+        "--portfolio",
+        default=None,
+        help="observed portfolio snapshot JSON: its resource records are appended "
+        "as cross-resource dependency/risk context (never decision facts)",
+    )
     risk_map.add_argument("--out", default=None)
     risk_map.add_argument("--json", action="store_true")
 
@@ -827,6 +882,12 @@ def build_parser() -> argparse.ArgumentParser:
     simulate.add_argument("--policy", default=None)
     simulate.add_argument("--from-record", default=None, help="recorded snapshot to analyze")
     simulate.add_argument("--anonymous", action="store_true", help="unauthenticated live reads")
+    simulate.add_argument(
+        "--portfolio",
+        default=None,
+        help="observed portfolio snapshot JSON: resource-level projection factors "
+        "are appended from the same evidence (never observations)",
+    )
     simulate.add_argument("--json", action="store_true")
 
     capsule_build = sub.add_parser(
@@ -836,19 +897,20 @@ def build_parser() -> argparse.ArgumentParser:
     capsule_build.add_argument("--absence", default=None, help="recorded absence probe JSON")
     capsule_build.add_argument("--decision", default=None, help="recorded decision JSON")
     capsule_build.add_argument(
-        "--target-project-id", type=int, default=None,
+        "--target-project-id",
+        type=int,
+        default=None,
         help="with --decision: target identity for a no-mutation-yet capsule",
     )
     capsule_build.add_argument(
         "--target-full-path", default=None, help="with --decision: full path"
     )
     capsule_build.add_argument(
-        "--target-kind", default="GITLAB_PAGES_SITE",
+        "--target-kind",
+        default="GITLAB_PAGES_SITE",
         help="resource kind for a no-mutation-yet capsule",
     )
-    capsule_build.add_argument(
-        "--notes", default=None, help="semicolon-separated limitation notes"
-    )
+    capsule_build.add_argument("--notes", default=None, help="semicolon-separated limitation notes")
     capsule_build.add_argument("--out", required=True)
     capsule_build.add_argument("--json", action="store_true")
 

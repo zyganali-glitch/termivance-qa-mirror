@@ -96,37 +96,49 @@ def check_tripwire(
     """
     if earlier.target.key() != later.target.key():
         return TripwireReport(
-            earlier, later, INCONCLUSIVE,
+            earlier,
+            later,
+            INCONCLUSIVE,
             "the two passes are bound to different targets; nothing is claimed",
         )
     if later.observed_at < earlier.observed_at:
         return TripwireReport(
-            earlier, later, INCONCLUSIVE,
+            earlier,
+            later,
+            INCONCLUSIVE,
             "the later pass predates the earlier one; order is unprovable",
         )
     if earlier.publication_observed and not later.publication_observed:
         return TripwireReport(
-            earlier, later, ABSENCE_OBSERVED_NOT_CONTROLLED,
+            earlier,
+            later,
+            ABSENCE_OBSERVED_NOT_CONTROLLED,
             "publication was observed earlier and not observed later: an absence "
             "observation — the absence verdict itself comes only from the bounded "
             "absence rules, and resurrection remains possible",
         )
     if not earlier.publication_observed and later.publication_observed:
         return TripwireReport(
-            earlier, later, RESURRECTION_NOT_CONTROLLED,
+            earlier,
+            later,
+            RESURRECTION_NOT_CONTROLLED,
             "an earlier absent observation is followed by a live deployment: the "
             "site resurfaced. Only a fresh authorized operation can re-establish "
             "control; this report is not that control",
         )
     if earlier.publication_observed and later.publication_observed:
         return TripwireReport(
-            earlier, later, STABLE_PRESENT,
+            earlier,
+            later,
+            STABLE_PRESENT,
             "publication observed on both passes; nothing retired so far",
         )
     return TripwireReport(
-        earlier, later, STABLE_ABSENT_NOT_CONTROLLED,
+        earlier,
+        later,
+        STABLE_ABSENT_NOT_CONTROLLED,
         "no deployment observed on either pass; stable absence is uncontrolled "
-        "against redeployment (CDN lag and later redeploys keep this open)"
+        "against redeployment (CDN lag and later redeploys keep this open)",
     )
 
 

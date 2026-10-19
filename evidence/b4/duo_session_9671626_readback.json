@@ -1,0 +1,53 @@
+{
+  "schema": "termivance.external_evidence_record/v1",
+  "captured_at_utc": "2026-10-19T09:55:24.858411+00:00",
+  "subject": "genuine B4 GitLab Duo Custom Flow execution (Termivance Retirement Analyst)",
+  "flow_catalog_item_id": 1018562,
+  "duo_session": {
+    "session_id": "9671626",
+    "status": "Finished",
+    "url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9671626",
+    "status_source": "OPERATOR_VISUAL_CONFIRMATION (authenticated browser session)",
+    "independent_web_page_probe_status_anonymous": 404,
+    "independent_probe_note": "agent-sessions UI requires authenticated access; 404 to anonymous clients is an access observation, never evidence about the session state"
+  },
+  "issue_binding": {
+    "project_id": 87779099,
+    "project_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+    "issue_iid": 3,
+    "note_id_reported": 4040776241,
+    "independent_api_readback": {
+      "issue_metadata_status_anonymous": 200,
+      "issue_state": "opened",
+      "issue_title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization",
+      "issue_author": "zyganali",
+      "user_notes_count": 3,
+      "labels": [
+        "retirement-decision",
+        "termivance::b3"
+      ],
+      "issue_updated_at": "2026-10-19T08:57:41.500Z",
+      "notes_list_status_anonymous": 401,
+      "discussions_list_status_anonymous": 401
+    }
+  },
+  "evidence_ladder": {
+    "independently_observed_anonymous_api": [
+      "project 87779099 is publicly readable (HTTP 200)",
+      "issue #3 exists, state opened, title/labels/author match the recorded B3 retirement status thread",
+      "issue user_notes_count=3 and issue updated_at=2026-10-19T08:57:41.500Z — consistent with, but not proof of, the operator-reported new comment window"
+    ],
+    "operator_confirmed_only": [
+      "session id 9671626 exists and Finished in the authenticated automate/agent-sessions UI",
+      "the agent-authored comment note id 4040776241 was published on issue #3 by the GitLab Duo service account",
+      "the six-section analysis content itself and its read-only, non-authoritative character",
+      "the agent used genuine GitLab tools and stated it did NOT directly query disposable project 87785099"
+    ],
+    "not_independently_observable_and_never_promoted": [
+      "note/discussion contents (HTTP 401 to anonymous readers; 401 is an access observation, never absence, never authenticity)",
+      "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
+    ]
+  },
+  "determinism_boundary": "the Duo analysis is read-only and non-authoritative; no mutation, no verdict, no SAFE_TO_RETIRE/OBSERVED_ABSENT/RESURRECTION_CONTROLLED claim can originate from it — the deterministic executor remains the only decision authority",
+  "spend": "0.00 USD (anonymous unsigned reads only; no PAT requested, no session triggered by the executor)"
+}

@@ -2,15 +2,241 @@
   "assets": [
     {
       "archived": null,
+      "description": "Transcend Hackathon Showcase workspace for @zyganali (DevPost: zyganali). Visit the [onboarding issue](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/showcase/-/work_items/1) to get started.",
+      "error_kind": "AUTH_DENIED",
+      "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/showcase",
+      "name": "Showcase",
+      "observed_at": "2026-10-19T10:21:07.237741+00:00",
+      "ok": true,
+      "pages_state": "PAGES_UNVERIFIABLE_403",
+      "project_id": 87777871,
+      "provenance": "ANONYMOUS_PUBLIC_READ",
+      "resources": [
+        {
+          "detail": {
+            "project_id": 87777871
+          },
+          "endpoint": "/projects/87777871/pages",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "PAGES_SITE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "pages_site:87777871:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "project_id": 87777871
+          },
+          "endpoint": "/projects/87777871/repository/files/.gitlab-ci.yml/raw",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "CI_REDEPLOYMENT_MECHANISM",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "ci_redeployment_mechanism:87777871:not_observed",
+          "state": "NOT_OBSERVED (NOT_FOUND)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "project_id": 87777871
+          },
+          "endpoint": "/projects/87777871/environments",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "ENVIRONMENT",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "environment:87777871:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "project_id": 87777871
+          },
+          "endpoint": "/projects/87777871/deployments",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "DEPLOYMENT",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "deployment:87777871:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "iid": 1,
+            "labels": [],
+            "project_id": 87777871,
+            "retirement_related": false,
+            "title": "Welcome to the Transcend Hackathon 🎉"
+          },
+          "endpoint": "/projects/87777871/issues?state=opened",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "OPEN_ISSUE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "issue:87777871:1",
+          "state": "opened",
+          "support": "OBSERVED"
+        }
+      ],
+      "role": "PROTECTED (organizer Showcase project is shared and must never be retired)",
+      "visibility": "public",
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/showcase"
+    },
+    {
+      "archived": null,
       "description": "Proof-Bounded Software Retirement Protocol (GitLab Transcend 2026, Path A / Start Fresh).",
       "error_kind": "AUTH_DENIED",
       "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
       "name": "Termivance",
-      "observed_at": "2026-10-19T07:15:08.771520+00:00",
+      "observed_at": "2026-10-19T10:21:07.237741+00:00",
       "ok": true,
       "pages_state": "PAGES_UNVERIFIABLE_403",
       "project_id": 87779099,
       "provenance": "ANONYMOUS_PUBLIC_READ",
+      "resources": [
+        {
+          "detail": {
+            "project_id": 87779099
+          },
+          "endpoint": "/projects/87779099/pages",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "PAGES_SITE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "pages_site:87779099:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "configuration_complete": true,
+            "project_id": 87779099,
+            "signals": []
+          },
+          "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "CI_REDEPLOYMENT_MECHANISM",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "ci_redeployment:87779099",
+          "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG",
+          "support": "OBSERVED"
+        },
+        {
+          "detail": {
+            "project_id": 87779099
+          },
+          "endpoint": "/projects/87779099/environments",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "ENVIRONMENT",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "environment:87779099:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "project_id": 87779099
+          },
+          "endpoint": "/projects/87779099/deployments",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "DEPLOYMENT",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "deployment:87779099:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "iid": 3,
+            "labels": [
+              "retirement-decision",
+              "termivance::b3"
+            ],
+            "project_id": 87779099,
+            "retirement_related": true,
+            "title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization"
+          },
+          "endpoint": "/projects/87779099/issues?state=opened",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "OPEN_ISSUE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "issue:87779099:3",
+          "state": "opened",
+          "support": "OBSERVED"
+        },
+        {
+          "detail": {
+            "iid": 2,
+            "labels": [
+              "retirement-decision",
+              "termivance::b2"
+            ],
+            "project_id": 87779099,
+            "retirement_related": true,
+            "title": "B2 retirement decision: BLOCKED (deterministic, read-only)"
+          },
+          "endpoint": "/projects/87779099/issues?state=opened",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "OPEN_ISSUE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "issue:87779099:2",
+          "state": "opened",
+          "support": "OBSERVED"
+        },
+        {
+          "detail": {
+            "iid": 1,
+            "labels": [
+              "retirement-analysis",
+              "termivance::b1"
+            ],
+            "project_id": 87779099,
+            "retirement_related": true,
+            "title": "B1 retirement-analysis request (harmless, non-authoritative)"
+          },
+          "endpoint": "/projects/87779099/issues?state=opened",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "OPEN_ISSUE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "issue:87779099:1",
+          "state": "opened",
+          "support": "OBSERVED"
+        }
+      ],
       "role": "PROTECTED (canonical Termivance repository is expressly excluded from retirement)",
       "visibility": "public",
       "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance"
@@ -21,24 +247,157 @@
       "error_kind": "AUTH_DENIED",
       "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
       "name": "termivance-b3-disposable-pages-demo",
-      "observed_at": "2026-10-19T07:15:08.771520+00:00",
+      "observed_at": "2026-10-19T10:21:07.237741+00:00",
       "ok": true,
       "pages_state": "PAGES_UNVERIFIABLE_403",
       "project_id": 87785099,
       "provenance": "ANONYMOUS_PUBLIC_READ",
+      "resources": [
+        {
+          "detail": {
+            "project_id": 87785099
+          },
+          "endpoint": "/projects/87785099/pages",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "PAGES_SITE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "pages_site:87785099:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "configuration_complete": true,
+            "project_id": 87785099,
+            "signals": [
+              "pages_true",
+              "pages_keyword"
+            ]
+          },
+          "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "CI_REDEPLOYMENT_MECHANISM",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "ci_redeployment:87785099",
+          "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT",
+          "support": "OBSERVED"
+        },
+        {
+          "detail": {
+            "project_id": 87785099
+          },
+          "endpoint": "/projects/87785099/environments",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "ENVIRONMENT",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "environment:87785099:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        },
+        {
+          "detail": {
+            "project_id": 87785099
+          },
+          "endpoint": "/projects/87785099/deployments",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "DEPLOYMENT",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "deployment:87785099:not_observed",
+          "state": "NOT_OBSERVED (AUTH_DENIED)",
+          "support": "NOT_OBSERVED"
+        }
+      ],
       "role": "APPROVED_RETIREMENT_TARGET",
       "visibility": "public",
       "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+    },
+    {
+      "archived": null,
+      "description": "",
+      "error_kind": "NOT_FOUND",
+      "full_path": "projects/87786164",
+      "name": "(unreadable)",
+      "observed_at": "2026-10-19T10:21:07.237741+00:00",
+      "ok": false,
+      "pages_state": "UNKNOWN",
+      "project_id": 87786164,
+      "provenance": "ANONYMOUS_PUBLIC_READ",
+      "resources": [
+        {
+          "detail": {
+            "project_id": 87786164
+          },
+          "endpoint": "/projects/87786164/pages",
+          "fresh_until": "2026-10-19T10:36:07.237741+00:00",
+          "kind": "PAGES_SITE",
+          "mutation_capability": "NOT_AUTHORIZING",
+          "observed_at": "2026-10-19T10:21:07.237741+00:00",
+          "operation_supported": "READ_ONLY_OBSERVATION",
+          "provenance": "ANONYMOUS_PUBLIC_READ",
+          "ref": "pages_site:87786164:not_observed",
+          "state": "NOT_OBSERVED (NOT_FOUND)",
+          "support": "NOT_OBSERVED"
+        }
+      ],
+      "role": "NON_TARGET",
+      "visibility": "unknown",
+      "web_url": ""
     }
   ],
-  "observed_at": "2026-10-19T07:15:08.771520+00:00",
+  "observed_at": "2026-10-19T10:21:07.237741+00:00",
   "provenance": "ANONYMOUS_PUBLIC_READ",
-  "schema": "termivance.portfolio/v1",
+  "relations": [
+    {
+      "dst": "pages_site:87779099:not_observed",
+      "kind": "obligates",
+      "src": "issue:87779099:3",
+      "support": "INFERRED"
+    },
+    {
+      "dst": "pages_site:87779099:not_observed",
+      "kind": "obligates",
+      "src": "issue:87779099:2",
+      "support": "INFERRED"
+    },
+    {
+      "dst": "pages_site:87779099:not_observed",
+      "kind": "obligates",
+      "src": "issue:87779099:1",
+      "support": "INFERRED"
+    },
+    {
+      "dst": "pages_site:87785099:not_observed",
+      "kind": "recreates",
+      "src": "ci_redeployment:87785099",
+      "support": "INFERRED"
+    }
+  ],
+  "schema": "termivance.portfolio/v2",
   "totals": {
     "approved_targets": 1,
-    "assets": 2,
+    "assets": 4,
+    "inferred_relations": 4,
+    "observed_relations": 0,
     "pages_sites": 0,
-    "pages_unverifiable": 2,
-    "protected": 1
+    "pages_unverifiable": 3,
+    "protected": 2,
+    "resource_kinds_observed": {
+      "CI_REDEPLOYMENT_MECHANISM": 2,
+      "OPEN_ISSUE": 4
+    },
+    "resources_not_observed": 11,
+    "resources_observed": 6
   }
 }

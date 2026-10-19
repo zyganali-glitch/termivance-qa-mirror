@@ -53,6 +53,9 @@ class PagesPreState:
     marker_observed: bool
     deployment_present: bool
     observed_at: datetime
+    #: SHA-256 of the served body actually observed at execution time. It binds
+    #: the pre-state to *what was seen*, not merely to what a JSON file claims.
+    marker_sha256: str | None = None
 
     @property
     def genuinely_published(self) -> bool:
@@ -64,6 +67,7 @@ class PagesPreState:
             "marker": self.marker,
             "marker_observed": self.marker_observed,
             "deployment_present": self.deployment_present,
+            "marker_sha256": self.marker_sha256,
             "observed_at": _as_utc(self.observed_at).isoformat(),
             "genuinely_published": self.genuinely_published,
         }
@@ -79,11 +83,15 @@ class PagesPreState:
             marker = str(data["marker"])
         except KeyError as exc:
             raise EvidenceError(f"pre-state record is missing {exc}") from exc
+        marker_sha256 = data.get("marker_sha256")
+        if marker_sha256 is not None and not str(marker_sha256).strip():
+            marker_sha256 = None
         return cls(
             served_url=served_url,
             marker=marker,
             marker_observed=bool(data.get("marker_observed")),
             deployment_present=bool(data.get("deployment_present")),
+            marker_sha256=str(marker_sha256) if marker_sha256 else None,
             observed_at=observed,
         )
 

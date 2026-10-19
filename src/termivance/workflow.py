@@ -204,9 +204,7 @@ def _stage_from_files(stage: str, artifacts: dict[str, Path]) -> StageStatus:
     if stage == "authorization":
         state = COMPLETE if data.get("operator_approval") else BLOCKED
         detail = (
-            "operator approval block present"
-            if state == COMPLETE
-            else "no operator approval block"
+            "operator approval block present" if state == COMPLETE else "no operator approval block"
         )
         return StageStatus(stage, state, detail)
     if stage == "approval_issue":
@@ -247,9 +245,7 @@ def assess(artifacts: dict[str, Path], plan_: WorkflowPlan) -> dict[str, object]
             "full_path": plan_.target_full_path,
         },
         "stages": [s.to_dict() for s in statuses],
-        "summary": {
-            stage: status.state for stage, status in zip(stage_map, statuses, strict=True)
-        },
+        "summary": {stage: status.state for stage, status in zip(stage_map, statuses, strict=True)},
         "observed_at": _utc().isoformat(),
     }
 

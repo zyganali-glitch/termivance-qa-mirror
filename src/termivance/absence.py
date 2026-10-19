@@ -51,13 +51,18 @@ def _utc(now: datetime | None) -> datetime:
 
 
 def publication_pre_state(probe: PublicationProbe) -> PagesPreState:
-    """Convert a live publication probe into the bound pre-retirement state."""
+    """Convert a live publication probe into the bound pre-retirement state.
+
+    The execution-time digest of the served body travels with the pre-state so
+    the receipt records *what was actually observed*, not merely a marker claim.
+    """
     return PagesPreState(
         served_url=probe.served_url,
         marker=probe.marker,
         marker_observed=probe.marker_observed,
         deployment_present=probe.deployment_present,
         observed_at=probe.observed_at,
+        marker_sha256=getattr(probe, "served_body_sha256", None),
     )
 
 

@@ -37,9 +37,7 @@ from termivance.target import TargetIdentity
 from termivance.verdicts import Verdict
 
 CAPSULE_SCHEMA = "termivance.proof_capsule/v1"
-RECEIPT_SCHEMAS: frozenset[str] = frozenset(
-    {"termivance.retirement_receipt/v2", "termivance.retirement_receipt/v3"}
-)
+RECEIPT_SCHEMAS: frozenset[str] = frozenset({"termivance.retirement_receipt/v3"})
 #: Maximum seconds between eligibility establishment and the mutation request.
 #: Discovery evidence (snapshots) is stated fresh for this long by default.
 DEFAULT_TTL_SECONDS = 900
@@ -134,15 +132,28 @@ def validate_mutation_receipt(
 ) -> MutationBinding:
     """Reconstruct and validate a recorded retirement receipt against a target.
 
+    This reconstructs a *recorded local claim* and cross-checks every field
+    against the durable ledger seal of the very same operation. It is a
+    consistency gate over locally recorded bytes, **not** a proof that the
+    bytes are authentic provider truth; the independent post-mutation
+    read-back performed by :func:`termivance.absence.observe_absence` remains
+    the provider-facing evidence, and this function refuses to feed it
+    anything internally incoherent.
+
     Fails closed (:class:`ReceiptValidationError`) unless:
 
-    * the receipt schema is recognized;
+    * the receipt schema is recognized (v3 only — a legacy receipt without an
+      execution-time authorization record is refused, never upgraded);
     * the receipt is bound to exactly ``target``;
     * it records one attempted, accepted ``DELETE`` against the exact Pages
-      endpoint of that target;
-    * the operator authorization binding is present;
-    * the same operation is durably sealed in ``ledger`` (state
-      ``RESERVED_BEFORE_MUTATION`` or ``CONSUMED_*``).
+      endpoint of that target, with an integer 2xx provider status;
+    * the execution-time ``authorization_record`` (binding, nonce, action,
+      target key) is present and matches the operation recorded in ``ledger``;
+    * the durable ledger entry integrity-verifies and its state is exactly
+      ``CONSUMED_ACCEPTED`` — a merely reserved operation can never be
+      promoted into an accepted mutation by a saved file;
+    * the pre-state carries the execution-time marker body digest
+      (``marker_sha256``) recorded when publication was observed.
     """
     if not isinstance(receipt_data, dict):
         raise ReceiptValidationError("mutation receipt must be a JSON object")
@@ -180,10 +191,48 @@ def validate_mutation_receipt(
             f"receipt endpoint {endpoint!r} is not the exact allowed Pages endpoint "
             f"{exact_pages_endpoint(target)!r}"
         )
+    status = mutation.get("status")
+    if not isinstance(status, int) or not 200 <= status < 300:
+        raise ReceiptValidationError(
+            "the recorded mutation carries no integer 2xx provider status; an "
+            "accepted outcome cannot be reconstructed from it"
+        )
 
     authorization_binding = receipt_data.get("authorization_binding")
     if not isinstance(authorization_binding, str) or not authorization_binding:
         raise ReceiptValidationError("receipt carries no authorization binding")
+
+    authorization_record = receipt_data.get("authorization_record")
+    if not isinstance(authorization_record, dict):
+        raise ReceiptValidationError(
+            "receipt carries no execution-time authorization record; v3 receipts "
+            "must bind the exact nonce, action and target key observed at dispatch"
+        )
+    record_binding = authorization_record.get("binding")
+    record_nonce = authorization_record.get("nonce")
+    record_action = authorization_record.get("action")
+    record_target_key = authorization_record.get("target_key")
+    if not all(
+        isinstance(value, str) and bool(value)
+        for value in (record_binding, record_nonce, record_action, record_target_key)
+    ):
+        raise ReceiptValidationError("the execution-time authorization record is incomplete")
+    if str(record_binding) != authorization_binding:
+        raise ReceiptValidationError(
+            "the execution-time authorization record disagrees with the receipt's "
+            "authorization binding; the receipt cannot be attributed to one "
+            "authorization, so it is refused"
+        )
+    if str(record_action) != action:
+        raise ReceiptValidationError(
+            "the execution-time authorization record authorizes a different action "
+            f"({record_action!r} vs {action!r}); refusing the receipt"
+        )
+    if str(record_target_key) != recorded_target.key_string():
+        raise ReceiptValidationError(
+            "the execution-time authorization record binds a different target than "
+            "the receipt; refusing the receipt"
+        )
 
     operation_id = str(receipt_data.get("operation_id") or "")
     if not operation_id:
@@ -197,8 +246,17 @@ def validate_mutation_receipt(
         raise ReceiptValidationError("receipt eligibility carries no pre-state proof")
     pre_state = PagesPreState.from_dict(dict(pre_state_data))
     if not pre_state.genuinely_published:
+        raise ReceiptValidationError("the receipt's pre-state does not prove genuine publication")
+    marker_sha256 = pre_state.marker_sha256
+    if (
+        not marker_sha256
+        or len(marker_sha256) != 64
+        or any(ch not in "0123456789abcdef" for ch in marker_sha256)
+    ):
         raise ReceiptValidationError(
-            "the receipt's pre-state does not prove genuine publication"
+            "the receipt's pre-state lacks the execution-time marker body digest "
+            "(marker_sha256 recorded when publication was observed); a pre-state "
+            "that does not bind what was actually seen is refused"
         )
     # Temporal coherence: the mutation must have been dispatched after the
     # eligibility was established, and within its stated freshness window.
@@ -228,8 +286,9 @@ def validate_mutation_receipt(
     from termivance.ledger import AuthorizationLedger, LedgerError  # local: avoid cycle
 
     if not isinstance(ledger, AuthorizationLedger):
-        raise ReceiptValidationError("a durable authorization ledger is required to bind "
-                                     "an absence claim")
+        raise ReceiptValidationError(
+            "a durable authorization ledger is required to bind an absence claim"
+        )
     try:
         entry = ledger.consumption_record(authorization_binding, operation_id=operation_id)
     except LedgerError as exc:
@@ -240,8 +299,44 @@ def validate_mutation_receipt(
             "authorization binding; the claim is refused"
         )
     state = str(entry.get("state") or "")
-    if state != "RESERVED_BEFORE_MUTATION" and not state.startswith("CONSUMED_"):
-        raise ReceiptValidationError(f"durable ledger record has unexpected state {state!r}")
+    if state != "CONSUMED_ACCEPTED":
+        if state == "RESERVED_BEFORE_MUTATION":
+            raise ReceiptValidationError(
+                "the durable record only proves the operation was *reserved*; a "
+                "reservation can never be promoted into an accepted mutation by a "
+                "saved receipt (the executor must have finalized the observed outcome)"
+            )
+        raise ReceiptValidationError(
+            f"the durable record state {state!r} does not prove an accepted mutation; "
+            "the claim is refused"
+        )
+
+    # Cross-check the execution-time authorization record against the durable,
+    # digest-verified ledger entry recorded before the mutation was dispatched.
+    entry_nonce = entry.get("nonce")
+    entry_action = entry.get("action")
+    entry_target_key = entry.get("target_key")
+    entry_operation = entry.get("operation_id")
+    entry_binding = entry.get("binding")
+    if entry_binding != authorization_binding:
+        raise ReceiptValidationError(
+            "the durable record belongs to a different authorization binding; refusing the receipt"
+        )
+    if isinstance(entry_target_key, (list, tuple)):
+        entry_target_key = json.dumps(
+            list(entry_target_key), separators=(",", ":"), ensure_ascii=False
+        )
+    for label, recorded, durable in (
+        ("operation id", operation_id, entry_operation),
+        ("authorization nonce", record_nonce, entry_nonce),
+        ("authorized action", record_action, entry_action),
+        ("target key", record_target_key, entry_target_key),
+    ):
+        if recorded != durable:
+            raise ReceiptValidationError(
+                f"the receipt's {label} ({recorded!r}) does not match the durable "
+                f"ledger record ({durable!r}); the receipt cannot be trusted"
+            )
 
     return MutationBinding(
         target=recorded_target,
@@ -399,15 +494,15 @@ def verify_capsule(capsule: dict[str, object]) -> dict[str, object]:
             section_target = TargetIdentity.from_dict(dict(section["target"]))
             if section_target.key() != capsule_target.key():
                 failures.append(
-                    f"section {name!r} is bound to a different target than the capsule "
-                    "identity"
+                    f"section {name!r} is bound to a different target than the capsule identity"
                 )
         if "verdict" in section and section["verdict"] is not None:
             try:
                 Verdict(str(section["verdict"]))
             except ValueError:
-                failures.append(f"section {name!r} carries an unknown verdict "
-                                f"{section['verdict']!r}")
+                failures.append(
+                    f"section {name!r} carries an unknown verdict {section['verdict']!r}"
+                )
     if failures:
         raise CapsuleError("capsule binding failures: " + "; ".join(failures))
 
@@ -458,8 +553,15 @@ def render_capsule(capsule: dict[str, object]) -> str:
 
 
 def _section_order(name: str) -> tuple[int, str]:
-    priority = {"identity": 0, "decision": 1, "mutation": 2, "absence": 3,
-                "authorization": 4, "source_evidence": 5, "limitation_notice": 6}
+    priority = {
+        "identity": 0,
+        "decision": 1,
+        "mutation": 2,
+        "absence": 3,
+        "authorization": 4,
+        "source_evidence": 5,
+        "limitation_notice": 6,
+    }
     return (priority.get(name, 9), name)
 
 

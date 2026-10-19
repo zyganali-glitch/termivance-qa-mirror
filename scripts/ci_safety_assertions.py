@@ -26,6 +26,7 @@ Exits non-zero on any violation.
 from __future__ import annotations
 
 import json
+import re
 import tempfile
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -299,6 +300,177 @@ def main() -> int:
             check("concurrent reservations are serialized (lock honoured)", "lock" in str(exc))
         finally:
             lock.unlink(missing_ok=True)
+
+    # 15. operator trust: identity is provider-issued, revocation works
+    from termivance.approval_source import OperatorTrustPolicy, TrustedOperator
+
+    trust = OperatorTrustPolicy(
+        schema_version=1,
+        trusted_operators=(TrustedOperator(username="ci-approver", user_id=555001),),
+        approval_project_ids=(87785099,),
+        approval_freshness_seconds=3600,
+        revocations=(),
+        signature_required=True,
+    )
+    check(
+        "trust policy binds approvals to provider-issued identities",
+        trust.operator_for("ci-approver") is not None
+        and trust.operator_for("ci-approver").user_id == 555001
+        and trust.operator_for("name-only-impersonator") is None,
+    )
+    from termivance.approval_source import OperatorTrustPolicy as _Trust
+
+    revoked = _Trust(
+        schema_version=1,
+        trusted_operators=(TrustedOperator(username="gone", user_id=1),),
+        approval_project_ids=(87785099,),
+        approval_freshness_seconds=3600,
+        revocations=(("gone", NOW - timedelta(days=1)),),
+        signature_required=True,
+    )
+    check(
+        "trust policy honours revocations",
+        revoked.is_revoked("gone", NOW) is not None
+        and revoked.is_revoked("gone", NOW - timedelta(days=2)) is None,
+    )
+
+    # 16. a legacy v1 ledger file is refused, not silently migrated
+    with tempfile.TemporaryDirectory() as tmp:
+        legacy = Path(tmp) / "legacy.json"
+        legacy.write_text(
+            json.dumps({"consumed": {}, "schema": "termivance.authorization_ledger/v1"}),
+            encoding="utf-8",
+        )
+        try:
+            AuthorizationLedger(legacy).health_check()
+            check("legacy v1 ledger files are refused", False)
+        except Exception:  # noqa: BLE001 - LedgerError expected
+            check("legacy v1 ledger files are refused", True)
+
+    # 17. a locally edited ledger entry (stale digest) is refused on load
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "ledger.json"
+        ledger = AuthorizationLedger(path)
+        ledger.consume(build_auth(), operation_id="tamper-ci", now=NOW)
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for entry in data["consumed"].values():
+            entry["nonce"] = "locally-forged"
+            break
+        path.write_text(json.dumps(data), encoding="utf-8")
+        try:
+            reloaded = AuthorizationLedger(path)
+            reloaded.health_check()
+            reloaded.consume(build_auth(), operation_id="tamper-ci-2", now=NOW)
+            check("locally edited ledger entries are refused (digest)", False)
+        except Exception:  # noqa: BLE001 - LedgerError expected
+            check("locally edited ledger entries are refused (digest)", True)
+
+    # 18. the one-way state machine: reservation finalizes to CONSUMED_ACCEPTED,
+    # and a failed attempt can never be dressed up as consumed
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "ledger.json"
+        ledger = AuthorizationLedger(path)
+        consumption = ledger.consume(build_auth(), operation_id="one-way-ci", now=NOW)
+        state_before = ledger.consumption_record(
+            consumption.binding, operation_id="one-way-ci"
+        )["state"]
+        ledger.finalize(consumption.binding, outcome="ACCEPTED")
+        state_after = ledger.consumption_record(
+            consumption.binding, operation_id="one-way-ci"
+        )["state"]
+        check(
+            "ledger states are one-way RESERVED -> CONSUMED_ACCEPTED",
+            state_before == "RESERVED_BEFORE_MUTATION" and state_after == "CONSUMED_ACCEPTED",
+        )
+
+    # 19/20. the shipped Control Room must carry the static read-only contract
+    control_room_dir = Path("control_room")
+    data_js = control_room_dir / "data.js"
+    index_html = control_room_dir / "index.html"
+    if data_js.exists() and index_html.exists():
+        payload = json.loads(
+            data_js.read_text(encoding="utf-8")
+            .removeprefix("window.TERMIVANCE_DATA = ")
+            .removesuffix(";\n")
+        )
+        contract = payload.get("interactive_contract") or {}
+        check(
+            "control room declares zero network fetches and zero destructive buttons",
+            contract.get("network_fetches_at_view_time") == 0
+            and contract.get("destructive_buttons") == 0,
+        )
+        portfolio = payload["sections"]["portfolio"]
+        records = [r for a in portfolio.get("assets", []) for r in a.get("resources", [])]
+        check(
+            "every control-room resource record stays NOT_AUTHORIZING",
+            records
+            and all(r.get("mutation_capability") == "NOT_AUTHORIZING" for r in records),
+        )
+        check(
+            "control-room access limits are never promoted to absence",
+            all(
+                not str(r.get("state")).startswith("ABSENT")
+                for r in records
+                if r.get("support") == "NOT_OBSERVED"
+            ),
+        )
+        gates = " | ".join(str(g.get("state")) for g in payload.get("authorization_gates", []))
+        check(
+            "control-room gates keep mutation NOT_RUN/STRUCTURALLY_REFUSED/AUTHORIZED_FALSE",
+            "STRUCTURALLY_REFUSED" in gates and "AUTHORIZED_FALSE" in gates,
+        )
+        js_source = index_html.read_text(encoding="utf-8")
+        stripped = re.sub(r"/\*.*?\*/", "", js_source, flags=re.S)
+        stripped = re.sub(r"//[^\n]*", "", stripped)
+        check(
+            "control room page has no form/XHR/fetch pathway",
+            "escapeHtml(" in js_source
+            and "<form" not in js_source.lower()
+            and "XMLHttpRequest" not in js_source
+            and "fetch(" not in stripped,
+        )
+        duo = (payload.get("external_evidence") or {}).get("duo_session") or {}
+        ladder = (duo.get("evidence_ladder") or {})
+        check(
+            "control room keeps the Duo evidence ladder honest",
+            bool(ladder.get("operator_confirmed_only"))
+            and bool(ladder.get("independently_observed_anonymous_api"))
+            and bool(ladder.get("not_independently_observable_and_never_promoted")),
+        )
+    else:
+        for name in (
+            "control room declares zero network fetches and zero destructive buttons",
+            "every control-room resource record stays NOT_AUTHORIZING",
+            "control-room access limits are never promoted to absence",
+            "control-room gates keep mutation NOT_RUN/STRUCTURALLY_REFUSED/AUTHORIZED_FALSE",
+            "control room page has no form/XHR/fetch pathway",
+            "control room keeps the Duo evidence ladder honest",
+        ):
+            check(name, False)
+
+    # 21/22. shipped B4 artifacts keep the no-mutation posture observable
+    portfolio_path = Path("evidence/b4/portfolio.json")
+    if portfolio_path.exists():
+        portfolio = json.loads(portfolio_path.read_text(encoding="utf-8"))
+        records = [r for a in portfolio.get("assets", []) for r in a.get("resources", [])]
+        check(
+            "shipped portfolio records are all read-only (NOT_AUTHORIZING)",
+            bool(records)
+            and all(r.get("mutation_capability") == "NOT_AUTHORIZING" for r in records)
+            and all("observed_at" in r and "fresh_until" in r for r in records),
+        )
+    else:
+        check("shipped portfolio records are all read-only (NOT_AUTHORIZING)", False)
+    simulation_path = Path("evidence/b4/simulation.json")
+    if simulation_path.exists():
+        simulation = json.loads(simulation_path.read_text(encoding="utf-8"))
+        factors = simulation.get("cross_resource_factors") or []
+        check(
+            "shipped simulation factors stay PROJECTED_NOT_OBSERVED",
+            bool(factors) and all(f.get("state") == "PROJECTED_NOT_OBSERVED" for f in factors),
+        )
+    else:
+        check("shipped simulation factors stay PROJECTED_NOT_OBSERVED", False)
 
     if failures:
         print(f"\nSAFETY CONTRACT FAILED: {len(failures)} assertion(s)")

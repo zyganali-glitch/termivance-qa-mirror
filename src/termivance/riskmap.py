@@ -79,9 +79,7 @@ class RiskMap:
         lines = [f"RISK MAP — verdict {self.verdict}", "-" * 78]
         for node in self.nodes:
             impacts = f" -> {', '.join(node.impacts)}" if node.impacts else ""
-            lines.append(
-                f"[{node.kind:<10}] {node.severity:<6} {node.title}{impacts}"
-            )
+            lines.append(f"[{node.kind:<10}] {node.severity:<6} {node.title}{impacts}")
             if node.mitigations:
                 for mitigation in node.mitigations:
                     lines.append(f"    mitigation: {mitigation}")
@@ -117,8 +115,16 @@ def build_risk_map(
     target: dict[str, object],
     reasons: list[dict[str, Any]] | tuple[dict[str, Any], ...],
     obligations: list[dict[str, Any]] | tuple[dict[str, Any], ...],
+    cross_nodes: tuple[dict[str, object], ...] = (),
+    cross_edges: tuple[dict[str, object], ...] = (),
 ) -> RiskMap:
-    """Build the risk map from a decision's record. Pure and deterministic."""
+    """Build the risk map from a decision's record. Pure and deterministic.
+
+    ``cross_nodes``/``cross_edges`` carry the shared cross-resource view derived
+    from the same portfolio snapshot the Portfolio surfaced — they are appended
+    verbatim (with their own provenance labels) and never replace a decision
+    fact. No cross-resource side may satisfy, weaken or flip an obligation.
+    """
     nodes: list[RiskNode] = []
     edges: list[RiskEdge] = []
 
@@ -139,9 +145,7 @@ def build_risk_map(
             )
         )
         if impact:
-            edges.append(
-                RiskEdge(src=f"risk:{code.lower()}", dst=impact[0], relation="impacts")
-            )
+            edges.append(RiskEdge(src=f"risk:{code.lower()}", dst=impact[0], relation="impacts"))
 
     for obligation in obligations:
         oid = str(obligation.get("obligation_id"))
@@ -168,9 +172,7 @@ def build_risk_map(
                     impacts=(oid,),
                 )
             )
-            edges.append(
-                RiskEdge(src=f"obligation-violation:{oid}", dst=oid, relation="impacts")
-            )
+            edges.append(RiskEdge(src=f"obligation-violation:{oid}", dst=oid, relation="impacts"))
         else:  # UNKNOWN
             nodes.append(
                 RiskNode(
@@ -183,6 +185,46 @@ def build_risk_map(
                 )
             )
             edges.append(RiskEdge(src=f"obligation-unknown:{oid}", dst=oid, relation="impacts"))
+        # The shared obligation node the edges point at: every decision edge
+        # must resolve to an existing node, so it is emitted for *every*
+        # obligation regardless of status (satisfied obligations already
+        # carry it above).
+        if status != "SATISFIED" and not any(n.node_id == oid for n in nodes):
+            nodes.append(
+                RiskNode(
+                    kind=NODE_CONTROL,
+                    node_id=oid,
+                    title=f"obligation {kind} must hold",
+                    severity="NONE",
+                    state=f"status={status}",
+                )
+            )
+
+    # Cross-resource nodes and edges from the *same* observed portfolio
+    # snapshot. Cross-resource facts are context: they never participate in the
+    # verdict computation and can never satisfy a mandatory obligation.
+    for node_payload in cross_nodes:
+        impacts = tuple(str(i) for i in (node_payload.get("impacts") or ()))
+        mitigations = tuple(str(m) for m in (node_payload.get("mitigations") or ()))
+        nodes.append(
+            RiskNode(
+                kind=str(node_payload.get("kind") or NODE_DEPENDENCY),
+                node_id=str(node_payload.get("node_id") or "resource:unknown"),
+                title=str(node_payload.get("title") or "cross-resource fact"),
+                severity=str(node_payload.get("severity") or LOW),
+                state=str(node_payload.get("state") or ""),
+                impacts=impacts,
+                mitigations=mitigations,
+            )
+        )
+    for edge_payload in cross_edges:
+        edges.append(
+            RiskEdge(
+                src=str(edge_payload.get("src") or ""),
+                dst=str(edge_payload.get("dst") or ""),
+                relation=str(edge_payload.get("relation") or ""),
+            )
+        )
 
     # Deterministic ordering: RISK first, then DEPENDENCY, then CONTROL; ids inside.
     priority = {NODE_RISK: 0, NODE_DEPENDENCY: 1, NODE_CONTROL: 2}
@@ -198,7 +240,12 @@ def build_risk_map(
     )
 
 
-def risk_map_from_record(decision_record: dict[str, object]) -> RiskMap:
+def risk_map_from_record(
+    decision_record: dict[str, object],
+    *,
+    cross_nodes: tuple[dict[str, object], ...] = (),
+    cross_edges: tuple[dict[str, object], ...] = (),
+) -> RiskMap:
     """Build the risk map from an already-serialized decision payload."""
     target = decision_record.get("target")
     if not isinstance(target, dict):
@@ -211,6 +258,8 @@ def risk_map_from_record(decision_record: dict[str, object]) -> RiskMap:
         target=target,
         reasons=reasons,
         obligations=obligations,
+        cross_nodes=cross_nodes,
+        cross_edges=cross_edges,
     )
 
 

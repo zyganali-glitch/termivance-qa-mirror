@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import hmac
 import json
 from datetime import UTC, datetime, timedelta
 
@@ -15,6 +17,11 @@ from conftest import (
     project_payload,
 )
 
+from termivance.approval_source import (
+    OperatorTrustPolicy,
+    TrustedOperator,
+    approval_statement_template,
+)
 from termivance.attestation import AttestationError, ControlAttestation, target_key_for
 from termivance.authorization import (
     APPROVAL_KEY_ENV,
@@ -38,6 +45,15 @@ MARKER = "TERMIVANCE-B3-DISPOSABLE-MARKER"
 ACTION = "unpublish_pages"
 APPROVAL_IID = 77
 OPERATOR = "termivance-operator"
+#: Provider-issued numeric ID of the trusted operator account. The trust
+#: boundary binds author identity to this number, not to a spoofable username.
+OPERATOR_USER_ID = 555_001
+#: The operator-held HMAC signing key for approvals in these tests.
+APPROVAL_KEY = "operator-held-approval-test-key"
+#: An untrusted executor-side account that exists only to prove self-approval
+#: is impossible.
+EXECUTOR_ACCOUNT = "ai-termivance-executor-bot"
+EXECUTOR_USER_ID = 777_002
 
 
 def allow_policy() -> Policy:
@@ -74,13 +90,15 @@ def auth(
     action: str = ACTION,
     now: datetime = NOW,
     approve: bool = True,
-    signature: str | None = None,
+    signature: str | None = "auto",
     channel: str = "gitlab_issue",
 ) -> Authorization:
     authorization = Authorization.issue(
         target, action, nonce="op-approval-1", now=now, ttl=ttl, max_uses=max_uses
     )
     if approve:
+        if signature == "auto":
+            signature = approval_signature(authorization)
         authorization.approval = OperatorApproval(
             operator=OPERATOR,
             statement=(
@@ -95,19 +113,47 @@ def auth(
     return authorization
 
 
-def approval_issue_reply(authorization: Authorization, *, author=OPERATOR, state="opened"):
-    """A scripted GitLab approval issue the provider read-back can verify."""
-    body = (
-        "Operator approval — Termivance retirement mutation\n"
-        f"endpoint: {authorization.exact_endpoint}\n"
-        f"action: {authorization.action}\n"
-        f"target: {authorization.target.full_path} (project "
-        f"{authorization.target.project_id}, kind "
-        f"{authorization.target.resource_kind})\n"
-        f"nonce: {authorization.nonce}\n"
-        f"binding: {authorization.binding()}\n"
-        "I authorize exactly one unpublish_pages operation as stated above."
+def approval_signature(authorization: Authorization, key: str = APPROVAL_KEY) -> str:
+    """The HMAC the *operator-held* key produces over the approval binding."""
+    return hmac.new(
+        key.encode("utf-8"), authorization.binding().encode("utf-8"), hashlib.sha256
+    ).hexdigest()
+
+
+def operator_trust(
+    *,
+    trusted: tuple[tuple[str, int], ...] = ((OPERATOR, OPERATOR_USER_ID),),
+    signature_required: bool = True,
+    approval_projects: tuple[int, ...] = (TARGET.project_id,),
+    revoked: tuple[tuple[str, datetime], ...] = (),
+    freshness_seconds: int = 86_400,
+) -> OperatorTrustPolicy:
+    """The independent operator trust policy a real verification must honor."""
+    return OperatorTrustPolicy(
+        schema_version=1,
+        trusted_operators=tuple(TrustedOperator(username=u, user_id=i) for u, i in trusted),
+        approval_project_ids=approval_projects,
+        signature_required=signature_required,
+        approval_freshness_seconds=freshness_seconds,
+        revocations=revoked,
     )
+
+
+def approval_issue_reply(
+    authorization: Authorization,
+    *,
+    author: str = OPERATOR,
+    user_id: int = OPERATOR_USER_ID,
+    state: str = "opened",
+):
+    """A scripted GitLab approval issue the provider read-back can verify.
+
+    The body is the exact shipped approval template, the author carries the
+    provider-issued numeric ID of the trusted operator, and the block carries
+    the HMAC made with the operator-held key — every layer the real trust
+    boundary requires the executor to prove.
+    """
+    body = approval_statement_template(authorization)
     return HttpReply(
         200,
         json.dumps(
@@ -115,7 +161,7 @@ def approval_issue_reply(authorization: Authorization, *, author=OPERATOR, state
                 "iid": APPROVAL_IID,
                 "state": state,
                 "created_at": (NOW - timedelta(seconds=30)).isoformat(),
-                "author": {"username": author},
+                "author": {"username": author, "id": user_id},
                 "description": body,
             }
         ),
@@ -142,12 +188,12 @@ def with_approval(client: GitLabClient, authorization: Authorization, **kw) -> G
     return client
 
 
-def live_retire(
-    authorization, *, read_client, mutation_transport, ledger_path, **kw
-):
+def live_retire(authorization, *, read_client, mutation_transport, ledger_path, **kw):
     """Standard live-mutation invocation with the P0 gates wired in."""
     from termivance.ledger import AuthorizationLedger
 
+    kw.setdefault("approval_key", APPROVAL_KEY)
+    kw.setdefault("operator_trust", operator_trust())
     return retire_pages(
         TARGET,
         allow_policy(),
@@ -158,7 +204,6 @@ def live_retire(
         marker=MARKER,
         control_attestation=control(),
         ledger=AuthorizationLedger(ledger_path),
-        approval_key=None,
         approval_project_id=TARGET.project_id,
         approval_issue_iid=APPROVAL_IID,
         now=NOW,
@@ -167,11 +212,15 @@ def live_retire(
 
 
 def control() -> ControlAttestation:
+    target_key = target_key_for(TARGET)
     return ControlAttestation(
         operator="termivance-operator",
         statement="no redeployment path remains for this disposable target",
         asserted_at=NOW,
-        target_key=target_key_for(TARGET),
+        target_key=target_key,
+        signature=hmac.new(
+            APPROVAL_KEY.encode("utf-8"), target_key.encode("utf-8"), hashlib.sha256
+        ).hexdigest(),
     )
 
 
@@ -548,7 +597,13 @@ def test_receipt_serialization_includes_boundaries(tmp_path, monkeypatch):
         ledger_path=tmp_path / "ledger.json",
     )
     data = receipt.to_dict()
-    assert data["schema"] == "termivance.retirement_receipt/v2"
+    assert data["schema"] == "termivance.retirement_receipt/v3"
+    # v3 binds the execution-time identity of the authorization used (P0-B/A2).
+    record = data["authorization_record"]
+    assert record["binding"] == receipt.authorization_binding
+    assert record["action"] == receipt.action
+    assert record["target_key"] == TARGET.key_string()
+    assert record["nonce"]
     assert "not proof of absence" in data["note"]
     assert data["eligibility"]["snapshot_digest"]
     assert data["revalidation"]["snapshot_digest"]

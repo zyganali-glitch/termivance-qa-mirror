@@ -14,6 +14,7 @@ path that is not exactly ``/projects/<positive-int>/pages``.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import urllib.error
@@ -273,6 +274,11 @@ class PublicationProbe:
     http_error: str | None
     marker_observed: bool
     observed_at: datetime
+    #: SHA-256 of the served body captured at execution time. Recorded here so
+    #: the pre-retirement observation carries *what was actually seen*, not only
+    #: a marker claim; post-retirement the body is gone and cannot be re-fetched,
+    #: so this is an execution-time binding, never a re-verifiable one.
+    served_body_sha256: str | None = None
 
     @property
     def deployment_present(self) -> bool:
@@ -305,6 +311,7 @@ class PublicationProbe:
                 "error": self.http_error,
                 "marker_observed": self.marker_observed,
             },
+            "served_body_sha256": self.served_body_sha256,
             "genuinely_published": self.genuinely_published,
             "observed_at": _utc_now(self.observed_at).isoformat(),
         }
@@ -328,6 +335,9 @@ def observe_publication(
     observed = _utc_now(now)
     state = read_pages_state(client, target, now=observed)
     http_status, http_error, body = https_get(served_url, timeout=timeout)
+    body_digest = (
+        hashlib.sha256(body.encode("utf-8")).hexdigest() if body and body.strip() else None
+    )
     return PublicationProbe(
         target=target,
         served_url=served_url,
@@ -339,6 +349,7 @@ def observe_publication(
         http_error=http_error,
         marker_observed=marker_observed(body, marker),
         observed_at=observed,
+        served_body_sha256=body_digest,
     )
 
 

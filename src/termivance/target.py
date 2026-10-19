@@ -7,6 +7,7 @@ free-text targets cannot be constructed.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 
 RESOURCE_KINDS: frozenset[str] = frozenset(
@@ -51,6 +52,16 @@ class TargetIdentity:
     def key(self) -> tuple[int, str, str]:
         """Return the exact-identity tuple used for equality-sensitive checks."""
         return (self.project_id, self.full_path, self.resource_kind)
+
+    def key_string(self) -> str:
+        """A canonical *string* form of :meth:`key` for durable cross-process use.
+
+        Tuples do not survive a JSON round trip (they become arrays), so any
+        record that must compare equal after being saved and reloaded — ledger
+        entries, execution-time authorization records — uses this canonical
+        string instead of the raw tuple.
+        """
+        return json.dumps(list(self.key()), separators=(",", ":"), ensure_ascii=False)
 
     def to_dict(self) -> dict[str, object]:
         return {

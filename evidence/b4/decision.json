@@ -1,8 +1,7 @@
 {
   "action": "unpublish_pages",
   "authoritative": false,
-  "evaluated_at": "2026-10-19T07:19:09.149461+00:00",
-  "evidence_classification": "RECORDED_LIVE",
+  "evaluated_at": "2026-10-19T10:21:07.237741+00:00",
   "graph": {
     "dependencies": [
       {
@@ -119,19 +118,19 @@
     ],
     "evidence": [
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "branch": "main",
           "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
         },
-        "digest": "153f22a1a6d1d8a032b7a08198b4edd12385b7f12715c071f24887c968b6b4c8",
+        "digest": "9dbdcb62cb7cc9fb029c7c9185bbbd6f98e669aa801a5791b9c46b94a2164f56",
         "endpoint": "/projects/87785099/repository/branches/main",
         "error_kind": null,
         "evidence_id": "ev:branch",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "BRANCH",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 200,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -140,7 +139,7 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "bytes": 320,
           "file": ".gitlab-ci.yml",
@@ -156,14 +155,14 @@
             "main"
           ]
         },
-        "digest": "a49c1c07a23cbe49e0bd749ea8181c8164ed590d9aab320db8cec641e1b2b832",
+        "digest": "f585a6bf4dbbc3cacb3c947a49e3cb09d377a5aaf1749854ae5e98773e1259e6",
         "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
         "error_kind": null,
         "evidence_id": "ev:ci_config",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "CI_CONFIG",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 200,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -172,21 +171,21 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "can_manage_pages": false,
           "effective_access_level": null,
           "pages_api_error": "AUTH_DENIED",
           "pages_api_status": 403
         },
-        "digest": "5f1faa356664016fb9806d7e8bc769d31002faa69252850a646170daab1c686f",
+        "digest": "8c4e103a9b145fd9bbf86ddedaed2791f75c9e5a9d29812c5584eb82dab916c8",
         "endpoint": "/projects/87785099",
         "error_kind": null,
         "evidence_id": "ev:effective_permission",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "EFFECTIVE_PERMISSION",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 200,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -195,18 +194,18 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "error": "AUTH_DENIED"
         },
-        "digest": "5e0c3127b4a66181fea370971794bafbae16e3fdcc3e34cdde2afde9761d5051",
+        "digest": "18ad0a17b79ccddbc8df38be6fcd0dc4f0a20ca90d23af93b0dbdc13e0f1d871",
         "endpoint": "/projects/87785099/environments",
         "error_kind": "AUTH_DENIED",
         "evidence_id": "ev:environment",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "ENVIRONMENT",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 401,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -215,19 +214,19 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "open_count": 0,
           "retirement_related": []
         },
-        "digest": "93231a31ad8136757802c65fe4e0d5f3f1f4db68faac0e5c65159941c3bf3ddc",
+        "digest": "527320c7df7ffd2983b098d5a4159a1e53ceb185b82daa973a608b7a1acee68b",
         "endpoint": "/projects/87785099/issues",
         "error_kind": null,
         "evidence_id": "ev:open_issues",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "OPEN_ISSUES",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 200,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -236,18 +235,18 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "error": "AUTH_DENIED"
         },
-        "digest": "106d8f43929d388bfe3258b85058a603bf042dd3b4c857de314da372ebf7b9a3",
+        "digest": "8e9473f89c959cb459ab9adaa4c25e104839c89935321bb4cbf25c5971b5abed",
         "endpoint": "/projects/87785099/pages",
         "error_kind": "AUTH_DENIED",
         "evidence_id": "ev:pages",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "PAGES",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 403,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -256,18 +255,18 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "error": "AUTH_DENIED"
         },
-        "digest": "0565fb60a295618c228551650bf7893b4ffe58c14e0229f4f88b2fe0183b64f5",
+        "digest": "caae5af39bae3b170c1ac430808fbe095ce178e42261306e82a8d95ca19def3c",
         "endpoint": "/projects/87785099/pages",
         "error_kind": "AUTH_DENIED",
         "evidence_id": "ev:pages_deployment",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "PAGES_DEPLOYMENT",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 403,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -276,19 +275,19 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "latest_id": 2960507698,
           "latest_status": "success"
         },
-        "digest": "bd71c3e6b6e710385140d8a35d839119d0cf3519a1c94896dacc09d2aac30648",
+        "digest": "97ea1e227aab9b7bfea8380fad49fd06e6e6e89a9e25eca8e81accd7c41a27e0",
         "endpoint": "/projects/87785099/pipelines",
         "error_kind": null,
         "evidence_id": "ev:pipeline",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "PIPELINE",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 200,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -297,7 +296,7 @@
         }
       },
       {
-        "classification": "RECORDED_LIVE",
+        "classification": "LIVE",
         "detail": {
           "archived": null,
           "default_branch": "main",
@@ -307,14 +306,14 @@
           "visibility": "public",
           "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
         },
-        "digest": "904acd6227d5e94d13d63c8cd542b9b74f5be46bfd59be00579b1fad6bd58069",
+        "digest": "52d0bf8651ff4a6ab2c4c4650fdca8b129ae795469c0cd46167fd7d7e771644b",
         "endpoint": "/projects/87785099",
         "error_kind": null,
         "evidence_id": "ev:project_identity",
-        "fresh_until": "2026-10-19T07:33:29.746582+00:00",
+        "fresh_until": "2026-10-19T10:36:07.237741+00:00",
         "kind": "PROJECT_IDENTITY",
         "method": "GET",
-        "observed_at": "2026-10-19T07:18:29.746582+00:00",
+        "observed_at": "2026-10-19T10:21:07.237741+00:00",
         "status": 200,
         "target": {
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -384,10 +383,9 @@
   },
   "missing_conditions": [
     "resolve TARGET_NOT_AUTHORIZED: no bound authorization supplied",
-    "resolve MISSING_EVIDENCE: publication evidence is RECORDED_LIVE, not live",
-    "resolve MISSING_EVIDENCE: provider evidence is RECORDED_LIVE, not a live observation; fixtures and records cannot satisfy a live requirement",
+    "resolve INSUFFICIENT_PROVIDER_ACCESS: publication could not be observed (AUTH_DENIED)",
     "resolve REDEPLOYMENT_RISK: 1 observed redeployment/recreation mechanism(s)",
-    "resolve MISSING_EVIDENCE: permission evidence is RECORDED_LIVE, not a live observation"
+    "resolve INSUFFICIENT_PERMISSION: the acting identity lacks Maintainer/Owner Pages administration on the target"
   ],
   "obligations": [
     {
@@ -412,7 +410,7 @@
       "kind": "PROVIDER_OBSERVATION",
       "mandatory": true,
       "obligation_id": "obl:provider_observation",
-      "status": "UNKNOWN"
+      "status": "SATISFIED"
     },
     {
       "kind": "REDEPLOYMENT_PATH",
@@ -424,7 +422,7 @@
       "kind": "RETIREMENT_PERMISSION",
       "mandatory": true,
       "obligation_id": "obl:retirement_permission",
-      "status": "UNKNOWN"
+      "status": "VIOLATED"
     },
     {
       "kind": "TARGET_SCOPE",
@@ -448,16 +446,10 @@
       "obligation_id": "obl:ownership_authorization"
     },
     {
-      "code": "MISSING_EVIDENCE",
-      "detail": "publication evidence is RECORDED_LIVE, not live",
+      "code": "INSUFFICIENT_PROVIDER_ACCESS",
+      "detail": "publication could not be observed (AUTH_DENIED)",
       "evidence_id": "ev:pages_deployment",
       "obligation_id": "obl:pages_published"
-    },
-    {
-      "code": "MISSING_EVIDENCE",
-      "detail": "provider evidence is RECORDED_LIVE, not a live observation; fixtures and records cannot satisfy a live requirement",
-      "evidence_id": "ev:project_identity",
-      "obligation_id": "obl:provider_observation"
     },
     {
       "code": "REDEPLOYMENT_RISK",
@@ -466,8 +458,8 @@
       "obligation_id": "obl:redeployment_path"
     },
     {
-      "code": "MISSING_EVIDENCE",
-      "detail": "permission evidence is RECORDED_LIVE, not a live observation",
+      "code": "INSUFFICIENT_PERMISSION",
+      "detail": "the acting identity lacks Maintainer/Owner Pages administration on the target",
       "evidence_id": "ev:effective_permission",
       "obligation_id": "obl:retirement_permission"
     }
