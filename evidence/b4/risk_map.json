@@ -289,7 +289,7 @@
       ],
       "node_id": "resource:ci_redeployment:87779099",
       "severity": "LOW",
-      "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG via GET /projects/87779099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG via GET /projects/87779099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "CI_REDEPLOYMENT_MECHANISM NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG"
     },
     {
@@ -300,7 +300,7 @@
       ],
       "node_id": "resource:ci_redeployment:87785099",
       "severity": "HIGH",
-      "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT via GET /projects/87785099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT via GET /projects/87785099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "CI_REDEPLOYMENT_MECHANISM PAGES_REDEPLOYMENT_SIGNAL_PRESENT"
     },
     {
@@ -311,7 +311,7 @@
       ],
       "node_id": "resource:issue:87777871:1",
       "severity": "LOW",
-      "state": "opened via GET /projects/87777871/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "opened via GET /projects/87777871/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "OPEN_ISSUE opened"
     },
     {
@@ -322,7 +322,7 @@
       ],
       "node_id": "resource:issue:87779099:1",
       "severity": "LOW",
-      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "OPEN_ISSUE opened"
     },
     {
@@ -333,7 +333,7 @@
       ],
       "node_id": "resource:issue:87779099:2",
       "severity": "LOW",
-      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "OPEN_ISSUE opened"
     },
     {
@@ -344,7 +344,7 @@
       ],
       "node_id": "resource:issue:87779099:3",
       "severity": "LOW",
-      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "OPEN_ISSUE opened"
     },
     {
@@ -355,7 +355,7 @@
       ],
       "node_id": "resource:issue:87779099:4",
       "severity": "LOW",
-      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "OPEN_ISSUE opened"
     },
     {
@@ -366,7 +366,7 @@
       ],
       "node_id": "resource:issue:87779099:5",
       "severity": "LOW",
-      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+      "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
       "title": "OPEN_ISSUE opened"
     },
     {

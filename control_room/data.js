@@ -27,7 +27,7 @@ window.TERMIVANCE_DATA = {
     "Unpublishing targets exactly one disposable Pages project; the canonical repository and every other project are out of scope.",
     "Unsigned SHA-256 digests in the ledger are local tamper evidence, never cryptographic authentication of provider events."
   ],
-  "built_at": "2026-10-19T20:06:40.836975+00:00",
+  "built_at": "2026-10-19T20:48:07.640382+00:00",
   "demo_target_discovery": {
     "candidates": [
       {
@@ -69,7 +69,7 @@ window.TERMIVANCE_DATA = {
         "candidate_id": "duo-9710085-cand-04",
         "classification": "CORROBORATED",
         "engine_obligation_mapping": "RETIREMENT_PERMISSION (Violated: Maintainer role required on namespace to unpublish Pages)",
-        "independent_findings": "Confirmed: returns HTTP 403 AUTH_DENIED without Maintainer credentials.",
+        "independent_findings": "Confirmed access boundary: GET /projects/87785099/pages returns HTTP 403 (AUTH_DENIED). Proves anonymous observing identity is denied Pages access; does not authenticate operator's effective role.",
         "independent_source_read": "GET /projects/87785099/pages",
         "session_id": "9710085",
         "tool_used_by_duo": "Recorded witness inspection and boundary evaluation",
@@ -78,10 +78,10 @@ window.TERMIVANCE_DATA = {
       {
         "agent_claim": "Out-of-repo resurrection vectors (schedules, trigger tokens, manual runs) and cached content edge replicas may stay reachable after a provider change.",
         "candidate_id": "duo-9710085-cand-05",
-        "classification": "CORROBORATED",
+        "classification": "UNRESOLVED",
         "engine_obligation_mapping": "ABSENCE_VERIFICATION (Bound: absence requires live transition proof, never cached/negative assumption)",
-        "independent_findings": "Confirmed: single CDN 404 or mutation acceptance is never promoted to verified absence; pipeline schedules and triggers must be attested.",
-        "independent_source_read": "Evaluated against Bounded Absence and Redeployment semantics in Termivance architecture",
+        "independent_findings": "Unobservable anonymously: pipeline schedules, trigger tokens, and edge CDN cache retention cannot be observed via anonymous GitLab read; preserved as unverified candidate risk hypothesis.",
+        "independent_source_read": "UNOBSERVABLE_ANONYMOUSLY (Requires Maintainer authentication or external edge CDN telemetry)",
         "session_id": "9710085",
         "tool_used_by_duo": "Systemic risk reasoning based on GitLab architecture",
         "topic": "Out-of-Repo Resurrection Vectors & Caches"
@@ -96,7 +96,7 @@ window.TERMIVANCE_DATA = {
       "observed_absent": "NOT_CLAIMED",
       "resurrection_controlled": "NOT_CLAIMED",
       "safe_to_retire": "BLOCKED",
-      "summary": "GitLab Duo independently discovered the exact CI redeployment risk (create-pages with pages: true) on disposable project 87785099 from a neutral, unprimed issue request (#5). Termivance independently verified this source fact via public GitLab API (sha256 fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620) and bound it to REDEPLOYMENT_PATH obligation. The deterministic decision remains strictly BLOCKED because AI cannot authorize mutation or award verdicts, and no operator authorization or Maintainer unpublish permission was granted."
+      "summary": "GitLab Duo independently discovered the exact CI redeployment risk (create-pages with pages: true) on disposable project 87785099 from a neutral, unprimed issue request (#5). Termivance independently verified this source fact via public GitLab API (sha256 fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620) and bound it to REDEPLOYMENT_PATH obligation, while preserving unobservable schedules and edge caches as UNRESOLVED. The deterministic decision remains strictly BLOCKED because AI cannot authorize mutation or award verdicts, and no operator authorization or Maintainer unpublish permission was granted."
     },
     "duo_flow": {
       "agent_note_id": 4045401991,
@@ -211,16 +211,16 @@ window.TERMIVANCE_DATA = {
         "sections": {
           "absence": "39eeab2a4f3f78cd4f0282f33bf7b190571ec528c74b01fbfe65e4a57ab9dad6",
           "authorization": "31067f2c9a69e8451fc5a278856f3929c0703aa7132301423f0cce564637e48c",
-          "decision": "c51eb2ed45b86aef05e6ff3129cfb378dc85250a9eb4f65dc9b942f13584fb61",
-          "duo_reconciliation": "e34154efb38b5ade6b5f8a70813b274cb4815000895f92fe8c3f0073930a9bd4",
-          "identity": "fd9d126e14a8083c96b52be41a5d8843532df6b395d2510f83359533e101ed81",
-          "limitation_notice": "d44b23982ed3c808bcb60fc0b725c288d4b3f595ea425b0ae8f2e8f44cbb8caa",
+          "decision": "d3d7f3224fecec5e9b37880a7b728e6b778ba44c0468543da74a3c528cb6c668",
+          "duo_reconciliation": "b29585014165873c51a099953d8983ebd27ffd252417460707ba9d373cc96967",
+          "identity": "08d6d83421fcd9a4a27899eebc904c21a86ac3d112699d265a8f60b176d2977d",
+          "limitation_notice": "1f45038b36918e0d5acd11e991b0a33fab3f955e3ff92a6453c092cb65627f88",
           "mutation": "8233bc272138a9c113143e1842426f82c3412faede769c095d7ee9bb74ad004e",
           "source_evidence": "58227fbfa8e806878a27d5fca70d4a1e96b2ca8b98c1d80739dffa7bb35dcbc0",
-          "witness": "16b9bd19a3b4196b3cfcf277dbb630aad0e9b7fa96fb735546e7b3d28700e032"
+          "witness": "5dd7a64d9efe2f683102d30af58a4a9d4cd2407cb0b2084cf384000756d26fa2"
         }
       },
-      "manifest_digest": "2319c065ab8ffb7e1f24c82c189aac695a4241f679ed835fbf06c7cdfda93ec4",
+      "manifest_digest": "15ea45e1cde3defaf5f05a031eeb9d3437ad6641ee4a9875702ff4bf89fd612f",
       "schema": "termivance.proof_capsule/v1",
       "sections": {
         "absence": {
@@ -234,7 +234,7 @@ window.TERMIVANCE_DATA = {
         "decision": {
           "action": "unpublish_pages",
           "authoritative": false,
-          "evaluated_at": "2026-10-19T20:04:14.244903+00:00",
+          "evaluated_at": "2026-10-19T20:47:44.867015+00:00",
           "graph": {
             "dependencies": [
               {
@@ -356,14 +356,14 @@ window.TERMIVANCE_DATA = {
                   "branch": "main",
                   "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
                 },
-                "digest": "620b94b9e610d8d24349587efbbcd44fcd543b4d40408c416642e7559a9f1b02",
+                "digest": "11688fd09e0d06312ba2934b2b5aad899e1dc1b71e254639310c8b1cb9714aba",
                 "endpoint": "/projects/87785099/repository/branches/main",
                 "error_kind": null,
                 "evidence_id": "ev:branch",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "BRANCH",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -388,14 +388,14 @@ window.TERMIVANCE_DATA = {
                     "main"
                   ]
                 },
-                "digest": "0ae60a83b2c53f7b222058f0a8704c2bd0a72511d736055515ec9eafa76429d8",
+                "digest": "ff9ca84d2117058681353e234a6cda441b6831cd9e8b3540a22cf02595a32b37",
                 "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
                 "error_kind": null,
                 "evidence_id": "ev:ci_config",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "CI_CONFIG",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -411,14 +411,14 @@ window.TERMIVANCE_DATA = {
                   "pages_api_error": "AUTH_DENIED",
                   "pages_api_status": 403
                 },
-                "digest": "aca653028efca9c4cedb9929c6cff0431d5e449dabef8507199f39034e356ed3",
+                "digest": "034fcec2a8deeee99eadeac6496228730fa29905e4d807d8a8487d96b8dd7ec5",
                 "endpoint": "/projects/87785099",
                 "error_kind": null,
                 "evidence_id": "ev:effective_permission",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "EFFECTIVE_PERMISSION",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -431,14 +431,14 @@ window.TERMIVANCE_DATA = {
                 "detail": {
                   "error": "AUTH_DENIED"
                 },
-                "digest": "3f630152dd1e860e967aa6168aa2bc3949b6d85c92963db75f215c0d4e7059ad",
+                "digest": "be458994bf4fae39544bf92130b1d29908c0c918ca5515468d47e326bb9406df",
                 "endpoint": "/projects/87785099/environments",
                 "error_kind": "AUTH_DENIED",
                 "evidence_id": "ev:environment",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "ENVIRONMENT",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 401,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -452,14 +452,14 @@ window.TERMIVANCE_DATA = {
                   "open_count": 0,
                   "retirement_related": []
                 },
-                "digest": "d0b927343a562f1b8585cabf3409325dd642e2bbf3629592e65a13260ce359b5",
+                "digest": "e53888a5d945e88f379bf5b2d42b12de6b07f7eb50a01a60d7182ba9d8dbd941",
                 "endpoint": "/projects/87785099/issues",
                 "error_kind": null,
                 "evidence_id": "ev:open_issues",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "OPEN_ISSUES",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -472,14 +472,14 @@ window.TERMIVANCE_DATA = {
                 "detail": {
                   "error": "AUTH_DENIED"
                 },
-                "digest": "201905e45b6e813cc45e75a4a6f4d295e52c9bb36366d747980822cbe333b951",
+                "digest": "ed76fbefd375028ae456c69ae43ea1760fe0127b3b265b01a6da7365e1f30b57",
                 "endpoint": "/projects/87785099/pages",
                 "error_kind": "AUTH_DENIED",
                 "evidence_id": "ev:pages",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "PAGES",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 403,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -492,14 +492,14 @@ window.TERMIVANCE_DATA = {
                 "detail": {
                   "error": "AUTH_DENIED"
                 },
-                "digest": "b4f768c8f964ec8c3492c6c7cc234191e65e64db720f08933f7a9a90b9bf6f0b",
+                "digest": "a457b85e3514de39f9ee1d8efa9a930957bd150e349e0a19bec335458186dee2",
                 "endpoint": "/projects/87785099/pages",
                 "error_kind": "AUTH_DENIED",
                 "evidence_id": "ev:pages_deployment",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "PAGES_DEPLOYMENT",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 403,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -513,14 +513,14 @@ window.TERMIVANCE_DATA = {
                   "latest_id": 2960507698,
                   "latest_status": "success"
                 },
-                "digest": "f7cce0d1573bbbbb880fefaa9856eb40cae9f6c5ee5a7ffb6f7ad3877d20e44e",
+                "digest": "139526b14c99f11599c55963a526587621660279ee86e1f6dc295997f46548ea",
                 "endpoint": "/projects/87785099/pipelines",
                 "error_kind": null,
                 "evidence_id": "ev:pipeline",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "PIPELINE",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -539,14 +539,14 @@ window.TERMIVANCE_DATA = {
                   "visibility": "public",
                   "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
                 },
-                "digest": "e9138d68490d292001e04c63fb6c06035cf11768fe17864bbe7b26e1719542fb",
+                "digest": "9a3e0e8923f564e7f51d2c2e7930ce020ba5983e37b83ec751a6d2c946599f64",
                 "endpoint": "/projects/87785099",
                 "error_kind": null,
                 "evidence_id": "ev:project_identity",
-                "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+                "fresh_until": "2026-10-19T21:02:44.867015+00:00",
                 "kind": "PROJECT_IDENTITY",
                 "method": "GET",
-                "observed_at": "2026-10-19T20:04:14.244903+00:00",
+                "observed_at": "2026-10-19T20:47:44.867015+00:00",
                 "status": 200,
                 "target": {
                   "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -710,80 +710,106 @@ window.TERMIVANCE_DATA = {
           "record": {
             "claims": [
               {
-                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered CI Redeployment Path (Target .gitlab-ci.yml) on target 87785099",
+                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered create-pages / pages: true redeployment path on target 87785099",
                 "claim_id": "duo-9710085-cand-01",
-                "corroboration_detail": "Confirmed: job create-pages defines stage deploy, image alpine:3.20, script copying site/index.html and site/marker.txt into public/, and pages: true.",
+                "corroboration_detail": "Target .gitlab-ci.yml at observed commit contains create-pages job with pages: true; establishes active redeployment path.",
                 "corroboration_source": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
                 "corroboration_status": "CORROBORATED",
                 "exact_target_relationship": "TARGET_BOUND",
-                "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
+                "origin": "GitLab Duo Custom Flow Session 9710085",
                 "retirement_relevance": "MATERIAL",
                 "source_project": 87785099,
-                "text": ".gitlab-ci.yml at 87785099 (create-pages, pages: true) can republish the site on any pipeline run against the default branch. Candidate obligation: neutralize or control this path, or show that no pipeline can run. This is the main resurrection risk."
+                "text": "Redeployment path: `.gitlab-ci.yml` at 87785099 (`create-pages`, `pages: true`) can republish the site on any pipeline run against the default branch. Candidate obligation: neutralize or control this path, or show that no pipeline can run. This is the main resurrection risk."
               },
               {
-                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Target Marker String Direct Discovery on target 87785099",
+                "causal_attribution": "GENUINE_DUO_RISK_HYPOTHESIS: Duo reasoned about unobservable resurrection vectors and external caches",
                 "claim_id": "duo-9710085-cand-02",
-                "corroboration_detail": "Confirmed: marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a exists verbatim at target commit 54fcc9ff…",
+                "corroboration_detail": "Unobservable via anonymous provider read or GitLab REST API: pipeline schedules, trigger tokens, and edge CDN caches cannot be verified anonymously; preserved as unverified candidate risk hypothesis.",
+                "corroboration_source": null,
+                "corroboration_status": "UNRESOLVED",
+                "exact_target_relationship": "TARGET_BOUND",
+                "origin": "GitLab Duo Custom Flow Session 9710085",
+                "retirement_relevance": "CONTEXTUAL",
+                "source_project": 87785099,
+                "text": "Out-of-repo resurrection vectors: These are not visible from repository files:    - pipeline schedules    - trigger tokens    - manual or API pipeline runs    - Pages administration actions through the UI or API    - the Pages deployment-retention behaviour of `pages: true` jobs    - the template copy at `deploy/disposable-pages/.gitlab-ci.yml` in 87779099, which could be copied back to the target"
+              },
+              {
+                "causal_attribution": "GENUINE_DUO_RISK_HYPOTHESIS: Duo reasoned about unobservable resurrection vectors and external caches",
+                "claim_id": "duo-9710085-cand-03",
+                "corroboration_detail": "Unobservable via anonymous provider read or GitLab REST API: pipeline schedules, trigger tokens, and edge CDN caches cannot be verified anonymously; preserved as unverified candidate risk hypothesis.",
+                "corroboration_source": null,
+                "corroboration_status": "UNRESOLVED",
+                "exact_target_relationship": "TARGET_BOUND",
+                "origin": "GitLab Duo Custom Flow Session 9710085",
+                "retirement_relevance": "CONTEXTUAL",
+                "source_project": 87785099,
+                "text": "Cached content: Cached or edge-replicated copies of the served content, including the marker string, may stay reachable after any provider-side change."
+              },
+              {
+                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo identified in-code comment and noted it does not satisfy operator authorization contract",
+                "claim_id": "duo-9710085-cand-04",
+                "corroboration_detail": "In-code comment verified in target .gitlab-ci.yml; deterministic policy strictly enforces that prose comments cannot grant operator authorization.",
+                "corroboration_source": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d & config/retirement_policy.b3_disposable.json",
+                "corroboration_status": "CORROBORATED",
+                "exact_target_relationship": "TARGET_BOUND",
+                "origin": "GitLab Duo Custom Flow Session 9710085",
+                "retirement_relevance": "PROCEDURAL",
+                "source_project": 87785099,
+                "text": "Authorization binding: The policy file allowlists 87785099 and the `unpublish_pages` action but sets `authorization_required: true`. A bound, valid, single-use authorization is still required. The comment \"safe to retire\" in the target's CI file is only a repository comment. It is not authorization."
+              },
+              {
+                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo observed 403 access boundary on target 87785099 Pages endpoint",
+                "claim_id": "duo-9710085-cand-05",
+                "corroboration_detail": "Verified access boundary: anonymous GET /projects/87785099/pages returned HTTP 403 (AUTH_DENIED); proves anonymous identity is denied access, does not authenticate operator role.",
+                "corroboration_source": "GET /projects/87785099/pages (HTTP 403 AUTH_DENIED)",
+                "corroboration_status": "CORROBORATED",
+                "exact_target_relationship": "TARGET_BOUND",
+                "origin": "GitLab Duo Custom Flow Session 9710085",
+                "retirement_relevance": "MATERIAL",
+                "source_project": 87785099,
+                "text": "Permissions: The acting identity needs Maintainer/Owner Pages administration on the target. The recorded evidence shows only anonymous read, with a 403 on the Pages endpoint."
+              },
+              {
+                "causal_attribution": "GENUINE_DUO_OBSERVATION: Duo noted open issues in canonical hosting repository",
+                "claim_id": "duo-9710085-cand-06",
+                "corroboration_detail": "Issues exist in canonical repository 87779099, but their causal relevance to target project 87785099 is unproven.",
+                "corroboration_source": "GET /projects/87779099/issues",
+                "corroboration_status": "CONTEXTUAL_ONLY",
+                "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
+                "origin": "GitLab Duo Custom Flow Session 9710085",
+                "retirement_relevance": "CONTEXTUAL",
+                "source_project": 87779099,
+                "text": "Open work in the hosting project: Issues 1, 2 and 3 in 87779099 were recorded as open dependencies. Their relevance to the target is unknown."
+              },
+              {
+                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered marker string in target 87785099",
+                "claim_id": "duo-9710085-cand-07",
+                "corroboration_detail": "Marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a independently verified in target files site/marker.txt and site/index.html.",
                 "corroboration_source": "GET /projects/87785099/repository/files/site%2Fmarker.txt?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
                 "corroboration_status": "CORROBORATED",
                 "exact_target_relationship": "TARGET_BOUND",
-                "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
+                "origin": "GitLab Duo Custom Flow Session 9710085",
                 "retirement_relevance": "MATERIAL",
                 "source_project": 87785099,
-                "text": "site/index.html and site/marker.txt contain the marker TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a. The marker could be used by a later deterministic check."
-              },
-              {
-                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered In-Code Comment Not Operator Authorization on target 87785099",
-                "claim_id": "duo-9710085-cand-03",
-                "corroboration_detail": "Confirmed: in-code comment exists. Deterministic core strictly refuses prose/comments as authorization.",
-                "corroboration_source": "Inspected line 1 of target .gitlab-ci.yml: '# DISPOSABLE B3 demonstration site (temporary; safe to retire).'",
-                "corroboration_status": "CORROBORATED",
-                "exact_target_relationship": "TARGET_BOUND",
-                "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-                "retirement_relevance": "MATERIAL",
-                "source_project": 87785099,
-                "text": "The header comment says 'DISPOSABLE B3 demonstration site (temporary; safe to retire)'. That is only a repository comment. It is not authorization. A bound, valid, single-use authorization is still required."
-              },
-              {
-                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Pages Administration Access Boundary (403) on target 87785099",
-                "claim_id": "duo-9710085-cand-04",
-                "corroboration_detail": "Confirmed: returns HTTP 403 AUTH_DENIED without Maintainer credentials.",
-                "corroboration_source": "GET /projects/87785099/pages",
-                "corroboration_status": "CORROBORATED",
-                "exact_target_relationship": "TARGET_BOUND",
-                "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-                "retirement_relevance": "MATERIAL",
-                "source_project": 87785099,
-                "text": "The acting identity needs Maintainer/Owner Pages administration on the target. The recorded evidence shows only anonymous read, with a 403 on the Pages endpoint."
-              },
-              {
-                "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Out-of-Repo Resurrection Vectors & Caches on target 87785099",
-                "claim_id": "duo-9710085-cand-05",
-                "corroboration_detail": "Confirmed: single CDN 404 or mutation acceptance is never promoted to verified absence; pipeline schedules and triggers must be attested.",
-                "corroboration_source": "Evaluated against Bounded Absence and Redeployment semantics in Termivance architecture",
-                "corroboration_status": "CORROBORATED",
-                "exact_target_relationship": "TARGET_BOUND",
-                "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-                "retirement_relevance": "MATERIAL",
-                "source_project": 87785099,
-                "text": "Out-of-repo resurrection vectors (schedules, trigger tokens, manual runs) and cached content edge replicas may stay reachable after a provider change."
+                "text": "Marker for later checks: The marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` could be used by a later deterministic check, if that check is permitted."
               }
             ],
-            "generated_at": "2026-10-19T20:04:14.244903+00:00",
+            "generated_at": "2026-10-19T20:47:44.867015+00:00",
             "issue_iid": 5,
             "schema": "termivance.duo_reconciliation/v1",
             "session_id": "9710085",
             "target_project_id": 87785099,
             "totals": {
-              "CORROBORATED": 5,
-              "SUPPORTED": 5
+              "CONTEXTUAL_ONLY": 1,
+              "CORROBORATED": 4,
+              "TOTAL": 7,
+              "UNRESOLVED": 2
             }
           },
           "state": "RECONCILED"
         },
         "identity": {
-          "generated_at": "2026-10-19T20:04:14.244903+00:00",
+          "generated_at": "2026-10-19T20:47:44.867015+00:00",
           "provider": "GITLAB",
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -799,7 +825,7 @@ window.TERMIVANCE_DATA = {
           ],
           "not_to_be_claimed": "Integrity verification is a local byte-level check; it never re-observes GitLab and never extends the bounded verdict beyond its stated evidence, scope and freshness.",
           "notes": [
-            "assembled by run_supervised_investigation (inv-20261019200414-6969cf) from anonymous live reads",
+            "assembled by run_supervised_investigation (inv-20261019204744-ae07c3) from anonymous live reads",
             "no mutation was attempted; no absence is claimed and no control is asserted"
           ]
         },
@@ -835,8 +861,8 @@ window.TERMIVANCE_DATA = {
               "cached or edge-replicated copies of previously served content can remain reachable after the provider state changes"
             ],
             "default_branch": "main",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "pages_administration": {
               "endpoint": "/projects/87785099/pages",
               "error_kind": "AUTH_DENIED",
@@ -860,7 +886,7 @@ window.TERMIVANCE_DATA = {
     "decision": {
       "action": "unpublish_pages",
       "authoritative": false,
-      "evaluated_at": "2026-10-19T20:04:14.244903+00:00",
+      "evaluated_at": "2026-10-19T20:47:44.867015+00:00",
       "graph": {
         "dependencies": [
           {
@@ -982,14 +1008,14 @@ window.TERMIVANCE_DATA = {
               "branch": "main",
               "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
             },
-            "digest": "620b94b9e610d8d24349587efbbcd44fcd543b4d40408c416642e7559a9f1b02",
+            "digest": "11688fd09e0d06312ba2934b2b5aad899e1dc1b71e254639310c8b1cb9714aba",
             "endpoint": "/projects/87785099/repository/branches/main",
             "error_kind": null,
             "evidence_id": "ev:branch",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "BRANCH",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1014,14 +1040,14 @@ window.TERMIVANCE_DATA = {
                 "main"
               ]
             },
-            "digest": "0ae60a83b2c53f7b222058f0a8704c2bd0a72511d736055515ec9eafa76429d8",
+            "digest": "ff9ca84d2117058681353e234a6cda441b6831cd9e8b3540a22cf02595a32b37",
             "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
             "error_kind": null,
             "evidence_id": "ev:ci_config",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "CI_CONFIG",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1037,14 +1063,14 @@ window.TERMIVANCE_DATA = {
               "pages_api_error": "AUTH_DENIED",
               "pages_api_status": 403
             },
-            "digest": "aca653028efca9c4cedb9929c6cff0431d5e449dabef8507199f39034e356ed3",
+            "digest": "034fcec2a8deeee99eadeac6496228730fa29905e4d807d8a8487d96b8dd7ec5",
             "endpoint": "/projects/87785099",
             "error_kind": null,
             "evidence_id": "ev:effective_permission",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "EFFECTIVE_PERMISSION",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1057,14 +1083,14 @@ window.TERMIVANCE_DATA = {
             "detail": {
               "error": "AUTH_DENIED"
             },
-            "digest": "3f630152dd1e860e967aa6168aa2bc3949b6d85c92963db75f215c0d4e7059ad",
+            "digest": "be458994bf4fae39544bf92130b1d29908c0c918ca5515468d47e326bb9406df",
             "endpoint": "/projects/87785099/environments",
             "error_kind": "AUTH_DENIED",
             "evidence_id": "ev:environment",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "ENVIRONMENT",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 401,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1078,14 +1104,14 @@ window.TERMIVANCE_DATA = {
               "open_count": 0,
               "retirement_related": []
             },
-            "digest": "d0b927343a562f1b8585cabf3409325dd642e2bbf3629592e65a13260ce359b5",
+            "digest": "e53888a5d945e88f379bf5b2d42b12de6b07f7eb50a01a60d7182ba9d8dbd941",
             "endpoint": "/projects/87785099/issues",
             "error_kind": null,
             "evidence_id": "ev:open_issues",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "OPEN_ISSUES",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1098,14 +1124,14 @@ window.TERMIVANCE_DATA = {
             "detail": {
               "error": "AUTH_DENIED"
             },
-            "digest": "201905e45b6e813cc45e75a4a6f4d295e52c9bb36366d747980822cbe333b951",
+            "digest": "ed76fbefd375028ae456c69ae43ea1760fe0127b3b265b01a6da7365e1f30b57",
             "endpoint": "/projects/87785099/pages",
             "error_kind": "AUTH_DENIED",
             "evidence_id": "ev:pages",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "PAGES",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 403,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1118,14 +1144,14 @@ window.TERMIVANCE_DATA = {
             "detail": {
               "error": "AUTH_DENIED"
             },
-            "digest": "b4f768c8f964ec8c3492c6c7cc234191e65e64db720f08933f7a9a90b9bf6f0b",
+            "digest": "a457b85e3514de39f9ee1d8efa9a930957bd150e349e0a19bec335458186dee2",
             "endpoint": "/projects/87785099/pages",
             "error_kind": "AUTH_DENIED",
             "evidence_id": "ev:pages_deployment",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "PAGES_DEPLOYMENT",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 403,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1139,14 +1165,14 @@ window.TERMIVANCE_DATA = {
               "latest_id": 2960507698,
               "latest_status": "success"
             },
-            "digest": "f7cce0d1573bbbbb880fefaa9856eb40cae9f6c5ee5a7ffb6f7ad3877d20e44e",
+            "digest": "139526b14c99f11599c55963a526587621660279ee86e1f6dc295997f46548ea",
             "endpoint": "/projects/87785099/pipelines",
             "error_kind": null,
             "evidence_id": "ev:pipeline",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "PIPELINE",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1165,14 +1191,14 @@ window.TERMIVANCE_DATA = {
               "visibility": "public",
               "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
             },
-            "digest": "e9138d68490d292001e04c63fb6c06035cf11768fe17864bbe7b26e1719542fb",
+            "digest": "9a3e0e8923f564e7f51d2c2e7930ce020ba5983e37b83ec751a6d2c946599f64",
             "endpoint": "/projects/87785099",
             "error_kind": null,
             "evidence_id": "ev:project_identity",
-            "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+            "fresh_until": "2026-10-19T21:02:44.867015+00:00",
             "kind": "PROJECT_IDENTITY",
             "method": "GET",
-            "observed_at": "2026-10-19T20:04:14.244903+00:00",
+            "observed_at": "2026-10-19T20:47:44.867015+00:00",
             "status": 200,
             "target": {
               "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -1540,7 +1566,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "AUTH_DENIED",
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/showcase",
           "name": "Showcase",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "ok": true,
           "pages_state": "PAGES_UNVERIFIABLE_403",
           "project_id": 87777871,
@@ -1551,10 +1577,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/pages",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87777871:not_observed",
@@ -1566,10 +1592,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/repository/files/.gitlab-ci.yml/raw",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "CI_REDEPLOYMENT_MECHANISM",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "ci_redeployment_mechanism:87777871:not_observed",
@@ -1581,10 +1607,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/environments",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "ENVIRONMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "environment:87777871:not_observed",
@@ -1596,10 +1622,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87777871
               },
               "endpoint": "/projects/87777871/deployments",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "DEPLOYMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "deployment:87777871:not_observed",
@@ -1615,10 +1641,10 @@ window.TERMIVANCE_DATA = {
                 "title": "Welcome to the Transcend Hackathon 🎉"
               },
               "endpoint": "/projects/87777871/issues?state=opened",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87777871:1",
@@ -1636,7 +1662,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "AUTH_DENIED",
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
           "name": "Termivance",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "ok": true,
           "pages_state": "PAGES_UNVERIFIABLE_403",
           "project_id": 87779099,
@@ -1647,10 +1673,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87779099
               },
               "endpoint": "/projects/87779099/pages",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87779099:not_observed",
@@ -1664,10 +1690,10 @@ window.TERMIVANCE_DATA = {
                 "signals": []
               },
               "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "CI_REDEPLOYMENT_MECHANISM",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "ci_redeployment:87779099",
@@ -1679,10 +1705,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87779099
               },
               "endpoint": "/projects/87779099/environments",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "ENVIRONMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "environment:87779099:not_observed",
@@ -1694,10 +1720,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87779099
               },
               "endpoint": "/projects/87779099/deployments",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "DEPLOYMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "deployment:87779099:not_observed",
@@ -1717,10 +1743,10 @@ window.TERMIVANCE_DATA = {
                 "title": "[B4-DEMO] Neutral supervised retirement analysis request: target project 87785099"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:5",
@@ -1739,10 +1765,10 @@ window.TERMIVANCE_DATA = {
                 "title": "[B4-DEMO] Supervised retirement analysis request: target project 87785099"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:4",
@@ -1761,10 +1787,10 @@ window.TERMIVANCE_DATA = {
                 "title": "[B3] Retirement status: BLOCKED (deterministic) - graph-bound authority, proven-transition absence, durable single-use authorization"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:3",
@@ -1783,10 +1809,10 @@ window.TERMIVANCE_DATA = {
                 "title": "B2 retirement decision: BLOCKED (deterministic, read-only)"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:2",
@@ -1805,10 +1831,10 @@ window.TERMIVANCE_DATA = {
                 "title": "B1 retirement-analysis request (harmless, non-authoritative)"
               },
               "endpoint": "/projects/87779099/issues?state=opened",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "OPEN_ISSUE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "issue:87779099:1",
@@ -1826,7 +1852,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "AUTH_DENIED",
           "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
           "name": "termivance-b3-disposable-pages-demo",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "ok": true,
           "pages_state": "PAGES_UNVERIFIABLE_403",
           "project_id": 87785099,
@@ -1837,10 +1863,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87785099
               },
               "endpoint": "/projects/87785099/pages",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87785099:not_observed",
@@ -1857,10 +1883,10 @@ window.TERMIVANCE_DATA = {
                 ]
               },
               "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "CI_REDEPLOYMENT_MECHANISM",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "ci_redeployment:87785099",
@@ -1872,10 +1898,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87785099
               },
               "endpoint": "/projects/87785099/environments",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "ENVIRONMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "environment:87785099:not_observed",
@@ -1887,10 +1913,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87785099
               },
               "endpoint": "/projects/87785099/deployments",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "DEPLOYMENT",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "deployment:87785099:not_observed",
@@ -1908,7 +1934,7 @@ window.TERMIVANCE_DATA = {
           "error_kind": "NOT_FOUND",
           "full_path": "projects/87786164",
           "name": "(unreadable)",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "ok": false,
           "pages_state": "UNKNOWN",
           "project_id": 87786164,
@@ -1919,10 +1945,10 @@ window.TERMIVANCE_DATA = {
                 "project_id": 87786164
               },
               "endpoint": "/projects/87786164/pages",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PAGES_SITE",
               "mutation_capability": "NOT_AUTHORIZING",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "operation_supported": "READ_ONLY_OBSERVATION",
               "provenance": "ANONYMOUS_PUBLIC_READ",
               "ref": "pages_site:87786164:not_observed",
@@ -1935,7 +1961,7 @@ window.TERMIVANCE_DATA = {
           "web_url": ""
         }
       ],
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "provenance": "ANONYMOUS_PUBLIC_READ",
       "relations": [
         {
@@ -2300,7 +2326,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:ci_redeployment:87779099",
           "severity": "LOW",
-          "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG via GET /projects/87779099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG via GET /projects/87779099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "CI_REDEPLOYMENT_MECHANISM NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG"
         },
         {
@@ -2311,7 +2337,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:ci_redeployment:87785099",
           "severity": "HIGH",
-          "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT via GET /projects/87785099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT via GET /projects/87785099/repository/files/.gitlab-ci.yml/raw [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "CI_REDEPLOYMENT_MECHANISM PAGES_REDEPLOYMENT_SIGNAL_PRESENT"
         },
         {
@@ -2322,7 +2348,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87777871:1",
           "severity": "LOW",
-          "state": "opened via GET /projects/87777871/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "opened via GET /projects/87777871/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2333,7 +2359,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:1",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2344,7 +2370,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:2",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2355,7 +2381,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:3",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2366,7 +2392,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:4",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2377,7 +2403,7 @@ window.TERMIVANCE_DATA = {
           ],
           "node_id": "resource:issue:87779099:5",
           "severity": "LOW",
-          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T20:19:14.244903+00:00]",
+          "state": "opened via GET /projects/87779099/issues?state=opened [ANONYMOUS_PUBLIC_READ, fresh until 2026-10-19T21:02:44.867015+00:00]",
           "title": "OPEN_ISSUE opened"
         },
         {
@@ -2465,9 +2491,9 @@ window.TERMIVANCE_DATA = {
       "banner": "HYPOTHETICAL SIMULATION — no request was sent, nothing was mutated, no verdict was earned",
       "cross_resource_factors": [
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "CI_REDEPLOYMENT_MECHANISM",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; CI_REDEPLOYMENT_MECHANISM observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "ci_redeployment:87779099",
@@ -2475,9 +2501,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "CI_REDEPLOYMENT_MECHANISM",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; CI_REDEPLOYMENT_MECHANISM observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "ci_redeployment:87785099",
@@ -2485,9 +2511,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87777871:1",
@@ -2495,9 +2521,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:1",
@@ -2505,9 +2531,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:2",
@@ -2515,9 +2541,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:3",
@@ -2525,9 +2551,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:4",
@@ -2535,9 +2561,9 @@ window.TERMIVANCE_DATA = {
           "support": "OBSERVED"
         },
         {
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "OPEN_ISSUE",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "observed_state": "opened",
           "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint — any post-retirement change would have to be re-observed independently",
           "resource": "issue:87779099:5",
@@ -2556,7 +2582,7 @@ window.TERMIVANCE_DATA = {
       "decision": {
         "action": "unpublish_pages",
         "authoritative": false,
-        "evaluated_at": "2026-10-19T20:04:14.244903+00:00",
+        "evaluated_at": "2026-10-19T20:47:44.867015+00:00",
         "graph": {
           "dependencies": [
             {
@@ -2678,14 +2704,14 @@ window.TERMIVANCE_DATA = {
                 "branch": "main",
                 "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
               },
-              "digest": "620b94b9e610d8d24349587efbbcd44fcd543b4d40408c416642e7559a9f1b02",
+              "digest": "11688fd09e0d06312ba2934b2b5aad899e1dc1b71e254639310c8b1cb9714aba",
               "endpoint": "/projects/87785099/repository/branches/main",
               "error_kind": null,
               "evidence_id": "ev:branch",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "BRANCH",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2710,14 +2736,14 @@ window.TERMIVANCE_DATA = {
                   "main"
                 ]
               },
-              "digest": "0ae60a83b2c53f7b222058f0a8704c2bd0a72511d736055515ec9eafa76429d8",
+              "digest": "ff9ca84d2117058681353e234a6cda441b6831cd9e8b3540a22cf02595a32b37",
               "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
               "error_kind": null,
               "evidence_id": "ev:ci_config",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "CI_CONFIG",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2733,14 +2759,14 @@ window.TERMIVANCE_DATA = {
                 "pages_api_error": "AUTH_DENIED",
                 "pages_api_status": 403
               },
-              "digest": "aca653028efca9c4cedb9929c6cff0431d5e449dabef8507199f39034e356ed3",
+              "digest": "034fcec2a8deeee99eadeac6496228730fa29905e4d807d8a8487d96b8dd7ec5",
               "endpoint": "/projects/87785099",
               "error_kind": null,
               "evidence_id": "ev:effective_permission",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "EFFECTIVE_PERMISSION",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2753,14 +2779,14 @@ window.TERMIVANCE_DATA = {
               "detail": {
                 "error": "AUTH_DENIED"
               },
-              "digest": "3f630152dd1e860e967aa6168aa2bc3949b6d85c92963db75f215c0d4e7059ad",
+              "digest": "be458994bf4fae39544bf92130b1d29908c0c918ca5515468d47e326bb9406df",
               "endpoint": "/projects/87785099/environments",
               "error_kind": "AUTH_DENIED",
               "evidence_id": "ev:environment",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "ENVIRONMENT",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 401,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2774,14 +2800,14 @@ window.TERMIVANCE_DATA = {
                 "open_count": 0,
                 "retirement_related": []
               },
-              "digest": "d0b927343a562f1b8585cabf3409325dd642e2bbf3629592e65a13260ce359b5",
+              "digest": "e53888a5d945e88f379bf5b2d42b12de6b07f7eb50a01a60d7182ba9d8dbd941",
               "endpoint": "/projects/87785099/issues",
               "error_kind": null,
               "evidence_id": "ev:open_issues",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "OPEN_ISSUES",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2794,14 +2820,14 @@ window.TERMIVANCE_DATA = {
               "detail": {
                 "error": "AUTH_DENIED"
               },
-              "digest": "201905e45b6e813cc45e75a4a6f4d295e52c9bb36366d747980822cbe333b951",
+              "digest": "ed76fbefd375028ae456c69ae43ea1760fe0127b3b265b01a6da7365e1f30b57",
               "endpoint": "/projects/87785099/pages",
               "error_kind": "AUTH_DENIED",
               "evidence_id": "ev:pages",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PAGES",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 403,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2814,14 +2840,14 @@ window.TERMIVANCE_DATA = {
               "detail": {
                 "error": "AUTH_DENIED"
               },
-              "digest": "b4f768c8f964ec8c3492c6c7cc234191e65e64db720f08933f7a9a90b9bf6f0b",
+              "digest": "a457b85e3514de39f9ee1d8efa9a930957bd150e349e0a19bec335458186dee2",
               "endpoint": "/projects/87785099/pages",
               "error_kind": "AUTH_DENIED",
               "evidence_id": "ev:pages_deployment",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PAGES_DEPLOYMENT",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 403,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2835,14 +2861,14 @@ window.TERMIVANCE_DATA = {
                 "latest_id": 2960507698,
                 "latest_status": "success"
               },
-              "digest": "f7cce0d1573bbbbb880fefaa9856eb40cae9f6c5ee5a7ffb6f7ad3877d20e44e",
+              "digest": "139526b14c99f11599c55963a526587621660279ee86e1f6dc295997f46548ea",
               "endpoint": "/projects/87785099/pipelines",
               "error_kind": null,
               "evidence_id": "ev:pipeline",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PIPELINE",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -2861,14 +2887,14 @@ window.TERMIVANCE_DATA = {
                 "visibility": "public",
                 "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
               },
-              "digest": "e9138d68490d292001e04c63fb6c06035cf11768fe17864bbe7b26e1719542fb",
+              "digest": "9a3e0e8923f564e7f51d2c2e7930ce020ba5983e37b83ec751a6d2c946599f64",
               "endpoint": "/projects/87785099",
               "error_kind": null,
               "evidence_id": "ev:project_identity",
-              "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
               "kind": "PROJECT_IDENTITY",
               "method": "GET",
-              "observed_at": "2026-10-19T20:04:14.244903+00:00",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
               "status": 200,
               "target": {
                 "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -3115,77 +3141,101 @@ window.TERMIVANCE_DATA = {
     },
     "supervised_review": {
       "authority": "NON_AUTHORITATIVE",
-      "autonomy_summary": "1 genuine Duo autonomous step (session 9710085), 1 automated handoff, 5 deterministic automated step(s) EXECUTED NOW; the chain is supervised: Duo proposed candidate risks, deterministic engine enforced verdict BLOCKED and published outcome awaiting human review",
+      "autonomy_summary": "Operator/CI-initiated supervised execution pipeline (not an event-driven continuous daemon): 1 genuine Duo autonomous step (session 9710085), 1 structured handoff, 5 deterministic automated step(s) EXECUTED NOW; deterministic engine enforces verdict BLOCKED and requires human operator review before any action.",
       "boundary": "this review connects the genuine Duo analysis to deterministic verification; the AI contribution adds investigation context and risk explanations but cannot award verdicts, modify provider facts, or authorize mutations",
       "candidate_claims": [
         {
-          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered CI Redeployment Path (Target .gitlab-ci.yml) on target 87785099",
+          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered create-pages / pages: true redeployment path on target 87785099",
           "claim_id": "duo-9710085-cand-01",
-          "corroboration_detail": "Confirmed: job create-pages defines stage deploy, image alpine:3.20, script copying site/index.html and site/marker.txt into public/, and pages: true.",
+          "corroboration_detail": "Target .gitlab-ci.yml at observed commit contains create-pages job with pages: true; establishes active redeployment path.",
           "corroboration_source": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
           "corroboration_status": "CORROBORATED",
           "exact_target_relationship": "TARGET_BOUND",
-          "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
+          "origin": "GitLab Duo Custom Flow Session 9710085",
           "retirement_relevance": "MATERIAL",
           "source_project": 87785099,
-          "text": ".gitlab-ci.yml at 87785099 (create-pages, pages: true) can republish the site on any pipeline run against the default branch. Candidate obligation: neutralize or control this path, or show that no pipeline can run. This is the main resurrection risk."
+          "text": "Redeployment path: `.gitlab-ci.yml` at 87785099 (`create-pages`, `pages: true`) can republish the site on any pipeline run against the default branch. Candidate obligation: neutralize or control this path, or show that no pipeline can run. This is the main resurrection risk."
         },
         {
-          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Target Marker String Direct Discovery on target 87785099",
+          "causal_attribution": "GENUINE_DUO_RISK_HYPOTHESIS: Duo reasoned about unobservable resurrection vectors and external caches",
           "claim_id": "duo-9710085-cand-02",
-          "corroboration_detail": "Confirmed: marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a exists verbatim at target commit 54fcc9ff…",
+          "corroboration_detail": "Unobservable via anonymous provider read or GitLab REST API: pipeline schedules, trigger tokens, and edge CDN caches cannot be verified anonymously; preserved as unverified candidate risk hypothesis.",
+          "corroboration_source": null,
+          "corroboration_status": "UNRESOLVED",
+          "exact_target_relationship": "TARGET_BOUND",
+          "origin": "GitLab Duo Custom Flow Session 9710085",
+          "retirement_relevance": "CONTEXTUAL",
+          "source_project": 87785099,
+          "text": "Out-of-repo resurrection vectors: These are not visible from repository files:    - pipeline schedules    - trigger tokens    - manual or API pipeline runs    - Pages administration actions through the UI or API    - the Pages deployment-retention behaviour of `pages: true` jobs    - the template copy at `deploy/disposable-pages/.gitlab-ci.yml` in 87779099, which could be copied back to the target"
+        },
+        {
+          "causal_attribution": "GENUINE_DUO_RISK_HYPOTHESIS: Duo reasoned about unobservable resurrection vectors and external caches",
+          "claim_id": "duo-9710085-cand-03",
+          "corroboration_detail": "Unobservable via anonymous provider read or GitLab REST API: pipeline schedules, trigger tokens, and edge CDN caches cannot be verified anonymously; preserved as unverified candidate risk hypothesis.",
+          "corroboration_source": null,
+          "corroboration_status": "UNRESOLVED",
+          "exact_target_relationship": "TARGET_BOUND",
+          "origin": "GitLab Duo Custom Flow Session 9710085",
+          "retirement_relevance": "CONTEXTUAL",
+          "source_project": 87785099,
+          "text": "Cached content: Cached or edge-replicated copies of the served content, including the marker string, may stay reachable after any provider-side change."
+        },
+        {
+          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo identified in-code comment and noted it does not satisfy operator authorization contract",
+          "claim_id": "duo-9710085-cand-04",
+          "corroboration_detail": "In-code comment verified in target .gitlab-ci.yml; deterministic policy strictly enforces that prose comments cannot grant operator authorization.",
+          "corroboration_source": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d & config/retirement_policy.b3_disposable.json",
+          "corroboration_status": "CORROBORATED",
+          "exact_target_relationship": "TARGET_BOUND",
+          "origin": "GitLab Duo Custom Flow Session 9710085",
+          "retirement_relevance": "PROCEDURAL",
+          "source_project": 87785099,
+          "text": "Authorization binding: The policy file allowlists 87785099 and the `unpublish_pages` action but sets `authorization_required: true`. A bound, valid, single-use authorization is still required. The comment \"safe to retire\" in the target's CI file is only a repository comment. It is not authorization."
+        },
+        {
+          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo observed 403 access boundary on target 87785099 Pages endpoint",
+          "claim_id": "duo-9710085-cand-05",
+          "corroboration_detail": "Verified access boundary: anonymous GET /projects/87785099/pages returned HTTP 403 (AUTH_DENIED); proves anonymous identity is denied access, does not authenticate operator role.",
+          "corroboration_source": "GET /projects/87785099/pages (HTTP 403 AUTH_DENIED)",
+          "corroboration_status": "CORROBORATED",
+          "exact_target_relationship": "TARGET_BOUND",
+          "origin": "GitLab Duo Custom Flow Session 9710085",
+          "retirement_relevance": "MATERIAL",
+          "source_project": 87785099,
+          "text": "Permissions: The acting identity needs Maintainer/Owner Pages administration on the target. The recorded evidence shows only anonymous read, with a 403 on the Pages endpoint."
+        },
+        {
+          "causal_attribution": "GENUINE_DUO_OBSERVATION: Duo noted open issues in canonical hosting repository",
+          "claim_id": "duo-9710085-cand-06",
+          "corroboration_detail": "Issues exist in canonical repository 87779099, but their causal relevance to target project 87785099 is unproven.",
+          "corroboration_source": "GET /projects/87779099/issues",
+          "corroboration_status": "CONTEXTUAL_ONLY",
+          "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
+          "origin": "GitLab Duo Custom Flow Session 9710085",
+          "retirement_relevance": "CONTEXTUAL",
+          "source_project": 87779099,
+          "text": "Open work in the hosting project: Issues 1, 2 and 3 in 87779099 were recorded as open dependencies. Their relevance to the target is unknown."
+        },
+        {
+          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered marker string in target 87785099",
+          "claim_id": "duo-9710085-cand-07",
+          "corroboration_detail": "Marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a independently verified in target files site/marker.txt and site/index.html.",
           "corroboration_source": "GET /projects/87785099/repository/files/site%2Fmarker.txt?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
           "corroboration_status": "CORROBORATED",
           "exact_target_relationship": "TARGET_BOUND",
-          "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
+          "origin": "GitLab Duo Custom Flow Session 9710085",
           "retirement_relevance": "MATERIAL",
           "source_project": 87785099,
-          "text": "site/index.html and site/marker.txt contain the marker TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a. The marker could be used by a later deterministic check."
-        },
-        {
-          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered In-Code Comment Not Operator Authorization on target 87785099",
-          "claim_id": "duo-9710085-cand-03",
-          "corroboration_detail": "Confirmed: in-code comment exists. Deterministic core strictly refuses prose/comments as authorization.",
-          "corroboration_source": "Inspected line 1 of target .gitlab-ci.yml: '# DISPOSABLE B3 demonstration site (temporary; safe to retire).'",
-          "corroboration_status": "CORROBORATED",
-          "exact_target_relationship": "TARGET_BOUND",
-          "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-          "retirement_relevance": "MATERIAL",
-          "source_project": 87785099,
-          "text": "The header comment says 'DISPOSABLE B3 demonstration site (temporary; safe to retire)'. That is only a repository comment. It is not authorization. A bound, valid, single-use authorization is still required."
-        },
-        {
-          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Pages Administration Access Boundary (403) on target 87785099",
-          "claim_id": "duo-9710085-cand-04",
-          "corroboration_detail": "Confirmed: returns HTTP 403 AUTH_DENIED without Maintainer credentials.",
-          "corroboration_source": "GET /projects/87785099/pages",
-          "corroboration_status": "CORROBORATED",
-          "exact_target_relationship": "TARGET_BOUND",
-          "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-          "retirement_relevance": "MATERIAL",
-          "source_project": 87785099,
-          "text": "The acting identity needs Maintainer/Owner Pages administration on the target. The recorded evidence shows only anonymous read, with a 403 on the Pages endpoint."
-        },
-        {
-          "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Out-of-Repo Resurrection Vectors & Caches on target 87785099",
-          "claim_id": "duo-9710085-cand-05",
-          "corroboration_detail": "Confirmed: single CDN 404 or mutation acceptance is never promoted to verified absence; pipeline schedules and triggers must be attested.",
-          "corroboration_source": "Evaluated against Bounded Absence and Redeployment semantics in Termivance architecture",
-          "corroboration_status": "CORROBORATED",
-          "exact_target_relationship": "TARGET_BOUND",
-          "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-          "retirement_relevance": "MATERIAL",
-          "source_project": 87785099,
-          "text": "Out-of-repo resurrection vectors (schedules, trigger tokens, manual runs) and cached content edge replicas may stay reachable after a provider change."
+          "text": "Marker for later checks: The marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` could be used by a later deterministic check, if that check is permitted."
         }
       ],
       "counterfactual": {
         "corroboration_work_changed": true,
         "deterministic_verdict_changed": false,
         "investigation_queue_changed": true,
-        "obligation_trace_changed": true,
-        "risk_explanation_changed": true,
-        "summary": "AI candidates queued: 5 claims; corroboration performed: 5 independent reads; obligation trace bound to REDEPLOYMENT_PATH; deterministic verdict is BLOCKED in both cases because AI cannot authorize mutation or award verdicts, and unpublish prerequisites remain unsatisfied.",
+        "obligation_trace_changed": false,
+        "risk_explanation_changed": false,
+        "summary": "AI candidates queued: 7 claims; corroboration performed: 4 corroborated, 2 unresolved. Obligation trace changed: False (deterministic engine evaluates REDEPLOYMENT_PATH directly from target provider facts, not from AI text). Risk explanation changed: False (risk map nodes derived from deterministic decision). Deterministic verdict is BLOCKED in both cases because AI text cannot authorize mutation or award verdicts, and unpublish prerequisites remain unsatisfied.",
         "verdict_with_candidate": "BLOCKED",
         "verdict_without_candidate": "BLOCKED"
       },
@@ -3193,51 +3243,51 @@ window.TERMIVANCE_DATA = {
         "catalog_item_id": 1018562,
         "session_id": "9710085"
       },
-      "execution_id": "inv-20261019200414-6969cf",
+      "execution_id": "inv-20261019204744-ae07c3",
       "investigation_mode": "EXECUTED_NOW",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "schema": "termivance.supervised_review/v1",
       "steps": [
         {
           "autonomy": "DUO_AUTONOMOUS",
-          "detail": "session 9710085, catalog item 1018562; Duo analyzed target 87785099 from neutral issue #5 note 4045401991",
-          "executed_at": "2026-10-19T18:41:00Z",
-          "execution_id": "inv-20261019200414-6969cf",
+          "detail": "session 9710085, catalog item 1018562; author ai-termivance-retirement-analyst-gitlab-ai-hackathon; Duo analyzed target 87785099 from issue #5 note 4045401991",
+          "executed_at": "2026-10-19T19:46:42.793Z",
+          "execution_id": "inv-20261019204744-ae07c3",
           "execution_mode": "RECORDED_HISTORICAL",
           "input_refs": [
             "issue:87779099:5"
           ],
           "output_ref": "agent_session:9710085",
-          "provenance": "OPERATOR_CONFIRMED",
+          "provenance": "OPERATOR_CONFIRMED_NOTE_INPUT",
           "status": "COMPLETED",
           "step_id": "duo_candidate_analysis",
           "title": "GitLab Duo Custom Flow candidate analysis (Issue #5)"
         },
         {
           "autonomy": "OPERATOR_CONFIRMED_HANDOFF",
-          "detail": "ingested 5 non-authoritative candidate claims from Duo session 9710085; handed to deterministic verification",
-          "executed_at": "2026-10-19T20:04:14.244903+00:00",
-          "execution_id": "inv-20261019200414-6969cf",
+          "detail": "ingested 7 non-authoritative candidate claims from Duo session 9710085 (provenance: OPERATOR_CONFIRMED_NOTE_INPUT); passed to deterministic verification",
+          "executed_at": "2026-10-19T20:47:44.867015+00:00",
+          "execution_id": "inv-20261019204744-ae07c3",
           "execution_mode": "EXECUTED_NOW",
           "input_refs": [
-            "duo_session:9710085"
+            "gitlab_issue_note:4045401991"
           ],
           "output_ref": null,
-          "provenance": "OPERATOR_CONFIRMED",
+          "provenance": "OPERATOR_CONFIRMED_NOTE_INPUT",
           "status": "COMPLETED",
           "step_id": "operator_handoff",
           "title": "Supervised pipeline ingests Duo candidate claims"
         },
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
-          "detail": "EXECUTED NOW: reconciled 5 candidate claims against anonymous read-only GitLab endpoints; all corroborated against target source",
-          "executed_at": "2026-10-19T20:04:14.244903+00:00",
-          "execution_id": "inv-20261019200414-6969cf",
+          "detail": "EXECUTED NOW: reconciled 7 candidate claims against provider facts; 4 corroborated, 2 unresolved (unobservable schedules/caches), 1 contextual",
+          "executed_at": "2026-10-19T20:47:44.867015+00:00",
+          "execution_id": "inv-20261019204744-ae07c3",
           "execution_mode": "EXECUTED_NOW",
           "input_refs": [
             "issue:87779099:5"
           ],
-          "output_ref": "evidence\\b4\\duo_reconciliation.json",
+          "output_ref": "evidence\\b4\\duo_reconciliation_issue_5.json",
           "provenance": "ANONYMOUS_PUBLIC_READ",
           "status": "COMPLETED",
           "step_id": "independent_reconciliation",
@@ -3246,8 +3296,8 @@ window.TERMIVANCE_DATA = {
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
           "detail": "EXECUTED NOW: observed commit 54fcc9ff2b…; resurrection_possible=MECHANISM_PRESENT_IN_OBSERVED_CONFIG",
-          "executed_at": "2026-10-19T20:04:14.244903+00:00",
-          "execution_id": "inv-20261019200414-6969cf",
+          "executed_at": "2026-10-19T20:47:44.867015+00:00",
+          "execution_id": "inv-20261019204744-ae07c3",
           "execution_mode": "EXECUTED_NOW",
           "input_refs": [
             "project:87785099"
@@ -3261,8 +3311,8 @@ window.TERMIVANCE_DATA = {
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
           "detail": "EXECUTED NOW: verdict=BLOCKED; obligation graph evaluated with zero non-authoritative modification",
-          "executed_at": "2026-10-19T20:04:14.244903+00:00",
-          "execution_id": "inv-20261019200414-6969cf",
+          "executed_at": "2026-10-19T20:47:44.867015+00:00",
+          "execution_id": "inv-20261019204744-ae07c3",
           "execution_mode": "EXECUTED_NOW",
           "input_refs": [
             "project:87785099"
@@ -3276,8 +3326,8 @@ window.TERMIVANCE_DATA = {
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
           "detail": "EXECUTED NOW: built risk map with 35 nodes and 14 edges",
-          "executed_at": "2026-10-19T20:04:14.244903+00:00",
-          "execution_id": "inv-20261019200414-6969cf",
+          "executed_at": "2026-10-19T20:47:44.867015+00:00",
+          "execution_id": "inv-20261019204744-ae07c3",
           "execution_mode": "EXECUTED_NOW",
           "input_refs": [
             "evidence\\b4\\decision.json"
@@ -3290,14 +3340,14 @@ window.TERMIVANCE_DATA = {
         },
         {
           "autonomy": "DETERMINISTIC_AUTOMATED",
-          "detail": "EXECUTED NOW: capsule assembled; manifest sha256 2319c065ab8ffb7e…",
-          "executed_at": "2026-10-19T20:04:14.244903+00:00",
-          "execution_id": "inv-20261019200414-6969cf",
+          "detail": "EXECUTED NOW: capsule assembled; manifest sha256 15ea45e1cde3defa…",
+          "executed_at": "2026-10-19T20:47:44.867015+00:00",
+          "execution_id": "inv-20261019204744-ae07c3",
           "execution_mode": "EXECUTED_NOW",
           "input_refs": [
             "evidence\\b4\\decision.json",
             "evidence\\b4\\witness_87785099.json",
-            "evidence\\b4\\duo_reconciliation.json"
+            "evidence\\b4\\duo_reconciliation_issue_5.json"
           ],
           "output_ref": "evidence\\b4\\proof_capsule.json",
           "provenance": "DETERMINISTIC",
@@ -3343,8 +3393,8 @@ window.TERMIVANCE_DATA = {
         "cached or edge-replicated copies of previously served content can remain reachable after the provider state changes"
       ],
       "default_branch": "main",
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "pages_administration": {
         "endpoint": "/projects/87785099/pages",
         "error_kind": "AUTH_DENIED",

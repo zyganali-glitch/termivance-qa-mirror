@@ -1,76 +1,100 @@
 {
   "authority": "NON_AUTHORITATIVE",
-  "autonomy_summary": "1 genuine Duo autonomous step (session 9710085), 1 automated handoff, 5 deterministic automated step(s) EXECUTED NOW; the chain is supervised: Duo proposed candidate risks, deterministic engine enforced verdict BLOCKED and published outcome awaiting human review",
+  "autonomy_summary": "Operator/CI-initiated supervised execution pipeline (not an event-driven continuous daemon): 1 genuine Duo autonomous step (session 9710085), 1 structured handoff, 5 deterministic automated step(s) EXECUTED NOW; deterministic engine enforces verdict BLOCKED and requires human operator review before any action.",
   "boundary": "this review connects the genuine Duo analysis to deterministic verification; the AI contribution adds investigation context and risk explanations but cannot award verdicts, modify provider facts, or authorize mutations",
   "candidate_claims": [
     {
-      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered CI Redeployment Path (Target .gitlab-ci.yml) on target 87785099",
+      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered create-pages / pages: true redeployment path on target 87785099",
       "claim_id": "duo-9710085-cand-01",
-      "corroboration_detail": "Confirmed: job create-pages defines stage deploy, image alpine:3.20, script copying site/index.html and site/marker.txt into public/, and pages: true.",
+      "corroboration_detail": "Target .gitlab-ci.yml at observed commit contains create-pages job with pages: true; establishes active redeployment path.",
       "corroboration_source": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
       "corroboration_status": "CORROBORATED",
       "exact_target_relationship": "TARGET_BOUND",
-      "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
+      "origin": "GitLab Duo Custom Flow Session 9710085",
       "retirement_relevance": "MATERIAL",
       "source_project": 87785099,
-      "text": ".gitlab-ci.yml at 87785099 (create-pages, pages: true) can republish the site on any pipeline run against the default branch. Candidate obligation: neutralize or control this path, or show that no pipeline can run. This is the main resurrection risk."
+      "text": "Redeployment path: `.gitlab-ci.yml` at 87785099 (`create-pages`, `pages: true`) can republish the site on any pipeline run against the default branch. Candidate obligation: neutralize or control this path, or show that no pipeline can run. This is the main resurrection risk."
     },
     {
-      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Target Marker String Direct Discovery on target 87785099",
+      "causal_attribution": "GENUINE_DUO_RISK_HYPOTHESIS: Duo reasoned about unobservable resurrection vectors and external caches",
       "claim_id": "duo-9710085-cand-02",
-      "corroboration_detail": "Confirmed: marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a exists verbatim at target commit 54fcc9ff\u2026",
+      "corroboration_detail": "Unobservable via anonymous provider read or GitLab REST API: pipeline schedules, trigger tokens, and edge CDN caches cannot be verified anonymously; preserved as unverified candidate risk hypothesis.",
+      "corroboration_source": null,
+      "corroboration_status": "UNRESOLVED",
+      "exact_target_relationship": "TARGET_BOUND",
+      "origin": "GitLab Duo Custom Flow Session 9710085",
+      "retirement_relevance": "CONTEXTUAL",
+      "source_project": 87785099,
+      "text": "Out-of-repo resurrection vectors: These are not visible from repository files:    - pipeline schedules    - trigger tokens    - manual or API pipeline runs    - Pages administration actions through the UI or API    - the Pages deployment-retention behaviour of `pages: true` jobs    - the template copy at `deploy/disposable-pages/.gitlab-ci.yml` in 87779099, which could be copied back to the target"
+    },
+    {
+      "causal_attribution": "GENUINE_DUO_RISK_HYPOTHESIS: Duo reasoned about unobservable resurrection vectors and external caches",
+      "claim_id": "duo-9710085-cand-03",
+      "corroboration_detail": "Unobservable via anonymous provider read or GitLab REST API: pipeline schedules, trigger tokens, and edge CDN caches cannot be verified anonymously; preserved as unverified candidate risk hypothesis.",
+      "corroboration_source": null,
+      "corroboration_status": "UNRESOLVED",
+      "exact_target_relationship": "TARGET_BOUND",
+      "origin": "GitLab Duo Custom Flow Session 9710085",
+      "retirement_relevance": "CONTEXTUAL",
+      "source_project": 87785099,
+      "text": "Cached content: Cached or edge-replicated copies of the served content, including the marker string, may stay reachable after any provider-side change."
+    },
+    {
+      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo identified in-code comment and noted it does not satisfy operator authorization contract",
+      "claim_id": "duo-9710085-cand-04",
+      "corroboration_detail": "In-code comment verified in target .gitlab-ci.yml; deterministic policy strictly enforces that prose comments cannot grant operator authorization.",
+      "corroboration_source": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d & config/retirement_policy.b3_disposable.json",
+      "corroboration_status": "CORROBORATED",
+      "exact_target_relationship": "TARGET_BOUND",
+      "origin": "GitLab Duo Custom Flow Session 9710085",
+      "retirement_relevance": "PROCEDURAL",
+      "source_project": 87785099,
+      "text": "Authorization binding: The policy file allowlists 87785099 and the `unpublish_pages` action but sets `authorization_required: true`. A bound, valid, single-use authorization is still required. The comment \"safe to retire\" in the target's CI file is only a repository comment. It is not authorization."
+    },
+    {
+      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo observed 403 access boundary on target 87785099 Pages endpoint",
+      "claim_id": "duo-9710085-cand-05",
+      "corroboration_detail": "Verified access boundary: anonymous GET /projects/87785099/pages returned HTTP 403 (AUTH_DENIED); proves anonymous identity is denied access, does not authenticate operator role.",
+      "corroboration_source": "GET /projects/87785099/pages (HTTP 403 AUTH_DENIED)",
+      "corroboration_status": "CORROBORATED",
+      "exact_target_relationship": "TARGET_BOUND",
+      "origin": "GitLab Duo Custom Flow Session 9710085",
+      "retirement_relevance": "MATERIAL",
+      "source_project": 87785099,
+      "text": "Permissions: The acting identity needs Maintainer/Owner Pages administration on the target. The recorded evidence shows only anonymous read, with a 403 on the Pages endpoint."
+    },
+    {
+      "causal_attribution": "GENUINE_DUO_OBSERVATION: Duo noted open issues in canonical hosting repository",
+      "claim_id": "duo-9710085-cand-06",
+      "corroboration_detail": "Issues exist in canonical repository 87779099, but their causal relevance to target project 87785099 is unproven.",
+      "corroboration_source": "GET /projects/87779099/issues",
+      "corroboration_status": "CONTEXTUAL_ONLY",
+      "exact_target_relationship": "NO_DIRECT_TARGET_LINK",
+      "origin": "GitLab Duo Custom Flow Session 9710085",
+      "retirement_relevance": "CONTEXTUAL",
+      "source_project": 87779099,
+      "text": "Open work in the hosting project: Issues 1, 2 and 3 in 87779099 were recorded as open dependencies. Their relevance to the target is unknown."
+    },
+    {
+      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered marker string in target 87785099",
+      "claim_id": "duo-9710085-cand-07",
+      "corroboration_detail": "Marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a independently verified in target files site/marker.txt and site/index.html.",
       "corroboration_source": "GET /projects/87785099/repository/files/site%2Fmarker.txt?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
       "corroboration_status": "CORROBORATED",
       "exact_target_relationship": "TARGET_BOUND",
-      "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
+      "origin": "GitLab Duo Custom Flow Session 9710085",
       "retirement_relevance": "MATERIAL",
       "source_project": 87785099,
-      "text": "site/index.html and site/marker.txt contain the marker TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a. The marker could be used by a later deterministic check."
-    },
-    {
-      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered In-Code Comment Not Operator Authorization on target 87785099",
-      "claim_id": "duo-9710085-cand-03",
-      "corroboration_detail": "Confirmed: in-code comment exists. Deterministic core strictly refuses prose/comments as authorization.",
-      "corroboration_source": "Inspected line 1 of target .gitlab-ci.yml: '# DISPOSABLE B3 demonstration site (temporary; safe to retire).'",
-      "corroboration_status": "CORROBORATED",
-      "exact_target_relationship": "TARGET_BOUND",
-      "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-      "retirement_relevance": "MATERIAL",
-      "source_project": 87785099,
-      "text": "The header comment says 'DISPOSABLE B3 demonstration site (temporary; safe to retire)'. That is only a repository comment. It is not authorization. A bound, valid, single-use authorization is still required."
-    },
-    {
-      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Pages Administration Access Boundary (403) on target 87785099",
-      "claim_id": "duo-9710085-cand-04",
-      "corroboration_detail": "Confirmed: returns HTTP 403 AUTH_DENIED without Maintainer credentials.",
-      "corroboration_source": "GET /projects/87785099/pages",
-      "corroboration_status": "CORROBORATED",
-      "exact_target_relationship": "TARGET_BOUND",
-      "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-      "retirement_relevance": "MATERIAL",
-      "source_project": 87785099,
-      "text": "The acting identity needs Maintainer/Owner Pages administration on the target. The recorded evidence shows only anonymous read, with a 403 on the Pages endpoint."
-    },
-    {
-      "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered Out-of-Repo Resurrection Vectors & Caches on target 87785099",
-      "claim_id": "duo-9710085-cand-05",
-      "corroboration_detail": "Confirmed: single CDN 404 or mutation acceptance is never promoted to verified absence; pipeline schedules and triggers must be attested.",
-      "corroboration_source": "Evaluated against Bounded Absence and Redeployment semantics in Termivance architecture",
-      "corroboration_status": "CORROBORATED",
-      "exact_target_relationship": "TARGET_BOUND",
-      "origin": "GitLab Duo Custom Flow Session 9710085 on Issue #5",
-      "retirement_relevance": "MATERIAL",
-      "source_project": 87785099,
-      "text": "Out-of-repo resurrection vectors (schedules, trigger tokens, manual runs) and cached content edge replicas may stay reachable after a provider change."
+      "text": "Marker for later checks: The marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` could be used by a later deterministic check, if that check is permitted."
     }
   ],
   "counterfactual": {
     "corroboration_work_changed": true,
     "deterministic_verdict_changed": false,
     "investigation_queue_changed": true,
-    "obligation_trace_changed": true,
-    "risk_explanation_changed": true,
-    "summary": "AI candidates queued: 5 claims; corroboration performed: 5 independent reads; obligation trace bound to REDEPLOYMENT_PATH; deterministic verdict is BLOCKED in both cases because AI cannot authorize mutation or award verdicts, and unpublish prerequisites remain unsatisfied.",
+    "obligation_trace_changed": false,
+    "risk_explanation_changed": false,
+    "summary": "AI candidates queued: 7 claims; corroboration performed: 4 corroborated, 2 unresolved. Obligation trace changed: False (deterministic engine evaluates REDEPLOYMENT_PATH directly from target provider facts, not from AI text). Risk explanation changed: False (risk map nodes derived from deterministic decision). Deterministic verdict is BLOCKED in both cases because AI text cannot authorize mutation or award verdicts, and unpublish prerequisites remain unsatisfied.",
     "verdict_with_candidate": "BLOCKED",
     "verdict_without_candidate": "BLOCKED"
   },
@@ -78,51 +102,51 @@
     "catalog_item_id": 1018562,
     "session_id": "9710085"
   },
-  "execution_id": "inv-20261019200414-6969cf",
+  "execution_id": "inv-20261019204744-ae07c3",
   "investigation_mode": "EXECUTED_NOW",
-  "observed_at": "2026-10-19T20:04:14.244903+00:00",
+  "observed_at": "2026-10-19T20:47:44.867015+00:00",
   "schema": "termivance.supervised_review/v1",
   "steps": [
     {
       "autonomy": "DUO_AUTONOMOUS",
-      "detail": "session 9710085, catalog item 1018562; Duo analyzed target 87785099 from neutral issue #5 note 4045401991",
-      "executed_at": "2026-10-19T18:41:00Z",
-      "execution_id": "inv-20261019200414-6969cf",
+      "detail": "session 9710085, catalog item 1018562; author ai-termivance-retirement-analyst-gitlab-ai-hackathon; Duo analyzed target 87785099 from issue #5 note 4045401991",
+      "executed_at": "2026-10-19T19:46:42.793Z",
+      "execution_id": "inv-20261019204744-ae07c3",
       "execution_mode": "RECORDED_HISTORICAL",
       "input_refs": [
         "issue:87779099:5"
       ],
       "output_ref": "agent_session:9710085",
-      "provenance": "OPERATOR_CONFIRMED",
+      "provenance": "OPERATOR_CONFIRMED_NOTE_INPUT",
       "status": "COMPLETED",
       "step_id": "duo_candidate_analysis",
       "title": "GitLab Duo Custom Flow candidate analysis (Issue #5)"
     },
     {
       "autonomy": "OPERATOR_CONFIRMED_HANDOFF",
-      "detail": "ingested 5 non-authoritative candidate claims from Duo session 9710085; handed to deterministic verification",
-      "executed_at": "2026-10-19T20:04:14.244903+00:00",
-      "execution_id": "inv-20261019200414-6969cf",
+      "detail": "ingested 7 non-authoritative candidate claims from Duo session 9710085 (provenance: OPERATOR_CONFIRMED_NOTE_INPUT); passed to deterministic verification",
+      "executed_at": "2026-10-19T20:47:44.867015+00:00",
+      "execution_id": "inv-20261019204744-ae07c3",
       "execution_mode": "EXECUTED_NOW",
       "input_refs": [
-        "duo_session:9710085"
+        "gitlab_issue_note:4045401991"
       ],
       "output_ref": null,
-      "provenance": "OPERATOR_CONFIRMED",
+      "provenance": "OPERATOR_CONFIRMED_NOTE_INPUT",
       "status": "COMPLETED",
       "step_id": "operator_handoff",
       "title": "Supervised pipeline ingests Duo candidate claims"
     },
     {
       "autonomy": "DETERMINISTIC_AUTOMATED",
-      "detail": "EXECUTED NOW: reconciled 5 candidate claims against anonymous read-only GitLab endpoints; all corroborated against target source",
-      "executed_at": "2026-10-19T20:04:14.244903+00:00",
-      "execution_id": "inv-20261019200414-6969cf",
+      "detail": "EXECUTED NOW: reconciled 7 candidate claims against provider facts; 4 corroborated, 2 unresolved (unobservable schedules/caches), 1 contextual",
+      "executed_at": "2026-10-19T20:47:44.867015+00:00",
+      "execution_id": "inv-20261019204744-ae07c3",
       "execution_mode": "EXECUTED_NOW",
       "input_refs": [
         "issue:87779099:5"
       ],
-      "output_ref": "evidence\\b4\\duo_reconciliation.json",
+      "output_ref": "evidence\\b4\\duo_reconciliation_issue_5.json",
       "provenance": "ANONYMOUS_PUBLIC_READ",
       "status": "COMPLETED",
       "step_id": "independent_reconciliation",
@@ -131,8 +155,8 @@
     {
       "autonomy": "DETERMINISTIC_AUTOMATED",
       "detail": "EXECUTED NOW: observed commit 54fcc9ff2b\u2026; resurrection_possible=MECHANISM_PRESENT_IN_OBSERVED_CONFIG",
-      "executed_at": "2026-10-19T20:04:14.244903+00:00",
-      "execution_id": "inv-20261019200414-6969cf",
+      "executed_at": "2026-10-19T20:47:44.867015+00:00",
+      "execution_id": "inv-20261019204744-ae07c3",
       "execution_mode": "EXECUTED_NOW",
       "input_refs": [
         "project:87785099"
@@ -146,8 +170,8 @@
     {
       "autonomy": "DETERMINISTIC_AUTOMATED",
       "detail": "EXECUTED NOW: verdict=BLOCKED; obligation graph evaluated with zero non-authoritative modification",
-      "executed_at": "2026-10-19T20:04:14.244903+00:00",
-      "execution_id": "inv-20261019200414-6969cf",
+      "executed_at": "2026-10-19T20:47:44.867015+00:00",
+      "execution_id": "inv-20261019204744-ae07c3",
       "execution_mode": "EXECUTED_NOW",
       "input_refs": [
         "project:87785099"
@@ -161,8 +185,8 @@
     {
       "autonomy": "DETERMINISTIC_AUTOMATED",
       "detail": "EXECUTED NOW: built risk map with 35 nodes and 14 edges",
-      "executed_at": "2026-10-19T20:04:14.244903+00:00",
-      "execution_id": "inv-20261019200414-6969cf",
+      "executed_at": "2026-10-19T20:47:44.867015+00:00",
+      "execution_id": "inv-20261019204744-ae07c3",
       "execution_mode": "EXECUTED_NOW",
       "input_refs": [
         "evidence\\b4\\decision.json"
@@ -175,14 +199,14 @@
     },
     {
       "autonomy": "DETERMINISTIC_AUTOMATED",
-      "detail": "EXECUTED NOW: capsule assembled; manifest sha256 2319c065ab8ffb7e\u2026",
-      "executed_at": "2026-10-19T20:04:14.244903+00:00",
-      "execution_id": "inv-20261019200414-6969cf",
+      "detail": "EXECUTED NOW: capsule assembled; manifest sha256 15ea45e1cde3defa\u2026",
+      "executed_at": "2026-10-19T20:47:44.867015+00:00",
+      "execution_id": "inv-20261019204744-ae07c3",
       "execution_mode": "EXECUTED_NOW",
       "input_refs": [
         "evidence\\b4\\decision.json",
         "evidence\\b4\\witness_87785099.json",
-        "evidence\\b4\\duo_reconciliation.json"
+        "evidence\\b4\\duo_reconciliation_issue_5.json"
       ],
       "output_ref": "evidence\\b4\\proof_capsule.json",
       "provenance": "DETERMINISTIC",

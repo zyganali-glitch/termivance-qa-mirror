@@ -2,9 +2,9 @@
   "banner": "HYPOTHETICAL SIMULATION \u2014 no request was sent, nothing was mutated, no verdict was earned",
   "cross_resource_factors": [
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "CI_REDEPLOYMENT_MECHANISM",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "NO_PAGES_SIGNAL_IN_DEFAULT_BRANCH_CONFIG",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; CI_REDEPLOYMENT_MECHANISM observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "ci_redeployment:87779099",
@@ -12,9 +12,9 @@
       "support": "OBSERVED"
     },
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "CI_REDEPLOYMENT_MECHANISM",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "PAGES_REDEPLOYMENT_SIGNAL_PRESENT",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; CI_REDEPLOYMENT_MECHANISM observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "ci_redeployment:87785099",
@@ -22,9 +22,9 @@
       "support": "OBSERVED"
     },
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "OPEN_ISSUE",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "opened",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "issue:87777871:1",
@@ -32,9 +32,9 @@
       "support": "OBSERVED"
     },
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "OPEN_ISSUE",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "opened",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "issue:87779099:1",
@@ -42,9 +42,9 @@
       "support": "OBSERVED"
     },
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "OPEN_ISSUE",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "opened",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "issue:87779099:2",
@@ -52,9 +52,9 @@
       "support": "OBSERVED"
     },
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "OPEN_ISSUE",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "opened",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "issue:87779099:3",
@@ -62,9 +62,9 @@
       "support": "OBSERVED"
     },
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "OPEN_ISSUE",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "opened",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "issue:87779099:4",
@@ -72,9 +72,9 @@
       "support": "OBSERVED"
     },
     {
-      "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+      "fresh_until": "2026-10-19T21:02:44.867015+00:00",
       "kind": "OPEN_ISSUE",
-      "observed_at": "2026-10-19T20:04:14.244903+00:00",
+      "observed_at": "2026-10-19T20:47:44.867015+00:00",
       "observed_state": "opened",
       "projection": "an authorized DELETE of the Pages publication acts on the Pages resource only; OPEN_ISSUE observed here is NOT acted on by that endpoint \u2014 any post-retirement change would have to be re-observed independently",
       "resource": "issue:87779099:5",
@@ -93,7 +93,7 @@
   "decision": {
     "action": "unpublish_pages",
     "authoritative": false,
-    "evaluated_at": "2026-10-19T20:04:14.244903+00:00",
+    "evaluated_at": "2026-10-19T20:47:44.867015+00:00",
     "graph": {
       "dependencies": [
         {
@@ -215,14 +215,14 @@
             "branch": "main",
             "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
           },
-          "digest": "620b94b9e610d8d24349587efbbcd44fcd543b4d40408c416642e7559a9f1b02",
+          "digest": "11688fd09e0d06312ba2934b2b5aad899e1dc1b71e254639310c8b1cb9714aba",
           "endpoint": "/projects/87785099/repository/branches/main",
           "error_kind": null,
           "evidence_id": "ev:branch",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "BRANCH",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 200,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -247,14 +247,14 @@
               "main"
             ]
           },
-          "digest": "0ae60a83b2c53f7b222058f0a8704c2bd0a72511d736055515ec9eafa76429d8",
+          "digest": "ff9ca84d2117058681353e234a6cda441b6831cd9e8b3540a22cf02595a32b37",
           "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
           "error_kind": null,
           "evidence_id": "ev:ci_config",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "CI_CONFIG",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 200,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -270,14 +270,14 @@
             "pages_api_error": "AUTH_DENIED",
             "pages_api_status": 403
           },
-          "digest": "aca653028efca9c4cedb9929c6cff0431d5e449dabef8507199f39034e356ed3",
+          "digest": "034fcec2a8deeee99eadeac6496228730fa29905e4d807d8a8487d96b8dd7ec5",
           "endpoint": "/projects/87785099",
           "error_kind": null,
           "evidence_id": "ev:effective_permission",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "EFFECTIVE_PERMISSION",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 200,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -290,14 +290,14 @@
           "detail": {
             "error": "AUTH_DENIED"
           },
-          "digest": "3f630152dd1e860e967aa6168aa2bc3949b6d85c92963db75f215c0d4e7059ad",
+          "digest": "be458994bf4fae39544bf92130b1d29908c0c918ca5515468d47e326bb9406df",
           "endpoint": "/projects/87785099/environments",
           "error_kind": "AUTH_DENIED",
           "evidence_id": "ev:environment",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "ENVIRONMENT",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 401,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -311,14 +311,14 @@
             "open_count": 0,
             "retirement_related": []
           },
-          "digest": "d0b927343a562f1b8585cabf3409325dd642e2bbf3629592e65a13260ce359b5",
+          "digest": "e53888a5d945e88f379bf5b2d42b12de6b07f7eb50a01a60d7182ba9d8dbd941",
           "endpoint": "/projects/87785099/issues",
           "error_kind": null,
           "evidence_id": "ev:open_issues",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "OPEN_ISSUES",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 200,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -331,14 +331,14 @@
           "detail": {
             "error": "AUTH_DENIED"
           },
-          "digest": "201905e45b6e813cc45e75a4a6f4d295e52c9bb36366d747980822cbe333b951",
+          "digest": "ed76fbefd375028ae456c69ae43ea1760fe0127b3b265b01a6da7365e1f30b57",
           "endpoint": "/projects/87785099/pages",
           "error_kind": "AUTH_DENIED",
           "evidence_id": "ev:pages",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "PAGES",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 403,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -351,14 +351,14 @@
           "detail": {
             "error": "AUTH_DENIED"
           },
-          "digest": "b4f768c8f964ec8c3492c6c7cc234191e65e64db720f08933f7a9a90b9bf6f0b",
+          "digest": "a457b85e3514de39f9ee1d8efa9a930957bd150e349e0a19bec335458186dee2",
           "endpoint": "/projects/87785099/pages",
           "error_kind": "AUTH_DENIED",
           "evidence_id": "ev:pages_deployment",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "PAGES_DEPLOYMENT",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 403,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -372,14 +372,14 @@
             "latest_id": 2960507698,
             "latest_status": "success"
           },
-          "digest": "f7cce0d1573bbbbb880fefaa9856eb40cae9f6c5ee5a7ffb6f7ad3877d20e44e",
+          "digest": "139526b14c99f11599c55963a526587621660279ee86e1f6dc295997f46548ea",
           "endpoint": "/projects/87785099/pipelines",
           "error_kind": null,
           "evidence_id": "ev:pipeline",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "PIPELINE",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 200,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
@@ -398,14 +398,14 @@
             "visibility": "public",
             "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
           },
-          "digest": "e9138d68490d292001e04c63fb6c06035cf11768fe17864bbe7b26e1719542fb",
+          "digest": "9a3e0e8923f564e7f51d2c2e7930ce020ba5983e37b83ec751a6d2c946599f64",
           "endpoint": "/projects/87785099",
           "error_kind": null,
           "evidence_id": "ev:project_identity",
-          "fresh_until": "2026-10-19T20:19:14.244903+00:00",
+          "fresh_until": "2026-10-19T21:02:44.867015+00:00",
           "kind": "PROJECT_IDENTITY",
           "method": "GET",
-          "observed_at": "2026-10-19T20:04:14.244903+00:00",
+          "observed_at": "2026-10-19T20:47:44.867015+00:00",
           "status": 200,
           "target": {
             "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",

@@ -39,7 +39,7 @@
       "candidate_id": "duo-9710085-cand-04",
       "classification": "CORROBORATED",
       "engine_obligation_mapping": "RETIREMENT_PERMISSION (Violated: Maintainer role required on namespace to unpublish Pages)",
-      "independent_findings": "Confirmed: returns HTTP 403 AUTH_DENIED without Maintainer credentials.",
+      "independent_findings": "Confirmed access boundary: GET /projects/87785099/pages returns HTTP 403 (AUTH_DENIED). Proves anonymous observing identity is denied Pages access; does not authenticate operator's effective role.",
       "independent_source_read": "GET /projects/87785099/pages",
       "session_id": "9710085",
       "tool_used_by_duo": "Recorded witness inspection and boundary evaluation",
@@ -48,10 +48,10 @@
     {
       "agent_claim": "Out-of-repo resurrection vectors (schedules, trigger tokens, manual runs) and cached content edge replicas may stay reachable after a provider change.",
       "candidate_id": "duo-9710085-cand-05",
-      "classification": "CORROBORATED",
+      "classification": "UNRESOLVED",
       "engine_obligation_mapping": "ABSENCE_VERIFICATION (Bound: absence requires live transition proof, never cached/negative assumption)",
-      "independent_findings": "Confirmed: single CDN 404 or mutation acceptance is never promoted to verified absence; pipeline schedules and triggers must be attested.",
-      "independent_source_read": "Evaluated against Bounded Absence and Redeployment semantics in Termivance architecture",
+      "independent_findings": "Unobservable anonymously: pipeline schedules, trigger tokens, and edge CDN cache retention cannot be observed via anonymous GitLab read; preserved as unverified candidate risk hypothesis.",
+      "independent_source_read": "UNOBSERVABLE_ANONYMOUSLY (Requires Maintainer authentication or external edge CDN telemetry)",
       "session_id": "9710085",
       "tool_used_by_duo": "Systemic risk reasoning based on GitLab architecture",
       "topic": "Out-of-Repo Resurrection Vectors & Caches"
@@ -66,7 +66,7 @@
     "observed_absent": "NOT_CLAIMED",
     "resurrection_controlled": "NOT_CLAIMED",
     "safe_to_retire": "BLOCKED",
-    "summary": "GitLab Duo independently discovered the exact CI redeployment risk (create-pages with pages: true) on disposable project 87785099 from a neutral, unprimed issue request (#5). Termivance independently verified this source fact via public GitLab API (sha256 fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620) and bound it to REDEPLOYMENT_PATH obligation. The deterministic decision remains strictly BLOCKED because AI cannot authorize mutation or award verdicts, and no operator authorization or Maintainer unpublish permission was granted."
+    "summary": "GitLab Duo independently discovered the exact CI redeployment risk (create-pages with pages: true) on disposable project 87785099 from a neutral, unprimed issue request (#5). Termivance independently verified this source fact via public GitLab API (sha256 fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620) and bound it to REDEPLOYMENT_PATH obligation, while preserving unobservable schedules and edge caches as UNRESOLVED. The deterministic decision remains strictly BLOCKED because AI cannot authorize mutation or award verdicts, and no operator authorization or Maintainer unpublish permission was granted."
   },
   "duo_flow": {
     "agent_note_id": 4045401991,
