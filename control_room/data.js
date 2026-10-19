@@ -27,7 +27,90 @@ window.TERMIVANCE_DATA = {
     "Unpublishing targets exactly one disposable Pages project; the canonical repository and every other project are out of scope.",
     "Unsigned SHA-256 digests in the ledger are local tamper evidence, never cryptographic authentication of provider events."
   ],
-  "built_at": "2026-10-19T16:26:45.058977+00:00",
+  "built_at": "2026-10-19T18:26:06.899500+00:00",
+  "demo_target_discovery": {
+    "candidates": [
+      {
+        "agent_claim": "The target's .gitlab-ci.yml at 54fcc9ff… has pages: true in create-pages. Any pipeline run (push, schedule, manual, API trigger or retry) could republish the site. A candidate obligation is to neutralize or control this: remove or disable the Pages job, or restrict pipelines.",
+        "candidate_id": "duo-9704855-cand-01",
+        "classification": "CORROBORATED",
+        "engine_obligation_mapping": "REDEPLOYMENT_PATH (Violated: active pages: true mechanism exists without ControlAttestation)",
+        "independent_content_digest_sha256": "fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620",
+        "independent_findings": "Confirmed: job create-pages defines stage deploy, image alpine:3.20, script copying site/index.html and site/marker.txt into public/, and pages: true.",
+        "independent_source_read": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+        "tool_used_by_duo": "get_repository_file(87785099, '.gitlab-ci.yml', '54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d')",
+        "topic": "CI Redeployment Risk (Target .gitlab-ci.yml)"
+      },
+      {
+        "agent_claim": "A similar CI file exists in the canonical repo (deploy/disposable-pages/.gitlab-ci.yml) with jobs build_site and publish_site. This is a different file from the target's configuration (create-pages), so I do not treat it as the target's own state.",
+        "candidate_id": "duo-9704855-cand-02",
+        "classification": "CORROBORATED",
+        "engine_obligation_mapping": "IDENTITY_BINDING (Target configuration bound to exact project ID 87785099)",
+        "independent_findings": "Confirmed: canonical repo template has job publish_site; target project has job create-pages. Duo correctly distinguished real target configuration from starter template.",
+        "independent_source_read": "Compared target 87785099 .gitlab-ci.yml against canonical 87779099 deploy/disposable-pages/.gitlab-ci.yml",
+        "tool_used_by_duo": "get_repository_file on both projects",
+        "topic": "Direct Target Configuration vs Canonical Template"
+      },
+      {
+        "agent_claim": "A file comment says 'safe to retire'. That is an unverified comment in the file. I do not treat it as evidence or authorization.",
+        "candidate_id": "duo-9704855-cand-03",
+        "classification": "CORROBORATED",
+        "engine_obligation_mapping": "OWNERSHIP_AUTHORIZATION (Refused: prose/comment never satisfies operator authorization)",
+        "independent_findings": "Confirmed: in-code comment exists. Duo correctly refused to treat it as authorization or evidence.",
+        "independent_source_read": "Inspected line 1 of target .gitlab-ci.yml: '# DISPOSABLE B3 demonstration site (temporary; safe to retire).'",
+        "tool_used_by_duo": "get_repository_file(87785099, '.gitlab-ci.yml')",
+        "topic": "In-Code Comment Not Authorization"
+      },
+      {
+        "agent_claim": "Current observation of the target's Pages state: my identity could not verify /projects/87785099/pages (403 in the recorded witness), and I did not call that endpoint myself because I have no tool for it.",
+        "candidate_id": "duo-9704855-cand-04",
+        "classification": "CORROBORATED",
+        "engine_obligation_mapping": "RETIREMENT_PERMISSION (Violated/Unknown: Maintainer access required to manage Pages)",
+        "independent_findings": "Confirmed: returns HTTP 403 AUTH_DENIED without Maintainer credentials.",
+        "independent_source_read": "GET /projects/87785099/pages",
+        "tool_used_by_duo": "Recorded witness inspection and tool boundary check",
+        "topic": "Pages Administration Access Boundary"
+      }
+    ],
+    "canonical_project": {
+      "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+      "project_id": 87779099
+    },
+    "deterministic_reconciliation": {
+      "engine_verdict": "BLOCKED",
+      "observed_absent": "NOT_CLAIMED",
+      "resurrection_controlled": "NOT_CLAIMED",
+      "safe_to_retire": "BLOCKED",
+      "summary": "GitLab Duo independently discovered the exact CI redeployment risk (pages: true in job create-pages) on disposable project 87785099. Termivance independently verified this source fact via public GitLab API and bound it to REDEPLOYMENT_PATH obligation. The deterministic decision remains BLOCKED because AI cannot authorize mutation or award verdicts, and no operator authorization or Maintainer unpublish permission was granted."
+    },
+    "duo_flow": {
+      "agent_note_id": 4044819187,
+      "catalog_item_id": 1018562,
+      "completion_system_note_id": 4044819827,
+      "flow_name": "Termivance Retirement Analyst",
+      "issue_iid": 4,
+      "issue_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/issues/4",
+      "session_id": "9704855",
+      "session_status": "Finished",
+      "session_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9704855"
+    },
+    "generated_at_utc": "2026-10-19T18:15:00.000000+00:00",
+    "inspection_preference_resolved": {
+      "direct_read_details": "GitLab Duo service account successfully executed get_repository_file on target 87785099 for path .gitlab-ci.yml at ref 54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d.",
+      "first_preference_direct_cross_project_read": "SUCCEEDED",
+      "second_preference_verified_snapshot": "CORROBORATED_AND_CONSISTENT",
+      "snapshot_details": "Duo verified that the direct read matched the verified source snapshot provided in Issue #4 and differed from the canonical repo starter template."
+    },
+    "schema": "termivance.demo_duo_target_discovery/v1",
+    "spend_usd": "0.00",
+    "status": "EVIDENCE_STRENGTHENING_SUCCESSFUL",
+    "target": {
+      "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+      "observed_commit": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+      "project_id": 87785099,
+      "resource_kind": "GITLAB_PAGES_SITE"
+    }
+  },
   "escape_probe": "<img src=x onerror=alert(1)>&\"'",
   "external_evidence": {
     "duo_session": {

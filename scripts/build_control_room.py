@@ -498,6 +498,13 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     simulation = _load(args.simulation)
     capsule = _load(args.capsule)
     duo_evidence = _load(args.duo_external)
+    demo_discovery_path = (
+        Path(__file__).resolve().parents[1]
+        / "evidence"
+        / "b4"
+        / "demo_duo_target_discovery.json"
+    )
+    demo_discovery = _load(str(demo_discovery_path)) if demo_discovery_path.exists() else None
     duo_reconciliation = _load(getattr(args, "duo_reconciliation", None))
     witness = _load(getattr(args, "witness", None))
     supervised_review = _load(getattr(args, "supervised_review", None))
@@ -530,6 +537,7 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
         "read_provenance": read_provenance,
         "mutation_status": (NOT_OBSERVED if receipt_state == "NOT_RUN" else receipt_state),
         "built_at": datetime.now(tz=UTC).isoformat(),
+        "demo_target_discovery": demo_discovery,
         "interactive_contract": {
             "page_is_static": True,
             "network_fetches_at_view_time": 0,

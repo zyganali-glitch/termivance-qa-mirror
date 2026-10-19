@@ -1,0 +1,72 @@
+{
+  "schema": "termivance.external_evidence_record/v1",
+  "captured_at_utc": "2026-10-19T18:13:00.000000+00:00",
+  "subject": "genuine B4 GitLab Duo Custom Flow execution (Termivance Retirement Analyst - Target Risk Discovery)",
+  "flow_catalog_item_id": 1018562,
+  "duo_session": {
+    "session_id": "9704855",
+    "status": "Finished",
+    "url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9704855",
+    "status_source": "OPERATOR_VISUAL_CONFIRMATION_AND_GITLAB_SYSTEM_NOTE (system note 4044819827: 'completed session 9704855')",
+    "independent_web_page_probe_status_anonymous": 404,
+    "independent_probe_note": "agent-sessions UI requires authenticated access; 404 to anonymous clients is an access observation, never evidence about session existence"
+  },
+  "issue_binding": {
+    "project_id": 87779099,
+    "project_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance",
+    "issue_iid": 4,
+    "issue_title": "[B4-DEMO] Supervised retirement analysis request: target project 87785099",
+    "note_id_reported": 4044819187,
+    "independent_api_readback": {
+      "issue_metadata_status_anonymous": 200,
+      "issue_state": "opened",
+      "issue_title": "[B4-DEMO] Supervised retirement analysis request: target project 87785099",
+      "issue_author": "zyganali",
+      "user_notes_count": 3,
+      "labels": [
+        "retirement-decision",
+        "termivance::b4"
+      ],
+      "issue_updated_at": "2026-10-19T18:12:44.654Z",
+      "notes_list_status_anonymous": 401,
+      "discussions_list_status_anonymous": 401
+    }
+  },
+  "evidence_ladder": {
+    "independently_observed_anonymous_api": [
+      "canonical project 87779099 is publicly readable (HTTP 200)",
+      "disposable target project 87785099 is publicly readable (HTTP 200)",
+      "issue #4 exists on 87779099, state opened, title '[B4-DEMO] Supervised retirement analysis request: target project 87785099'",
+      "issue user_notes_count=3 and issue updated_at=2026-10-19T18:12:44.654Z — consistent with, but not proof of, the completion of session 9704855",
+      "disposable target 87785099 .gitlab-ci.yml at commit 54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d independently verified: defines job create-pages with pages: true (sha256 fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620)"
+    ],
+    "operator_confirmed_only": [
+      "session id 9704855 exists and completed in the GitLab Duo automate/agent-sessions UI per system note 4044819827",
+      "agent-authored comment note id 4044819187 was published on issue #4 by the GitLab Duo service account ai-termivance-retirement-analyst-gitlab-ai-hackathon",
+      "the agent executed a direct cross-project repository tool read: get_repository_file on 87785099, .gitlab-ci.yml at ref 54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d succeeded",
+      "the agent independently discovered the CI redeployment risk: job create-pages with pages: true in target .gitlab-ci.yml could republish the site after unpublishing",
+      "the agent explicitly recognized in-code comment '# DISPOSABLE B3 demonstration site (temporary; safe to retire).' as unverified, stating 'I do not treat it as evidence or authorization'",
+      "the agent explicitly concluded: 'NON-AUTHORITATIVE / DETERMINISTIC VERDICT: NOT_RUN' and performed no mutations"
+    ],
+    "not_independently_observable_and_never_promoted": [
+      "issue note/discussion contents (HTTP 401 to anonymous readers; 401 is an access observation, never absence, never authenticity)",
+      "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
+    ]
+  },
+  "candidate_corroboration": {
+    "candidate_id": "duo-9704855-ci-redeployment-risk",
+    "candidate_text": "The target's .gitlab-ci.yml at 54fcc9ff… has pages: true in create-pages. Any pipeline run (push, schedule, manual, API trigger or retry) could republish the site. A candidate obligation is to neutralize or control this.",
+    "target_project_id": 87785099,
+    "target_commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+    "target_file_path": ".gitlab-ci.yml",
+    "independent_read_endpoint": "GET /projects/87785099/repository/files/.gitlab-ci.yml?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+    "independent_sha256": "fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620",
+    "classification": "CORROBORATED",
+    "obligation_graph_bound": "REDEPLOYMENT_PATH",
+    "engine_verdict_before": "BLOCKED",
+    "engine_verdict_after": "BLOCKED",
+    "decision_effect": "Corroborated target source fact confirms REDEPLOYMENT_PATH is VIOLATED. Deterministic decision remains BLOCKED because AI cannot authorize mutation or award verdicts."
+  },
+  "determinism_boundary": "the Duo analysis is read-only and non-authoritative; no mutation, no verdict, no SAFE_TO_RETIRE/OBSERVED_ABSENT/RESURRECTION_CONTROLLED claim can originate from it — the deterministic executor remains the only decision authority",
+  "spend": "0.00 USD (hackathon sponsored capacity; no personal spend, no paid add-ons)"
+}

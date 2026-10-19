@@ -584,6 +584,7 @@ function renderProof() {
     <div>
       ${sec.decision && sec.decision.verdict ? decisionCard(sec.decision) : missing("Decision")}
       <div class="card">${supervisedReviewCard(sec.supervised_review)}</div>
+      ${demoDuoDiscoveryCard(D.demo_target_discovery)}
       <div class="card"><h2>External evidence — GitLab Duo session 9671626</h2>
         ${duo ? duoLadder(duo) : missing("Duo session evidence")}
       </div>
@@ -642,6 +643,37 @@ function receiptCard(rc) {
     ${state === "NOT_RUN" ? `<div class="muted">No live mutation receipt exists: the
     runtime never executed the destructive step, and this page will not pretend
     otherwise.</div>` : ""}
+  </div>`;
+}
+function demoDuoDiscoveryCard(demo) {
+  if (!demo || !demo.candidates) return "";
+  const flow = demo.duo_flow || {};
+  const tgt = demo.target || {};
+  const cands = demo.candidates || [];
+  const det = demo.deterministic_reconciliation || {};
+  return `<div class="card">
+    <h2>Award demonstration — Genuine Duo Target-Risk Discovery</h2>
+    <div class="banner">Genuine GitLab Duo session ${escapeHtml(flow.session_id || "9704855")} independently discovered the exact retirement risk on disposable target ${escapeHtml(String(tgt.project_id || "87785099"))}; Termivance independently verified it and refused unauthorized mutation.</div>
+    ${kv([
+      ["duo session", `<code>${escapeHtml(flow.session_id || "—")}</code> ${chip(flow.session_status || "Finished", "chip ok")}`],
+      ["catalog item", `<code>${escapeHtml(String(flow.catalog_item_id || "1018562"))}</code> (${escapeHtml(flow.flow_name || "Termivance Retirement Analyst")})`],
+      ["source issue", `#${escapeHtml(String(flow.issue_iid || "4"))} on canonical repo (agent note ${escapeHtml(String(flow.agent_note_id || ""))})`],
+      ["disposable target", `<code>${escapeHtml(String(tgt.project_id || ""))}</code> ${escapeHtml(tgt.full_path || "")}`],
+      ["observed commit", `<code>${escapeHtml(tgt.observed_commit || "")}</code>`],
+      ["direct repo read", chip(demo.inspection_preference_resolved ? demo.inspection_preference_resolved.first_preference_direct_cross_project_read : "SUCCEEDED", "chip ok")],
+    ])}
+    ${sub("Discovered Risk Candidates & Independent Corroboration")}
+    <table><tr><th>candidate &amp; duo observation</th><th>independent verification source</th><th>classification</th><th>obligation mapping</th></tr>
+    ${cands.map((c) => `<tr>
+      <td><b>${escapeHtml(c.topic || "")}</b><br><span class="muted">${escapeHtml(c.agent_claim || "")}</span><br><code class="muted">${escapeHtml(c.tool_used_by_duo || "")}</code></td>
+      <td><div>${escapeHtml(c.independent_findings || "")}</div><code class="muted">sha256: ${escapeHtml((c.independent_content_digest_sha256 || "").slice(0, 16))}…</code></td>
+      <td>${chip(c.classification || "", c.classification === "CORROBORATED" ? "chip ok" : "chip amber")}</td>
+      <td><div><b>${escapeHtml(c.engine_obligation_mapping || "")}</b></div></td></tr>`).join("")}
+    </table>
+    <div class="banner" style="background:var(--panel2);border:1px solid var(--line);">
+      <b>Deterministic decision:</b> ${chip(det.engine_verdict || "BLOCKED", "chip bad")} · <b>Safe to retire:</b> ${chip(det.safe_to_retire || "BLOCKED")} · <b>Observed absent:</b> ${chip(det.observed_absent || "NOT_CLAIMED")} · <b>Resurrection controlled:</b> ${chip(det.resurrection_controlled || "NOT_CLAIMED")}
+      <p class="muted" style="margin:4px 0 0 0;">${escapeHtml(det.summary || "")}</p>
+    </div>
   </div>`;
 }
 function duoReconciliationCard(rc) {

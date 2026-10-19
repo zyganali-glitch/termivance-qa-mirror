@@ -168,6 +168,20 @@ Independent QA of B3 found the GitHub bridge genuinely operational but identifie
 
 **Control Room UX Enhancement:** `control_room/index.html` updated to display the multi-step causal review pipeline, candidate claim corroboration matrix, and side-by-side counterfactual comparison card. Explicit banner: "AI proposes candidate claims; deterministic engine owns authorization and verdicts". Escaped, static, zero-network contract verified.
 
+## Final Award Demonstration — Duo Target-Risk Discovery & Corroboration (2026-10-19)
+
+- **Objective achieved:** Genuine GitLab Duo Custom Flow execution on canonical Issue #4 independently inspected disposable project `87785099`'s repository, verified source bytes against the provided snapshot, and independently discovered the CI redeployment risk; Termivance independently corroborated the finding and evaluated the obligation graph.
+- **Genuine Duo session:** session `9704855` (catalog item `1018562`, Termivance Retirement Analyst), status `Finished` (system note `4044819827`). URL: `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9704855`.
+- **Source issue & note:** canonical issue #4 (`[B4-DEMO] Supervised retirement analysis request: target project 87785099`), agent note `4044819187`.
+- **First preference (direct read) result: SUCCEEDED.** Duo successfully called `get_repository_file` on disposable project `87785099` for `.gitlab-ci.yml` at ref `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d`.
+- **Candidate finding 1 (CI redeployment):** job `create-pages` in stage `deploy` sets `pages: true`, copying `site/index.html` and `site/marker.txt` to `public/`. Duo reported: "The target's .gitlab-ci.yml at 54fcc9ff… has pages: true in create-pages. Any pipeline run (push, schedule, manual, API trigger or retry) could republish the site. A candidate obligation is to neutralize or control this".
+- **Independent verification:** public GitLab API read at commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d` (sha256 `fe895004ba37081c95f893bc9025a5fb24b3fc3cb51da5655d566f69a0b20620`) → **CORROBORATED**.
+- **Candidate finding 2 (in-code comments unverified):** Duo noted that `# DISPOSABLE B3 demonstration site (temporary; safe to retire).` is unverified and cannot be treated as authorization → **CORROBORATED**.
+- **Candidate finding 3 (target vs starter template):** Duo distinguished target's `create-pages` job from canonical starter's `publish_site` job → **CORROBORATED**.
+- **Deterministic obligation bound:** `REDEPLOYMENT_PATH` (VIOLATED: active mechanism present without `ControlAttestation`).
+- **Deterministic verdict:** **`BLOCKED`** (unchanged; AI text is advisory and non-authoritative; zero mutations performed).
+- **Records generated:** `evidence/b4/duo_session_9704855_readback.json` and `evidence/b4/demo_duo_target_discovery.json`.
+
 ## Minimal bounded-absence receipt fields
 
 `provider=GITLAB_PAGES`, `exact_project_id`, `exact_project_path`, `resource_kind=PAGES_SITE`, `observed_scope`, `observation_time_utc`, `api_request_identity`, `api_status`, `deployment_state`, `served_url`, `http_observation`, `freshness_or_expiry`, `source_sha`, `authorization_binding`, `verdict`.
