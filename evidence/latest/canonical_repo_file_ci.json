@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T13:15:40Z",
-  "artifact_sha256": "23845150ac353a79976f9decbc81a538babea3247cccd919dae7776963116575",
+  "acquired_at_utc": "2026-10-20T13:47:57Z",
+  "artifact_sha256": "4b68c8240abd5141e16c423a6888cf888376178040145ee58192871d960c5134",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw?ref=main",
   "http_error": null,

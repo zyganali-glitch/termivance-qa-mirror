@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-20T13:15:47Z",
-  "artifact_sha256": "8b3837de58d9ac04ce1c886d1a8639bd95b1b0dcee1f78ac1cd8aec59797a79f",
+  "acquired_at_utc": "2026-10-20T13:48:02Z",
+  "artifact_sha256": "086d3cff80d13e8d8a6650335057cdfae1f84954388c1c0fd300bff32ae53dba",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2967639514/jobs",
+  "endpoint": "/projects/87779099/pipelines/2967807167/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17316895428,
+      "id": 17318078119,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-20T16:12:04.000+03:00",
-        "committed_date": "2026-10-20T16:12:04.000+03:00",
+        "authored_date": "2026-10-20T16:43:28.000+03:00",
+        "committed_date": "2026-10-20T16:43:28.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-20T16:12:04.000+03:00",
+        "created_at": "2026-10-20T16:43:28.000+03:00",
         "extended_trailers": {},
-        "id": "8c28b362a73d6f9e1d623521c12e01a5c021ac7c",
-        "message": "fix(plan): consolidated plan QA repair, organizer decision, and governance hardening\n",
+        "id": "209b22eabe85af7fc38f76e4d03ca56af3ba69ab",
+        "message": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency\n",
         "parent_ids": [
-          "3c53ef4bd37391eeddfface538bba4f3b2f840b1"
+          "8c28b362a73d6f9e1d623521c12e01a5c021ac7c"
         ],
-        "short_id": "8c28b362",
-        "title": "fix(plan): consolidated plan QA repair, organizer decision, and governance hardening",
+        "short_id": "209b22ea",
+        "title": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/8c28b362a73d6f9e1d623521c12e01a5c021ac7c"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/209b22eabe85af7fc38f76e4d03ca56af3ba69ab"
       },
       "coverage": null,
-      "created_at": "2026-10-20T13:12:14.273Z",
-      "duration": 157.930083,
+      "created_at": "2026-10-20T13:43:43.443Z",
+      "duration": 137.341158,
       "erased_at": null,
-      "finished_at": "2026-10-20T13:14:52.630Z",
-      "id": 17316895428,
+      "finished_at": "2026-10-20T13:46:01.205Z",
+      "id": 17318078119,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-20T13:12:14.127Z",
-        "id": 2967639514,
-        "iid": 41,
+        "created_at": "2026-10-20T13:43:43.304Z",
+        "id": 2967807167,
+        "iid": 42,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "8c28b362a73d6f9e1d623521c12e01a5c021ac7c",
+        "sha": "209b22eabe85af7fc38f76e4d03ca56af3ba69ab",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-20T13:14:54.204Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967639514"
+        "updated_at": "2026-10-20T13:46:02.641Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967807167"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.084802,
+      "queued_duration": 0.104466,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,7 +100,7 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-20T13:15:47.888Z",
+        "contacted_at": "2026-10-20T13:48:02.631Z",
         "created_at": "2026-10-20T12:02:17.645Z",
         "id": 163985369,
         "ip_address": "10.218.11.3",
@@ -112,12 +112,12 @@
         "version": "19.6.0~pre.2348.g4d083417"
       },
       "stage": "verify",
-      "started_at": "2026-10-20T13:12:14.700Z",
+      "started_at": "2026-10-20T13:43:43.864Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17316895428"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17318078119"
     }
   ]
 }

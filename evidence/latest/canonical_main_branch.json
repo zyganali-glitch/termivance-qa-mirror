@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T13:15:40Z",
-  "artifact_sha256": "91a1843e273c0b4ed83d3e398b6d2ff60bd6b62852b267cc5649fe5487dc1b65",
+  "acquired_at_utc": "2026-10-20T13:47:57Z",
+  "artifact_sha256": "e640af6f21ef7fce5d81654c13776c0156e83b3ef7086b87c8679f5695d2487c",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-20T16:12:04.000+03:00",
-      "committed_date": "2026-10-20T16:12:04.000+03:00",
+      "authored_date": "2026-10-20T16:43:28.000+03:00",
+      "committed_date": "2026-10-20T16:43:28.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-20T16:12:04.000+03:00",
+      "created_at": "2026-10-20T16:43:28.000+03:00",
       "extended_trailers": {},
-      "id": "8c28b362a73d6f9e1d623521c12e01a5c021ac7c",
-      "message": "fix(plan): consolidated plan QA repair, organizer decision, and governance hardening\n",
+      "id": "209b22eabe85af7fc38f76e4d03ca56af3ba69ab",
+      "message": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency\n",
       "parent_ids": [
-        "3c53ef4bd37391eeddfface538bba4f3b2f840b1"
+        "8c28b362a73d6f9e1d623521c12e01a5c021ac7c"
       ],
-      "short_id": "8c28b362",
-      "title": "fix(plan): consolidated plan QA repair, organizer decision, and governance hardening",
+      "short_id": "209b22ea",
+      "title": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/8c28b362a73d6f9e1d623521c12e01a5c021ac7c"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/209b22eabe85af7fc38f76e4d03ca56af3ba69ab"
     },
     "default": true,
     "developers_can_merge": true,
