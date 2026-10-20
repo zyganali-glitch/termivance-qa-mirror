@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-20T10:17:11Z",
-  "artifact_sha256": "fa0909caf4323d3e57135806232215744c35129aac8e69c12c75498d381c5c70",
+  "acquired_at_utc": "2026-10-20T11:04:51Z",
+  "artifact_sha256": "dd9dc169fc7ce2bbae411eda8cce1e688a27bb09f21735c8f7d0fe4660db6054",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2966976920/jobs",
+  "endpoint": "/projects/87779099/pipelines/2967141211/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17311877593,
+      "id": 17313164853,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-20T13:12:15.000+03:00",
-        "committed_date": "2026-10-20T13:12:15.000+03:00",
+        "authored_date": "2026-10-20T14:01:35.000+03:00",
+        "committed_date": "2026-10-20T14:01:35.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-20T13:12:15.000+03:00",
+        "created_at": "2026-10-20T14:01:35.000+03:00",
         "extended_trailers": {},
-        "id": "b4431ec0b2bcba5f94a5636598b9b2ac32967ea5",
-        "message": "feat(plan): establish canonical master execution plan, audit ledger, and submission runbook\n\nEstablish plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md as the single canonical source of truth for the project. Reconcile all independent model/auditor recommendations, operator decisions, and technical evidence across 9 core areas. Provide complete 174-second video storyboard runbook, screenshot manifest, honest DevSecOps lifecycle mapping, and official Devpost submission packet. Add safe operator CLI launcher scripts and gitignore working media.\n",
+        "id": "6e808b33a4974fc9232ec9b3ca79bdc4b9281d24",
+        "message": "fix(plan): consolidated master plan truth repair, supervised audit, and hardened filming launchers\n",
         "parent_ids": [
-          "55c9364ead03bf48a1506d42a311585888179686"
+          "b4431ec0b2bcba5f94a5636598b9b2ac32967ea5"
         ],
-        "short_id": "b4431ec0",
-        "title": "feat(plan): establish canonical master execution plan, audit ledger, and submission runbook",
+        "short_id": "6e808b33",
+        "title": "fix(plan): consolidated master plan truth repair, supervised audit, and hardened filming launchers",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/b4431ec0b2bcba5f94a5636598b9b2ac32967ea5"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/6e808b33a4974fc9232ec9b3ca79bdc4b9281d24"
       },
       "coverage": null,
-      "created_at": "2026-10-20T10:13:17.074Z",
-      "duration": 160.061202,
+      "created_at": "2026-10-20T11:01:45.437Z",
+      "duration": 114.142787,
       "erased_at": null,
-      "finished_at": "2026-10-20T10:15:57.568Z",
-      "id": 17311877593,
+      "finished_at": "2026-10-20T11:03:39.963Z",
+      "id": 17313164853,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-20T10:13:16.930Z",
-        "id": 2966976920,
-        "iid": 37,
+        "created_at": "2026-10-20T11:01:45.302Z",
+        "id": 2967141211,
+        "iid": 38,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "b4431ec0b2bcba5f94a5636598b9b2ac32967ea5",
+        "sha": "6e808b33a4974fc9232ec9b3ca79bdc4b9281d24",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-20T10:15:59.218Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2966976920"
+        "updated_at": "2026-10-20T11:03:41.434Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967141211"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.116321,
+      "queued_duration": 0.088072,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-20T10:17:11.606Z",
-        "created_at": "2026-10-19T20:26:57.515Z",
-        "id": 163843205,
-        "ip_address": "10.218.11.18",
+        "contacted_at": "2026-10-20T11:04:50.894Z",
+        "created_at": "2026-10-19T20:16:58.020Z",
+        "id": 163841079,
+        "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_AbcX1rHMw2Yj",
+        "system_id": "r_TZSo9WjAijXG",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-20T10:13:17.507Z",
+      "started_at": "2026-10-20T11:01:45.820Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17311877593"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17313164853"
     }
   ]
 }
