@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-20T11:48:53Z",
+  "acquired_at_utc": "2026-10-20T12:40:09Z",
   "artifact_sha256": "a5c7e8a53f197554cb55b1f3322a8f172a00da69483b0d09b8c49a0634b0eaa0",
   "body_sha256": "a5c7e8a53f197554cb55b1f3322a8f172a00da69483b0d09b8c49a0634b0eaa0",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fledger.py/raw?ref=8fd656725929b9d790d4d79f5cff2659af650de5",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fledger.py/raw?ref=3c53ef4bd37391eeddfface538bba4f3b2f840b1",
   "http_error": null,
   "http_status": 200,
   "limitations": "public unauthenticated read",
