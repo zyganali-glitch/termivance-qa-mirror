@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-20T04:59:35Z",
+  "acquired_at_utc": "2026-10-20T06:19:32Z",
   "artifact_sha256": "8dc8279f551af141f2e9aad0a0dcb06099a19aac1dffe51b13b0ffaf8acb9427",
   "body_sha256": "8dc8279f551af141f2e9aad0a0dcb06099a19aac1dffe51b13b0ffaf8acb9427",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fretirement.py/raw?ref=9425700b7a4d895cc4e7914b77edbfa8210fd77e",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fretirement.py/raw?ref=2282da8a924aa839e88b4f5d56fbedb5821c4df6",
   "http_error": null,
   "http_status": 200,
   "limitations": "public unauthenticated read",

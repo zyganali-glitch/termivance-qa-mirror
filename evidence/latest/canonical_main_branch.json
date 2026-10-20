@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T04:59:31Z",
-  "artifact_sha256": "b0082b604c450b8a769b4ded87df92ebeb8356a501d4c4796ec4e0d5ce3449c4",
+  "acquired_at_utc": "2026-10-20T06:19:28Z",
+  "artifact_sha256": "e32427767dede6cffcaef938707caa756cec111b5899a6a8af46211b6f97fab2",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -17,22 +17,22 @@
     "can_push": false,
     "commit": {
       "author_email": "[REDACTED]",
-      "author_name": "zyganali",
-      "authored_date": "2026-10-19T23:53:26.000+03:00",
-      "committed_date": "2026-10-19T23:53:26.000+03:00",
+      "author_name": "Mehmet Aydo\u011fan",
+      "authored_date": "2026-10-20T09:18:52.000+03:00",
+      "committed_date": "2026-10-20T09:18:52.000+03:00",
       "committer_email": "[REDACTED]",
-      "committer_name": "zyganali",
-      "created_at": "2026-10-19T23:53:26.000+03:00",
+      "committer_name": "Mehmet Aydo\u011fan",
+      "created_at": "2026-10-20T09:18:52.000+03:00",
       "extended_trailers": {},
-      "id": "9425700b7a4d895cc4e7914b77edbfa8210fd77e",
-      "message": "fix(supervised): resolve evidence-integrity defects in Duo note ingestion, candidate corroboration, and counterfactual derivation\n",
+      "id": "2282da8a924aa839e88b4f5d56fbedb5821c4df6",
+      "message": "fix(b4): resolve publisher contract mismatch and ground candidate corroboration in provider facts\n\nDefect 1: Adopt real GitLabPublisher.create_issue_note contract returning PublishResult, validate response note identity, distinguish HTTP 201 acknowledgement from independent note read-back verification, and handle absent credentials honestly as NOT_RUN/NOT_VERIFIED.\n\nDefect 2: Ground candidate corroboration in authentic provider observations (ProviderObservations, commit-bound .gitlab-ci.yml, marker verification, Pages admin HTTP 403 status, policy rules). Evaluate adversarial/contradictory claims as CONTRADICTED and unobservable vectors as UNRESOLVED.\n\nOutcome note: Truthfully report candidate breakdown (4 corroborated, 2 unresolved, 1 contextual) without false universality claims; Duo agent step recorded as RECORDED_HISTORICAL.\n\nTests: Add 11 regression & adversarial integrity tests in tests/test_b4_regression_integrity.py; 363/363 pytest suite passed, 40/40 network-free CI safety assertions passed, ruff clean.\n",
       "parent_ids": [
-        "8f3ef4f956678d797d94160aad05c867e11cb53c"
+        "9425700b7a4d895cc4e7914b77edbfa8210fd77e"
       ],
-      "short_id": "9425700b",
-      "title": "fix(supervised): resolve evidence-integrity defects in Duo note ingestion, candidate corroboration, and counterfactual derivation",
+      "short_id": "2282da8a",
+      "title": "fix(b4): resolve publisher contract mismatch and ground candidate corroboration in provider facts",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/9425700b7a4d895cc4e7914b77edbfa8210fd77e"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/2282da8a924aa839e88b4f5d56fbedb5821c4df6"
     },
     "default": true,
     "developers_can_merge": true,
