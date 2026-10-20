@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-20T07:39:53Z",
+  "acquired_at_utc": "2026-10-20T08:24:29Z",
   "artifact_sha256": "16c78f11d4bfbede98c8ce6d22937baf430dbdf6c9eebd6c145bc7cb99f0eeac",
   "body_sha256": "16c78f11d4bfbede98c8ce6d22937baf430dbdf6c9eebd6c145bc7cb99f0eeac",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fevidence.py/raw?ref=97263f6c6fd8ccdea49724a62f2fa16be798e1cf",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fevidence.py/raw?ref=37e0d5a56b1748ddb58c94e6f88b7a5f8b3aea5a",
   "http_error": null,
   "http_status": 200,
   "limitations": "public unauthenticated read",
