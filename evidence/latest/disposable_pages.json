@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T12:40:06Z",
-  "artifact_sha256": "8857f436670b1af54fc32f985e5e494461747704ff87ee792c850595320dc9de",
+  "acquired_at_utc": "2026-10-20T13:15:43Z",
+  "artifact_sha256": "f33ec9a86b5f3fbc3a837f106c8287ad5f25adf48b3e7f35708ba243b6cf33de",
   "classification": "NOT_OBSERVED",
   "endpoint": "/projects/87785099/pages",
   "http_error": "HTTP 403",

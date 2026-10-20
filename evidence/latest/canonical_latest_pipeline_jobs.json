@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-20T12:40:12Z",
-  "artifact_sha256": "89c13948b8816388c05f2958b0f7a88d54e9c71a0d0809cc07c08b8c008b4256",
+  "acquired_at_utc": "2026-10-20T13:15:47Z",
+  "artifact_sha256": "8b3837de58d9ac04ce1c886d1a8639bd95b1b0dcee1f78ac1cd8aec59797a79f",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2967484742/jobs",
+  "endpoint": "/projects/87779099/pipelines/2967639514/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17315753763,
+      "id": 17316895428,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-20T15:36:35.000+03:00",
-        "committed_date": "2026-10-20T15:36:35.000+03:00",
+        "authored_date": "2026-10-20T16:12:04.000+03:00",
+        "committed_date": "2026-10-20T16:12:04.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-20T15:36:35.000+03:00",
+        "created_at": "2026-10-20T16:12:04.000+03:00",
         "extended_trailers": {},
-        "id": "3c53ef4bd37391eeddfface538bba4f3b2f840b1",
-        "message": "feat(plan): canonical master execution plan reconstruction and atomic execution governance\n\n- Reconstruct and strengthen canonical master plan as persistent, executable authority\n- Establish prominent Section 4: Atomic Work Completion, Evidence and Document Consistency Contract\n- Reconcile verified baseline SHA 8fd6567, GitLab CI 2967239572, GitHub observer 39415695705\n- Reconcile historical WORK-B4-12 to CLOSED_INDEPENDENT_QA\n- Insert prioritized engineering work register WORK-B4-18 through WORK-B4-26\n- Full technical implementation specifications for Autonomy, Pages, Monitoring, Repair Sets, Decay\n- Register mandatory document repairs DOC-01 through DOC-10 under WORK-B4-25\n- Establish Final Independent QA Gate and Source Lock under WORK-B4-26\n- Reconcile 11 historical audit recommendations in extended ledger\n- Rebuild October 20-27 execution calendar with strict stop-loss policy\n- Retain exact 17-section structure; plan-only modification with zero product code changes\n",
+        "id": "8c28b362a73d6f9e1d623521c12e01a5c021ac7c",
+        "message": "fix(plan): consolidated plan QA repair, organizer decision, and governance hardening\n",
         "parent_ids": [
-          "8fd656725929b9d790d4d79f5cff2659af650de5"
+          "3c53ef4bd37391eeddfface538bba4f3b2f840b1"
         ],
-        "short_id": "3c53ef4b",
-        "title": "feat(plan): canonical master execution plan reconstruction and atomic execution governance",
+        "short_id": "8c28b362",
+        "title": "fix(plan): consolidated plan QA repair, organizer decision, and governance hardening",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/3c53ef4bd37391eeddfface538bba4f3b2f840b1"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/8c28b362a73d6f9e1d623521c12e01a5c021ac7c"
       },
       "coverage": null,
-      "created_at": "2026-10-20T12:36:48.025Z",
-      "duration": 126.343335,
+      "created_at": "2026-10-20T13:12:14.273Z",
+      "duration": 157.930083,
       "erased_at": null,
-      "finished_at": "2026-10-20T12:38:54.756Z",
-      "id": 17315753763,
+      "finished_at": "2026-10-20T13:14:52.630Z",
+      "id": 17316895428,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-20T12:36:47.884Z",
-        "id": 2967484742,
-        "iid": 40,
+        "created_at": "2026-10-20T13:12:14.127Z",
+        "id": 2967639514,
+        "iid": 41,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "3c53ef4bd37391eeddfface538bba4f3b2f840b1",
+        "sha": "8c28b362a73d6f9e1d623521c12e01a5c021ac7c",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-20T12:38:56.226Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967484742"
+        "updated_at": "2026-10-20T13:14:54.204Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967639514"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.09124,
+      "queued_duration": 0.084802,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-20T12:40:11.912Z",
-        "created_at": "2026-10-20T11:57:32.871Z",
-        "id": 163984659,
+        "contacted_at": "2026-10-20T13:15:47.888Z",
+        "created_at": "2026-10-20T12:02:17.645Z",
+        "id": 163985369,
         "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "4d083417",
         "status": "online",
-        "system_id": "r_80l7KoSDHaar",
+        "system_id": "r_ZjEWBn8xn5oL",
         "version": "19.6.0~pre.2348.g4d083417"
       },
       "stage": "verify",
-      "started_at": "2026-10-20T12:36:48.413Z",
+      "started_at": "2026-10-20T13:12:14.700Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17315753763"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17316895428"
     }
   ]
 }
