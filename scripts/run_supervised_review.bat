@@ -36,7 +36,7 @@ if errorlevel 1 (
 )
 
 REM 3. Preflight: Verify Python version >= 3.10 and termivance package availability
-python -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1); import termivance" >nul 2>nul
+python -c "import sys; assert sys.version_info >= (3, 10); import termivance" >nul 2>nul
 if errorlevel 1 (
     echo.
     echo ==============================================================================
