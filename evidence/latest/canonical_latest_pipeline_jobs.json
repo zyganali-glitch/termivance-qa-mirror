@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T17:17:38Z",
-  "artifact_sha256": "2d72653494b4a4b6c45c220bda1b2eab128b17ccedad09aa4f2a0485d700028c",
+  "acquired_at_utc": "2026-10-20T21:43:57Z",
+  "artifact_sha256": "fa1630f162c9f085fb1fff71240ab45d57b20eb4b229a278082bf7478aee20e8",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/pipelines/2967807167/jobs",
   "extracted": [
