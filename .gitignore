@@ -32,3 +32,6 @@ Thumbs.db
 .evidence-private/
 # Durable single-use authorization ledger (local safety state, never shared)
 .termivance/
+# Local working media and raw recordings (keep large/private files out of git)
+submission_media/
+
