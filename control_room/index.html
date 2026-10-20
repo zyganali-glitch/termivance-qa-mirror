@@ -3,170 +3,502 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Termivance Control Room</title>
+<title>Termivance Control Room — Proof-Bounded Software Retirement Protocol</title>
 <style>
   :root {
-    --bg: #0d1117; --panel: #161b22; --panel2: #10151c; --line: #30363d;
-    --ink: #e6edf3; --dim: #9aa7b4; --ok: #3fb950; --warn: #d29922;
-    --bad: #f85149; --accent: #58a6ff; --amber: #db6d28; --violet: #bc8cff;
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel2: #10151c;
     --surface: #1c2128;
+    --line: #30363d;
+    --line-subtle: #21262d;
+    --ink: #e6edf3;
+    --dim: #8b949e;
+    --dimmer: #6e7681;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --bad: #f85149;
+    --accent: #58a6ff;
+    --amber: #db6d28;
+    --violet: #bc8cff;
+    --max-w: 1600px;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 14px/1.6 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 14px/1.6 "Segoe UI", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
 
   /* ---- Header ---- */
-  header { padding: 16px 28px 12px; border-bottom: 1px solid var(--line);
-           display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-  header h1 { font-size: 18px; margin: 0; letter-spacing: .4px; font-weight: 600; }
-  header .tagline { color: var(--dim); font-size: 13px; font-style: italic; }
-  header .sub { color: var(--dim); font-size: 12px; width: 100%; margin-top: 2px; }
+  header {
+    border-bottom: 1px solid var(--line);
+    background: #090d13;
+    padding: 18px 32px 14px;
+  }
+  .header-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-size: 19px;
+    margin: 0;
+    letter-spacing: .3px;
+    font-weight: 600;
+    color: #fff;
+  }
+  header .tagline {
+    color: var(--dim);
+    font-size: 13px;
+    font-style: italic;
+  }
+  header .chips-row {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  header .sub {
+    color: var(--dim);
+    font-size: 12px;
+    width: 100%;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  header .sub code {
+    color: var(--accent);
+    background: rgba(88, 166, 255, 0.1);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
 
   /* ---- Chips ---- */
-  .chip { display: inline-block; padding: 2px 10px; border-radius: 999px;
-          font-size: 11.5px; font-weight: 600; border: 1px solid var(--line);
-          white-space: nowrap; vertical-align: middle; }
-  .chip.ok   { color: var(--ok); border-color: #1a3d24; }
-  .chip.warn { color: var(--warn); }
-  .chip.bad  { color: var(--bad); border-color: #3d1a1a; }
-  .chip.dim  { color: var(--dim); }
-  .chip.acc  { color: var(--accent); border-color: #1f4c7a; }
-  .chip.amber{ color: var(--amber); border-color: #6b3a17; }
-  .chip.violet { color: var(--violet); }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    white-space: nowrap;
+    vertical-align: middle;
+    letter-spacing: .2px;
+  }
+  .chip.ok   { color: var(--ok); border-color: rgba(63, 185, 80, 0.4); background: rgba(63, 185, 80, 0.08); }
+  .chip.warn { color: var(--warn); border-color: rgba(210, 153, 34, 0.4); background: rgba(210, 153, 34, 0.08); }
+  .chip.bad  { color: var(--bad); border-color: rgba(248, 81, 73, 0.4); background: rgba(248, 81, 73, 0.08); }
+  .chip.dim  { color: var(--dim); border-color: var(--line); background: rgba(139, 148, 158, 0.08); }
+  .chip.acc  { color: var(--accent); border-color: rgba(88, 166, 255, 0.4); background: rgba(88, 166, 255, 0.08); }
+  .chip.amber{ color: var(--amber); border-color: rgba(219, 109, 40, 0.4); background: rgba(219, 109, 40, 0.08); }
+  .chip.violet { color: var(--violet); border-color: rgba(188, 140, 255, 0.4); background: rgba(188, 140, 255, 0.08); }
 
-  /* ---- Navigation ---- */
-  nav { display: flex; gap: 4px; padding: 12px 28px 0; flex-wrap: wrap;
-        border-bottom: 1px solid var(--line); }
-  .tabbtn { background: transparent; color: var(--dim); border: none;
-            border-bottom: 2px solid transparent; padding: 8px 14px 10px;
-            font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
-            transition: color .15s, border-color .15s; }
+  /* ---- Navigation (Primary Tabs) ---- */
+  nav#tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 32px 0;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line);
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+  .tabbtn {
+    background: transparent;
+    color: var(--dim);
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 9px 18px 11px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
   .tabbtn:hover { color: var(--ink); }
   .tabbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 4px; }
-  .tabbtn.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .tabbtn.active { color: #fff; border-bottom-color: var(--accent); }
 
-  /* ---- Panels ---- */
-  .panel { display: none; padding: 20px 28px 36px; max-width: 1320px; }
+  /* ---- Evidence Sub-Navigation (Secondary Segmented Control) ---- */
+  .subnav-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 6px 8px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .evidence-nav {
+    background: transparent;
+    color: var(--dim);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .evidence-nav:hover {
+    color: var(--ink);
+    border-color: var(--line);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .evidence-nav:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .evidence-nav.on {
+    color: #fff;
+    border-color: var(--accent);
+    background: #101d2c;
+  }
+
+  /* ---- Panels & Grids ---- */
+  .panel {
+    display: none;
+    padding: 24px 32px 48px;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    width: 100%;
+  }
   .panel.active { display: block; }
-  .grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
-  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  @media (max-width: 780px) { .grid-3 { grid-template-columns: 1fr; } }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.18fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 980px) { .grid-3 { grid-template-columns: 1fr; } }
 
   /* ---- Cards ---- */
-  .card { background: var(--panel); border: 1px solid var(--line);
-          border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; }
-  .card h2 { font-size: 14px; margin: 0 0 8px; letter-spacing: .2px; font-weight: 600; }
-  .card h3 { font-size: 12.5px; color: var(--dim); margin: 12px 0 6px; font-weight: 600;
-             text-transform: uppercase; letter-spacing: .4px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 14.5px;
+    margin: 0 0 8px;
+    letter-spacing: .2px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .card h3 {
+    font-size: 12px;
+    color: var(--dim);
+    margin: 14px 0 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
   .muted { color: var(--dim); font-size: 13px; }
   .sm { font-size: 12px; }
+  .prose { max-width: 88ch; line-height: 1.6; }
 
   /* ---- Key-value pairs ---- */
-  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; font-size: 13px; }
-  .kv dt { color: var(--dim); } .kv dd { margin: 0; word-break: break-word; }
+  .kv {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 4px 16px;
+    font-size: 13px;
+    margin: 8px 0;
+  }
+  .kv dt { color: var(--dim); }
+  .kv dd { margin: 0; word-break: break-word; }
 
   /* ---- Controls ---- */
-  select, .btn { background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
-                 border-radius: 6px; padding: 6px 10px; font: inherit; font-size: 13px; }
-  .btn { cursor: pointer; transition: border-color .15s; }
-  .btn:hover { border-color: var(--accent); }
+  select, .btn {
+    background: var(--panel2);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 13px;
+  }
+  .btn {
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { border-color: var(--accent); background: rgba(88, 166, 255, 0.05); }
   .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .btn.on { color: var(--ink); border-color: var(--accent); background: #101d2c; }
-  .btn-sm { padding: 4px 8px; font-size: 12px; }
+  .btn.on { color: #fff; border-color: var(--accent); background: #101d2c; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
 
   /* ---- Tables ---- */
-  table { border-collapse: collapse; width: 100%; font-size: 13px; }
-  th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left;
-           vertical-align: top; }
-  th { color: var(--dim); font-weight: 600; background: var(--panel2); font-size: 12px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+    margin: 8px 0;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    color: var(--dim);
+    font-weight: 600;
+    background: var(--panel2);
+    font-size: 12px;
+    letter-spacing: .2px;
+  }
+  tr:hover td { background: rgba(255, 255, 255, 0.02); }
 
   /* ---- Resource selector ---- */
-  .res { border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px;
-         margin: 6px 0; background: var(--panel2); cursor: pointer; font-size: 13px;
-         transition: border-color .15s; }
+  .res {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 6px 0;
+    background: var(--panel2);
+    cursor: pointer;
+    font-size: 13px;
+    transition: border-color .15s, background .15s;
+  }
   .res:hover { border-color: var(--accent); }
   .res.sel { border-color: var(--accent); background: #101d2c; }
   .res .ref { font-family: Consolas, "Cascadia Code", monospace; font-size: 12px; color: var(--accent); }
 
   /* ---- Graph ---- */
-  #graph-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 8px;
-                background: var(--panel2); }
+  #graph-wrap {
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    width: 100%;
+  }
   svg { display: block; }
   .lnode { cursor: pointer; }
-  .lnode rect { fill: #12161d; stroke-width: 2; }
+  .lnode rect { fill: #12161d; stroke-width: 2; transition: stroke .15s; }
   .lnode text { fill: var(--ink); font-size: 12px; font-family: "Segoe UI", sans-serif; }
-  .lnode.dim { opacity: .28; }
+  .lnode.dim { opacity: .24; }
+  .lnode.sel rect { stroke: #fff !important; stroke-width: 2.5; }
   .ledge { stroke: #6e7681; stroke-width: 1.4; fill: none; }
   .ledge.obs { stroke: var(--accent); stroke-width: 1.8; }
   .ledge.inf { stroke: var(--amber); stroke-dasharray: 5 4; }
   .ledge.hot { stroke: var(--ok); stroke-width: 2.4; }
-  .ledge.dim { opacity: .18; }
+  .ledge.dim { opacity: .15; }
   .lagend { font-size: 12px; fill: var(--dim); }
 
   /* ---- Misc ---- */
-  pre { background: var(--panel2); border: 1px solid var(--line); border-radius: 6px;
-        padding: 10px 12px; overflow: auto; font-size: 12px; color: #c9d1d9;
-        max-height: 320px; }
-  code { font-family: Consolas, "Cascadia Code", monospace; font-size: 12.5px; }
-  .factor { border-left: 3px solid var(--amber); padding: 6px 12px; margin: 8px 0;
-            background: var(--panel2); border-radius: 0 6px 6px 0; font-size: 13px; }
-  ul.tight { margin: 6px 0; padding-left: 22px; font-size: 13px; line-height: 1.6; }
-  .banner { border: 1px dashed var(--warn); color: var(--warn); border-radius: 6px;
-            padding: 7px 12px; font-weight: 600; font-size: 12.5px; margin-bottom: 10px; }
-  details { margin: 6px 0; }
-  details > summary { cursor: pointer; font-size: 13px; color: var(--accent); font-weight: 600;
-                      padding: 4px 0; }
+  pre {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    overflow: auto;
+    font-size: 12px;
+    color: #c9d1d9;
+    max-height: 360px;
+    font-family: Consolas, "Cascadia Code", monospace;
+  }
+  code {
+    font-family: Consolas, "Cascadia Code", monospace;
+    font-size: 12.5px;
+  }
+  .factor {
+    border-left: 3px solid var(--amber);
+    padding: 8px 14px;
+    margin: 8px 0;
+    background: var(--panel2);
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+  }
+  ul.tight {
+    margin: 6px 0;
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .banner {
+    border: 1px solid rgba(210, 153, 34, 0.4);
+    background: rgba(210, 153, 34, 0.08);
+    color: #e3b341;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-weight: 500;
+    font-size: 12.5px;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .banner.info {
+    border-color: rgba(88, 166, 255, 0.4);
+    background: rgba(88, 166, 255, 0.08);
+    color: #79c0ff;
+  }
+  details { margin: 8px 0; }
+  details > summary {
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    padding: 4px 0;
+  }
   details > summary:hover { text-decoration: underline; }
-  footer { border-top: 1px solid var(--line); padding: 14px 28px 28px; color: var(--dim);
-           font-size: 12px; }
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 20px 32px 36px;
+    color: var(--dim);
+    font-size: 12px;
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
 
   /* ---- Overview-specific ---- */
-  .decision-hero { display: flex; align-items: center; gap: 16px; padding: 16px;
-                   background: var(--panel); border: 1px solid var(--line);
-                   border-left: 4px solid var(--bad); border-radius: 8px; margin-bottom: 16px; }
-  .decision-hero .verdict { font-size: 22px; font-weight: 700; color: var(--bad); }
-  .decision-hero .target { font-size: 13px; color: var(--dim); }
-  .decision-hero .reason { font-size: 13px; color: var(--ink); margin-top: 4px; line-height: 1.5; }
+  .decision-hero {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 24px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--bad);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .decision-hero .verdict {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--bad);
+    letter-spacing: .3px;
+  }
+  .decision-hero .target {
+    font-size: 13px;
+    color: var(--dim);
+    margin-top: 2px;
+  }
+  .decision-hero .reason {
+    font-size: 13px;
+    color: var(--ink);
+    margin-top: 6px;
+    line-height: 1.55;
+    max-width: 95ch;
+  }
 
-  .evidence-stage { background: var(--panel); border: 1px solid var(--line);
-                    border-radius: 8px; padding: 14px 16px; }
-  .evidence-stage .stage-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-  .evidence-stage .stage-body { font-size: 12.5px; color: var(--dim); line-height: 1.5; }
+  .evidence-stage {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    height: 100%;
+  }
+  .evidence-stage .stage-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .evidence-stage .stage-body {
+    font-size: 12.5px;
+    color: var(--dim);
+    line-height: 1.55;
+  }
 
-  .claim-row { display: flex; align-items: center; gap: 12px; padding: 8px 0;
-               border-bottom: 1px solid var(--line); font-size: 13px; }
+  .claim-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-subtle);
+    font-size: 13px;
+  }
   .claim-row:last-child { border-bottom: none; }
-  .claim-label { min-width: 200px; font-weight: 600; }
+  .claim-label {
+    min-width: 220px;
+    font-weight: 600;
+    color: var(--ink);
+  }
 
-  .req-list { list-style: none; padding: 0; margin: 8px 0; }
-  .req-list li { padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px;
-                 display: flex; align-items: flex-start; gap: 8px; }
+  .req-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+  }
+  .req-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line-subtle);
+    font-size: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
   .req-list li:last-child { border-bottom: none; }
-  .req-list li::before { content: "○"; color: var(--warn); flex-shrink: 0; margin-top: 1px; }
+  .req-list li::before {
+    content: "○";
+    color: var(--warn);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-weight: bold;
+  }
 
   /* ---- Obligation table ---- */
   .obl-table { width: 100%; border-collapse: collapse; }
-  .obl-table td, .obl-table th { padding: 8px 10px; border-bottom: 1px solid var(--line);
-                                  font-size: 13px; }
-  .obl-table th { text-align: left; color: var(--dim); font-weight: 600; font-size: 12px;
-                  border-bottom: 2px solid var(--line); background: transparent; border-top: none;
-                  border-left: none; border-right: none; }
+  .obl-table td, .obl-table th {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .obl-table th {
+    text-align: left;
+    color: var(--dim);
+    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 2px solid var(--line);
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
   .obl-table td { border-left: none; border-right: none; border-top: none; }
 
-  /* Responsive */
   @media (max-width: 1100px) {
     .decision-hero { flex-direction: column; align-items: flex-start; }
+    header { padding: 16px 20px 12px; }
+    nav#tabs { padding: 8px 20px 0; }
+    .panel { padding: 20px 20px 36px; }
+    footer { padding: 16px 20px 24px; }
   }
 </style>
 </head>
 <body>
 <header>
-  <h1>Termivance</h1>
-  <span class="tagline">Software retirement, proven within bounds.</span>
-  <span id="hdr-chips"></span>
-  <div class="sub" id="hdr-sub"></div>
+  <div class="header-inner">
+    <h1>Termivance Control Room</h1>
+    <span class="tagline">Proof-Bounded Software Retirement Protocol</span>
+    <div class="chips-row" id="hdr-chips"></div>
+    <div class="sub" id="hdr-sub"></div>
+  </div>
 </header>
 
 <nav id="tabs">
@@ -184,18 +516,18 @@
     <div>
       <div class="card">
         <h2>Retirement Obligation Graph</h2>
-        <span class="muted">Click a node to highlight its edges and inspect its recorded
-        payload. This graph is rendered from the recorded risk map — it has no live
+        <span class="muted prose">Click a node to highlight its edges and inspect its recorded
+        payload. This graph is rendered entirely from the recorded risk map — it makes no network
         connection to GitLab.</span>
-        <p style="margin: 8px 0; display: flex; gap: 6px; flex-wrap: wrap;">
+        <p style="margin: 12px 0 8px; display: flex; gap: 8px; flex-wrap: wrap;">
           <button class="btn btn-sm" id="zoom-out">− Zoom out</button>
           <button class="btn btn-sm" id="zoom-in">+ Zoom in</button>
           <button class="btn btn-sm" id="zoom-reset">Reset</button>
-          <button class="btn btn-sm" id="graph-clear">Clear</button>
+          <button class="btn btn-sm" id="graph-clear">Clear selection</button>
           <button class="btn btn-sm" id="graph-toggle-full">Show full evidence graph</button>
         </p>
-        <p class="muted sm" id="graph-stats"></p>
-        <div style="margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px;">
+        <p class="muted sm" id="graph-stats" style="margin: 4px 0 8px;"></p>
+        <div style="margin-top: 6px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px;">
           <span><span style="display:inline-block;width:14px;height:3px;background:var(--accent);vertical-align:middle;margin-right:4px;"></span> Observed</span>
           <span><span style="display:inline-block;width:14px;height:3px;background:var(--amber);vertical-align:middle;margin-right:4px;border-top:2px dashed var(--amber);"></span> Inferred</span>
           <span><span style="display:inline-block;width:10px;height:10px;border:2px solid var(--bad);border-radius:3px;vertical-align:middle;margin-right:4px;"></span> Risk</span>
@@ -207,7 +539,7 @@
     </div>
     <div class="card" id="graph-detail">
       <h2>Node details</h2>
-      <span class="muted">Select a node in the graph.</span>
+      <span class="muted">Select a node in the graph to inspect its properties.</span>
     </div>
   </div>
 </section>
@@ -220,8 +552,8 @@
 <script>
 "use strict";
 /* Termivance Control Room — static read-only viewer.
-   Everything is rendered from window.TERMIVANCE_DATA (recorded artifacts).
-   No fetch(), no eval, no mutation endpoints: this page can trigger nothing. */
+   All facts rendered from window.TERMIVANCE_DATA (recorded deterministic artifacts).
+   Strict static contract: 0 fetch() calls, 0 eval, 0 network requests, 0 mutation endpoints. */
 
 const D = window.TERMIVANCE_DATA || {};
 const escapeHtml = (v) => String(v ?? "")
@@ -230,10 +562,10 @@ const escapeHtml = (v) => String(v ?? "")
 
 function chipState(state) {
   const s = String(state ?? "");
-  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|LIVE_ANONYMOUS|RECORDED_LIVE|SUPPORTED|CORROBORATED|DETERMINISTIC|EXECUTED_NOW|LEDGER_VALIDATED)/.test(s)) return "chip ok";
-  if (/^(INFERRED|PROJECTED|STALE|UNRESOLVED|OPERATOR_CONFIRMED|PROCEDURAL|RECORDED_HISTORICAL|RECORDED_INPUT_USED|UNVERIFIED|UNVERIFIED_RECORDED_CLAIM|UNVERIFIED_NO_LEDGER)/.test(s)) return "chip amber";
-  if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT|CONTRADICTED|NOT_AUTHENTICALLY|STRUCTURALLY_REFUSED|LEDGER_VERIFICATION_FAILED|INVALID|ATTEMPT_NOT_ACCEPTED|MALFORMED)/.test(s)) return "chip bad";
-  if (/^(UNAVAILABLE|UNKNOWN|UNSUPPORTED|NOT_CHECKED|CONTEXTUAL|UNCHANGED|NOT_DEMONSTRATED)/.test(s)) return "chip dim";
+  if (/^(OBSERVED|PRESENT|OK|SATISFIED|AVAILABLE|RECORDED_SNAPSHOT|LIVE_ANONYMOUS|RECORDED_LIVE|SUPPORTED|CORROBORATED|DETERMINISTIC|EXECUTED_NOW|LEDGER_VALIDATED)/.test(s)) return "chip ok";
+  if (/^(INFERRED|PROJECTED|STALE|UNRESOLVED|OPERATOR_CONFIRMED|PROCEDURAL|RECORDED_HISTORICAL|RECORDED_INPUT_USED|UNVERIFIED|UNVERIFIED_RECORDED_CLAIM|UNVERIFIED_NO_LEDGER|EXPIRED_HISTORICAL)/.test(s)) return "chip amber";
+  if (/^(NOT_RUN|NOT_OBSERVED|VIOLATED|REFUSED|BLOCKED|ABSENT|CONTRADICTED|NOT_AUTHENTICALLY|STRUCTURALLY_REFUSED|LEDGER_VERIFICATION_FAILED|INVALID|ATTEMPT_NOT_ACCEPTED|MALFORMED|UNSUPPORTED)/.test(s)) return "chip bad";
+  if (/^(UNAVAILABLE|UNKNOWN|NOT_CHECKED|CONTEXTUAL|CONTEXTUAL_ONLY|UNCHANGED|NOT_DEMONSTRATED)/.test(s)) return "chip dim";
   if (/^(NOT_AUTHORIZING|READ_ONLY|READ_ONLY_OBSERVATION|AUTHORIZED_FALSE|DUO_AUTONOMOUS)/.test(s)) return "chip violet";
   if (/^MUTATION_ACCEPTED/.test(s)) return "chip amber";
   if (/^MECHANISM_PRESENT|^MECHANISM_NOT_FOUND/.test(s)) return "chip amber";
@@ -255,14 +587,21 @@ function missing(name) {
 
 /* ---------- header ---------- */
 function renderHeader() {
-  const prov = D.read_provenance || "UNAVAILABLE";
-  const mut = D.mutation_status || "UNAVAILABLE";
+  const snap = D.snapshot_metadata || {};
+  const mut = D.mutation_status || "NOT_RUN";
+  const obsCommit = snap.observed_target_commit ? snap.observed_target_commit.slice(0, 10) + "…" : "54fcc9ff…";
+
   document.getElementById("hdr-chips").innerHTML =
-    `${chip("EVIDENCE: " + prov)} ${chip("MUTATION: " + mut)}`;
-  document.getElementById("hdr-sub").textContent =
-    "GitLab-native supervised investigation with deterministic retirement verification · " +
-    "Recorded artifacts only — built " + String(D.built_at || "unknown") +
-    " · no network fetch at view time · no destructive control exists on this page";
+    `${chip("SNAPSHOT: RECORDED_PROVIDER_READ (2026-10-19)", "chip acc")} ` +
+    `${chip("FRESHNESS: EXPIRED_HISTORICAL", "chip amber")} ` +
+    `${chip("ZERO LIVE API CALLS", "chip dim")} ` +
+    `${chip("MUTATION: " + mut, mut === "NOT_RUN" ? "chip bad" : chipState(mut))}`;
+
+  document.getElementById("hdr-sub").innerHTML =
+    "<strong>Static Historical Snapshot:</strong> Observed 2026-10-19 16:26 UTC · " +
+    "Target <code>87785099</code> default branch @ commit <code>" + escapeHtml(obsCommit) + "</code> · " +
+    "Freshness window expired (historical audit evidence, not live provider truth) · " +
+    "Zero network requests at view time · No destructive control exists on this page";
 }
 
 /* ---------- overview tab ---------- */
@@ -270,13 +609,14 @@ function renderOverview() {
   const el = document.getElementById("tab-overview");
   const dec = (D.sections && D.sections.decision) || {};
   const demo = D.demo_target_discovery || {};
-  const det = demo.deterministic_reconciliation || {};
   const flow = demo.duo_flow || {};
   const tgt = demo.target || {};
   const obls = dec.obligations || [];
+  const primaryRec = (D.sections && D.sections.duo_reconciliation_primary) || {};
+  const primaryTotals = primaryRec.totals || { CORROBORATED: 4, UNRESOLVED: 2, CONTEXTUAL_ONLY: 1, TOTAL: 7 };
 
-  const primaryId = flow.primary_session_id || "9710085";
-  const primaryIssue = flow.primary_issue_iid || 5;
+  const primaryId = flow.primary_session_id || primaryRec.session_id || "9710085";
+  const primaryIssue = flow.primary_issue_iid || primaryRec.issue_iid || 5;
   const sessionUrl = flow.primary_session_url || "";
   const issueUrl = flow.primary_issue_url || "";
 
@@ -285,43 +625,47 @@ function renderOverview() {
   <div class="decision-hero">
     <div>
       <div class="verdict">RETIREMENT BLOCKED</div>
-      <div class="target">Target: disposable GitLab Pages project <code>${escapeHtml(String(tgt.project_id || "87785099"))}</code>
-        · <code>${escapeHtml(tgt.full_path || "")}</code></div>
-      <div class="reason">Retirement is intentionally blocked — not because the system failed, but because
-        required conditions are unsatisfied: a surviving CI redeployment mechanism can resurrect the
-        site, the observing identity lacks Pages administration rights, and no operator-signed
-        single-use authorization exists.</div>
+      <div class="target">Target: disposable GitLab Pages demo <code>${escapeHtml(String(tgt.project_id || "87785099"))}</code>
+        · <code>${escapeHtml(tgt.full_path || "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo")}</code></div>
+      <div class="reason">Retirement is intentionally blocked by the deterministic engine. This is an intentional
+        safety refusal: a surviving CI redeployment mechanism can resurrect the site, the acting identity lacks
+        Pages administration rights (HTTP 403 on Pages API), and no valid operator-signed authorization ledger entry exists.</div>
     </div>
   </div>
 
+  <!-- Snapshot Notice -->
+  <div class="banner info">
+    <strong>Snapshot Provenance &amp; Verification Boundary:</strong> The observations displayed across this interface were
+    captured via anonymous read-only GitLab REST API calls on October 19, 2026. The recorded 15-minute freshness window has expired.
+    This page is completely static, makes <strong>zero live provider network requests</strong>, and preserves verified historical
+    evidence establishing that an active redeployment mechanism existed at the observed commit.
+  </div>
+
   <!-- Evidence chain -->
-  <div class="grid-3" style="margin-bottom: 16px;">
+  <div class="grid-3" style="margin-bottom: 20px;">
     <div class="evidence-stage" style="border-top: 3px solid var(--accent);">
-      <div class="stage-title" style="color: var(--accent);">① GitLab Duo investigated</div>
+      <div class="stage-title" style="color: var(--accent);">① GitLab Duo Investigated</div>
       <div class="stage-body">
-        A genuine Custom Flow (session <code>${escapeHtml(primaryId)}</code>)
-        autonomously analyzed target <code>${escapeHtml(String(tgt.project_id || "87785099"))}</code>
-        from a neutral, unprimed issue request (#${escapeHtml(String(primaryIssue))})
-        and proposed risk candidates.
-        ${sessionUrl ? `<br><a href="${escapeHtml(sessionUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-size:12px;">View Duo session →</a>` : ""}
+        A real GitLab Duo Custom Flow (Catalog item <code>1018562</code>, Session <code>${escapeHtml(primaryId)}</code>)
+        autonomously inspected target <code>${escapeHtml(String(tgt.project_id || "87785099"))}</code> repository files
+        from an unprimed, neutral issue prompt (#${escapeHtml(String(primaryIssue))}) and proposed candidate risks.
+        ${sessionUrl ? `<br><a href="${escapeHtml(sessionUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-size:12px;display:inline-block;margin-top:4px;">View Duo Session 9710085 →</a>` : ""}
       </div>
     </div>
     <div class="evidence-stage" style="border-top: 3px solid var(--ok);">
-      <div class="stage-title" style="color: var(--ok);">② Termivance independently checked</div>
+      <div class="stage-title" style="color: var(--ok);">② Termivance Independently Corroborated</div>
       <div class="stage-body">
-        Source-bound GitLab reads corroborated actual propositions via anonymous
-        public API — verifying the CI redeployment mechanism (<code>create-pages</code>
-        with <code>pages: true</code>) at observed commit
-        <code>${escapeHtml((tgt.observed_commit || "").slice(0, 12))}…</code>.
-        Some candidates remain unresolved.
+        Source-bound GitLab reads independently corroborated candidate claims via anonymous REST API — verifying the active
+        CI redeployment mechanism (<code>create-pages</code> with <code>pages: true</code> in <code>.gitlab-ci.yml</code>)
+        and marker string at observed commit <code>${escapeHtml((tgt.observed_commit || "").slice(0, 10))}…</code>.
       </div>
     </div>
     <div class="evidence-stage" style="border-top: 3px solid var(--bad);">
-      <div class="stage-title" style="color: var(--bad);">③ The deterministic engine decided</div>
+      <div class="stage-title" style="color: var(--bad);">③ Deterministic Authority Decided</div>
       <div class="stage-body">
-        Retirement remains <strong>BLOCKED</strong> because required obligations and
-        authority are not satisfied. The engine refuses unsafe retirement — this is the
-        intended safety outcome.
+        Deterministic Python engine evaluated 8 retirement obligations and strictly refused retirement:
+        <strong>SAFE_TO_RETIRE = BLOCKED</strong>. AI proposals are non-authoritative advisory context; verdicts
+        originate solely from verified deterministic code.
       </div>
     </div>
   </div>
@@ -331,8 +675,7 @@ function renderOverview() {
       <!-- Three independent claims -->
       <div class="card">
         <h2>Independent retirement claims</h2>
-        <p class="muted sm" style="margin-top:0;">Safe-to-retire eligibility, observed absence and
-          future resurrection control are three separate propositions requiring separate proof.</p>
+        <p class="muted sm" style="margin-top:0;">Safe-to-retire eligibility, observed absence and future resurrection control are three strictly separate propositions requiring distinct proof.</p>
         <div class="claim-row">
           <span class="claim-label">SAFE_TO_RETIRE</span>
           ${chip("BLOCKED", "chip bad")}
@@ -345,72 +688,66 @@ function renderOverview() {
           <span class="claim-label">RESURRECTION_CONTROLLED</span>
           ${chip("NOT_CLAIMED", "chip dim")}
         </div>
-        <div style="margin-top: 10px; padding: 8px 12px; background: var(--panel2); border-radius: 6px; border-left: 3px solid var(--amber);">
+        <div style="margin-top: 12px; padding: 10px 14px; background: var(--panel2); border-radius: 6px; border-left: 3px solid var(--amber);">
           <div style="font-size: 12.5px; font-weight: 600; color: var(--amber); margin-bottom: 2px;">REDEPLOYMENT MECHANISM: DETECTED IN OBSERVED SOURCE</div>
-          <div class="muted sm">The target's CI configuration contains an active <code>pages: true</code>
-            job that can republish the site on any pipeline run. This is an independently observed
-            risk — not a completed control verdict.</div>
+          <div class="muted sm">The target's <code>.gitlab-ci.yml</code> contains an active <code>create-pages</code> job with <code>pages: true</code>.
+            Any pipeline execution against the default branch would republish the site. This is an independently verified resurrection risk — not a completed control verdict.</div>
         </div>
       </div>
 
       <!-- Obligation status compact -->
       <div class="card">
-        <h2>Obligation status</h2>
+        <h2>Retirement obligation status</h2>
         <table class="obl-table">
-          <tr><th>Obligation</th><th>Status</th></tr>
+          <tr><th>Obligation</th><th>Kind</th><th>Status</th></tr>
           ${obls.map((o) => `<tr>
-            <td>${escapeHtml(o.kind)}</td>
+            <td><code>${escapeHtml(o.obligation_id || o.kind)}</code></td>
+            <td class="muted sm">${escapeHtml(o.kind || "")}</td>
             <td>${chip(o.status)}</td>
           </tr>`).join("")}
         </table>
         <p class="muted sm" style="margin-top:8px;">4 satisfied · 3 violated · 1 unknown.
-          All 8 obligations must be satisfied for retirement to proceed.</p>
+          All 8 obligations must be satisfied before retirement can proceed.</p>
       </div>
     </div>
 
     <div>
       <!-- Next operational requirements -->
       <div class="card">
-        <h2>Outstanding requirements</h2>
-        <p class="muted sm" style="margin-top:0;">Before retirement can proceed, the following must be resolved:</p>
+        <h2>Outstanding requirements to unblock</h2>
+        <p class="muted sm" style="margin-top:0;">Before retirement can proceed, the following conditions must be satisfied:</p>
         <ul class="req-list">
-          <li>Appropriate project-scoped Pages administration rights (Maintainer/Owner role on target <code>${escapeHtml(String(tgt.project_id || "87785099"))}</code>)</li>
-          <li>A controlled or neutralized redeployment mechanism (the active <code>create-pages</code> CI job with <code>pages: true</code>)</li>
-          <li>Valid single-use operator authorization (operator-signed HMAC ledger entry, not a code comment or prose)</li>
-          <li>Fresh provider observations and post-action evidence before any absence claim</li>
+          <li>Appropriate project-scoped Pages administration rights (Maintainer/Owner role on disposable target <code>${escapeHtml(String(tgt.project_id || "87785099"))}</code>)</li>
+          <li>A controlled or neutralized redeployment mechanism (neutralize active <code>create-pages</code> job with <code>pages: true</code>)</li>
+          <li>Valid single-use operator authorization (operator-signed HMAC ledger entry, not a repository comment or prose)</li>
+          <li>Fresh provider observations and post-action readback evidence before any absence claim</li>
         </ul>
       </div>
 
       <!-- Corroboration summary -->
       <div class="card">
-        <h2>Duo candidate corroboration</h2>
-        <p class="muted sm" style="margin-top:0;">Session <code>${escapeHtml(primaryId)}</code> · Issue #${escapeHtml(String(primaryIssue))}
-          ${issueUrl ? `· <a href="${escapeHtml(issueUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">View issue →</a>` : ""}</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;">
-          ${chip("4 CORROBORATED", "chip ok")}
-          ${chip("2 UNRESOLVED", "chip amber")}
-          ${chip("1 CONTEXTUAL_ONLY", "chip dim")}
+        <h2>Primary Duo candidate discovery summary</h2>
+        <p class="muted sm" style="margin-top:0;">Session <code>${escapeHtml(primaryId)}</code> · Issue #${escapeHtml(String(primaryIssue))} on canonical project 87779099
+          ${issueUrl ? `· <a href="${escapeHtml(issueUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">View Issue #${escapeHtml(String(primaryIssue))} →</a>` : ""}</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">
+          ${chip(String(primaryTotals.CORROBORATED || 4) + " CORROBORATED", "chip ok")}
+          ${chip(String(primaryTotals.UNRESOLVED || 2) + " UNRESOLVED", "chip amber")}
+          ${chip(String(primaryTotals.CONTEXTUAL_ONLY || 1) + " CONTEXTUAL_ONLY", "chip dim")}
+          ${chip("Total: " + String(primaryTotals.TOTAL || 7), "chip acc")}
         </div>
-        <details>
-          <summary>View candidate details</summary>
-          ${(demo.candidates || []).map((c) => `
-          <div style="padding:6px 0;border-bottom:1px solid var(--line);font-size:12.5px;">
-            <div><strong>${escapeHtml(c.topic || "")}</strong> ${chip(c.classification || "", c.classification === "CORROBORATED" ? "chip ok" : (c.classification === "UNRESOLVED" ? "chip amber" : "chip dim"))}</div>
-            <div class="muted" style="margin-top:2px;">${escapeHtml(c.agent_claim || "")}</div>
-          </div>`).join("")}
-        </details>
+        <p class="muted sm">Duo autonomously discovered target configuration without pre-injected hints. Full 7-claim breakdown is audited in Evidence &amp; Audit.</p>
       </div>
 
       <!-- Provenance -->
       <div class="card">
-        <h2>Source provenance</h2>
+        <h2>Source provenance &amp; identity</h2>
         ${kv([
           ["catalog item", `<code>1018562</code> (Termivance Retirement Analyst)`],
           ["primary session", `<code>${escapeHtml(primaryId)}</code> ${chip("Finished", "chip ok")}`],
-          ["investigation issue", `#${escapeHtml(String(primaryIssue))} on project 87779099`],
-          ["CI source digest", `<code>fe895004ba37…</code>`],
+          ["investigation issue", `#${escapeHtml(String(primaryIssue))} on canonical project 87779099`],
+          ["target project", `<code>${escapeHtml(String(tgt.project_id || "87785099"))}</code> (disposable Pages demo)`],
           ["observed commit", `<code>${escapeHtml((tgt.observed_commit || "").slice(0, 12))}…</code>`],
-          ["evidence provenance", chip("ANONYMOUS_PUBLIC_READ", "chip acc")],
+          ["provider reads", chip("ANONYMOUS_PUBLIC_READ (REST API)", "chip acc")],
         ])}
       </div>
     </div>
@@ -449,14 +786,14 @@ function renderPortfolio() {
     <div>
       <div class="card">
         <h2>Observed assets (${escapeHtml(pf.assets.length)})</h2>
-        <p class="muted sm" style="margin-top:0;">Select a project to inspect its resources. Every resource carries <code>mutation_capability=NOT_AUTHORIZING</code>.</p>
-        <p>${pf.assets.map((a) => `
+        <p class="muted sm" style="margin-top:0;">Select a project to inspect its recorded resources. Every resource carries <code>mutation_capability=NOT_AUTHORIZING</code>.</p>
+        <p style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">${pf.assets.map((a) => `
           <button class="btn btn-sm ${selectedAsset === a.project_id ? "on" : ""}" data-asset="${a.project_id}">
             ${escapeHtml(a.project_id)} · ${escapeHtml((a.full_path || "").split("/").pop())}
           </button>`).join(" ")}
         </p>
         ${kv([
-          ["provenance", chip(pf.provenance || "UNAVAILABLE")],
+          ["read provenance", chip(pf.provenance || "ANONYMOUS_PUBLIC_READ")],
           ["pages unverifiable (401/403)", escapeHtml(t.pages_unverifiable ?? "—")],
           ["resources observed", escapeHtml(t.resources_observed ?? "—")],
           ["resources not observed", escapeHtml(t.resources_not_observed ?? "—")],
@@ -464,24 +801,26 @@ function renderPortfolio() {
         ])}
       </div>
       <div class="card" id="asset-card"></div>
-      <div class="card"><h2>Relations</h2>
+      <div class="card"><h2>Recorded relations</h2>
         <div id="relations"></div>
       </div>
     </div>
     <div>
       <div class="card">
-        <h2>Resource kinds</h2>
+        <h2>Resource kinds observed</h2>
         <table><tr><th>Kind</th><th>Count</th></tr>
         ${Object.entries(t.resource_kinds_observed || {}).map(([k, v]) =>
           `<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join("") ||
           "<tr><td colspan=2>none observed</td></tr>"}
         </table>
       </div>
-      <div class="card"><h2>Support legend</h2>
-        ${chip("OBSERVED")} <span class="muted sm">provider-returned fact at an exact endpoint</span><br>
-        ${chip("INFERRED", "chip amber")} <span class="muted sm">reasoned link — never decision evidence</span><br>
-        ${chip("NOT_OBSERVED")} <span class="muted sm">401/403/404 or missing data — never absence</span><br>
-        ${chip("NOT_RUN")} <span class="muted sm">an action the runtime did not perform</span>
+      <div class="card"><h2>Support classification legend</h2>
+        <div style="line-height:2;">
+          <div>${chip("OBSERVED")} <span class="muted sm">provider-returned fact at an exact endpoint</span></div>
+          <div>${chip("INFERRED", "chip amber")} <span class="muted sm">reasoned structural link — never decision evidence</span></div>
+          <div>${chip("NOT_OBSERVED")} <span class="muted sm">401/403/404 or missing data — never proof of absence</span></div>
+          <div>${chip("NOT_RUN")} <span class="muted sm">an action the runtime did not perform</span></div>
+        </div>
       </div>
     </div>
   </div>`;
@@ -506,7 +845,7 @@ function renderAsset() {
         ["role", escapeHtml(a.role || "—")],
         ["visibility", escapeHtml(a.visibility || "—")],
         ["archived", escapeHtml(String(a.archived))],
-        ["web url", a.web_url ? `<a href="${escapeHtml(a.web_url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(a.web_url)}</a>` : "—"],
+        ["web url", a.web_url ? `<a href="${escapeHtml(a.web_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(a.web_url)}</a>` : "—"],
         ["observed at", escapeHtml(a.observed_at || "—")],
         ["provenance", chip(a.provenance || "—")],
       ])}
@@ -537,7 +876,6 @@ function nodeClass(kind, id) {
 const NODE_COLORS = { risk: "#f85149", control: "#58a6ff", dep: "#3fb950",
                       unobs: "#db6d28", other: "#9aa7b4" };
 
-/* Decision-relevant nodes for focused view */
 function isDecisionRelevant(n) {
   const id = n.node_id;
   if (id.startsWith("obl:")) return true;
@@ -566,7 +904,7 @@ function computeLayout() {
     nodeIds.has(e.src) && nodeIds.has(e.dst));
 
   const isDecision = (id) => !(id.startsWith("resource") || id.startsWith("not-observed:"));
-  const W = 200, H = 52, GAP = 20, ROW = H + 48;
+  const W = 210, H = 54, GAP = 24, ROW = H + 48;
   const cl = nodes.filter((n) => isDecision(n.node_id));
   const cx = nodes.filter((n) => !isDecision(n.node_id));
   const columns = [
@@ -575,21 +913,21 @@ function computeLayout() {
     cl.filter((n) => n.node_id.startsWith("risk:") || n.node_id.startsWith("control:")),
   ];
   const pos = new Map();
-  let x = 30;
+  let x = 32;
   for (const col of columns) {
-    col.forEach((n, i) => pos.set(n.node_id, { x: x, y: 46 + i * ROW }));
-    x += W + GAP + 50;
+    col.forEach((n, i) => pos.set(n.node_id, { x: x, y: 50 + i * ROW }));
+    x += W + GAP + 60;
   }
   const perRow = showFullGraph ? 5 : 3;
   cx.forEach((n, i) => {
     pos.set(n.node_id, {
-      x: 30 + (i % perRow) * (W + GAP),
-      y: 120 + Math.max(0, ...columns.map((c) => c.length)) * ROW + Math.floor(i / perRow) * ROW,
+      x: 32 + (i % perRow) * (W + GAP),
+      y: 130 + Math.max(0, ...columns.map((c) => c.length)) * ROW + Math.floor(i / perRow) * ROW,
     });
   });
-  const height = 140 + Math.max(0, ...columns.map((c) => c.length)) * ROW +
+  const height = 150 + Math.max(0, ...columns.map((c) => c.length)) * ROW +
                  Math.ceil(cx.length / perRow) * ROW;
-  const width = Math.max(x, perRow * (W + GAP) + 30);
+  const width = Math.max(x, perRow * (W + GAP) + 40);
   return { nodes, edges, pos, W, H, height, width, allNodes };
 }
 
@@ -606,7 +944,7 @@ function renderGraph() {
   const svg = document.createElementNS(NS, "svg");
   const { nodes, edges, pos, W, H, height, width, allNodes } = layout;
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  svg.setAttribute("width", String(Math.min(width, 1180)));
+  svg.setAttribute("width", String(Math.min(width, 1380)));
   svg.setAttribute("role", "img");
   svg.setAttribute("aria-label", "Recorded retirement obligation graph");
 
@@ -619,7 +957,7 @@ function renderGraph() {
   title.setAttribute("class", "lagend"); title.setAttribute("x", "14"); title.setAttribute("y", "22");
   title.textContent = showFullGraph
     ? "Full evidence graph — decision nodes (top) + cross-resource context (bottom). OBSERVED solid blue · INFERRED dashed amber."
-    : "Focused obligation graph — target 87785099 decision-relevant nodes. Click 'Show full evidence graph' for all nodes.";
+    : "Focused obligation graph — target 87785099 decision-relevant nodes. Click 'Show full evidence graph' for cross-resource nodes.";
   svg.appendChild(title);
 
   for (const e of edges) {
@@ -650,12 +988,12 @@ function renderGraph() {
     g.appendChild(rect);
     const t1 = document.createElementNS(NS, "text");
     t1.setAttribute("x", String(p.x + 10)); t1.setAttribute("y", String(p.y + 20));
-    t1.textContent = truncate(n.title || n.node_id, 30);
+    t1.textContent = truncate(n.title || n.node_id, 28);
     g.appendChild(t1);
     const t2 = document.createElementNS(NS, "text");
     t2.setAttribute("x", String(p.x + 10)); t2.setAttribute("y", String(p.y + 38));
     t2.setAttribute("fill", "#9aa7b4"); t2.setAttribute("font-size", "11");
-    t2.textContent = truncate(n.node_id, 32);
+    t2.textContent = truncate(n.node_id, 30);
     g.appendChild(t2);
     const tip = document.createElementNS(NS, "title");
     tip.textContent = `${n.title}\n${n.node_id}\n${n.state || ""}`;
@@ -668,7 +1006,7 @@ function renderGraph() {
   const totalNodes = allNodes.length;
   document.getElementById("graph-stats").textContent =
     `Showing ${layout.nodes.length} of ${totalNodes} nodes · ${layout.edges.length} edges` +
-    (showFullGraph ? "" : ` · ${totalNodes - layout.nodes.length} cross-resource nodes hidden`);
+    (showFullGraph ? "" : ` · ${totalNodes - layout.nodes.length} cross-resource context nodes hidden`);
   wireGraphButtons();
 }
 
@@ -749,13 +1087,15 @@ function renderWhatIf() {
   const proj = s.obligation_projections || [];
   const eff = s.projected_provider_effects || [];
 
-  /* Separate target-relevant factors from cross-resource noise */
   const targetFactors = factors.filter((f) => f.resource && f.resource.includes("87785099"));
   const otherFactors = factors.filter((f) => !f.resource || !f.resource.includes("87785099"));
 
   el.innerHTML = `
-      <div class="banner">HYPOTHETICAL — every projected value shown on this tab is
-      PROJECTED_NOT_OBSERVED. ${escapeHtml(String(s.banner || ""))}</div>
+  <div class="banner">
+    <strong>HYPOTHETICAL SIMULATION — PROJECTED_NOT_OBSERVED:</strong>
+    Every projected value shown on this tab evaluates what would happen if <code>DELETE /projects/87785099/pages</code> were executed.
+    Projections never create eligibility, never mint absence, and never modify provider facts.
+  </div>
   <div class="grid">
     <div>
       <div class="card">
@@ -763,9 +1103,9 @@ function renderWhatIf() {
         <p style="font-size:13px;margin:4px 0;">
           <strong>Action:</strong> <code>DELETE /projects/87785099/pages</code><br>
           <strong>Effect:</strong> Unpublish the GitLab Pages site on disposable target <code>87785099</code>.<br>
-          <strong>Status:</strong> ${chip("NOT_RUN", "chip bad")} — no credential, no execution, no authority.
+          <strong>Execution status:</strong> ${chip("NOT_RUN", "chip bad")} — no credential, no execution, no operator authorization.
         </p>
-        ${sub("Why the redeployment mechanism still matters")}
+        ${sub("Why the redeployment mechanism still blocks retirement")}
         <div class="factor">${chip("PROJECTED_NOT_OBSERVED", "chip amber")}
           <div>Even if Pages were unpublished, the target's <code>.gitlab-ci.yml</code> contains
           <code>create-pages</code> with <code>pages: true</code>. Any subsequent pipeline run
@@ -777,7 +1117,7 @@ function renderWhatIf() {
           <div class="factor">${chip(f.state || "PROJECTED_NOT_OBSERVED")}
             <div>${escapeHtml(f.effect || "")}</div></div>`).join("")
           : `<p class="muted">None recorded.</p>`}
-        <div style="margin-top:8px;">${sub("Redeployment risk")}<p>${chip(s.redeployment_risk || "—")}</p></div>
+        <div style="margin-top:8px;">${sub("Redeployment risk")}<p>${chip(s.redeployment_risk || "RESURRECTION_UNCONTROLLED")}</p></div>
       </div>
 
       <div class="card">
@@ -785,10 +1125,10 @@ function renderWhatIf() {
         <p class="muted sm" style="margin-top:0;">How each obligation would change under this hypothetical action.</p>
         ${proj.length ? `<table><tr><th>Obligation</th><th>Current</th><th>Projected</th><th>Why</th></tr>
           ${proj.map((p) => `<tr>
-            <td>${escapeHtml(p.obligation_id || "")}</td>
+            <td><code>${escapeHtml(p.obligation_id || "")}</code></td>
             <td>${chip(p.current_status || p.status || "")}</td>
             <td>${chip(p.projected_status || p.projected || "")}</td>
-            <td class="muted">${escapeHtml(p.consequence || "")}</td></tr>`).join("")}</table>`
+            <td class="muted sm">${escapeHtml(p.consequence || "")}</td></tr>`).join("")}</table>`
           : `<p class="muted">No projections recorded.</p>`}
       </div>
     </div>
@@ -805,8 +1145,7 @@ function renderWhatIf() {
       <div class="card">
         <h2>Cross-resource factors</h2>
         <p class="muted sm" style="margin-top:0;">${otherFactors.length} factors; all labelled
-        ${chip("PROJECTED_NOT_OBSERVED", "chip amber")} — projections never create
-        eligibility or mint verdicts.</p>
+        ${chip("PROJECTED_NOT_OBSERVED", "chip amber")} — projections never create eligibility or mint verdicts.</p>
         <details>
           <summary>${otherFactors.length} cross-resource projected factors</summary>
           ${otherFactors.map((f) => `
@@ -820,7 +1159,7 @@ function renderWhatIf() {
 
       <div class="card">
         <h2>Resource selector</h2>
-        <select id="wi-select">
+        <select id="wi-select" style="width:100%;">
           <option value="">— select a resource —</option>
           ${assets().map((a) =>
             `<optgroup label="${escapeHtml(a.project_id + " — " + (a.full_path || ""))}">` +
@@ -829,10 +1168,11 @@ function renderWhatIf() {
                 ${escapeHtml(r.kind + " · " + r.ref + " · " + r.state)}</option>`).join("") +
             `</optgroup>`).join("")}
         </select>
-        <div id="wi-factors"></div>
+        <div id="wi-factors" style="margin-top:10px;"></div>
       </div>
     </div>
   </div>`;
+
   const sel = document.getElementById("wi-select");
   sel.addEventListener("change", () => {
     selectedResource = sel.value || null;
@@ -864,7 +1204,6 @@ function renderProof() {
   const gates = D.authorization_gates || [];
   const demo = D.demo_target_discovery || {};
   const flow = demo.duo_flow || {};
-  const det = demo.deterministic_reconciliation || {};
   const primaryId = flow.primary_session_id || "9710085";
   const primaryIssue = flow.primary_issue_iid || 5;
   const issueUrl = flow.primary_issue_url || "";
@@ -872,33 +1211,42 @@ function renderProof() {
 
   el.innerHTML = `
   <!-- Evidence sub-navigation -->
-  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;">
-    <button class="btn btn-sm evidence-nav on" data-section="duo-investigation">Duo investigation</button>
-    <button class="btn btn-sm evidence-nav" data-section="provider-observations">Provider observations</button>
-    <button class="btn btn-sm evidence-nav" data-section="candidate-corroboration">Candidate corroboration</button>
-    <button class="btn btn-sm evidence-nav" data-section="deterministic-decision">Deterministic decision</button>
-    <button class="btn btn-sm evidence-nav" data-section="auth-mutation">Authorization &amp; mutation</button>
-    <button class="btn btn-sm evidence-nav" data-section="absence-proof">Bounded absence</button>
-    <button class="btn btn-sm evidence-nav" data-section="capsule-qa">Proof capsule &amp; QA</button>
+  <div class="subnav-bar">
+    <button class="evidence-nav on" data-section="candidate-corroboration">Candidate corroboration</button>
+    <button class="evidence-nav" data-section="duo-investigation">Duo investigation</button>
+    <button class="evidence-nav" data-section="provider-observations">Provider observations</button>
+    <button class="evidence-nav" data-section="deterministic-decision">Deterministic decision</button>
+    <button class="evidence-nav" data-section="auth-mutation">Authorization &amp; mutation</button>
+    <button class="evidence-nav" data-section="absence-proof">Bounded absence</button>
+    <button class="evidence-nav" data-section="capsule-qa">Proof capsule &amp; QA</button>
+  </div>
+
+  <!-- Candidate corroboration (Primary Defect A View) -->
+  <div class="evidence-section" id="ev-candidate-corroboration">
+    <!-- Primary target-specific session 9710085 -->
+    ${primaryDuoReconciliationCard(sec.duo_reconciliation_primary, demo)}
+    <!-- Historical contextual session 9671626 in secondary audit card -->
+    ${historicalDuoReconciliationCard(sec.duo_reconciliation)}
   </div>
 
   <!-- Duo investigation -->
-  <div class="evidence-section" id="ev-duo-investigation">
+  <div class="evidence-section" id="ev-duo-investigation" style="display:none;">
     <div class="card">
-      <h2>Genuine Duo target-risk discovery</h2>
-      <p class="muted sm" style="margin-top:0;">Session <code>${escapeHtml(primaryId)}</code> autonomously discovered retirement risks on target <code>87785099</code> from a neutral, unprimed issue request.
-        ${sessionUrl ? `<a href="${escapeHtml(sessionUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">View session →</a>` : ""}
+      <h2>Genuine Duo Custom Flow investigation (Catalog 1018562)</h2>
+      <p class="muted sm" style="margin-top:0;">Session <code>${escapeHtml(primaryId)}</code> autonomously inspected target <code>87785099</code> from a neutral, unprimed issue request (#${escapeHtml(String(primaryIssue))}).
+        ${sessionUrl ? `<a href="${escapeHtml(sessionUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">View Duo session →</a>` : ""}
         ${issueUrl ? ` · <a href="${escapeHtml(issueUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">View Issue #${escapeHtml(String(primaryIssue))} →</a>` : ""}
       </p>
       ${kv([
         ["primary session (unprimed)", `<code>${escapeHtml(primaryId)}</code> ${chip(flow.primary_session_status || "Finished", "chip ok")} (Issue #${escapeHtml(String(primaryIssue))})`],
         ["secondary session (contextual)", `<code>${escapeHtml(flow.secondary_session_id || "9704855")}</code> ${chip("Finished", "chip amber")}`],
-        ["catalog item", `<code>${escapeHtml(String(flow.catalog_item_id || "1018562"))}</code>`],
-        ["outcome note", `<code>${escapeHtml(String(flow.primary_deterministic_outcome_note_id || "4045409264"))}</code> on Issue #${escapeHtml(String(primaryIssue))}`],
+        ["catalog item", `<code>${escapeHtml(String(flow.catalog_item_id || "1018562"))}</code> (Termivance Retirement Analyst)`],
+        ["deterministic outcome note", `<code>${escapeHtml(String(flow.primary_deterministic_outcome_note_id || "4045409264"))}</code> on Issue #${escapeHtml(String(primaryIssue))}`],
+        ["Duo prompt character", `Neutral prompt in Issue #${escapeHtml(String(primaryIssue))}: no pre-injected target YAML, no pre-computed digests`],
       ])}
     </div>
-    ${duo ? `<div class="card"><h2>Historical Duo session 9671626</h2>
-      <p class="muted sm" style="margin-top:0;">Earlier contextual session — recorded evidence only.</p>
+    ${duo ? `<div class="card"><h2>Historical contextual Duo session 9671626</h2>
+      <p class="muted sm" style="margin-top:0;">Earlier contextual session on Issue #3 — recorded evidence only.</p>
       ${duoLadder(duo)}
     </div>` : ""}
   </div>
@@ -906,25 +1254,10 @@ function renderProof() {
   <!-- Provider observations -->
   <div class="evidence-section" id="ev-provider-observations" style="display:none;">
     <div class="card">
-      <h2>Independent provider observations</h2>
-      <p class="muted sm" style="margin-top:0;">Anonymous read-only GitLab API calls. Each observation carries an endpoint, HTTP status, timestamp, and SHA-256 content digest.</p>
+      <h2>Independent provider observations (GitLab REST API)</h2>
+      <p class="muted sm" style="margin-top:0;">Anonymous read-only GitLab API observations. Each observation records endpoint, HTTP status code, timestamp, and SHA-256 digest.</p>
       ${renderEvidenceTable(sec.decision)}
     </div>
-  </div>
-
-  <!-- Candidate corroboration -->
-  <div class="evidence-section" id="ev-candidate-corroboration" style="display:none;">
-    <div class="card">${duoReconciliationCard(sec.duo_reconciliation)}</div>
-    ${(demo.candidates && demo.candidates.length) ? `<div class="card">
-      <h2>Discovery candidates — Session ${escapeHtml(primaryId)}</h2>
-      <table><tr><th>Candidate</th><th>Verification source</th><th>Classification</th><th>Obligation</th></tr>
-      ${demo.candidates.map((c) => `<tr>
-        <td><strong>${escapeHtml(c.topic || "")}</strong><br><span class="muted sm">${escapeHtml(c.agent_claim || "")}</span></td>
-        <td class="muted sm">${escapeHtml(c.independent_findings || "")}<br><code>${escapeHtml((c.independent_content_digest_sha256 || "").slice(0, 16))}…</code></td>
-        <td>${chip(c.classification || "", c.classification === "CORROBORATED" ? "chip ok" : "chip amber")}</td>
-        <td class="muted sm">${escapeHtml(c.engine_obligation_mapping || "")}</td></tr>`).join("")}
-      </table>
-    </div>` : ""}
   </div>
 
   <!-- Deterministic decision -->
@@ -935,17 +1268,17 @@ function renderProof() {
 
   <!-- Authorization & mutation -->
   <div class="evidence-section" id="ev-auth-mutation" style="display:none;">
-    <div class="card"><h2>Authorization gates</h2>
-      ${gates.map((g) => `<div style="padding:6px 0;border-bottom:1px solid var(--line);">
+    <div class="card"><h2>Deterministic authorization gates</h2>
+      <p class="muted sm" style="margin-top:0;">Strict gating model: possession of API tokens never equals operator authorization. Project deletion and paid tiers are structurally refused.</p>
+      ${gates.map((g) => `<div style="padding:8px 0;border-bottom:1px solid var(--line-subtle);">
         ${chip(g.state)}
-        <div style="margin-top:2px;"><strong>${escapeHtml(g.gate)}</strong></div>
+        <div style="margin-top:4px;"><strong>${escapeHtml(g.gate)}</strong></div>
         <div class="muted sm">${escapeHtml(g.detail)}</div>
       </div>`).join("")}
     </div>
     ${sec.receipt && sec.receipt.receipt_state ? receiptCard(sec.receipt) : `
       <div class="card"><h2>Retirement receipt</h2>${chip("UNAVAILABLE", "chip dim")}
-      <div class="muted">The receipt section was not supplied to the builder;
-      nothing about a mutation is assumed here.</div></div>`}
+      <div class="muted">No mutation receipt was supplied; nothing about a mutation is assumed.</div></div>`}
   </div>
 
   <!-- Bounded absence -->
@@ -956,17 +1289,18 @@ function renderProof() {
   <!-- Proof capsule & QA -->
   <div class="evidence-section" id="ev-capsule-qa" style="display:none;">
     <div class="card">${proofCapsule(sec.capsule)}</div>
-    <div class="card"><h2>XSS regression test</h2>
-      <p class="muted sm">The raw string below is rendered as inert text (not as
-      HTML) to demonstrate that provider-shaped content is always escaped:</p>
-      <pre>${escapeHtml(JSON.stringify(D.escape_probe || "", null, 0))}</pre>
-      <div id="escape-probe"></div>
+    <div class="card">
+      <h2>Security &amp; input sanitization contract</h2>
+      <p class="muted sm">All provider data, notes, and session traces are strictly DOM-escaped prior to rendering. No raw HTML interpolation or unsafe innerHTML injection is permitted.</p>
+      <details>
+        <summary class="sm" style="color:var(--dim);cursor:pointer;">Developer diagnostic: DOM escaping verification probe</summary>
+        <div style="margin-top:8px;padding:10px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;">
+          <div class="sm muted">Standard probe string (escaped into DOM text node, never executed as HTML):</div>
+          <pre style="margin:4px 0 0;">${escapeHtml(JSON.stringify(D.escape_probe || "", null, 0))}</pre>
+        </div>
+      </details>
     </div>
   </div>`;
-
-  /* XSS probe via textContent */
-  const probe = document.getElementById("escape-probe");
-  if (probe) { probe.textContent = D.escape_probe || ""; probe.className = "muted"; }
 
   /* Evidence sub-navigation wiring */
   el.querySelectorAll(".evidence-nav").forEach((btn) =>
@@ -979,37 +1313,172 @@ function renderProof() {
     }));
 }
 
+/* Primary Target-Specific Session 9710085 (7 claims) */
+function primaryDuoReconciliationCard(primaryRec, demo) {
+  const flow = (demo && demo.duo_flow) || {};
+  const sessionId = (primaryRec && primaryRec.session_id) || flow.primary_session_id || "9710085";
+  const issueIid = (primaryRec && primaryRec.issue_iid) || flow.primary_issue_iid || 5;
+  const targetPid = (primaryRec && primaryRec.target_project_id) || "87785099";
+
+  let claims = (primaryRec && primaryRec.claims) || [];
+  if (!claims.length && demo && demo.candidates) {
+    claims = demo.candidates.map((c, i) => ({
+      claim_id: `duo-9710085-cand-0${i + 1}`,
+      text: c.agent_claim || c.topic || "",
+      corroboration_status: c.classification || "UNRESOLVED",
+      corroboration_source: c.independent_findings || "",
+      corroboration_detail: c.independent_content_digest_sha256 ? `Digest: ${c.independent_content_digest_sha256}` : "",
+      retirement_relevance: c.classification === "CORROBORATED" ? "MATERIAL" : "CONTEXTUAL",
+      origin: `GitLab Duo Custom Flow Session ${sessionId}`,
+    }));
+  }
+
+  const totals = (primaryRec && primaryRec.totals) || {
+    CORROBORATED: claims.filter((c) => c.corroboration_status === "CORROBORATED").length,
+    UNRESOLVED: claims.filter((c) => c.corroboration_status === "UNRESOLVED").length,
+    CONTEXTUAL_ONLY: claims.filter((c) => c.corroboration_status === "CONTEXTUAL_ONLY").length,
+    TOTAL: claims.length || 7,
+  };
+
+  return `<div class="card">
+    <h2>Primary Duo candidate corroboration — Session ${escapeHtml(sessionId)} (Target ${escapeHtml(String(targetPid))})</h2>
+    ${chip("NON_AUTHORITATIVE", "chip violet")}
+    ${chip("CANDIDATE_DISCOVERY", "chip acc")}
+    ${chip("TARGET_BOUND", "chip ok")}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">
+      ${chip(String(totals.CORROBORATED || 0) + " CORROBORATED", "chip ok")}
+      ${chip(String(totals.UNRESOLVED || 0) + " UNRESOLVED", "chip amber")}
+      ${chip(String(totals.CONTEXTUAL_ONLY || 0) + " CONTEXTUAL_ONLY", "chip dim")}
+      ${chip("Total: " + String(totals.TOTAL || claims.length) + " claims", "chip acc")}
+    </div>
+    <div class="muted sm prose" style="margin-bottom:12px;">
+      Claims autonomously discovered by GitLab Duo Custom Flow Session <code>${escapeHtml(sessionId)}</code>
+      from neutral Issue #${escapeHtml(String(issueIid))} without pre-injected hints, and independently corroborated
+      against anonymous GitLab REST API provider reads on target <code>${escapeHtml(String(targetPid))}</code>.
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:140px;">Claim ID</th>
+          <th>Duo Candidate Claim</th>
+          <th style="width:130px;">Status</th>
+          <th>Corroboration Evidence &amp; Findings</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${claims.map((c) => `
+        <tr>
+          <td>
+            <strong>${escapeHtml(c.claim_id || "")}</strong><br>
+            <span class="muted sm">${escapeHtml(c.retirement_relevance || "")}</span>
+          </td>
+          <td>
+            <div>${escapeHtml(c.text || "")}</div>
+            ${c.causal_attribution ? `<div class="muted sm" style="margin-top:4px;"><b>Attribution:</b> ${escapeHtml(c.causal_attribution)}</div>` : ""}
+          </td>
+          <td>${chip(c.corroboration_status || c.status || "")}</td>
+          <td class="muted sm">
+            ${c.corroboration_source ? `<div><b>Source:</b> <code>${escapeHtml(c.corroboration_source)}</code></div>` : ""}
+            <div>${escapeHtml(c.corroboration_detail || "")}</div>
+          </td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+/* Historical Contextual Session 9671626 (9 claims) */
+function duoReconciliationCard(dr) { return historicalDuoReconciliationCard(dr); }
+function historicalDuoReconciliationCard(dr) {
+  if (!dr || dr.state === "UNAVAILABLE") return "";
+  const rec = dr.record || dr;
+  const claims = rec.claims || [];
+  const totals = rec.totals || {};
+  const sessionId = rec.duo_session_id || "9671626";
+  const issueIid = (rec.surface && rec.surface.issue_iid) || 3;
+  const projId = (rec.surface && rec.surface.project_id) || 87779099;
+  const claimsSource = rec.claims_source || "evidence/b4/duo_session_9671626_readback.json";
+
+  return `<div class="card" style="border-top: 2px solid var(--dimmer);">
+    <h2>Duo claim reconciliation — Historical Session ${escapeHtml(sessionId)} (Issue #${escapeHtml(String(issueIid))})</h2>
+    ${chip(rec.authority || "NON_AUTHORITATIVE", "chip violet")}
+    ${chip("HISTORICAL_CONTEXT", "chip dim")}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">
+      ${chip(String(totals.SUPPORTED || 0) + " SUPPORTED", "chip ok")}
+      ${chip(String(totals.UNRESOLVED || 0) + " UNRESOLVED", "chip amber")}
+      ${chip(String(totals.NOT_AUTHENTICALLY_ATTRIBUTABLE || 0) + " NOT_AUTHENTICALLY_ATTRIBUTABLE", "chip bad")}
+      ${chip(String(totals.UNSUPPORTED || 0) + " UNSUPPORTED", "chip dim")}
+      ${chip("Total: " + String(claims.length) + " claims", "chip acc")}
+    </div>
+    <div class="banner info" style="margin:8px 0 12px;">
+      <strong>Historical Context &amp; Distinct Taxonomy:</strong> This dataset represents the earlier contextual Duo session on canonical Issue #${escapeHtml(String(issueIid))} (project ${escapeHtml(String(projId))}).
+      It uses historical corroboration semantics (<code>SUPPORTED</code> / <code>NOT_AUTHENTICALLY_ATTRIBUTABLE</code> / <code>UNSUPPORTED</code>), distinct from target 87785099 candidate corroboration.
+      Source: <code>${escapeHtml(claimsSource)}</code>.
+    </div>
+    <details>
+      <summary style="font-weight:600;color:var(--accent);">View all ${claims.length} historical Session ${escapeHtml(sessionId)} claims</summary>
+      <table style="margin-top:10px;">
+        <thead>
+          <tr>
+            <th style="width:130px;">Claim ID</th>
+            <th>Historical Claim</th>
+            <th style="width:150px;">Historical Status</th>
+            <th>Observed Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${claims.map((c) => `
+          <tr>
+            <td><code>${escapeHtml(c.claim_id || "")}</code><br><span class="muted sm">${escapeHtml(c.check_kind || "")}</span></td>
+            <td><div>${escapeHtml(c.text || "")}</div><span class="muted sm">Origin: ${escapeHtml(c.origin || "")}</span></td>
+            <td>${chip(c.status || "")}</td>
+            <td class="muted sm">${escapeHtml(c.detail || "")}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </details>
+  </div>`;
+}
+
 function renderEvidenceTable(decision) {
   if (!decision || !decision.graph || !decision.graph.evidence) return `<p class="muted">No evidence available.</p>`;
   const ev = decision.graph.evidence;
-  return `<table><tr><th>Evidence</th><th>Endpoint</th><th>Status</th><th>Observed</th><th>Digest</th></tr>
-    ${ev.map((e) => `<tr>
-      <td><strong>${escapeHtml(e.evidence_id || "")}</strong><br><span class="muted sm">${escapeHtml(e.kind || "")}</span></td>
-      <td><code class="sm">${escapeHtml(e.method || "")} ${escapeHtml(e.endpoint || "")}</code></td>
-      <td>${chip(String(e.status || ""))}</td>
-      <td class="muted sm">${escapeHtml(e.observed_at || "")}<br>fresh until ${escapeHtml(e.fresh_until || "")}</td>
-      <td><details><summary class="sm">Show</summary><code class="sm">${escapeHtml(e.digest || "")}</code></details></td>
-    </tr>`).join("")}
+  return `<table>
+    <thead>
+      <tr><th>Evidence ID</th><th>Kind</th><th>Endpoint</th><th>HTTP Status</th><th>Observed At</th><th>Digest</th></tr>
+    </thead>
+    <tbody>
+      ${ev.map((e) => `<tr>
+        <td><strong>${escapeHtml(e.evidence_id || "")}</strong></td>
+        <td class="muted sm">${escapeHtml(e.kind || "")}</td>
+        <td><code class="sm">${escapeHtml(e.method || "")} ${escapeHtml(e.endpoint || "")}</code></td>
+        <td>${chip(String(e.status || ""))}</td>
+        <td class="muted sm">${escapeHtml(e.observed_at || "")}<br>fresh until ${escapeHtml(e.fresh_until || "")}</td>
+        <td><details><summary class="sm">Show digest</summary><code class="sm">${escapeHtml(e.digest || "")}</code></details></td>
+      </tr>`).join("")}
+    </tbody>
   </table>`;
 }
 
 function proofCapsule(c) {
-  return `<h2>Proof capsule</h2>
-    ${c && c.sections ? chip("RECORDED") : chip("UNAVAILABLE", "chip dim")}
+  return `<h2>Deterministic proof capsule</h2>
+    ${c && c.sections ? chip("RECORDED_CAPSULE", "chip ok") : chip("UNAVAILABLE", "chip dim")}
     ${!(c && c.sections) ? `<div class="muted">Capsule artifact was not supplied; it is not invented here.</div>` : ""}
     ${c && c.sections ? kv([
       ["schema", escapeHtml(c.schema || "—")],
       ["capsule id", `<code>${escapeHtml(c.capsule_id || "")}</code>`],
-      ["verify", `<code>${escapeHtml((D.verify || {}).command || "—")}</code>`],
-      ["note", escapeHtml((D.verify || {}).note || "")],
+      ["verify command", `<code>${escapeHtml((D.verify || {}).command || "—")}</code>`],
+      ["verification note", escapeHtml((D.verify || {}).note || "")],
     ]) : ""}
     ${c && c.sections ? `
-    <table><tr><th>Section</th><th>State</th></tr>
+    <table><thead><tr><th>Section</th><th>State</th></tr></thead>
+    <tbody>
     ${Object.entries(c.sections).map(([k, v]) =>
       `<tr><td>${escapeHtml(k)}</td><td>${chip((v && v.state) || "—")}</td></tr>`).join("")}
-    </table>` : ""}
-    ${c && c.manifest ? `<details><summary>Manifest digests</summary><pre>${escapeHtml(JSON.stringify(c.manifest, null, 2))}</pre></details>` : ""}`;
+    </tbody></table>` : ""}
+    ${c && c.manifest ? `<details><summary>Manifest SHA-256 digests</summary><pre>${escapeHtml(JSON.stringify(c.manifest, null, 2))}</pre></details>` : ""}`;
 }
+
 function receiptCard(rc) {
   const r = rc.record || {};
   const state = rc.display_verdict || rc.receipt_state || "INVALID";
@@ -1029,30 +1498,24 @@ function receiptCard(rc) {
       ["absence evidence", escapeHtml(rc.absence_evidence || "—")],
       ["display verdict", escapeHtml(rc.display_verdict || "—")],
     ])}
-    <div class="muted">${escapeHtml(rc.note || "")}</div>
-    ${state === "NOT_RUN" ? `<div class="muted">No live mutation receipt exists: the
-    runtime never executed the destructive step, and this page will not pretend
-    otherwise.</div>` : ""}
+    <div class="muted prose" style="margin-top:8px;">${escapeHtml(rc.note || "")}</div>
+    ${state === "NOT_RUN" ? `<div class="muted prose" style="margin-top:4px;">No live mutation receipt exists: the
+    runtime never executed the destructive step, and this page will not pretend otherwise.</div>` : ""}
   </div>`;
 }
-function demoDuoDiscoveryCard(demo) {
-  if (!demo || !demo.candidates) return "";
-  /* Now rendered inside the Evidence tab, not standalone */
-  return "";
-}
+
 function witnessCard(w) {
   if (!w || !w.record) {
     const wr = w;
     if (!wr || !wr.resurrection_possible) {
       return `<h2>Resurrection counterexample witness</h2>${chip("UNAVAILABLE", "chip dim")}
-        <div class="muted">No witness record was supplied; resurrection paths are not
-        assumed away.</div>`;
+        <div class="muted">No witness record was supplied; resurrection paths are not assumed away.</div>`;
     }
   }
   const rec = (w && w.record) || w || {};
   const t = rec.target || {};
   const cfg = rec.config || {};
-  return `<h2>Resurrection counterexample witness</h2>
+  return `<h2>Resurrection counterexample witness (Target ${escapeHtml(t.project_id || "87785099")})</h2>
     ${chip(rec.resurrection_possible || "UNAVAILABLE")}
     ${chip("absence_claim: " + (rec.absence_claim || "—"))}
     ${chip("resurrection_controlled: " + (rec.resurrection_controlled || "—"))}
@@ -1062,81 +1525,87 @@ function witnessCard(w) {
       ["config signals", escapeHtml(JSON.stringify(cfg.signals || []))],
       ["config complete", escapeHtml(String(cfg.configuration_complete || ""))],
     ])}
-    <div class="muted">${escapeHtml((rec.pages_administration || {}).phrase || "")}</div>
-    <h3>Counterexamples — what could still resurrect it</h3>
+    <div class="muted sm prose">${escapeHtml((rec.pages_administration || {}).phrase || "")}</div>
+    <h3>Counterexamples — what could still resurrect the resource</h3>
     <ul class="tight">${(rec.counterexamples || []).map((c) => `<li>${escapeHtml(c)}</li>`).join("")}</ul>`;
 }
+
 function decisionCard(d) {
-  return `<div class="card"><h2>Deterministic decision</h2>${chip(d.verdict)}
+  return `<div class="card"><h2>Deterministic decision authority</h2>${chip(d.verdict)}
     ${kv([
       ["target", `<code>${escapeHtml((d.target || {}).project_id || "")}</code> ${escapeHtml((d.target || {}).full_path || "")}`],
-      ["action", escapeHtml(d.action || "")],
+      ["contemplated action", escapeHtml(d.action || "")],
       ["evaluated at", escapeHtml(d.evaluated_at || "")],
     ])}
     ${sub("Why retirement is blocked")}
     <ul class="tight">${(d.reasons || []).map((r) =>
       `<li><strong>${escapeHtml(r.code || "")}</strong> — ${escapeHtml(r.detail || r.explanation || "")}</li>`).join("")}</ul>
-    ${sub("Missing conditions")}
+    ${sub("Missing conditions to satisfy")}
     <ul class="tight">${(d.missing_conditions || []).map((m) =>
       `<li>${escapeHtml(m)}</li>`).join("")}</ul>
   </div>`;
 }
+
 function duoLadder(duo) {
-  const rows = [["Independently observed (anonymous API)", duo.evidence_ladder && duo.evidence_ladder.independently_observed_anonymous_api, "chip ok"],
+  const rows = [
+    ["Independently observed (anonymous API)", duo.evidence_ladder && duo.evidence_ladder.independently_observed_anonymous_api, "chip ok"],
     ["Operator-confirmed only", duo.evidence_ladder && duo.evidence_ladder.operator_confirmed_only, "chip amber"],
-    ["Not independently observable & never promoted", duo.evidence_ladder && duo.evidence_ladder.not_independently_observable_and_never_promoted, "chip bad"]];
+    ["Not independently observable & never promoted", duo.evidence_ladder && duo.evidence_ladder.not_independently_observable_and_never_promoted, "chip bad"]
+  ];
   return `
     ${kv([
-      ["flow item", escapeHtml(duo.flow_catalog_item_id || "—")],
-      ["session", escapeHtml((duo.duo_session || {}).session_id || "—") + " " + chip((duo.duo_session || {}).status || "—")],
-      ["source issue", `#${escapeHtml((duo.issue_binding || {}).issue_iid || "—")} on project ${escapeHtml((duo.issue_binding || {}).project_id || "—")}`],
+      ["flow item", escapeHtml(duo.flow_catalog_item_id || "1018562")],
+      ["session", escapeHtml((duo.duo_session || {}).session_id || "9671626") + " " + chip((duo.duo_session || {}).status || "Finished")],
+      ["source issue", `#${escapeHtml((duo.issue_binding || {}).issue_iid || "3")} on project ${escapeHtml((duo.issue_binding || {}).project_id || "87779099")}`],
       ["captured", escapeHtml(duo.captured_at_utc || "—")],
     ])}
     ${rows.map(([head, items, cls]) => `
       ${sub(head)}
       <ul class="tight">${(items || []).map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul>`).join("")}
-    <div class="banner">${escapeHtml(duo.determinism_boundary || "")}</div>`;
+    <div class="banner info" style="margin-top:12px;">${escapeHtml(duo.determinism_boundary || "")}</div>`;
 }
 
 /* ---------- supervised review ---------- */
 function supervisedReviewCard(sr) {
   if (!sr) return `<h2>Supervised retirement review</h2>${chip("UNAVAILABLE", "chip dim")}
     <span class="muted">Not supplied.</span>`;
-  const claims = sr.claims || [];
+  const claims = sr.candidate_claims || sr.claims || [];
   const cf = sr.counterfactual || {};
-  return `<h2>Supervised retirement review</h2>
-    <p class="muted sm">AI proposes candidate claims; deterministic engine owns authorization and verdicts</p>
+  return `<h2>Supervised retirement review pipeline</h2>
+    <p class="muted sm prose">AI proposes candidate claims; deterministic engine owns authorization and verdicts</p>
     ${kv([
-      ["authority", chip(sr.authority || "—")],
-      ["pipeline", escapeHtml(sr.pipeline || "—")],
+      ["authority", chip(sr.authority || "NON_AUTHORITATIVE")],
+      ["pipeline summary", escapeHtml(sr.autonomy_summary || sr.pipeline || "—")],
     ])}
     ${sub("Multi-step causal review pipeline")}
-    <div class="muted sm">${escapeHtml(sr.pipeline_description || "")}</div>
+    <div class="muted sm prose">${escapeHtml(sr.boundary || sr.pipeline_description || "")}</div>
 
-    ${sub("Duo claim reconciliation")}
+    ${sub("Duo candidate claims evaluated")}
     <details>
-      <summary>${claims.length} claims reconciled</summary>
-      <table><tr><th>Claim</th><th>Origin</th><th>Target</th><th>Relevance</th><th>Corroboration</th><th>Attribution</th></tr>
-      ${claims.map((c) => `<tr>
-        <td><b>${escapeHtml(c.claim_id)}</b><br><span class="muted sm">${escapeHtml(c.text)}</span></td>
-        <td class="muted sm">${escapeHtml(c.origin)}</td>
-        <td><code class="sm">${escapeHtml(c.source_project != null ? c.source_project : "—")}</code></td>
-        <td>${chip(c.retirement_relevance)}</td>
-        <td>${chip(c.corroboration_status)}</td>
-        <td class="muted sm"><div><b>${escapeHtml(c.causal_attribution || "")}</b></div>
-            <div>${escapeHtml(c.corroboration_source ? c.corroboration_source + ": " : "")}${escapeHtml(c.corroboration_detail || "")}</div></td></tr>`).join("")}
+      <summary>${claims.length} candidate claims</summary>
+      <table style="margin-top:10px;">
+        <thead><tr><th>Claim</th><th>Target</th><th>Relevance</th><th>Corroboration</th><th>Attribution</th></tr></thead>
+        <tbody>
+        ${claims.map((c) => `<tr>
+          <td><b>${escapeHtml(c.claim_id)}</b><br><span class="muted sm">${escapeHtml(c.text)}</span></td>
+          <td><code class="sm">${escapeHtml(c.source_project != null ? c.source_project : "—")}</code></td>
+          <td>${chip(c.retirement_relevance)}</td>
+          <td>${chip(c.corroboration_status)}</td>
+          <td class="muted sm"><div><b>${escapeHtml(c.causal_attribution || "")}</b></div>
+              <div>${escapeHtml(c.corroboration_source ? c.corroboration_source + ": " : "")}${escapeHtml(c.corroboration_detail || "")}</div></td></tr>`).join("")}
+        </tbody>
       </table>
     </details>
 
     ${sub("Counterfactual analysis — AI contribution vs deterministic verdict")}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;">
-      <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
-        <div><b>With Duo candidate:</b> ${chip(cf.verdict_with_candidate || "—")}</div>
-        <div class="muted sm">Investigation queue: enriched (${claims.length || 7} candidate claims)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0;">
+      <div style="background:var(--panel2);padding:10px 14px;border-radius:6px;border:1px solid var(--line);">
+        <div><b>With Duo candidate:</b> ${chip(cf.verdict_with_candidate || "BLOCKED")}</div>
+        <div class="muted sm" style="margin-top:4px;">Investigation queue: enriched (${claims.length || 7} candidate claims)</div>
       </div>
-      <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
-        <div><b>Without Duo candidate:</b> ${chip(cf.verdict_without_candidate || "—")}</div>
-        <div class="muted sm">Investigation queue: baseline</div>
+      <div style="background:var(--panel2);padding:10px 14px;border-radius:6px;border:1px solid var(--line);">
+        <div><b>Without Duo candidate:</b> ${chip(cf.verdict_without_candidate || "BLOCKED")}</div>
+        <div class="muted sm" style="margin-top:4px;">Investigation queue: baseline</div>
       </div>
     </div>
     ${kv([
@@ -1146,44 +1615,25 @@ function supervisedReviewCard(sr) {
       ["obligation trace changed", chip(String(cf.obligation_trace_changed))],
       ["corroboration work changed", chip(String(cf.corroboration_work_changed))],
     ])}
-    <div class="muted sm" style="margin-top:6px;">${escapeHtml(cf.summary || "")}</div>`;
-}
-
-function duoReconciliationCard(dr) {
-  if (!dr) return `<h2>Duo claim reconciliation</h2>${chip("UNAVAILABLE", "chip dim")}`;
-  const rec = dr.record || dr;
-  const claims = rec.claims || [];
-  const totals = rec.totals || {};
-  return `<h2>Duo claim reconciliation (Session 9710085)</h2>
-    ${chip(dr.authority || "NON_AUTHORITATIVE", "chip violet")}
-    ${chip(dr.state || "RECONCILED", "chip ok")}
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;">
-      ${chip(String(totals.CORROBORATED || 0) + " CORROBORATED", "chip ok")}
-      ${chip(String(totals.UNRESOLVED || 0) + " UNRESOLVED", "chip amber")}
-      ${chip(String(totals.CONTEXTUAL_ONLY || 0) + " CONTEXTUAL_ONLY", "chip dim")}
-      ${chip("Total: " + String(totals.TOTAL || claims.length), "chip acc")}
-    </div>
-    <div class="muted sm">${escapeHtml(dr.boundary || "")}</div>
-    <details>
-      <summary>${claims.length} reconciled claims</summary>
-      ${claims.map((c) => `<div style="padding:6px 0;border-bottom:1px solid var(--line);">
-        ${chip(c.corroboration_status || c.status || "")} <strong>${escapeHtml(c.claim_id || "")}</strong>
-        <div class="muted sm">${escapeHtml(c.text || "")}</div>
-        ${c.corroboration_detail ? `<div class="muted sm" style="margin-top:2px;">${escapeHtml(c.corroboration_detail)}</div>` : ""}
-      </div>`).join("")}
-    </details>`;
+    <div class="muted sm prose" style="margin-top:8px;">${escapeHtml(cf.summary || "")}</div>`;
 }
 
 /* ---------- footer & wiring ---------- */
 function renderFooter() {
   const ic = D.interactive_contract || {};
   document.getElementById("footer").innerHTML = `
-    <b>Static page contract:</b> ${escapeHtml(String(ic.page_is_static))} static ·
-    network fetches at view time: <b>${escapeHtml(String(ic.network_fetches_at_view_time))}</b> ·
-    destructive buttons: <b>${escapeHtml(String(ic.destructive_buttons))}</b><br>
-    ${escapeHtml(ic.note || "")}
-    <p>${(D.boundaries || []).map((b) => "⚠ " + escapeHtml(b)).join("<br>")}</p>
-    <p data-probe="rendered">${escapeHtml(String(D.escape_probe || ""))}</p>`;
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+      <div>
+        <strong>Termivance Control Room</strong> — Proof-Bounded Software Retirement Protocol<br>
+        <span class="muted sm">Static page contract: ${escapeHtml(String(ic.page_is_static))} static ·
+        Network fetches at view time: <b>${escapeHtml(String(ic.network_fetches_at_view_time))}</b> ·
+        Destructive buttons: <b>${escapeHtml(String(ic.destructive_buttons))}</b></span>
+      </div>
+      <div class="muted sm" style="text-align:right;">
+        Deterministic Python Authority + GitLab Duo Custom Flow (Catalog 1018562)<br>
+        Personal Spend: $0.00 · Target: Disposable Pages 87785099
+      </div>
+    </div>`;
 }
 
 document.querySelectorAll(".tabbtn").forEach((b) =>

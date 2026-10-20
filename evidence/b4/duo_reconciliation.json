@@ -158,7 +158,7 @@
       "text": "flow-execution internals behind the agent-sessions UI (HTTP 404 to anonymous clients)"
     }
   ],
-  "claims_source": "C:\\Users\\MEHMET\\.gemini\\antigravity\\scratch\\Termivance\\evidence\\b4\\duo_session_9671626_readback.json",
+  "claims_source": "evidence/b4/duo_session_9671626_readback.json",
   "duo_session_id": "9671626",
   "flow_catalog_item_id": 1018562,
   "fresh_until": "2026-10-19T16:41:02.530404+00:00",

@@ -52,6 +52,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -490,6 +491,36 @@ def _gates(classification: dict[str, object]) -> list[dict[str, object]]:
     ]
 
 
+def sanitize_paths_and_identities(obj: object) -> object:
+    """Recursively sanitize absolute local machine/user paths in data structures.
+
+    Normalizes any Windows or Linux home-directory or scratch path into a stable
+    repository-relative path or redacted descriptor.
+    """
+    if isinstance(obj, str):
+        s = obj
+        # Normalize paths pointing into evidence/ to repository-relative
+        m = re.search(r"(?:[A-Za-z]:[/\\]|/)?.*?[/\\](evidence[/\\][A-Za-z0-9_.\-/\\]+)", s)
+        if m:
+            return m.group(1).replace("\\", "/")
+        # Redact any other absolute user-profile path
+        if re.search(r"[A-Za-z]:[/\\]Users[/\\]", s, re.IGNORECASE):
+            return re.sub(
+                r"^[A-Za-z]:[/\\]Users[/\\][^/\\]+[/\\]",
+                "[REDACTED_LOCAL_PATH]/",
+                s,
+                flags=re.IGNORECASE,
+            ).replace("\\", "/")
+        if re.search(r"^/home/[^/]+/", s):
+            return re.sub(r"^/home/[^/]+/", "[REDACTED_LOCAL_PATH]/", s)
+        return s
+    if isinstance(obj, dict):
+        return {k: sanitize_paths_and_identities(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize_paths_and_identities(item) for item in obj]
+    return obj
+
+
 def build_data(args: argparse.Namespace) -> dict[str, object]:
     decision = _load(args.decision)
     receipt = _load(args.receipt)
@@ -505,6 +536,21 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
         / "demo_duo_target_discovery.json"
     )
     demo_discovery = _load(str(demo_discovery_path)) if demo_discovery_path.exists() else None
+
+    # Primary target-specific Duo reconciliation (Session 9710085, Issue #5)
+    duo_recon_primary_path = getattr(args, "duo_reconciliation_primary", None)
+    if duo_recon_primary_path is None:
+        p5 = (
+            Path(__file__).resolve().parents[1]
+            / "evidence"
+            / "b4"
+            / "duo_reconciliation_issue_5.json"
+        )
+        if p5.exists():
+            duo_recon_primary_path = str(p5)
+    duo_reconciliation_primary = _load(duo_recon_primary_path)
+
+    # Historical contextual Duo reconciliation (Session 9671626, Issue #3)
     duo_reconciliation = _load(getattr(args, "duo_reconciliation", None))
     witness = _load(getattr(args, "witness", None))
     supervised_review = _load(getattr(args, "supervised_review", None))
@@ -517,6 +563,9 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
         return None
 
     reconciliation_section = _recognized(duo_reconciliation, "termivance.duo_reconciliation/v1")
+    reconciliation_primary_section = _recognized(
+        duo_reconciliation_primary, "termivance.duo_reconciliation/v1"
+    )
     witness_section = _recognized(witness, "termivance.resurrection_witness/v1")
     supervised_review_section = _recognized(supervised_review, "termivance.supervised_review/v1")
 
@@ -531,10 +580,29 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     read_provenance = _portfolio_read_provenance(portfolio)
     provenance = read_provenance
 
+    snapshot_metadata = {
+        "is_static_viewer": True,
+        "live_api_requests_at_view_time": 0,
+        "destructive_controls_count": 0,
+        "snapshot_recorded_at": "2026-10-19T16:26:02.530404+00:00",
+        "snapshot_fresh_until": "2026-10-19T16:41:02.530404+00:00",
+        "freshness_status": "EXPIRED_HISTORICAL_SNAPSHOT",
+        "is_fresh": False,
+        "is_stale": True,
+        "observed_target_commit": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+        "observed_redeployment_mechanism": "create-pages with pages: true in .gitlab-ci.yml",
+        "provenance_statement": (
+            "Static historical evidence snapshot — zero live API requests at view time; "
+            "the recorded 15-minute freshness window has expired; preserved historical "
+            "evidence proves a surviving redeployment mechanism existed at the observed commit."
+        ),
+    }
+
     data: dict[str, object] = {
         "schema": "termivance.control_room/v2",
         "provenance_label": provenance,
         "read_provenance": read_provenance,
+        "snapshot_metadata": snapshot_metadata,
         "mutation_status": (NOT_OBSERVED if receipt_state == "NOT_RUN" else receipt_state),
         "built_at": datetime.now(tz=UTC).isoformat(),
         "demo_target_discovery": demo_discovery,
@@ -556,6 +624,11 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
             "duo_reconciliation": (
                 reconciliation_section
                 if reconciliation_section is not None
+                else {"state": UNAVAILABLE}
+            ),
+            "duo_reconciliation_primary": (
+                reconciliation_primary_section
+                if reconciliation_primary_section is not None
                 else {"state": UNAVAILABLE}
             ),
             "witness": (witness_section if witness_section is not None else {"state": UNAVAILABLE}),
@@ -607,7 +680,8 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
 def write_data_js(data: dict[str, object], out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "data.js"
-    payload = json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False)
+    clean_data = sanitize_paths_and_identities(data)
+    payload = json.dumps(clean_data, indent=2, sort_keys=True, ensure_ascii=False)
     path.write_text("window.TERMIVANCE_DATA = " + payload + ";\n", encoding="utf-8")
     return path
 
@@ -633,6 +707,7 @@ def main() -> int:
         "tripwire",
         "duo-external",
         "duo-reconciliation",
+        "duo-reconciliation-primary",
         "witness",
         "supervised-review",
         "ledger",
