@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T06:19:33Z",
-  "artifact_sha256": "a46c86414774eebd10a1644bc91cea49de6cfd3a4201d04783cfb703da0a8f20",
+  "acquired_at_utc": "2026-10-20T06:21:53Z",
+  "artifact_sha256": "deeb6d142f085990d8a3765d5185d6bcfcc1b8c167bdd96b2b477858234648d7",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/pipelines/2966217554/jobs",
   "extracted": [
@@ -9,7 +9,7 @@
       "id": 17306192985,
       "name": "[REDACTED]",
       "stage": "verify",
-      "status": "running"
+      "status": "success"
     }
   ],
   "http_error": null,
@@ -52,9 +52,9 @@
       },
       "coverage": null,
       "created_at": "2026-10-20T06:19:01.500Z",
-      "duration": 31.236871348,
+      "duration": 138.87644,
       "erased_at": null,
-      "finished_at": null,
+      "finished_at": "2026-10-20T06:21:20.704Z",
       "id": 17306192985,
       "name": "[REDACTED]",
       "pipeline": {
@@ -65,8 +65,8 @@
         "ref": "main",
         "sha": "2282da8a924aa839e88b4f5d56fbedb5821c4df6",
         "source": "push",
-        "status": "running",
-        "updated_at": "2026-10-20T06:19:01.947Z",
+        "status": "success",
+        "updated_at": "2026-10-20T06:21:22.087Z",
         "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2966217554"
       },
       "project": {
@@ -100,10 +100,10 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-20T06:19:32.836Z",
+        "contacted_at": "2026-10-20T06:21:52.905Z",
         "created_at": "2026-10-19T20:16:38.557Z",
         "id": 163841006,
-        "ip_address": "10.218.11.18",
+        "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
@@ -113,7 +113,7 @@
       },
       "stage": "verify",
       "started_at": "2026-10-20T06:19:01.827Z",
-      "status": "running",
+      "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
