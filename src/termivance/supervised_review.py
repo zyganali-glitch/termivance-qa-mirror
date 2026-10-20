@@ -2141,7 +2141,7 @@ def run_supervised_investigation(
             ):
                 ob_bind = "OWNERSHIP_AUTHORIZATION"
             elif "marker" in c.text.lower() or "7f3c9a" in c.text:
-                ob_bind = "PAGES_PUBLISHED"
+                ob_bind = "IDENTITY_BINDING"
             elif c.corroboration_status == "CONTEXTUAL_ONLY":
                 ob_bind = "COORDINATION_CONTEXT"
             else:

@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -225,12 +226,28 @@ def load_local_token(*, run: Callable[[], str] | None = None) -> str:
 
 
 def _run_git_credential() -> str:
-    proc = subprocess.run(  # noqa: S603
+    env = dict(os.environ)
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    env["GCM_INTERACTIVE"] = "never"
+    proc = subprocess.Popen(  # noqa: S603
         ["git", "credential", "fill"],
-        input="protocol=https\nhost=gitlab.com\n\n",
-        capture_output=True,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
-        timeout=30,
-        check=False,
+        env=env,
     )
-    return proc.stdout
+    try:
+        stdout, _ = proc.communicate(input="protocol=https\nhost=gitlab.com\n\n", timeout=3)
+        return stdout
+    except subprocess.TimeoutExpired:
+        if sys.platform == "win32":
+            subprocess.run(  # noqa: S603
+                ["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                capture_output=True,
+                check=False,
+            )
+        else:
+            proc.kill()
+            proc.poll()
+        return ""

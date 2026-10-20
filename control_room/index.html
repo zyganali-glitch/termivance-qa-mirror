@@ -92,76 +92,47 @@
   AI proposes. Termivance verifies. Retirement proceeds only when evidence and authority permit it.
 </div>
 
-<!-- Executive 3-Question Bar (15-second value communication) -->
-<div id="exec-summary-bar" style="margin: 10px 26px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
-  <div style="background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 8px; padding: 10px 14px;">
-    <div style="font-size: 11px; text-transform: uppercase; color: var(--dim); letter-spacing: .5px; font-weight: 600;">1. Can I safely retire it?</div>
-    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 2px 0;">
-      <span class="chip bad" style="font-size: 12px; font-weight: 700;">BLOCKED</span>
-      <span style="font-size: 12.5px; font-weight: 600; color: var(--ink);">Strict Safety Refusal</span>
-    </div>
-    <div style="font-size: 11.5px; color: var(--dim); line-height: 1.35;">
-      Missing Maintainer permission (403 on unpublish), surviving CI redeployment path, and no operator-signed HMAC ledger.
-    </div>
-  </div>
-
-  <div style="background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--amber); border-radius: 8px; padding: 10px 14px;">
-    <div style="font-size: 11px; text-transform: uppercase; color: var(--dim); letter-spacing: .5px; font-weight: 600;">2. Has it disappeared?</div>
-    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 2px 0;">
-      <span class="chip amber" style="font-size: 12px; font-weight: 700;">NOT OBSERVED / NOT RUN</span>
-      <span style="font-size: 12.5px; font-weight: 600; color: var(--ink);">Bounded Absence Rigor</span>
-    </div>
-    <div style="font-size: 11.5px; color: var(--dim); line-height: 1.35;">
-      Destructive mutation was NOT performed. Negative observations or CDN 404s are never promoted to verified absence.
+<!-- Consolidated Executive Governance Overview (15-second value communication) -->
+<div id="exec-governance-panel" style="margin: 10px 26px 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px;">
+  <!-- Independent Three-Verdict Model -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--line); padding-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+    <span style="font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .5px;">Independent Three-Verdict Model</span>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <span class="chip bad" style="font-size: 11px; font-weight: 700;">SAFE_TO_RETIRE: BLOCKED</span>
+      <span class="chip amber" style="font-size: 11px; font-weight: 700;">OBSERVED_ABSENT: NOT OBSERVED</span>
+      <span class="chip bad" style="font-size: 11px; font-weight: 700;">RESURRECTION_CONTROLLED: RISK DETECTED</span>
     </div>
   </div>
 
-  <div style="background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--warn); border-radius: 8px; padding: 10px 14px;">
-    <div style="font-size: 11px; text-transform: uppercase; color: var(--dim); letter-spacing: .5px; font-weight: 600;">3. Can it come back?</div>
-    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 2px 0;">
-      <span class="chip bad" style="font-size: 12px; font-weight: 700;">RESURRECTION RISK DETECTED</span>
-      <span style="font-size: 12.5px; font-weight: 600; color: var(--ink);">Target CI Witness</span>
-    </div>
-    <div style="font-size: 11.5px; color: var(--dim); line-height: 1.35;">
-      Target <code>.gitlab-ci.yml</code> contains active <code>create-pages</code> (<code>pages: true</code>). Survives until explicitly neutralized.
-    </div>
-  </div>
-</div>
-
-<!-- 15-Second Overview: Four Core Questions for Platform Engineering & SREs -->
-<div id="exec-four-questions" style="margin: 10px 26px 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--line); padding-bottom: 6px;">
-    <span style="font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .5px;">15-Second Executive Overview · Real-World SRE &amp; Platform Governance</span>
-    <span style="font-size: 11.5px; color: var(--dim);">Why Retirement Governance Matters to SREs</span>
-  </div>
+  <!-- Four Essential Platform Engineering Questions -->
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; margin-bottom: 8px;">
     <div style="background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;">
-      <div style="font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 3px;">A. What did Duo actually discover?</div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 3px;">1. What did Duo discover?</div>
       <div style="font-size: 11.5px; color: var(--ink); line-height: 1.35;">
         Autonomous neutral discovery on target <code>87785099</code> identified active <code>create-pages</code> (<code>pages: true</code>), marker string <code>7f3c9a</code>, and 403 Pages boundary.
       </div>
     </div>
     <div style="background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;">
-      <div style="font-size: 11px; font-weight: 700; color: var(--ok); margin-bottom: 3px;">B. What did Termivance independently verify?</div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--ok); margin-bottom: 3px;">2. What did Termivance independently verify?</div>
       <div style="font-size: 11.5px; color: var(--ink); line-height: 1.35;">
-        Provider GET reads verified target <code>.gitlab-ci.yml</code> signals, exact commit SHA <code>54fcc9ff…</code>, raw marker files (<code>site/marker.txt</code> &amp; <code>site/index.html</code>), and anonymous 403 boundary.
+        Provider GET reads corroborated target <code>.gitlab-ci.yml</code> signals, exact commit SHA <code>54fcc9ff…</code>, raw marker files (<code>site/marker.txt</code> &amp; <code>site/index.html</code>), and anonymous 403 boundary.
       </div>
     </div>
     <div style="background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;">
-      <div style="font-size: 11px; font-weight: 700; color: var(--bad); margin-bottom: 3px;">C. Why was retirement blocked?</div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--bad); margin-bottom: 3px;">3. Why is retirement blocked?</div>
       <div style="font-size: 11.5px; color: var(--ink); line-height: 1.35;">
-        Target CI configuration can resurrect the site on subsequent pipeline runs; Pages unpublish is unauthorized without Maintainer role (403); and no operator-signed HMAC ledger exists.
+        Target CI configuration can resurrect the site on subsequent pipeline runs (<code>create-pages</code> with <code>pages: true</code>); Pages unpublish is unauthorized without Maintainer role (403); and no operator-signed HMAC ledger exists.
       </div>
     </div>
     <div style="background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;">
-      <div style="font-size: 11px; font-weight: 700; color: var(--warn); margin-bottom: 3px;">D. What evidence or authorization is missing?</div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--warn); margin-bottom: 3px;">4. What must be resolved before retirement can proceed?</div>
       <div style="font-size: 11.5px; color: var(--ink); line-height: 1.35;">
         Legitimate Maintainer/Owner Pages role on target <code>87785099</code>, explicit neutralization of the <code>create-pages</code> CI job, and operator-signed single-use HMAC authorization.
       </div>
     </div>
   </div>
   <div style="font-size: 11px; color: var(--dim); line-height: 1.3; background: #0c1017; border-radius: 4px; padding: 6px 10px;">
-    <strong>Platform Engineering Impact:</strong> In modern CI/CD, software retirement is not just deleting files or clicking 'unpublish'. CI pipelines automatically resurrect services upon triggers, edge CDNs cache stale content, and permissions fail silently. Termivance bounds retirement to deterministic proof: testing resurrection paths, locking one-time authorization, and verifying absence without confusing 404s with universal absence.
+    <strong>Platform Engineering Truth:</strong> In modern CI/CD, software retirement is not just deleting files or clicking 'unpublish'. CI pipelines automatically resurrect services upon triggers, edge CDNs cache stale content, and permissions fail silently. Termivance bounds retirement to deterministic proof: testing resurrection paths, locking one-time authorization, and verifying absence without confusing 404s with universal absence.
   </div>
 </div>
 
@@ -839,8 +810,8 @@ function supervisedReviewCard(sr) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;">
       <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
         <div><b>With Duo candidate:</b> ${chip(cf.verdict_with_candidate || "—")}</div>
-        <div class="muted">Investigation queue: enriched (9 candidate claims)</div>
-        <div class="muted">Corroboration work: 9 API surface checks executed</div>
+        <div class="muted">Investigation queue: enriched (${claims.length || 7} candidate claims)</div>
+        <div class="muted">Corroboration work: ${claims.length || 7} API surface checks executed</div>
       </div>
       <div style="background:var(--panel2);padding:8px 12px;border-radius:6px;border:1px solid var(--line);">
         <div><b>Without Duo candidate:</b> ${chip(cf.verdict_without_candidate || "—")}</div>

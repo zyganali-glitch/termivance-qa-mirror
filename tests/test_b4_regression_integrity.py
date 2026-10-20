@@ -681,7 +681,7 @@ def test_mixed_candidate_status_outcome_note_truth():
         {
             "topic": "cand-07",
             "status": "CORROBORATED",
-            "obligation": "PAGES_PUBLISHED",
+            "obligation": "IDENTITY_BINDING",
             "detail": "marker",
         },
     ]
@@ -706,3 +706,4 @@ def test_mixed_candidate_status_outcome_note_truth():
     assert "REDEPLOYMENT_PATH" in note
     assert "COORDINATION_CONTEXT" in note
     assert "OWNERSHIP_AUTHORIZATION" in note
+    assert "IDENTITY_BINDING" in note

@@ -78,7 +78,7 @@
     {
       "causal_attribution": "GENUINE_DUO_TARGET_DISCOVERY: Duo independently discovered marker string in target 87785099",
       "claim_id": "duo-9710085-cand-07",
-      "corroboration_detail": "Marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a independently verified in target files site/marker.txt and site/index.html.",
+      "corroboration_detail": "Marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a independently verified in target files site/marker.txt and site/index.html. Note: Repository marker presence verifies source repository files only; does NOT prove that GitLab Pages site is currently deployed or published.",
       "corroboration_source": "GET /projects/87785099/repository/files/site%2Fmarker.txt?ref=54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
       "corroboration_status": "CORROBORATED",
       "exact_target_relationship": "TARGET_BOUND",
