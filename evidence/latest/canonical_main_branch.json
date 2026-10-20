@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T06:21:46Z",
-  "artifact_sha256": "3f0212e5f13cef1ceab075ac5d518859b51df4866ec783b1cb10b42add403ac2",
+  "acquired_at_utc": "2026-10-20T06:59:59Z",
+  "artifact_sha256": "4d48a5f7c2e676d94718f12d27da31b0d450b560567352023f33dc8e811ca57a",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-20T09:18:52.000+03:00",
-      "committed_date": "2026-10-20T09:18:52.000+03:00",
+      "authored_date": "2026-10-20T09:56:53.000+03:00",
+      "committed_date": "2026-10-20T09:56:53.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-20T09:18:52.000+03:00",
+      "created_at": "2026-10-20T09:56:53.000+03:00",
       "extended_trailers": {},
-      "id": "2282da8a924aa839e88b4f5d56fbedb5821c4df6",
-      "message": "fix(b4): resolve publisher contract mismatch and ground candidate corroboration in provider facts\n\nDefect 1: Adopt real GitLabPublisher.create_issue_note contract returning PublishResult, validate response note identity, distinguish HTTP 201 acknowledgement from independent note read-back verification, and handle absent credentials honestly as NOT_RUN/NOT_VERIFIED.\n\nDefect 2: Ground candidate corroboration in authentic provider observations (ProviderObservations, commit-bound .gitlab-ci.yml, marker verification, Pages admin HTTP 403 status, policy rules). Evaluate adversarial/contradictory claims as CONTRADICTED and unobservable vectors as UNRESOLVED.\n\nOutcome note: Truthfully report candidate breakdown (4 corroborated, 2 unresolved, 1 contextual) without false universality claims; Duo agent step recorded as RECORDED_HISTORICAL.\n\nTests: Add 11 regression & adversarial integrity tests in tests/test_b4_regression_integrity.py; 363/363 pytest suite passed, 40/40 network-free CI safety assertions passed, ruff clean.\n",
+      "id": "cd51e5294fd11fee7cc14041e0ae8da7d61a2185",
+      "message": "fix(b4): complete supervised input contract, source corroboration, and readback provenance\n",
       "parent_ids": [
-        "9425700b7a4d895cc4e7914b77edbfa8210fd77e"
+        "2282da8a924aa839e88b4f5d56fbedb5821c4df6"
       ],
-      "short_id": "2282da8a",
-      "title": "fix(b4): resolve publisher contract mismatch and ground candidate corroboration in provider facts",
+      "short_id": "cd51e529",
+      "title": "fix(b4): complete supervised input contract, source corroboration, and readback provenance",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/2282da8a924aa839e88b4f5d56fbedb5821c4df6"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/cd51e5294fd11fee7cc14041e0ae8da7d61a2185"
     },
     "default": true,
     "developers_can_merge": true,
