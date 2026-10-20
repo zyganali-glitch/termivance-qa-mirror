@@ -3,15 +3,18 @@
 **Document Identity:** `plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md`  
 **Classification:** Canonical Project Execution Plan (Single Source of Truth)  
 **Competition:** GitLab Transcend October 2026 — Life After Code  
-**Selected Participation:** Path A / Start Fresh / Supervised (Compliance Status: `NEEDS_REVIEW` / Defensible with Documented Handoff Limitation)  
+**Selected Participation:** Path A / Start Fresh / Supervised (Compliance Status: `NEEDS_REVIEW` / Defensible with Documented Handoff Limitation; Target of `WORK-B4-18`)  
+**Primary Award Objective:** Best Supervised Agent  
+**Secondary Award Goal:** Credible Eligibility for Most Stages Covered (Without Inflated Claims)  
 **Product Thesis:** A Proof-Bounded Software Retirement Protocol  
 **Tagline:** Software retirement, proven within bounds.  
 **Canonical Contest Repository:** [GitLab Project 87779099](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance)  
+**Canonical Branch:** `main`  
 **Non-Canonical QA Mirror:** [GitHub `zyganali-glitch/termivance-qa-mirror`](https://github.com/zyganali-glitch/termivance-qa-mirror) (branch `gitlab-main`)  
 **Official Deadline:** October 27, 2026, 13:00 UTC / 16:00 Türkiye  
-**Target Submission Window:** October 26, 2026, 18:00–22:00 Türkiye  
+**Target Internal Submission Window:** October 26, 2026, 18:00–22:00 Türkiye  
 **Incremental Personal Spend Target:** **$0.00**  
-**Core Authority Contract:** AI proposes; deterministic Python code governs. Model text cannot grant permissions, mutate providers, or award verdicts.
+**Core Authority Contract:** Exactly one genuine GitLab Duo Custom Flow agent proposes; deterministic Python code governs. Model text cannot grant permissions, mutate providers, or award verdicts.
 
 ---
 
@@ -64,32 +67,32 @@ The core Python engine owns all provider mutations, obligation evaluations, and 
 
 | Dimension | Baseline Fact / Evidence Record | Verification Mode |
 |---|---|---|
-| **GitLab Commit SHA (Baseline)** | Verified repair baseline: `6e808b33a4974fc9232ec9b3ca79bdc4b9281d24` (Historical master plan baseline: `b4431ec0b2bcba5f94a5636598b9b2ac32967ea5`) | `INDEPENDENTLY_VERIFIED` (GitLab API & remote HEAD) |
-| **GitHub Mirror SHA (Baseline)** | Verified repair baseline: `6e808b33a4974fc9232ec9b3ca79bdc4b9281d24` on `gitlab-main` (Historical baseline: `b4431ec0b2bcba5f94a5636598b9b2ac32967ea5`) | `INDEPENDENTLY_VERIFIED` (`PASS / IN_SYNC`) |
-| **GitLab CI Pipeline (Baseline)** | Verified repair baseline: Pipeline ID `2967141211`, Job ID `17313164853` (`stage: verify`, `status: success`); Historical baseline: Pipeline `2966976920`, Job `17311100994` | `INDEPENDENTLY_VERIFIED` (`status: success`) |
-| **GitHub Observer Run (Baseline)** | Verified repair baseline: [Run `39412372280`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39412372280) (`PASS / IN_SYNC`); Historical baseline: [Run `39406813557`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39406813557) | `INDEPENDENTLY_VERIFIED` (`PASS / IN_SYNC`) |
-| **Final Commit Provenance Note** | Post-repair surgical closure commit revision is dynamically bound and verified by GitHub QA observer upon push; plan avoids self-referential future SHA fabrication | Immutable Git Provenance Contract |
-| **GitLab API Coverage** | 21 / 29 endpoints observed live; 8 endpoints access-limited | `INDEPENDENTLY_VERIFIED` (Observer artifacts) |
+| **GitLab Commit SHA (Last Verified Baseline)** | **`8fd656725929b9d790d4d79f5cff2659af650de5`** (Historical baselines: repair commit `6e808b33a4974fc9232ec9b3ca79bdc4b9281d24`; master plan baseline `b4431ec0b2bcba5f94a5636598b9b2ac32967ea5`) | `INDEPENDENTLY_VERIFIED` (GitLab API & remote HEAD) |
+| **GitHub Mirror SHA (Baseline)** | **`8fd656725929b9d790d4d79f5cff2659af650de5`** on `gitlab-main` (Historical baselines: `6e808b3` and `b4431ec`) | `INDEPENDENTLY_VERIFIED` (`PASS / IN_SYNC`) |
+| **GitLab CI Pipeline (Baseline)** | Verified Pipeline ID **`2967239572`**, Job ID **`17313891889`** (`stage: verify`, `status: success`); Historical baselines: Pipeline `2967141211` (Job `17313164853`), Pipeline `2966976920` (Job `17311100994`) | `INDEPENDENTLY_VERIFIED` (`status: success`) |
+| **GitHub Observer Run (Baseline)** | Verified Run [**`39415695705`**](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39415695705) (`PASS / IN_SYNC`); Historical baselines: Run [`39412372280`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39412372280), Run [`39406813557`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39406813557) | `INDEPENDENTLY_VERIFIED` (`PASS / IN_SYNC`) |
+| **Git Commit & Future CI Identity Paradox** | Post-push verification for any new commit is dynamically bound and verified by GitLab CI and GitHub QA observer upon push; this plan records known verified baselines without fabricating future identifiers (Section 4.4) | Immutable Git Provenance Contract |
+| **GitLab API Coverage** | **21 / 29** endpoints observed live; 8 endpoints access-limited (`401`/`403`/`404`) | `INDEPENDENTLY_VERIFIED` (Observer artifacts) |
 | **License Attribution** | MIT License visible in GitLab Project Information & header | `INDEPENDENTLY_VERIFIED` (Public Project API) |
-| **Local Test Suite** | **381 passed**, 0 failed; Ruff clean; 0 warnings | `EXECUTOR_REPORTED` (`pytest -q`) |
+| **Local Test Suite** | **381 passed**, 0 failed; Ruff clean; 0 warnings | `EXECUTOR_REPORTED` (`pytest -q`) & CI verified |
 | **CI Safety Assertions** | **40 / 40 passed** network-free (`ci_safety_assertions.py`); Note: raw CI job log traces return HTTP 401 unauthenticated, pipeline SUCCESS independently observed | `EXECUTOR_REPORTED` & CI Job verified |
 | **Incremental Personal Spend** | **$0.00** across all batches (B1–B4) | `OPERATOR_CONFIRMED` |
-| **Autonomy Compliance Status** | **`NEEDS_REVIEW`** (Defensible Supervised with documented handoff boundary; genuine Duo research + live Python review; event daemon not implemented) | System Truth State |
+| **Autonomy Compliance Status** | **`NEEDS_REVIEW`** (Defensible Supervised with documented handoff boundary; genuine Duo research + live Python review; event daemon not implemented; targeted by `WORK-B4-18`) | System Truth State |
 | **Primary Duo Discovery** | Session `9710085`, Issue #5, Agent Note `4045401991` | `RECORDED_HISTORICAL` & Live API readable |
-| **Historical Contextual Duo** | Session `9671626`, Issue #3, Agent Note `4040776241` | `RECORDED_HISTORICAL` |
+| **Historical Contextual Duo** | Session `9671626` (Issue #3, Agent Note `4040776241`) and Session `9704855` (Issue #4, Agent Note `4044819187`) remain separate historical records | `RECORDED_HISTORICAL` |
 | **Approved Disposable Target** | Project `87785099`, commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d` | `RECORDED_HISTORICAL` (Target CI has `create-pages`) |
 | **Target Pages Permissions** | Developer role returns HTTP 403 on `GET/DELETE /projects/:id/pages` | `INDEPENDENTLY_VERIFIED` (Live GitLab Provider 403) |
 | **Current Deterministic Verdict** | **`BLOCKED`** (permissions insufficient, redeployment active) | `EXECUTOR_REPORTED` & Replayable Live |
 | **Actual Pages Unpublication** | **`NOT_RUN`** (safely blocked by permissions) | `EXECUTOR_REPORTED` |
 | **Observed Absence** | **`NOT_CLAIMED`** | System Truth State |
 | **Resurrection Controlled** | **`NOT_CLAIMED`** | System Truth State |
-| **DevSecOps Stage Selections** | **4 Defensible YES** (Plan, Verify, Secure, Govern); **1 Explicit NO** (Release); **4 Qualified NEEDS_REVIEW** (Create, Package, Configure, Monitor) | Honest Lifecycle Audit (Sec 7) |
+| **DevSecOps Stage Selections** | **4 Defensible Core YES** (Plan, Verify, Secure, Govern); **1 Explicit Gated NO** (Release); **4 Qualified NEEDS_REVIEW** (Create, Package, Configure, Monitor) | Honest Lifecycle Audit (Sec 7) |
 
 ---
 
 ## 3. Independent Audit Recommendations, Operator Decisions & Implementation Ledger
 
-This ledger reconciles all independent model and auditor findings, operator determinations, executor repairs, and current source/test evidence. No ChatGPT conversation memory is required to trace any historical audit finding.
+This ledger reconciles all independent model and auditor findings, operator determinations, executor repairs, and current source/test evidence. Every finding is tracked with explicit status, rationale, implementation references, and acceptance criteria.
 
 ```
 +----------------------------------------------------------------------------------------------------+
@@ -98,7 +101,8 @@ This ledger reconciles all independent model and auditor findings, operator dete
 | ID | Finding & Area        | Decision  | Implemented Technical Resolution      | Evidence & Status  |
 +----+-----------------------+-----------+---------------------------------------+--------------------+
 | 01 | Supervised Continuity | ACCEPTED  | 7-step read-only pipeline with honest | Commit 8f3ef4f     |
-|    | vs Event Daemon       |           | EXECUTED_NOW and handoff boundaries   | 381 tests PASS     |
+|    | vs Event Daemon       | IN SCOPE  | EXECUTED_NOW and handoff boundaries;  | 381 tests PASS     |
+|    |                       |           | P0 autonomy expansion in WORK-B4-18   | NEEDS_REVIEW       |
 +----+-----------------------+-----------+---------------------------------------+--------------------+
 | 02 | Neutral Target Risk   | ACCEPTED  | Issue #5 / Session 9710085 neutral    | Commit cd51e52     |
 |    | Discovery (Issue #5)  |           | intake ingested without priming       | Live Issue #5 Note |
@@ -118,8 +122,9 @@ This ledger reconciles all independent model and auditor findings, operator dete
 | 07 | 9-Stage Automation    | ACCEPTED  | Honest stage mapping; refuse inflated | MASTER_PLAN.md     |
 |    | Integrity Audit       |           | checkbox claims for unautomated steps | Stage Audit table  |
 +----+-----------------------+-----------+---------------------------------------+--------------------+
-| 08 | Minimal Repair Set    | DEFERRED  | Optional speculative graph extensions | Decision Reg 2026  |
-|    | & Proof Decay Engine  |           | deferred to maintain $0.00 & schedule | Out of B4 scope    |
+| 08 | Minimal Repair Set    | BOUNDED   | Speculative algorithms deferred;      | Bounded scope in   |
+|    | & Proof Decay Scope   | APPROVED  | Bounded ROG repair in WORK-B4-21 and  | WORK-B4-21 &       |
+|    |                       |           | contractual 900s decay in WORK-B4-22  | WORK-B4-22         |
 +----+-----------------------+-----------+---------------------------------------+--------------------+
 | 09 | Evidence Integrity &  | ACCEPTED  | 6-dim receipt classification, real    | Commits a6835f0,   |
 |    | UI Privacy Repairs    |           | publisher contract, path sanitization | 55c9364 (all PASS) |
@@ -128,139 +133,590 @@ This ledger reconciles all independent model and auditor findings, operator dete
 |    | Truth Repair          |           | REVIEW); qualified Supervised status;  | 6e808b3 (PASS)     |
 |    |                       |           | sanitized public paths; safe launchers| 381 tests PASS     |
 +----+-----------------------+-----------+---------------------------------------+--------------------+
-| 11 | Final Submission-Truth| ACCEPTED  | Launcher preflight bug fix; QA trigger| Commit 6e808b3 /   |
-|    | Surgical Closure      |           | precision; SC-03/SC-08 truth repair;  | Post-Push Observer |
-|    |                       |           | verified baseline CI/observer updates | 40/40 safety PASS  |
+| 11 | Final Submission-Truth| ACCEPTED  | Launcher preflight bug fix; QA trigger| Commit 8fd6567     |
+|    | Surgical Closure      |           | precision; SC-03/SC-08 truth repair;  | GitLab 2967239572  |
+|    |                       |           | verified baseline CI/observer updates | Observer 39415695705|
 +----+-----------------------+-----------+---------------------------------------+--------------------+
 ```
 
-### Detailed Reconciliation of Audit Areas
+### Detailed Itemized Disposition of Audit Areas
 
-#### 1. Genuine Supervised Duo-to-Python Continuity vs. Operator/CI Handoff
-* **Auditor/Model Finding:** Earlier implementations assembled static review records from disk. Auditors noted that claiming "supervised workflow" required either an autonomous continuous daemon or an explicit, honest, runnable supervised pipeline executing live against provider APIs. Official hackathon expectations for Supervised autonomy emphasize agents independently executing multi-step workflows with human review of outcomes.
-* **Operator Decision:** **ACCEPTED.** Implement a runnable 7-step supervised review pipeline, but strictly reject fabricating an unauthenticated background daemon, using broad account tokens, or manufacturing an autonomous chain from historical JSON. Mark category compliance honestly as **`NEEDS_REVIEW` (Defensible with Documented Handoff Limitation)**.
-* **Implemented Resolution:** `termivance/supervised_review.py` introduces `run_supervised_investigation()` and CLI `supervised-review --execute`. Steps executed live against GitLab are marked `EXECUTED_NOW` and `COMPLETED`. Duo historical sessions remain `RECORDED_HISTORICAL`. The operator handoff boundary is explicitly labeled `OPERATOR_CONFIRMED_HANDOFF`.
-* **Exact Operational Boundary & Defensibility Rationale:**
-  1. *Genuine Duo Investigation:* OBSERVED and recorded in authentic Session `9710085` on Issue #5.
-  2. *Deterministic Python Review:* IMPLEMENTED and runnable live (`python -m termivance.cli supervised-review --execute --issue 5`), making live GET requests to GitLab REST API.
-  3. *Fully Automatic Event Daemon:* NOT DEMONSTRATED. Investigated whether authentic GitLab capabilities could safely close the gap. In our namespace, the operator holds Developer permissions (`30`), which cannot register GitLab webhooks (`Settings -> Webhooks` requires Maintainer). Polling GitLab APIs via a background daemon on external servers would require continuous compute infrastructure and long-lived personal access tokens, violating both the **$0.00 personal spend** policy and least-privilege credential security.
-  4. *Human Review:* Human review of the outcome note (Note `4045409264`) is mandatory before any mutation could ever proceed.
-  5. *Conclusion:* Path A / Supervised remains the operator's selected competition route. The claim is defensible because multi-step agent analysis and deterministic verification are both fully functional and human supervision is strictly enforced; however, the absence of an autonomous event trigger between Duo's note publication and Python execution is honestly disclosed as a documented limitation.
-* **Evidence:** Commit `8f3ef4f`, `a6835f0`, `b4431ec`. `tests/test_b4_supervised_workflow.py`. Live CLI execution verifies 5 deterministic steps executed live with fresh execution ID and zero incremental spend ($0.00).
+#### 1. Supervised Workflow Continuity vs. Operator/CI Handoff
+* **Original Finding:** Static review records assembled on disk do not prove end-to-end Supervised workflow autonomy. Hackathon Supervised expectations emphasize agents executing multi-step workflows with human review of outcomes.
+* **Risk & Competition Impact:** High risk of losing "Best Supervised Agent" if handoff is viewed as a disconnected manual CLI invocation.
+* **Decision:** **ACCEPTED FOR EXPANSION.** Implement runnable 7-step review pipeline with honest boundaries; specify technical feasibility study and native continuation in `WORK-B4-18`.
+* **Rationale:** Preserves $0 spend and security boundaries while evaluating supported GitLab-native execution pathways.
+* **Exact Scope:** `src/termivance/supervised_review.py`, CLI `supervised-review --execute`, and candidate continuation mechanisms.
+* **Implementation Reference:** `src/termivance/supervised_review.py:run_supervised_investigation`.
+* **Tests:** `tests/test_b4_supervised_workflow.py`, `tests/test_b4_regression_integrity.py`.
+* **Provider Evidence:** Canonical Issue #5 Notes `4045401991` and `4045409264`.
+* **Independent QA Evidence:** Verified baseline `8fd6567`, pipeline `2967239572`.
+* **Unresolved Limitation:** Autonomous handoff between Duo note publication and Python execution is currently operator/CI-initiated; background daemon not demonstrated.
+* **Next Action:** Execute feasibility investigation under `WORK-B4-18`.
+* **Blocking Dependency:** GitLab Custom Flow execution runtime boundaries and permissions.
+* **Status:** `STILL_OPEN` (Tracked under `WORK-B4-18`).
+* **Future Acceptance Criterion:** Demonstrated continuous or automatically triggered chain from Duo investigation to deterministic Python conclusion with zero intermediate operator copy-paste.
 
 #### 2. Neutral Target-Risk Discovery Using Issue #5
-* **Auditor/Model Finding:** Contextual Session `9671626` (Issue #3) contained historical setup context. Session `9704855` (Issue #4) explored discovery. Auditors recommended proving that GitLab Duo can independently inspect disposable project `87785099` from an unprimed, neutral issue prompt without pre-injected hints.
-* **Operator Decision:** **ACCEPTED.** Execute genuine Duo Custom Flow on canonical Issue #5 with neutral prompt; use Issue #5 as the primary target investigation.
-* **Implemented Resolution:** Duo Session `9710085` was triggered on Issue #5. The Duo agent inspected target `87785099` repository files, discovered `create-pages` (`pages: true`), identified the marker string, and reported access limitations. Control Room, CLI, and Proof Capsule bind Session `9710085` as the primary discovery dataset.
-* **Evidence:** Commit `cd51e52`, `37e0d5a`. Issue #5 Note `4045401991`. Control Room Overview & Evidence tabs bind Session `9710085` with 7 candidate claims (4 corroborated, 2 unresolved, 1 contextual).
+* **Original Finding:** Historical Duo sessions (9671626, 9704855) used targeted prompts. Duo must prove discovery from an unprimed, neutral retirement request.
+* **Risk & Competition Impact:** Risk of jury perceiving Duo agent as primed with pre-existing hints.
+* **Decision:** **ACCEPTED & CLOSED.**
+* **Rationale:** Neutral Issue #5 prompt proves Duo autonomously inspects disposable target `87785099` repository.
+* **Exact Scope:** Issue #5, Duo Session `9710085`.
+* **Implementation Reference:** `src/termivance/supervised_review.py:DUO_SESSION_ID_NEUTRAL`.
+* **Tests:** `tests/test_b4_supervised_workflow.py:test_run_supervised_investigation_with_neutral_discovery`.
+* **Provider Evidence:** Issue #5 Note `4045401991`.
+* **Independent QA Evidence:** Verified baseline `8fd6567`.
+* **Unresolved Limitation:** Session URL returns HTTP 404 anonymously; verified via Control Room recorded readback.
+* **Next Action:** None required for discovery proof; maintained in demo runbook.
+* **Blocking Dependency:** None.
+* **Status:** `CLOSED`.
+* **Future Acceptance Criterion:** Discovery dataset remains bound to Session `9710085`.
 
-#### 3. Authentic Duo-Note Provenance and Exact Source/Commit Binding
-* **Auditor/Model Finding:** Duo candidate claims could be spoofed or decoupled from the target repository's actual commit state.
-* **Operator Decision:** **ACCEPTED.** Bind candidate intake to target project ID and default branch commit SHA (`54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d`).
-* **Implemented Resolution:** `parse_duo_note()` extracts target project ID and commit SHA. `supervised_review.py` validates that candidate claims match the actual observed target commit before corroboration. Contradicted claims fail to `CONTRADICTED`; unobservable surfaces fail to `UNRESOLVED`.
-* **Evidence:** Commit `2282da8`, `cd51e52`. `tests/test_b4_regression_integrity.py`.
+#### 3. Authentic Duo-Note Provenance and Exact Commit Binding
+* **Original Finding:** Duo candidate claims could be spoofed or decoupled from target's actual Git commit SHA.
+* **Risk & Competition Impact:** Adversarial claims could corrupt obligation evaluation.
+* **Decision:** **ACCEPTED & CLOSED.**
+* **Rationale:** Require structural parsing and exact commit SHA matching against target repository facts.
+* **Exact Scope:** `src/termivance/supervised_review.py:parse_duo_note`, `corroborate_candidate_claims`.
+* **Implementation Reference:** `src/termivance/supervised_review.py`.
+* **Tests:** `tests/test_b4_regression_integrity.py`.
+* **Provider Evidence:** Provider commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d`.
+* **Independent QA Evidence:** Verified baseline `8fd6567`.
+* **Unresolved Limitation:** None.
+* **Next Action:** Maintain regression assertions.
+* **Blocking Dependency:** None.
+* **Status:** `CLOSED`.
+* **Future Acceptance Criterion:** Contradicted claims evaluate to `CONTRADICTED`; unobservable configurations evaluate to `UNRESOLVED`.
 
-#### 4. Cryptographic Binding Between Duo Investigation, Deterministic Engine, and Proof Capsule
-* **Auditor/Model Finding:** Recommended end-to-end cryptographic signatures linking Duo notes, deterministic decisions, and proof capsules.
-* **Operator Decision:** **ACCEPTED IN SCOPE, WITH HONEST LIMITATIONS.** Implement cryptographic integrity where verifiable (HMAC operator authorization, SHA-256 capsule manifests, atomic ledger digests). Refuse to claim that unauthenticated GitLab issue notes carry asymmetric agent signatures, as GitLab Duo does not provide cryptographic signing keys to workflow agents.
-* **Implemented Resolution:** 
-  * Operator approval enforces HMAC verification (`TERMIVANCE_APPROVAL_HMAC_KEY`).
-  * Sealed reservation ledger writes SHA-256 digest of operator approval and endpoint binding.
-  * Proof Capsule computes SHA-256 manifest over decision, receipt, Duo reconciliation, and witness.
-  * Unauthenticated Duo notes are verified via provider read-back and labeled `OPERATOR_CONFIRMED_NOTE_INPUT`.
-* **Evidence:** Commit `0022a21`, `97263f6`. `scripts/ci_safety_assertions.py` assertions 2, 3, 11, 12, 13, 14, 30, 31.
+#### 4. Cryptographic Binding in Proof Capsule
+* **Original Finding:** End-to-end cryptographic link recommended between Duo notes, deterministic decisions, and proof capsule.
+* **Risk & Competition Impact:** Risk of tampering or replaying stale authorization tokens.
+* **Decision:** **ACCEPTED IN SCOPE, WITH HONEST LIMITATIONS.**
+* **Rationale:** Implement HMAC verification on operator approvals and SHA-256 manifests on proof capsules; do not claim asymmetric Duo signatures because GitLab Duo provides no signing keys to flow agents.
+* **Exact Scope:** `src/termivance/ledger.py`, `src/termivance/capsule.py`, `src/termivance/approval_source.py`.
+* **Implementation Reference:** `src/termivance/capsule.py:build_capsule`.
+* **Tests:** `tests/test_b4_capabilities.py`, `scripts/ci_safety_assertions.py`.
+* **Provider Evidence:** `evidence/b4/proof_capsule.json`.
+* **Independent QA Evidence:** 40/40 network-free safety assertions.
+* **Unresolved Limitation:** Duo notes remain authenticated via provider read-back, not cryptographic agent signatures.
+* **Next Action:** Maintain tamper-evident checks.
+* **Blocking Dependency:** None.
+* **Status:** `CLOSED`.
+* **Future Acceptance Criterion:** Tampered capsules fail closed under `capsule-verify`.
 
-#### 5. Retirement Obligation Graph, Bounded Absence, and Resurrection Witness
-* **Auditor/Model Finding:** Static policies could declare retirement without proving absence. A retired Pages site could be silently resurrected by CI.
-* **Operator Decision:** **ACCEPTED.** Retirement must be graph-bound, bounded absence must prove an actual pre-to-post transition, and resurrection risks must be exposed via a dedicated witness.
-* **Implemented Resolution:**
-  * `retirement.py` executes fresh discovery and refuses mutation unless the graph is `SAFE_TO_RETIRE`.
-  * `absence.py` requires live pre-state deployment, accepted deletion, and post-mutation API + served-URL checks.
-  * `witness.py` analyzes the target repository CI configuration at the observed commit and detects `create-pages` (`pages: true`), classifying resurrection risk as `MECHANISM_PRESENT_IN_OBSERVED_CONFIG`.
-* **Evidence:** Commit `0022a21`. `tests/test_b4_duo_witness.py`. `evidence/b4/witness_87785099.json`.
+#### 5. Resurrection Witness and Redeployment Counterexamples
+* **Original Finding:** Retiring a service does not guarantee absence if CI/CD configuration can resurrect it.
+* **Risk & Competition Impact:** High SRE risk; failure to detect redeployment paths undermines protocol credibility.
+* **Decision:** **ACCEPTED & CLOSED.**
+* **Rationale:** Analyze target's own `.gitlab-ci.yml` at the exact observed commit for `create-pages` (`pages: true`).
+* **Exact Scope:** `src/termivance/witness.py`.
+* **Implementation Reference:** `src/termivance/witness.py:build_resurrection_witness`.
+* **Tests:** `tests/test_b4_duo_witness.py`.
+* **Provider Evidence:** `evidence/b4/witness_87785099.json`.
+* **Independent QA Evidence:** Verified baseline `8fd6567`.
+* **Unresolved Limitation:** Static witness analyzes repository configuration; continuous runtime resurrection monitoring is planned in `WORK-B4-20`.
+* **Next Action:** Implement `WORK-B4-20`.
+* **Blocking Dependency:** None.
+* **Status:** `CLOSED` (Static witness); continuous monitoring tracked under `WORK-B4-20`.
+* **Future Acceptance Criterion:** Static witness continues to flag `MECHANISM_PRESENT_IN_OBSERVED_CONFIG`.
 
-#### 6. Real Pages Authorization / 403 Limitations and Pending Organizer Dependency
-* **Auditor/Model Finding:** Disposable project `87785099` returns HTTP 403 on Pages management for the Developer role. Auditors warned against bypassing this via simulated success, using environment stop, or deleting projects.
-* **Operator Decision:** **ACCEPTED.** Strictly maintain `BLOCKED`. Track organizer support request on Showcase work item #1 as `WAITING_EXTERNAL`. Demonstrate safety refusal as a primary product strength.
-* **Implemented Resolution:** Deterministic decision evaluates to `BLOCKED` with reason `PAGES_ADMINISTRATION_FORBIDDEN_403`. Zero destructive calls are made. Demo plan provides conditional branches for access resolution while preserving the blocked baseline.
-* **Evidence:** `docs/HANDOFF.md`, `evidence/b4/decision.json`. Showcase work item [Showcase #1](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/showcase/-/work_items/1).
+#### 6. Real Pages 403 Gate and External Organizer Dependency
+* **Original Finding:** Target `87785099` returns HTTP 403 on Pages API for Developer role. Bypassing this via mock or environment stop is unacceptable.
+* **Risk & Competition Impact:** Destructive unpublishing is blocked without Maintainer role.
+* **Decision:** **ACCEPTED & EXTERNALLY BLOCKED.**
+* **Rationale:** Track organizer request on Showcase #1; maintain fail-closed `BLOCKED` baseline; never attempt unauthorized mutations.
+* **Exact Scope:** `docs/HANDOFF.md`, Showcase Work Item #1, `WORK-B4-19`.
+* **Implementation Reference:** `src/termivance/retirement.py`, `evidence/b4/decision.json`.
+* **Tests:** `tests/test_retirement.py:test_developer_only_permission_cannot_be_safe_to_retire`.
+* **Provider Evidence:** Live provider HTTP 403 responses recorded in `evidence/b4/portfolio.json`.
+* **Independent QA Evidence:** Verified baseline `8fd6567`.
+* **Unresolved Limitation:** Mutation cannot execute live until organizer grants Maintainer permissions.
+* **Next Action:** Monitor Showcase #1; execute `WORK-B4-19` branch protocols.
+* **Blocking Dependency:** Hackathon organizer grant of Maintainer role on project `87785099`.
+* **Status:** `EXTERNALLY_BLOCKED`.
+* **Future Acceptance Criterion:** Maintain `BLOCKED` under Branch A; execute genuine mutation and dual-channel read-back only under Branch C.
 
-#### 7. Rejection of Superficial Nine-Stage Automation or Unsupported Checkbox Claims
-* **Auditor/Model Finding:** Teams often inflate DevSecOps lifecycle stage checkboxes (e.g. checking all 9 stages based on static YAML or hypothetical future features). An earlier draft recommended eight YES selections, which independent QA challenged as overly confident.
-* **Operator Decision:** **ACCEPTED.** Retract the premature eight-stage claim. Conduct a rigorous re-audit of all 9 stages distinguishing genuine GitLab Duo Agent Platform lifecycle automation from generic supporting Python code, local tooling, static artifacts, or external GitHub observer infrastructure.
-* **Implemented Resolution:** Section 7 of this plan establishes a rigorous, evidence-backed evaluation:
-  * **4 Defensible Core Stages (YES):** Plan (genuine Duo flow on Issue #5), Verify (native GitLab CI 381 tests + 40 safety assertions), Secure (fail-closed preflight + sealed ledger + HMAC authorization), Govern (protected target registry + deterministic graph authority).
-  * **1 Explicit Gated Stage (NO):** Release (Pages unpublishing is intentionally BLOCKED by HTTP 403 on Developer permissions; no deletion mutation occurred).
-  * **4 Qualified / Challenged Stages (NEEDS_REVIEW / LEAN NO):** Create (issue notes != code generation), Package (JSON Proof Capsule != GitLab Package Registry), Configure (GET discovery != configuration management), Monitor (external GitHub QA observer & tripwire != native GitLab runtime monitoring). Default to unchecked on Devpost unless confirmed by operator.
-* **Evidence:** Section 7 itemized stage breakdown and verification records.
+#### 7. Nine-Stage Automation Integrity Audit
+* **Original Finding:** Overconfident claims of checking 8 or 9 DevSecOps stages without demonstrable automation in each stage.
+* **Risk & Competition Impact:** Disqualification or judge skepticism due to inflated category claims.
+* **Decision:** **ACCEPTED & CLOSED FOR CURRENT AUDIT; REASSESSMENT IN WORK-B4-23.**
+* **Rationale:** Restrict default Devpost recommendations to 4 Defensible Core stages (Plan, Verify, Secure, Govern), strictly gate Release (NO), and classify remaining 4 as `NEEDS_REVIEW`.
+* **Exact Scope:** Section 7 of Master Plan, `WORK-B4-23`.
+* **Implementation Reference:** Section 7 DevSecOps Matrix.
+* **Tests:** Static document consistency assertions.
+* **Provider Evidence:** Live CI history and Duo flow sessions.
+* **Independent QA Evidence:** Verified baseline `8fd6567`.
+* **Unresolved Limitation:** Automation in Create, Package, Configure, Monitor requires honest qualification.
+* **Next Action:** Execute final evidence reassessment under `WORK-B4-23` after engineering outcomes are settled.
+* **Blocking Dependency:** Completion of `WORK-B4-18` through `WORK-B4-20`.
+* **Status:** `CLOSED` for baseline; `STILL_OPEN` for final reassessment in `WORK-B4-23`.
+* **Future Acceptance Criterion:** Devpost selections strictly mirror verified evidence without exaggeration.
 
-#### 8. Deferred Minimal Repair Set, Proof Decay, and Optional Extensions
-* **Auditor/Model Finding:** Proposals to implement an automated graph repair algorithm ("Minimal Repair Set") and continuous temporal proof decay curves.
-* **Operator Decision:** **DEFERRED.** High architectural complexity with minimal jury differentiation. Exceeds B4 preparation scope and risks introducing regressions before the October 27 deadline.
-* **Implemented Resolution:** Formally recorded in the Decision Register as `DEFERRED`. Proof Capsule enforces static $TTL \le 900\,\text{s}$ freshness rather than complex temporal decay curves.
-* **Evidence:** Section 5 Decision Register (DEC-20261019-03).
+#### 8. Bounded Minimal Repair Set & Proof Decay Scope (Reconciliation of Deferred Item)
+* **Original Finding:** Speculative graph repair algorithms and continuous temporal decay curves were proposed.
+* **Risk & Competition Impact:** High algorithmic complexity risked regressions and missed deadlines with minimal differentiation.
+* **Historical Decision (2026-10-19):** **DEFERRED** as open-ended speculative research (DEC-20261019-03).
+* **Updated Disposition (2026-10-20):** **RECONCILED & APPROVED AS BOUNDED SCOPE.**
+  * *Speculative Global Graph Optimization:* Remains **DEFERRED**.
+  * *Bounded Candidate Repair Sets (`WORK-B4-21`):* **APPROVED.** Bounded deterministic prerequisite-remediation guidance derived strictly from the actual Retirement Obligation Graph.
+  * *Contractual Freshness Decay (`WORK-B4-22`):* **APPROVED.** Deterministic evidence state machine enforcing contractual $TTL \le 900\,\text{s}$ freshness, timestamp validation, and fail-closed revalidation.
+* **Rationale:** Delivers concrete product value and auditability within strict bounded scope without introducing speculative prediction engines or infinite-horizon models.
+* **Exact Scope:** `WORK-B4-21`, `WORK-B4-22`.
+* **Implementation Reference:** To be implemented in `src/termivance/repair.py` and `src/termivance/decay.py`.
+* **Tests:** Planned property-oriented and boundary tests in `tests/test_b4_repair_sets.py` and `tests/test_b4_proof_decay.py`.
+* **Provider Evidence:** Existing provider observation timestamps and graph obligations.
+* **Independent QA Evidence:** To be independently verified in `WORK-B4-26`.
+* **Unresolved Limitation:** Repair guidance is advisory and never authorizes mutations; decay does not predict future provider state.
+* **Next Action:** Implement bounded features in `WORK-B4-21` and `WORK-B4-22`.
+* **Blocking Dependency:** None.
+* **Status:** `READY_TO_EXECUTE` (Bounded scope approved).
+* **Future Acceptance Criterion:** Deterministic candidate repair sets generated without expanding authority; evidence states expire cleanly at TTL boundaries.
 
-#### 9. Material Evidence-Integrity Findings and Verified Repair Outcomes
-* **Auditor/Model Finding:** Independent QA identified material defects across B4:
-  * *Defect A:* Receipt proof promotion (static JSON could claim ledger validation).
-  * *Defect B:* Static review assembler without live execution.
-  * *Defect 1:* Publisher contract mismatch with CLI.
-  * *Defect 2:* Candidate corroboration using keyword heuristics rather than provider facts.
-  * *UI Quality:* Session misattribution (9710085 vs 9671626) and Windows local path leaks in `data.js`.
-* **Operator Decision:** **ACCEPTED.** Execute comprehensive consolidated repairs for all items.
-* **Implemented Resolution:**
-  * 6-dimensional receipt classifier (`classify_receipt`) separating ledger validation from claimed verdicts.
-  * Runnable `run_supervised_investigation()` pipeline.
-  * Publisher contract adopting `GitLabPublisher.create_issue_note` returning `PublishResult`.
-  * Evidence-grounded candidate corroboration (`ProviderObservations`).
-  * Complete separation of Session 9710085 and Session 9671626 with sanitized public paths in `data.js`.
-* **Evidence:** Commits `a6835f0`, `2282da8`, `cd51e52`, `97263f6`, `37e0d5a`, `55c9364`. Test suite: **381 passed**, Ruff clean, CI safety assertions **40/40 PASS**.
+#### 9. Evidence Integrity & UI Privacy Repairs
+* **Original Finding:** Material defects in receipt provenance, publisher contracts, and Windows path leaks in UI data.
+* **Risk & Competition Impact:** Inconsistent evidence presentation and privacy leaks in public submission artifacts.
+* **Decision:** **ACCEPTED & CLOSED.**
+* **Rationale:** 6-dimensional receipt classifier, typed `PublishResult`, and recursive path sanitizer in Control Room builder.
+* **Exact Scope:** `scripts/build_control_room.py`, `src/termivance/publisher.py`, `control_room/data.js`.
+* **Implementation Reference:** Commits `a6835f0`, `55c9364`.
+* **Tests:** `tests/test_b4_repair_closure.py`, `tests/test_control_room_render.py`.
+* **Provider Evidence:** Rebuilt `control_room/data.js` with sanitized paths.
+* **Independent QA Evidence:** Verified baseline `8fd6567`.
+* **Unresolved Limitation:** None.
+* **Next Action:** Maintain sanitization in future Control Room rebuilds.
+* **Blocking Dependency:** None.
+* **Status:** `CLOSED`.
+* **Future Acceptance Criterion:** Zero absolute developer machine paths in public artifacts; receipt provenance strictly separated.
 
-#### 10. Consolidated Master Plan Truth Repair, Path Sanitization & Safe Filming Launchers
-* **Auditor/Model Finding:** Independent QA verified master plan baseline `b4431ec` (GitLab CI `2966976920`, GitHub observer `39406813557`), but identified: (a) local Windows absolute developer path leak in Section 10; (b) launcher scripts reporting execution complete regardless of exit code; (c) filming runbook referencing obsolete UI cards; (d) self-referential commit SHA references; (e) overconfident 8-stage DevSecOps claims; and (f) unverified Supervised autonomy status.
-* **Operator Decision:** **ACCEPTED.** Execute ONE consolidated B4 repair covering all points without restarting development or introducing new product features.
-* **Implemented Resolution:**
-  * Replaced all local developer machine paths with portable repository-relative links (`control_room/index.html`).
-  * Hardened `scripts/run_supervised_review.bat` and `.sh` with repository root location, Python 3.10+ and `termivance` preflight assertions, actionable troubleshooting text, and authentic exit-code propagation distinguishing successful program execution yielding BLOCKED from script crashes. Tested live with `--no-pause`.
-  * Reconciled the 9-scene filming runbook with the actual 5-tab Control Room UI.
-  * Preserved Git commit SHA provenance: plan distinguishes historically verified baseline `b4431ec` from post-push remote revisions dynamically verified by the external GitHub observer.
-  * Qualified Supervised autonomy status as `NEEDS_REVIEW` with an explicit operational boundary and work-register entry.
-* **Evidence:** Commit `b4431ec` (baseline), verified repair commit `6e808b33a4974fc9232ec9b3ca79bdc4b9281d24` (GitLab CI `2967141211` verify SUCCESS, GitHub observer `39412372280` PASS / IN_SYNC), 381 passed pytest tests, 40/40 network-free safety checks, live launcher test.
+#### 10. Consolidated Master Plan Truth Repair
+* **Original Finding:** Earlier plan drafts contained self-referential commit SHAs, overconfident DevSecOps claims, and unhardened launcher scripts.
+* **Risk & Competition Impact:** Auditor rejection for internal contradictions.
+* **Decision:** **ACCEPTED & CLOSED.**
+* **Rationale:** Harmonize plan with verified baseline facts, qualify Supervised autonomy, and harden launchers.
+* **Exact Scope:** Master plan, launcher scripts.
+* **Implementation Reference:** Commit `6e808b3`.
+* **Tests:** Launcher preflight checks live verified.
+* **Provider Evidence:** Pipeline `2967141211`, Observer Run `39412372280`.
+* **Independent QA Evidence:** Verified baseline `8fd6567`.
+* **Unresolved Limitation:** None.
+* **Next Action:** Enforce atomic document synchronization in `WORK-B4-25`.
+* **Blocking Dependency:** None.
+* **Status:** `CLOSED`.
+* **Future Acceptance Criterion:** Zero self-referential SHA contradictions.
 
-#### 11. Final Submission-Truth Surgical Closure, Launcher Preflight & QA Trigger Precision
-* **Auditor/Model Finding:** Independent QA verified repair commit `6e808b33a4974fc9232ec9b3ca79bdc4b9281d24` (GitLab CI `2967141211`, verify job `17313164853` SUCCESS; GitHub observer `39412372280` PASS / IN_SYNC). However, submission audit revealed: (a) Windows launcher preflight contained an unreachable `import termivance` statement after `sys.exit(...)`; (b) GitHub Actions observer triggers were inaccurately described as running "on every commit" rather than on-demand (`workflow_dispatch`) and on a scheduled 6-hour cron; (c) Scene SC-03 fallback assumed Issue #5 notes and Duo sessions are publicly accessible anonymously, whereas empirical tests confirmed unauthenticated requests return HTTP 401 on notes and HTTP 404 on agent sessions; and (d) video evidence references in Scene SC-08 and screenshot 05 reflected the older historical baseline rather than distinguishing it from the verified repair baseline.
-* **Operator Decision:** **ACCEPTED.** Execute ONE bounded surgical repair without new features, daemons, or cosmetic redesigns.
-* **Implemented Resolution:**
-  * Repaired `scripts/run_supervised_review.bat` preflight to assert `sys.version_info >= (3, 10)` and `import termivance` before exit; empirically verified all three cases (valid execution, missing module failure with code 1, CLI failure code preservation).
-  * Corrected GitHub Actions QA observer documentation across Master Plan and Devpost story to specify authentic triggers: on-demand (`workflow_dispatch`) and scheduled 6-hour cron.
-  * Documented public access boundary for Scene SC-03: unauthenticated note access returns HTTP 401 and agent sessions return HTTP 404, establishing that public verification relies on the Control Room's static verified evidence (`control_room/index.html#proof`).
-  * Updated Scene SC-08 and Screenshot 05 to distinguish historical baseline (`2966976920` / `39406813557`) from verified repair baseline (`2967141211` / `39412372280`).
-  * Preserved `NEEDS_REVIEW` for Supervised continuous handoff and zero personal spend ($0.00).
-* **Evidence:** Commit `6e808b3` (verified repair baseline), final surgical closure commit, 381 pytest tests PASS, 40/40 safety assertions, empirical launcher verification, live GitLab CI and external GitHub QA observer confirmation.
+#### 11. Final Submission-Truth Surgical Closure
+* **Original Finding:** Unreachable code in Windows launcher preflight, inaccurate GitHub Actions trigger description, and anonymous access boundary in Scene SC-03.
+* **Risk & Competition Impact:** Script execution failure on Windows; inaccurate depiction of QA bridge triggers.
+* **Decision:** **ACCEPTED & CLOSED.**
+* **Rationale:** Fix preflight assertions, accurately document on-demand (`workflow_dispatch`) and 6-hour cron triggers, and document Scene SC-03 public access boundary.
+* **Exact Scope:** `scripts/run_supervised_review.bat`, Master Plan.
+* **Implementation Reference:** Commit `8fd6567`.
+* **Tests:** 381 pytest tests PASS, 40 safety assertions PASS.
+* **Provider Evidence:** GitLab Pipeline `2967239572`, GitHub Observer Run `39415695705`.
+* **Independent QA Evidence:** Verified baseline `8fd656725929b9d790d4d79f5cff2659af650de5`.
+* **Unresolved Limitation:** None.
+* **Next Action:** Reconcile historical `WORK-B4-12` in work register.
+* **Blocking Dependency:** None.
+* **Status:** `CLOSED`.
+* **Future Acceptance Criterion:** Verified pipeline `2967239572` and observer run `39415695705` formally recorded as baseline.
 
 ---
 
-## 4. Remaining Work Register
+## 4. Atomic Work Completion, Evidence and Document Consistency Contract & Remaining Work Register
 
-| Stable ID | Objective & Significance | Status | Dependency | Responsibility | Implementation Ref | Acceptance Criteria | Target Date | Affects | Fallback / Contingency |
-|---|---|---|---|---|---|---|---|---|---|
-| `WORK-B4-01` | Establish Canonical Master Execution Plan | **DONE** | None | Executor | `plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md` | Single canonical plan covering all 17 sections | 2026-10-20 | Eligibility / Quality | N/A |
-| `WORK-B4-02` | Reconcile Master Plan & Handoff | **DONE** | `WORK-B4-01` | Executor | `plans/MASTER_PLAN.md`, `docs/HANDOFF.md` | Zero contradictory statuses across repo | 2026-10-20 | Quality | Update pointers |
-| `WORK-B4-03` | Add Media Working Directories to `.gitignore` | **DONE** | None | Executor | `.gitignore`, `submission_media/` | `submission_media/` ignored; clean git status | 2026-10-20 | Security / Cleanliness | Manual exclusion |
-| `WORK-B4-04` | Safe Reproducible CLI Launcher (Scene 05) | **DONE** | None | Executor | `scripts/run_supervised_review.bat`, `.sh` | Preflight checks; truthful exit status; `--no-pause` support | 2026-10-20 | Demo / Filming | Manual CLI command |
-| `WORK-B4-05` | Track Organizer Pages Support Request | **WAITING_EXTERNAL** | Hackathon Organizers | Operator | Showcase Work Item #1 | Maintainer access granted OR formal alternative | 2026-10-24 | Demo / Release Stage | Branch A (Preserve BLOCKED) |
-| `WORK-B4-06` | Enterprise Control Room Final Usability Audit | **DONE** | `control_room/` | Executor | `control_room/index.html`, `data.js` | 5 tabs verified at 100% zoom, 1920x1080 | 2026-10-20 | Demo / Presentation | Rebuild via script |
-| `WORK-B4-07` | Baseline Remote Push & Verification (`b4431ec`) | **DONE** | `WORK-B4-01`–`06` | Executor | Remote `origin/main` | Remote SHA `b4431ec`; GitLab CI Pipeline `2966976920` verify `success` | 2026-10-20 | Eligibility / CI | Repair immediately |
-| `WORK-B4-08` | Baseline GitHub QA Mirror Sync (`b4431ec`) | **DONE** | `WORK-B4-07` | Executor | GitHub `gitlab-main` | Mirror branch identical to remote GitLab SHA `b4431ec` | 2026-10-20 | QA Bridge | Git push mirror |
-| `WORK-B4-09` | Baseline Independent Observer Run (`b4431ec`) | **DONE** | `WORK-B4-08` | Executor | GitHub Actions `gitlab-qa.yml` | Run `39406813557` `qa_status: PASS`, `drift: IN_SYNC` | 2026-10-20 | QA Bridge | Selftest offline check |
-| `WORK-B4-10` | Supervised Autonomy Continuous-Handoff Evaluation | **NEEDS_REVIEW** | Hackathon Platform Boundary | Operator / Executor | `src/termivance/supervised_review.py`, Sec 6 | Documented limitation and operational boundary why unauthenticated daemon is withheld ($0.00 spend preserved) | 2026-10-24 | Contest Category Claim | Defend Supervised as human-reviewed multi-step workflow with CLI/CI trigger |
-| `WORK-B4-11` | Consolidated B4 Repair Push & Verification (`6e808b3`) | **DONE** | `WORK-B4-01`–`10` | Executor | Remote `origin/main` & `qa-mirror` | Verified repair SHA `6e808b3`; GitLab CI Pipeline `2967141211` verify `success`; GitHub Observer Run `39412372280` `PASS / IN_SYNC` | 2026-10-20 | Eligibility / Verification | Push & monitor observer |
-| `WORK-B4-12` | Final Submission-Truth Surgical Closure & Post-Push Observer | **ACTIVE** | `WORK-B4-11` | Executor | Remote `origin/main` & `qa-mirror` | Launcher preflight fixed; QA triggers/baselines reconciled; post-push GitLab CI `success` & GitHub Observer `PASS / IN_SYNC` | 2026-10-20 | Eligibility / Verification | Push & monitor observer |
-| `WORK-B4-13` | Capture Demonstration Media & Screenshots | **OPERATOR_ACTION** | Locked SHA | Operator | `assets/demo/screenshots/` | 5 sanitized PNGs captured at 1920x1080 per register | 2026-10-24 | Presentation / Devpost | Use headless captures |
-| `WORK-B4-14` | Record Video Screen Captures (Scenes 01–09) | **OPERATOR_ACTION** | Video Runbook | Operator | Section 11 Video Runbook | Raw MP4 captures for all 9 scenes | 2026-10-25 | Submission Video | Follow Scene Runbook |
-| `WORK-B4-15` | Video Editing, English Voice-Over & Narration | **OPERATOR_ACTION** | `WORK-B4-14` | Operator | Final MP4 (< 180s, target 174s) | Crisp narration, readable text, < 180s | 2026-10-25 | Submission Video | Cut non-critical pause |
-| `WORK-B4-16` | Upload Video to YouTube as Public | **OPERATOR_ACTION** | `WORK-B4-15` | Operator | YouTube Public Video URL | Public URL accessible to judges | 2026-10-26 | Devpost Submission | Unlisted with link |
-| `WORK-B4-17` | Complete Official Devpost Submission | **OPERATOR_ACTION** | Devpost Packet | Operator | Devpost Transcend Portal | All fields filled, URL linked, submitted | 2026-10-26 | Contest Eligibility | Submit before 13:00 UTC |
+### 4.1 One Coherent Change Unit Contract
+Every future engineering work package in Termivance must be executed, committed, and verified as **one coherent change unit**. An engineering task is not complete merely because its code compiles or its local unit tests pass.
+
+Each atomic change unit must atomically include all directly impacted:
+1. **Implementation files** (source modules under `src/termivance/` or relevant tooling);
+2. **Automated regression and adversarial tests** (under `tests/` covering positive, negative, and edge cases);
+3. **Relevant configuration** (under `config/` or environment settings);
+4. **Legitimate recorded evidence** (under `evidence/b4/`, with verified provenance labels);
+5. **Evidence schema and manifest updates** (where data contracts or cryptographic digests change);
+6. **Control Room generation and UI files** (`control_room/index.html` and rebuilt `control_room/data.js` where UI is impacted);
+7. **Canonical Master Execution Plan state** (`plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md` work register and evidence baseline);
+8. **README operational instructions and metrics** (`README.md` test totals, CLI syntax, and operational caveats);
+9. **Evidence Matrix claims and logs** (`docs/EVIDENCE_MATRIX.md`);
+10. **Active Handoff critical facts** (`docs/HANDOFF.md`);
+11. **Relevant demo scripts and Devpost materials** (`docs/DEMO_SCRIPT.md` and submission packets);
+12. **Directly impacted supporting documentation** (preventing multi-document drift).
+
+> **Enforcement Rule:** Implementation and documentation must never be decoupled into separate micro-batches. Changes to documentation directly affected by an engineering change must land in the same commit as the code and tests.
+
+### 4.2 Exact Work Lifecycle and State Transition Invariants
+Every work package in the Termivance register moves through an explicit, strictly governed lifecycle:
+
+```mermaid
+flowchart TD
+    NOT_STARTED --> RESEARCH_REQUIRED
+    RESEARCH_REQUIRED --> READY_TO_EXECUTE
+    NOT_STARTED --> READY_TO_EXECUTE
+    READY_TO_EXECUTE --> IN_PROGRESS
+    IN_PROGRESS --> IMPLEMENTED_NOT_VERIFIED
+    IMPLEMENTED_NOT_VERIFIED --> VERIFIED
+    IN_PROGRESS --> BLOCKED_EXTERNAL
+    READY_TO_EXECUTE --> BLOCKED_EXTERNAL
+    IN_PROGRESS --> NEEDS_REVIEW
+    IMPLEMENTED_NOT_VERIFIED --> NEEDS_REVIEW
+    READY_TO_EXECUTE --> DEFERRED
+    IN_PROGRESS --> DEFERRED
+    READY_TO_EXECUTE --> OPERATOR_ACTION
+    VERIFIED --> FINAL_QA_PENDING
+    BLOCKED_EXTERNAL --> FINAL_QA_PENDING
+    NEEDS_REVIEW --> FINAL_QA_PENDING
+    FINAL_QA_PENDING --> CLOSED_INDEPENDENT_QA
+```
+
+#### Lifecycle State Definitions:
+* **`NOT_STARTED`:** Initial recorded state; dependencies and scope documented, work not commenced.
+* **`RESEARCH_REQUIRED`:** Technical feasibility, GitLab platform capabilities, or permissions must be investigated before implementation design can be finalized.
+* **`READY_TO_EXECUTE`:** Prerequisites, dependencies, and technical specifications are fully established; work is authorized for execution within the active macro-batch.
+* **`IN_PROGRESS`:** Implementation, testing, or evidence collection is actively underway.
+* **`IMPLEMENTED_NOT_VERIFIED`:** Code and tests are written, but independent local test suite, linting, safety assertions, or CI pipelines have not yet completed.
+* **`VERIFIED`:** Implementation, tests, configuration, evidence, and directly affected documents have been completed and verified locally and via passing CI.
+* **`BLOCKED_EXTERNAL`:** Work is halted due to an external dependency, missing provider permission, or hackathon organizer action (e.g. Maintainer access on project `87785099`).
+* **`NEEDS_REVIEW`:** Implementation is functional with documented limitations, but platform boundaries or policy ambiguities require operator or judge qualification.
+* **`DEFERRED`:** Formally postponed by recorded operator decision to maintain schedule, zero personal spend, or deadline integrity.
+* **`OPERATOR_ACTION`:** Non-delegable human responsibility (e.g. video narration, screen recording, YouTube upload, Devpost submission).
+* **`FINAL_QA_PENDING`:** All engineering and documentation units are complete and pushed; awaiting independent whole-batch QA audit.
+* **`CLOSED_INDEPENDENT_QA`:** Independently audited, verified against canonical remote and mirror, and accepted by external QA.
+
+#### Invariants:
+1. A feature is **never** `VERIFIED` merely because code has been written.
+2. An executor **cannot self-award** `CLOSED_INDEPENDENT_QA` or independent QA PASS.
+3. `NOT_RUN`, `NOT_OBSERVED`, `NOT_CLAIMED`, `BLOCKED`, and `INCONCLUSIVE` must remain strictly distinct across all states and records.
+
+### 4.3 Evidence Required for Every State Transition (17-Field Transition Schema)
+Every recorded state transition in the work register must be supported by an authentic transition record containing:
+
+1. **Work Item ID:** Stable identifier (e.g. `WORK-B4-18`).
+2. **Prior Status:** Exact prior lifecycle state.
+3. **New Status:** Exact target lifecycle state.
+4. **Implementation Commit SHA:** Exact Git commit SHA introducing the change.
+5. **Changed-File Inventory:** Explicit list of files modified, added, or deleted.
+6. **Tests Added or Changed:** Test modules and specific test cases added or updated.
+7. **Test Results and Failures:** Exact execution counts (passed, failed, skipped) from pytest.
+8. **Security Contract Assertions:** Results from `scripts/ci_safety_assertions.py` (e.g. 40/40 PASS).
+9. **Source Commit Identity:** Commit SHA of the target repository or source baseline evaluated.
+10. **Applicable Provider Project & Resource IDs:** Specific GitLab project IDs (e.g. `87785099`, `87779099`).
+11. **Observation Timestamp (UTC):** ISO 8601 UTC timestamp of provider checks.
+12. **API Endpoint & HTTP Status:** Exact HTTP method, path, and returned status code.
+13. **Evidence Classification:** Labeled provenance (`LIVE_GITLAB_OBSERVED`, `RECORDED_HISTORICAL`, `FIXTURE`, `NOT_OBSERVED`).
+14. **Resulting GitLab CI Pipeline & Job ID:** Official pipeline and verification job IDs.
+15. **GitHub Independent Observer Run ID & Parity:** Actions run ID and drift verdict (`IN_SYNC` / `DRIFT_DETECTED`).
+16. **Exact Remaining Limitation:** Truthful disclosure of any unresolved edge or boundary.
+17. **Responsible Party & Independent QA Verdict:** Assigned entity and independent auditor confirmation.
+
+### 4.4 Git Commit and Future CI Identity Paradox Resolution
+A Git commit cannot include its own future CI pipeline ID, GitLab job ID, or GitHub observer run ID because computing those values requires the commit to exist, be pushed, and be scheduled by external systems.
+
+To eliminate circular dependencies and prevent fictional SHA fabrication, Termivance establishes the following permanent protocol:
+
+1. **Commit Stage:** The implementation commit records its own source code, tests, local evidence, and references to *known prior verified baselines* as historical benchmarks. Post-push CI fields are explicitly marked `PENDING_REMOTE_PIPELINE`.
+2. **Remote Execution Stage:** Pushing the commit triggers the canonical GitLab CI verification pipeline (`verification` job) and subsequently the external GitHub QA observer (`gitlab-qa.yml`).
+3. **Observation Stage:** Authentic CI pipeline IDs and GitHub Actions run IDs are generated and permanently stored by the external provider platforms.
+4. **Reconciliation Stage:** In the *subsequent legitimate engineering or planning update*, those external IDs are reconciled into the living Master Plan baseline without initiating an infinite cycle of documentation-only commits.
+5. **Integrity Rule:** An earlier pipeline or run ID must never be misrepresented as the current commit's verification record.
+
+### 4.5 Independent Acceptance and Anti-Self-Certification Gate
+* The implementation executor is strictly prohibited from awarding itself an independent QA PASS or transitioning items to `CLOSED_INDEPENDENT_QA`.
+* Only an independent auditor or external verification agent may examine the commit, remote HEAD, CI logs, observer artifacts, and document consistency to declare a work item closed.
+* Any claim of capability without an observable, reproducible artifact is immediately classified as `BLOCKED` or `INCONCLUSIVE`.
+
+---
+
+### 4.6 Remaining Work Register (B4 Scope)
+
+| Stable ID | Objective & Significance | Priority | Status | Dependency | Responsibility | Target Date | Affects | Acceptance Criteria Summary |
+|---|---|---|---|---|---|---|---|---|
+| `WORK-B4-01` | Establish Canonical Master Execution Plan | P0 | **DONE** | None | Executor | 2026-10-20 | Eligibility / Quality | Single canonical plan covering all 17 sections |
+| `WORK-B4-02` | Reconcile Master Plan & Handoff | P0 | **DONE** | `WORK-B4-01` | Executor | 2026-10-20 | Quality | Zero contradictory statuses across repo |
+| `WORK-B4-03` | Add Media Working Directories to `.gitignore` | P1 | **DONE** | None | Executor | 2026-10-20 | Security / Cleanliness | `submission_media/` ignored; clean git status |
+| `WORK-B4-04` | Safe Reproducible CLI Launcher (Scene 05) | P0 | **DONE** | None | Executor | 2026-10-20 | Demo / Filming | Preflight checks; truthful exit status; `--no-pause` |
+| `WORK-B4-05` | Track Organizer Pages Support Request | P0 | **WAITING_EXTERNAL** | Hackathon Organizers | Operator | 2026-10-24 | Demo / Release Stage | Maintainer access granted OR formal alternative |
+| `WORK-B4-06` | Enterprise Control Room Usability Audit | P1 | **DONE** | `control_room/` | Executor | 2026-10-20 | Demo / Presentation | 5 tabs verified at 100% zoom, 1920x1080 |
+| `WORK-B4-07` | Baseline Remote Push & Verification (`b4431ec`) | P0 | **DONE** | `WORK-B4-01`–`06` | Executor | 2026-10-20 | Eligibility / CI | Remote SHA `b4431ec`; Pipeline `2966976920` success |
+| `WORK-B4-08` | Baseline GitHub QA Mirror Sync (`b4431ec`) | P0 | **DONE** | `WORK-B4-07` | Executor | 2026-10-20 | QA Bridge | Mirror branch identical to remote GitLab SHA `b4431ec` |
+| `WORK-B4-09` | Baseline Independent Observer Run (`b4431ec`) | P0 | **DONE** | `WORK-B4-08` | Executor | 2026-10-20 | QA Bridge | Run `39406813557` `PASS`, `drift: IN_SYNC` |
+| `WORK-B4-10` | Supervised Autonomy Continuous-Handoff Evaluation | P0 | **NEEDS_REVIEW** | Platform Boundary | Operator / Executor | 2026-10-24 | Contest Category Claim | Operational boundary documented; target of `WORK-B4-18` |
+| `WORK-B4-11` | Consolidated B4 Repair Push & Verification (`6e808b3`) | P0 | **DONE** | `WORK-B4-01`–`10` | Executor | 2026-10-20 | Eligibility / Verification | Remote SHA `6e808b3`; Pipeline `2967141211`; Run `39412372280` |
+| `WORK-B4-12` | Final Submission-Truth Surgical Closure & Post-Push Observer | P0 | **CLOSED_INDEPENDENT_QA** | `WORK-B4-11` | Executor / Auditor | 2026-10-20 | Eligibility / Verification | Verified SHA `8fd6567`; Pipeline `2967239572`; Run `39415695705` |
+| `WORK-B4-18` | Genuine Supervised Autonomy Integration | P0 | **READY_TO_EXECUTE** | `WORK-B4-12` | Executor | 2026-10-22 | Best Supervised Agent | Feasibility study complete; continuous supported handoff chain |
+| `WORK-B4-19` | Organizer-Gated Real Pages Retirement | P0 | **BLOCKED_EXTERNAL** | Showcase #1 / Organizers | Operator / Executor | 2026-10-24 | Release Stage / Bounded Absence | Authorized unpublish + dual read-back under Branch C; fail-closed under A |
+| `WORK-B4-20` | Resurrection Monitoring & Current-Truth Downgrade | P1 | **READY_TO_EXECUTE** | `WORK-B4-18` | Executor | 2026-10-23 | Product Differentiator | Read-only target monitoring, CI schedule feasibility, truth downgrade |
+| `WORK-B4-21` | Deterministic Minimal Repair Set | P1 | **READY_TO_EXECUTE** | `WORK-B4-18` | Executor | 2026-10-23 | SRE Innovation | Bounded candidate repair guidance from ROG; no authority expansion |
+| `WORK-B4-22` | Bounded Proof Decay and Freshness Revalidation | P1 | **READY_TO_EXECUTE** | `WORK-B4-18` | Executor | 2026-10-23 | Auditability | 6-state decay machine, 900s TTL enforcement, fail-closed revalidation |
+| `WORK-B4-23` | Nine-Stage DevSecOps Evidence Reassessment | P0 | **READY_TO_EXECUTE** | `WORK-B4-18`–`22` | Executor | 2026-10-24 | Most Stages Covered | Rigorous post-engineering audit across all 9 stages; Devpost sync |
+| `WORK-B4-24` | Integrated End-to-End Demo and Evidence Binding | P0 | **READY_TO_EXECUTE** | `WORK-B4-18`–`23` | Executor | 2026-10-24 | Judge Presentation | Unified reproducible evidence chain, Control Room alignment |
+| `WORK-B4-25` | Atomic Repository-Wide Documentation Reconciliation | P0 | **READY_TO_EXECUTE** | `WORK-B4-18`–`24` | Executor | 2026-10-25 | Submission Integrity | Whole-repository contradiction audit (DOC-01 to DOC-10) closed atomically |
+| `WORK-B4-26` | Final Independent QA, Source Lock and Submission Readiness | P0 | **FINAL_QA_PENDING** | `WORK-B4-25` | Auditor / Operator | 2026-10-25 | Submission Freeze | All gates pass; final commit locked; ready for filming & Devpost |
+| `WORK-B4-13` | Capture Demonstration Media & Screenshots | P0 | **OPERATOR_ACTION** | `WORK-B4-26` | Operator | 2026-10-25 | Presentation / Devpost | 5 sanitized PNGs captured at 1920x1080 per register (DOC-09) |
+| `WORK-B4-14` | Record Video Screen Captures (Scenes 01–09) | P0 | **OPERATOR_ACTION** | `WORK-B4-26` | Operator | 2026-10-25 | Submission Video | Raw MP4 captures for all 9 scenes per Section 11 Runbook |
+| `WORK-B4-15` | Video Editing, English Voice-Over & Narration | P0 | **OPERATOR_ACTION** | `WORK-B4-14` | Operator | 2026-10-25 | Submission Video | Final MP4 (< 180s, target 174s), clear voice-over, readable text |
+| `WORK-B4-16` | Upload Video to YouTube as Public | P0 | **OPERATOR_ACTION** | `WORK-B4-15` | Operator | 2026-10-26 | Devpost Submission | Public YouTube URL accessible to judges |
+| `WORK-B4-17` | Complete Official Devpost Submission | P0 | **OPERATOR_ACTION** | `WORK-B4-16` | Operator | 2026-10-26 | Contest Eligibility | All fields completed, URL linked, submitted before 22:00 Türkiye |
+
+---
+
+### 4.7 Detailed Technical Implementation Specifications for Remaining Engineering Work
+
+```mermaid
+flowchart TD
+    subgraph Core Engineering
+        W18["WORK-B4-18: Genuine Supervised Autonomy"] --> W20["WORK-B4-20: Resurrection Monitoring"]
+        W18 --> W21["WORK-B4-21: Deterministic Minimal Repair Set"]
+        W18 --> W22["WORK-B4-22: Bounded Proof Decay"]
+    end
+    
+    subgraph External Dependency
+        W19["WORK-B4-19: Organizer-Gated Pages Retirement"]
+    end
+    
+    subgraph Integration & Audit
+        W18 --> W23["WORK-B4-23: Nine-Stage DevSecOps Reassessment"]
+        W20 --> W23
+        W21 --> W23
+        W22 --> W23
+        W19 -.-> W23
+        W23 --> W24["WORK-B4-24: Integrated End-to-End Demo Evidence"]
+        W24 --> W25["WORK-B4-25: Atomic Repository Doc Reconciliation"]
+        W25 --> W26["WORK-B4-26: Final Independent QA & Source Lock"]
+    end
+    
+    subgraph Operator Delivery
+        W26 --> W13["WORK-B4-13: Capture Screenshots"]
+        W26 --> W14["WORK-B4-14: Record Screen Captures"]
+        W14 --> W15["WORK-B4-15: Video Editing & Narration"]
+        W15 --> W16["WORK-B4-16: YouTube Public Upload"]
+        W16 --> W17["WORK-B4-17: Official Devpost Submission"]
+    end
+```
+
+#### 4.7.1 WORK-B4-18 — Genuine Supervised Autonomy Integration
+* **Priority:** P0 / Highest Award-Critical Engineering Concern.
+* **Objective:** Close the operational handoff gap between genuine Duo Custom Flow investigation and deterministic Python review to deliver defensible end-to-end Supervised autonomy without violating the $0.00 personal spend policy or least-privilege security boundaries.
+* **Current Deficiency:** Currently, a genuine Duo session analyzes a retirement request, and the deterministic Python review performs real provider-backed work. However, the handoff between the Duo result and Python execution is operator/CI-initiated. A manually stitched historical Duo record followed by a separately launched CLI command is not proof of autonomous end-to-end execution. This cannot be resolved by changing wording alone.
+* **Target Operational Contract:**
+  $$\text{ONE HUMAN INITIAL REQUEST} \longrightarrow \text{ONE GENUINE DUO SESSION} \longrightarrow \text{TARGET INVESTIGATION} \longrightarrow \text{STRUCTURED CANDIDATES} \longrightarrow \text{AUTOMATIC DETERMINISTIC PYTHON EVALUATION} \longrightarrow \text{EVIDENCE-BOUND RESULT} \longrightarrow \text{ONE HUMAN OUTCOME REVIEW}$$
+  * Zero intermediate manual action, operator copy/paste, or intermediate human approval between agent investigation and read-only deterministic conclusion.
+  * Human approval remains mandatory for any destructive mutation.
+  * Exactly one real Duo Custom Flow agent is deployed.
+* **Mandatory Technical Feasibility Investigation:**
+  The executor must investigate and evaluate, against current official GitLab documentation and the deployed flow configuration (`flows/termivance_retirement_analyst.yaml`):
+  1. *Existing `AgentComponent`:* Capabilities and limitations of Catalog Item `1018562`.
+  2. *`coding_environment`:* Behavior and permission constraints of `coding_environment: none` versus `full`.
+  3. *GitLab Flow CI/CD Runtime:* Setup configuration, supported base images, repository checkout mechanisms.
+  4. *Deterministic Invocation:* Whether the GitLab-hosted agent can invoke deterministic repository code via documented tools (`run_command`, `run_tests`).
+  5. *Tool Restrictions:* Availability and isolation boundaries of agent execution tools.
+  6. *`agent-config.yml`:* Capabilities for executing pre-run or verification setup scripts.
+  7. *Native Event Triggers:* Webhooks, issue mention triggers (`eventTypes: [0]`), and human-trigger restrictions.
+  8. *GitLab CI Continuation:* Whether a GitLab CI pipeline job can execute downstream of a Duo flow execution without manual triggers.
+  9. *`CI_JOB_TOKEN` Limitations:* Read permissions on issues and issue notes (`GET /projects/:id/issues/:iid/notes`).
+  10. *Service-Account Boundaries:* Composite identity permissions and protected repository barriers.
+  11. *Billing Boundaries:* Credit attribution to flow service accounts, namespace limits, on-demand billing risks.
+  12. *Architecture Compatibility:* Compliance with the frozen one-agent, deterministic authority architecture.
+* **Required Architecture Choice:**
+  * *Preferred Path:* A single genuine GitLab Custom Flow execution that conducts both agent investigation and safely invokes deterministic Python review, if documented runtime support and permissions genuinely permit it.
+  * *Alternative Path:* A GitLab-native automatic CI continuation demonstrably bound to the same initial human request, with zero intermediate manual steps.
+  * *Fallback Rule:* If neither path can satisfy full autonomy under current permissions and $0.00 spend: preserve `NEEDS_REVIEW` or `BLOCKED_EXTERNAL`, document the exact missing platform capability, maintain the strongest legitimate runnable fallback (`supervised-review --execute`), and never falsely mark the full-autonomy requirement `VERIFIED`.
+* **Mandatory Test and Evidence Specification:**
+  * *Tests:* Single initial trigger; target identity binding; structured candidate provenance; automatic Python execution; wrong-target refusal; spoofed/malformed Duo note refusal; stale commit SHA refusal; provider HTTP 401/403/404 handling; duplicate invocation idempotency; zero unauthorized mutation; human review boundary enforcement; no credential leakage.
+  * *Evidence:* Authentic GitLab Duo session URL, execution trace/log, deterministic result artifact, causal bindings, and published outcome note. Local mock simulations cannot close this work.
+
+#### 4.7.2 WORK-B4-19 — Organizer-Gated Real Pages Retirement
+* **Priority:** P0 / Externally Gated Dependency.
+* **Objective:** Establish rigorous, fail-closed execution protocols for disposable project `87785099` Pages unpublishing, tracking organizer support on Showcase Work Item #1.
+* **Sole Mutation Target:** Project ID `87785099` (`.../termivance-b3-disposable-pages-demo`).
+* **Protected Resources:** Canonical `87779099`, Showcase `87777871`, Diagnostic `87786164`, and all other namespace assets are strictly protected.
+* **Required Operation:** `DELETE /projects/87785099/pages` (GitLab API requires Maintainer or Owner role).
+* **Decision Branches:**
+  * **Branch A (Access Not Granted / Refused):**
+    * Maintain `BLOCKED` status.
+    * No destructive attempt is dispatched.
+    * Video and documentation highlight fail-closed safety refusal as an intentional security feature.
+    * External limitation recorded in Evidence Matrix.
+  * **Branch B (Role Granted, but Pages Site Not Published):**
+    * Verify role via authenticated API read.
+    * Query `project.pagesDeployments` and `/pages` endpoint.
+    * If site was never published, do not claim a retirement transition.
+    * Preserve `NOT_RUN` and `NOT_CLAIMED`.
+  * **Branch C (Maintainer Granted and Publication Verified):**
+    * Require all 12 prerequisites before mutation dispatch:
+      1. Exact disposable project ID `87785099` and full path binding.
+      2. Fresh target commit SHA verified.
+      3. Live Pages deployment independently proven.
+      4. Exact served URL and unique marker (`TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a`) observed.
+      5. Maintainer/Owner authority proven via provider API.
+      6. Explicit operator approval for the exact action.
+      7. Verified operator trust policy and HMAC signature.
+      8. Sealed single-use ledger reservation (`RESERVED_BEFORE_MUTATION`).
+      9. All Retirement Obligation Graph prerequisites satisfied.
+      10. Surviving `create-pages` redeployment mechanism neutralized or controlled.
+      11. Independent pre-state observations recorded.
+      12. Immediately refreshed `SAFE_TO_RETIRE` decision.
+    * Execute `DELETE /projects/87785099/pages`.
+    * Perform independent post-action readback on Pages API AND served URL.
+    * Generate bounded absence receipt ($TTL \le 900\,\text{s}$).
+* **Failure and Reversibility Handling:**
+  * Explicit handling for HTTP 401/403/404, delayed CDN convergence, marker mismatch, inconclusive URL reads, target drift, and re-appearance.
+  * If permissions arrive before video lock, execute atomic refresh across code, tests, evidence, UI, plan, README, and Devpost.
+  * An organizer response alone is never authorization to mutate: explicit operator approval is mandatory.
+
+#### 4.7.3 WORK-B4-20 — Resurrection Monitoring and Current-Truth Downgrade
+* **Priority:** P1 / Strong Product Differentiator.
+* **Objective:** Expand the static resurrection witness into an active, read-only target monitoring capability that detects surviving redeployment mechanisms, detects source drift, and downgrades current truth when new facts contradict prior receipts.
+* **Technical Design:**
+  * Read-only exact-target monitor querying: default branch commit SHA, `.gitlab-ci.yml` CI/CD configuration, active pipeline schedules, trigger tokens, and Pages deployment state.
+  * Distinguish live provider observations from inaccessible surfaces (fail closed on HTTP 401/403).
+  * State Downgrade Protocol: If a target previously awarded `OBSERVED_ABSENT` is subsequently observed with an active deployment, running Pages job, or republished URL, the current truth is downgraded to `RESURRECTED_NOT_ABSENT` or `BLOCKED`, while preserving historical transition receipts as immutable audit records.
+* **GitLab-Native Execution Preference:**
+  * Investigate running a scheduled, read-only GitLab CI pipeline within the canonical project (`.gitlab-ci.yml`) using existing shared runner minutes ($0.00 spend).
+  * Document Developer permission requirements, schedule ownership, runner minute consumption, cancellation rules, and secret hygiene.
+  * Note: The existing 6-hour GitHub Actions observer proves source/pipeline parity between remotes; it does not monitor target Pages lifecycle.
+  * A recurring schedule may be enabled only after confirming zero personal spend and operator authorization.
+* **Test Matrix:**
+  * No change baseline; newly added Pages CI job; modified publishing job; removed mechanism; in-repo commit drift; inaccessible API (403); stale evidence expiry; duplicate observation idempotency; state downgrade on reappearance; failed scheduled run; refusal of false perpetual control claims.
+  * `RESURRECTION_CONTROLLED` is awarded only upon verified neutralization or active tripwire control.
+
+#### 4.7.4 WORK-B4-21 — Deterministic Minimal Repair Set (Bounded Candidate Repair Sets)
+* **Priority:** P1 / Strictly Bounded SRE Innovation.
+* **Objective:** Calculate actionable prerequisite-remediation guidance directly from the Retirement Obligation Graph without expanding mutation authority or relying on language-model text generation.
+* **Remediation Model:**
+  * For every violated or unresolved obligation in the graph, identify:
+    * Exact obligation ID (e.g. `RETIREMENT_PERMISSION`, `REDEPLOYMENT_PATH`).
+    * Supporting evidence reference and observed provider status.
+    * Specific failing condition.
+    * Dependent obligations blocked downstream.
+    * Required authority level (Operator, Hackathon Organizer, Maintainer).
+    * Remediation category (`AUTOMATIC_CONFIG`, `OPERATOR_APPROVAL`, `ORGANIZER_PERMISSION`, `MANUAL_CI_REPAIR`).
+    * Exact fresh evidence required to satisfy closure.
+    * Proof boundary: the remediation proposal never alters any current verdict.
+  * Candidate repair actions for disposable target `87785099`:
+    1. Obtain Maintainer role on Project `87785099` (satisfies `RETIREMENT_PERMISSION`).
+    2. Prove Pages publication with deployment and served marker (satisfies `PAGES_PUBLISHED`).
+    3. Neutralize `create-pages` job in `.gitlab-ci.yml` or provide signed attestation (satisfies `REDEPLOYMENT_PATH`).
+    4. Provide valid operator approval token with HMAC (satisfies `TARGET_AUTHORIZED`).
+    5. Re-run discovery immediately prior to execution (satisfies `EVIDENCE_FRESHNESS`).
+* **Minimality & Selection Algorithm:**
+  * Implement bounded candidate selection over graph prerequisites:
+    * Dependency ordering via topological sort.
+    * Elimination of redundant actions dominated by upstream prerequisites.
+    * Stable, deterministic tie-breaking.
+    * Refusal on cyclic, malformed, or unverifiable graphs.
+  * Formally designated as **Bounded Candidate Repair Sets** to reflect deterministic DAG properties rather than unprovable global mathematical optimality.
+* **Security & Proof Invariants:**
+  * Repair proposals must never authorize a mutation or dispatch an API call.
+  * Proposals must never assume human actions have been completed.
+  * AI suggestions are never promoted to graph truth without deterministic verification.
+* **Tests:**
+  * Unit tests in `tests/test_b4_repair_sets.py`: single violation repair, multi-violation dependency chain, cyclic graph refusal, dominance elimination, tie-breaking stability, and zero-mutation safety assertions.
+
+#### 4.7.5 WORK-B4-22 — Bounded Proof Decay and Freshness Revalidation
+* **Priority:** P1 / Bounded Implementation (No Speculative Prediction Engine).
+* **Objective:** Enforce temporal boundaries on provider evidence, preventing stale observations from authorizing mutations or supporting expired absence claims.
+* **Deterministic Evidence State Machine:**
+  * `FRESH`: Observation age $t \le 600\,\text{s}$ ($TTL = 900\,\text{s}$). Valid for graph evaluation.
+  * `EXPIRING`: $600\,\text{s} < t \le 900\,\text{s}$. Valid with warning.
+  * `EXPIRED`: $t > 900\,\text{s}$. Invalid for mutation authorization; triggers refusal.
+  * `REVALIDATION_REQUIRED`: Underlying source commit SHA has changed, or prerequisite evidence has expired.
+  * `NOT_OBSERVED`: Evidence was never gathered or endpoint returned an error.
+  * `INCONCLUSIVE`: Conflicting observations across provider channels.
+* **Core Invariants:**
+  1. Evidence expiration can never improve a verdict (cannot turn `BLOCKED` into `SAFE`).
+  2. Missing or unparseable timestamps fail closed (`EXPIRED` / `INCONCLUSIVE`).
+  3. Local clock skew or negative time intervals fail closed.
+  4. Source commit drift immediately invalidates dependent repository observations.
+  5. Historical evidence remains recorded in audit archives; expiration affects current truth only.
+  6. Static Control Room cannot represent recorded historical observations as live.
+  7. Expired approvals or ledger reservations cannot be reused.
+  8. Revalidation requires fresh GET requests to provider APIs.
+  9. No time-based heuristic can manufacture absence or resurrection control.
+* **Tests:**
+  * Boundary test cases: $t = 0\,\text{s}$, $t = 899\,\text{s}$, $t = 900\,\text{s}$, $t = 901\,\text{s}$; clock skew detection; malformed ISO timestamps; commit drift invalidation; historical vs. current state preservation.
+  * UI presentation: Control Room displays clear freshness indicators without simulated live timers.
+
+#### 4.7.6 WORK-B4-23 — Nine-DevSecOps-Stage Evidence Reassessment
+* **Priority:** P0 / Competition Award Eligibility.
+* **Objective:** Conduct a rigorous post-engineering evidence audit across all nine official GitLab lifecycle stages to substantiate Devpost claims without exaggeration.
+* **Nine-Stage Assessment Matrix:**
+  1. **Plan:** Genuine Duo Custom Flow (Catalog Item `1018562`, Session `9710085`) on neutral Issue #5; autonomous repository inspection; structured candidate formulating. Status: **`VERIFIED (Core YES)`**.
+  2. **Create:** Structured issue commentary (`GitLabPublisher`) and Duo code reading. Code generation not performed. Status: **`NEEDS_REVIEW (Lean NO / Qualified)`**.
+  3. **Verify:** Official GitLab CI pipeline running linting, 381 pytest tests, and 40 network-free safety contract assertions. Status: **`VERIFIED (Core YES)`**.
+  4. **Package:** Tamper-evident Proof Capsule with SHA-256 integrity manifest. Application JSON packaging, not GitLab Package Registry. Status: **`NEEDS_REVIEW (Lean NO / Qualified)`**.
+  5. **Secure:** Fail-closed preflights, HMAC operator authorization, sealed single-use durable ledger, protected target boundaries. Status: **`VERIFIED (Core YES)`**.
+  6. **Release:** Verified Pages unpublishing lifecycle (`DELETE /projects/:id/pages`). Status: **`BLOCKED (Explicit NO)`** under Developer 403; becomes **`VERIFIED (YES)`** only if Branch C is executed.
+  7. **Configure:** Read-only GET discovery of environments, deployments, and CI variables. Discovery, not configuration management. Status: **`NEEDS_REVIEW (Lean NO / Qualified)`**.
+  8. **Monitor:** External GitHub Actions QA bridge (6-hour cron + dispatch) and client-side tripwire. Status: **`NEEDS_REVIEW (Lean NO / Qualified)`**; can upgrade to **`VERIFIED (YES)`** if native scheduled monitoring is deployed in `WORK-B4-20`.
+  9. **Govern:** Protected target registry, deterministic graph authority, fail-closed policy engine, immutable audit trail. Status: **`VERIFIED (Core YES)`**.
+* **Audit Timing:** Reassessment is finalized *after* `WORK-B4-18` (Autonomy), `WORK-B4-19` (Pages), and `WORK-B4-20` (Monitoring) are concluded.
+* **Devpost Rule:** Defensible default is 4 Core Stages (Plan, Verify, Secure, Govern). Release remains UNCHECKED unless Branch C executes.
+
+#### 4.7.7 WORK-B4-24 — Integrated End-to-End Judge Evidence
+* **Priority:** P0 / Judge Presentation.
+* **Objective:** Deliver one unified, reproducible, target-bound demonstration proving what Termivance genuinely does, aligning the Control Room, CLI, and filming storyboard.
+* **End-to-End Evidence Chain:**
+  1. Human neutral retirement request on Issue #5.
+  2. Genuine GitLab Duo Custom Flow (Session `9710085`) inspecting target repository.
+  3. Non-authoritative candidate findings posted to issue.
+  4. Deterministic Python corroboration against authoritative provider facts.
+  5. Retirement Obligation Graph evaluation yielding fail-closed `BLOCKED`.
+  6. Resurrection witness exposing surviving `create-pages` redeployment path.
+  7. Bounded candidate repair sets explaining resolution requirements.
+  8. Proof freshness and decay boundaries displayed.
+  9. Outcome note published back to GitLab for human review.
+  10. Canonical GitLab CI pipeline and independent GitHub Actions QA bridge verification.
+* **Control Room Integrity:**
+  * Preserve 5-tab architecture (Overview, Portfolio, Obligation Graph, What-if, Evidence & Audit).
+  * Ensure the first 15 seconds communicate why retirement is blocked and what engineering risk was neutralized.
+  * Static guarantee: zero network fetches at view time, runs locally from `file://`.
+* **Video Readiness Gate:**
+  * Filming is not authorized until: engineering evidence is frozen; organizer dependency outcome is known; canonical remote SHA is settled; and the narration script matches exact UI cards.
+  * Video must remain strictly under 180 seconds (target 174 seconds).
+
+#### 4.7.8 WORK-B4-25 — Atomic Repository-Wide Documentation Reconciliation
+* **Priority:** P0 / Mandatory Completion Contract.
+* **Objective:** Perform a whole-repository contradiction audit and atomically synchronize all documentation, configuration, and evidence files with the verified engineering state.
+* **Mandatory Defect Repairs (DOC-01 through DOC-10):**
+  * **DOC-01 (README Test Count):** Synchronize test counts across README, HANDOFF, and Master Plan to current verified baseline (381 passed).
+  * **DOC-02 (README Pages Status):** Reconcile demo narrative to clearly state that real Pages retirement is currently `BLOCKED` and actual unpublishing is `NOT_RUN`, separating intended lifecycle from current truth.
+  * **DOC-03 (README CLI Mutation Command):** Reconcile README statement claiming the CLI has no mutation command with the actual existence of bounded `retire-pages --execute` and its security preflights.
+  * **DOC-04 (Python Version Mismatch):** Align `pyproject.toml` (`>=3.12`), README (`3.12+`), and launcher scripts (`sys.version_info >= (3, 10)` vs `3.12`) to a single verified runtime specification.
+  * **DOC-05 (Stale Evidence Matrix):** Rewrite current-state summary in `docs/EVIDENCE_MATRIX.md`, removing starter boilerplate and clearly distinguishing primary Session `9710085` from contextual sessions.
+  * **DOC-06 (Outdated Secondary Demo Script):** Reconcile `docs/DEMO_SCRIPT.md` with the canonical 174-second video runbook, updating test baselines (381), primary Duo session references, and scene durations.
+  * **DOC-07 (Inaccurate QA Trigger Diagram):** Reconcile sequence diagram and text in Master Plan to truthfully reflect GitHub observer triggers: on-demand (`workflow_dispatch`) and scheduled 6-hour cron (`23 */6 * * *`).
+  * **DOC-08 (Stale Completion Register):** Reconcile historical `WORK-B4-12` in work register from `ACTIVE` to `CLOSED_INDEPENDENT_QA` using verified commit `8fd6567`, pipeline `2967239572`, and observer run `39415695705`.
+  * **DOC-09 (Uncaptured Media):** Register the 5 planned screenshot PNGs in `assets/demo/screenshots/` as pending `OPERATOR_ACTION`, never counting them as existing evidence until captured.
+  * **DOC-10 (Historic Handoff Instructions):** Reconcile `AGENTS.md`, `plans/MASTER_PLAN.md`, and `docs/HANDOFF.md` to eliminate stale batch directives or conflicting guidance while preserving historical records.
+* **Automated Contradiction Checks:**
+  * Design future deterministic static checkers validating: test count consistency, CLI subcommand syntax, pipeline and run ID bindings, protected project boundaries, and Devpost checkbox claims.
+
+#### 4.7.9 WORK-B4-26 — Final Independent QA, Source Lock and Submission Readiness
+* **Priority:** P0 / Submission Freeze.
+* **Objective:** Establish the final readiness gate certifying that all engineering, documentation, evidence, and video assets are complete, consistent, and frozen for Devpost submission.
+* **Readiness Gate Dimensions:**
+  1. Technical implementation complete and verified clean.
+  2. Genuine Supervised evidence established with transparent boundary disclosures.
+  3. Pages unpublish outcome honestly recorded (BLOCKED under Branch A, or verified under Branch C).
+  4. Resurrection witness and monitoring verified.
+  5. Bounded repair guidance and proof decay contracts verified.
+  6. 100% test pass rate (381+ tests, Ruff clean, 40/40 safety assertions).
+  7. Exact source parity between canonical GitLab `main` and GitHub `gitlab-main`.
+  8. Repository-wide documentation synchronized without contradictions.
+  9. Control Room static contract and data consistency verified.
+  10. DevSecOps stage selections justified by observable evidence.
+  11. Public YouTube video uploaded (< 180s) and verified accessible.
+  12. Zero personal spend ($0.00) confirmed.
+  13. Zero secrets or credentials leaked.
+  14. Operator acceptance confirmed.
+* **Gate Classifications:**
+  * `ENGINEERING_VERIFIED`
+  * `EXTERNALLY_BLOCKED_WITH_HONEST_FALLBACK`
+  * `INDEPENDENT_QA_PENDING`
+  * `READY_FOR_FILMING`
+  * `READY_FOR_SUBMISSION`
+  * `SUBMITTED_FROZEN`
+* **Freeze Invariant:** Zero commits to canonical GitLab `main` once Devpost submission is complete.
 
 ---
 
@@ -287,7 +743,7 @@ This ledger reconciles all independent model and auditor findings, operator dete
 | DEC-20261019-02   | 2026-10-19 [FROZEN]  | Static zero-network Control Room architecture.          |
 |                   |                      | Runs from file://; no web server or live fetch needed.  |
 +-------------------+----------------------+---------------------------------------------------------+
-| DEC-20261019-03   | 2026-10-19 [FROZEN]  | Defer Minimal Repair Set and complex Proof Decay.       |
+| DEC-20261019-03   | 2026-10-19 [FROZEN]  | Defer speculative Minimal Repair Set & complex decay.   |
 |                   |                      | Focus on rock-solid B4 delivery and honest evidence.    |
 +-------------------+----------------------+---------------------------------------------------------+
 | DEC-20261020-01   | 2026-10-20 [FROZEN]  | Issue #5 / Session 9710085 frozen as primary discovery. |
@@ -299,23 +755,40 @@ This ledger reconciles all independent model and auditor findings, operator dete
 | DEC-20261020-03   | 2026-10-20 [FROZEN]  | Strict post-deadline repository and materials freeze.   |
 |                   |                      | Zero commits to canonical main after deadline.          |
 +-------------------+----------------------+---------------------------------------------------------+
+| DEC-20261020-04   | 2026-10-20 [FROZEN]  | Genuine Supervised Autonomy architecture boundary.      |
+|                   |                      | Retain single Duo agent; evaluate supported continuation|
++-------------------+----------------------+---------------------------------------------------------+
+| DEC-20261020-05   | 2026-10-20 [FROZEN]  | Approve bounded Candidate Repair Sets & 900s decay.     |
+|                   |                      | Reconciles DEC-20261019-03; strictly bounded scope.     |
++-------------------+----------------------+---------------------------------------------------------+
+| DEC-20261020-06   | 2026-10-20 [FROZEN]  | Strict organizer Pages gating & branch protocol.        |
+|                   |                      | Enforce Branch A baseline; require operator approval.   |
++-------------------+----------------------+---------------------------------------------------------+
+| DEC-20261020-07   | 2026-10-20 [FROZEN]  | Stop-loss policy: protect October 26 submission.        |
+|                   |                      | Never sacrifice deadline for speculative infrastructure.|
++-------------------+----------------------+---------------------------------------------------------+
 ```
 
 ---
 
 ## 6. Official Competition Requirements & Eligibility Matrix
 
-Termivance is evaluated under the official October 2026 GitLab Transcend (*Life After Code*) rules and schedule:
+Termivance is evaluated under the official October 2026 GitLab Transcend (*Life After Code*) rules and schedule. Official references:
+* Competition Portal: `https://gitlab-transcend.devpost.com/`
+* Dates & Schedule: `https://gitlab-transcend.devpost.com/details/dates`
+* Official GitLab Duo Agent Platform Documentation: `https://docs.gitlab.com/user/duo_agent_platform/`
+
+> **Authoritative Precedence Note:** The current October 2026 Devpost overview and schedule take precedence over stale June 2026 rules that may appear at `/rules`.
 
 | Official Competition Requirement | Required Verification Standard | Termivance Compliance Status | Evidence Reference |
 |---|---|---|---|
-| **Path A: Start Fresh** | Entire project created after October 5, 2026; original work | **ELIGIBLE & SATISFIED** | First commit `ebfae41` dated 2026-10-18; clean-room code |
-| **GitLab Duo Platform Use** | Genuine GitLab Duo Custom Flow agent utilized | **ELIGIBLE & SATISFIED** | Catalog Item `1018562`; Session `9710085` live execution |
-| **Autonomy Level** | Selected autonomy level: Supervised (Path A) | **NEEDS_REVIEW** (Defensible Supervised with Documented Handoff Boundary) | Duo autonomously analyzes target from neutral Issue #5; deterministic Python review executes live; human review required; handoff between Duo and Python is operator/CI-initiated rather than continuous daemon; tracked under WORK-B4-10 |
-| **Public Canonical Repository** | Hosted on GitLab hackathon namespace, public access | **ELIGIBLE & SATISFIED** | Project `87779099`, public visibility verified live |
-| **Open Source License** | Open-source license (MIT) visible in project | **ELIGIBLE & SATISFIED** | MIT License detected by GitLab API and displayed on home |
-| **Reproducibility Instructions** | Clear build, test, and execution instructions in README | **ELIGIBLE & SATISFIED** | Python `pip install -e .[dev]`, CLI subcommands documented |
-| **Visible GitLab CI/CD** | Passing CI pipeline history on default branch | **ELIGIBLE & SATISFIED** | Pipeline `2967141211`, Job `17313164853` `SUCCESS` (baseline `2966976920` / `2966705916`) |
+| **Path A: Start Fresh** | Entire project created after October 5, 2026; clean-room code | **ELIGIBLE & SATISFIED** | First commit `ebfae41` dated 2026-10-18 |
+| **GitLab Duo Platform Use** | Genuine GitLab Duo Custom Flow agent deployed and executed | **ELIGIBLE & SATISFIED** | Catalog Item `1018562`; Session `9710085` live execution |
+| **Autonomy Level** | Selected autonomy level: Supervised (Path A) | **NEEDS_REVIEW** (Defensible Supervised with Documented Boundary) | Duo autonomously analyzes target from neutral Issue #5; deterministic Python review executes live; human review required; target of `WORK-B4-18` |
+| **Public Canonical Repository** | Hosted on GitLab hackathon namespace, public access | **ELIGIBLE & SATISFIED** | Project `87779099`, public visibility verified |
+| **Open Source License** | Open-source license (MIT) visible in project | **ELIGIBLE & SATISFIED** | MIT License detected by GitLab API |
+| **Reproducibility Instructions** | Clear build, test, and execution instructions in README | **ELIGIBLE & SATISFIED** | Python `pip install -e .[dev]`, CLI documented |
+| **Visible GitLab CI/CD** | Passing CI pipeline history on default branch | **ELIGIBLE & SATISFIED** | Verified baseline Pipeline `2967239572` `SUCCESS` |
 | **Public Video Submission** | Original video < 3 minutes (180s) hosted on YouTube | **PENDING OPERATOR** | Storyboard targeted at 174s; filming runbook ready |
 | **Actual Automation Shown** | Live automation demonstrated, not slides or static UI | **READY FOR OPERATOR** | Scene 05 executes `termivance supervised-review --execute` live |
 | **Devpost Form Completion** | All required fields, links, and declarations completed | **PENDING OPERATOR** | Complete Devpost copy and fill-in packet prepared (Sec 13) |
@@ -325,7 +798,7 @@ Termivance is evaluated under the official October 2026 GitLab Transcend (*Life 
 
 ## 7. Nine DevSecOps Lifecycle Stages Honest Mapping
 
-Independent QA challenged the earlier draft's eight-stage YES recommendation as overly confident. A rigorous re-audit distinguishes genuine lifecycle automation by the GitLab Duo Agent Platform and GitLab CI from generic supporting Python code, local developer tooling, static JSON artifacts, or external GitHub observer infrastructure.
+A rigorous re-audit distinguishes genuine lifecycle automation by the GitLab Duo Agent Platform and GitLab CI from generic supporting Python code, local developer tooling, static JSON artifacts, or external GitHub observer infrastructure.
 
 ```
 +----------------------------------------------------------------------------------------------------+
@@ -345,101 +818,90 @@ Independent QA challenged the earlier draft's eight-stage YES recommendation as 
 +----+-----------+-----------------------------------+--------------------+---------------+----------+
 ```
 
-> **Operator Guidance:** Do NOT select eight stages on Devpost by default. Only check the **4 Defensible Core Stages (Plan, Verify, Secure, Govern)** unless the operator explicitly decides to include supporting stages with disclosed qualifications. **Release MUST remain UNCHECKED.**
+> **Operator Guidance:** Do NOT select all nine stages on Devpost by default. Only check the **4 Defensible Core Stages (Plan, Verify, Secure, Govern)** unless the operator explicitly decides to include supporting stages with disclosed qualifications. **Release MUST remain UNCHECKED** unless Maintainer access is granted and Branch C is executed under `WORK-B4-19`.
 
----
-
-### Detailed Per-Stage Breakdown (Eight-Field Standard)
+### Detailed Per-Stage Breakdown
 
 #### 1. Plan
-* **Exact action actually executed:** Issue #5 created with neutral decommissioning request; GitLab Duo Custom Flow invoked; autonomous repository inspection executed; candidate retirement obligations posted.
-* **GitLab Duo's actual contribution:** Genuine Duo Custom Flow (Catalog Item `1018562`, Session `9710085`) autonomously analyzed the retirement request, inspected repository structure (`list_repository_tree`, `get_repository_file`), and formulated candidate claims.
-* **Deterministic code or CI contribution:** `src/termivance/supervised_review.py` ingests Duo candidate claims, extracts target commit SHA, binds candidate claims to target identity, and computes counterfactual analysis.
-* **Source evidence:** `src/termivance/supervised_review.py`, canonical Issue #5 description and Note `4045401991`.
-* **Live execution evidence:** GitLab Issue #5 Note `4045401991`; Duo Session `9710085` URL recorded and live.
-* **Competition category interpretation:** Directly satisfies the Plan stage (AI agent planning, context inspection, and requirement analysis for decommissioning).
-* **Final recommendation:** **YES (Defensible Core)**
-* **Confidence and remaining uncertainty:** **HIGH**. Duo autonomously planned candidate obligations from an unprimed prompt.
+* **Action Executed:** Issue #5 created with neutral decommissioning request; Duo Custom Flow invoked; autonomous repository inspection executed; candidate retirement obligations posted.
+* **GitLab Duo Contribution:** Genuine Duo Custom Flow (Catalog Item `1018562`, Session `9710085`) autonomously analyzed the retirement request, inspected repository structure (`list_repository_tree`, `get_repository_file`), and formulated candidate claims.
+* **Deterministic Code / CI Contribution:** `src/termivance/supervised_review.py` ingests Duo candidate claims, extracts target commit SHA, binds candidate claims to target identity, and computes counterfactual analysis.
+* **Source Evidence:** `src/termivance/supervised_review.py`, canonical Issue #5 description and Note `4045401991`.
+* **Live Execution Evidence:** GitLab Issue #5 Note `4045401991`; Duo Session `9710085` URL recorded and live.
+* **Stage Interpretation:** Directly satisfies Plan stage (AI agent planning, context inspection, and obligation analysis).
+* **Final Recommendation:** **YES (Defensible Core)** | Confidence: **HIGH**.
 
 #### 2. Create
-* **Exact action actually executed:** Generation and publication of structured markdown candidate obligations notes and outcome notes on GitLab issues (`GitLabPublisher.create_issue_note`). Duo repository file inspection (`get_repository_file`).
-* **GitLab Duo's actual contribution:** Duo generated natural-language candidate obligation text; inspected existing code.
-* **Deterministic code or CI contribution:** `src/termivance/publisher.py` authenticated note creation via GitLab REST API (Outcome Note `4045409264`).
-* **Source evidence:** `src/termivance/publisher.py`, `src/termivance/supervised_review.py`.
-* **Live execution evidence:** Issue #5 Notes `4045401991` (Duo) and `4045409264` (Outcome note).
-* **Competition category interpretation:** Devpost Create stage typically refers to code generation, merge request creation, or repository modification. Termivance creates structured issue commentary and analysis artifacts, but does NOT generate application source code or open merge requests.
-* **Final recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)**
-* **Confidence and remaining uncertainty:** **MEDIUM**. Issue commentary creation is automated, but claiming Create stage without code generation or MR creation risks auditor challenge.
+* **Action Executed:** Generation and publication of structured markdown candidate obligations notes and outcome notes on GitLab issues (`GitLabPublisher.create_issue_note`). Duo repository file inspection (`get_repository_file`).
+* **GitLab Duo Contribution:** Duo generated natural-language candidate obligation text; inspected existing code.
+* **Deterministic Code / CI Contribution:** `src/termivance/publisher.py` authenticated note creation via GitLab REST API (Outcome Note `4045409264`).
+* **Source Evidence:** `src/termivance/publisher.py`, `src/termivance/supervised_review.py`.
+* **Live Execution Evidence:** Issue #5 Notes `4045401991` (Duo) and `4045409264` (Outcome note).
+* **Stage Interpretation:** Create typically refers to source code or MR creation. Termivance creates structured issue commentary and analysis artifacts, but does NOT generate application source code or open MRs.
+* **Final Recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)** | Confidence: **MEDIUM**.
 
 #### 3. Verify
-* **Exact action actually executed:** Automated execution of the full 381-test pytest suite, `ruff check`, and 40 network-free safety contract assertions in GitLab CI on every pushed commit.
-* **GitLab Duo's actual contribution:** None (Duo does not author or run CI tests).
-* **Deterministic code or CI contribution:** GitLab CI runner executing `.gitlab-ci.yml` `verification` job: `ruff check`, `pytest`, `scripts/ci_safety_assertions.py`.
-* **Source evidence:** `.gitlab-ci.yml`, `scripts/ci_safety_assertions.py`, `tests/` directory (381 tests).
-* **Live execution evidence:** Official GitLab CI verification pipelines passing on default branch: verified repair Pipeline `2967141211`, Job `17313164853` (`stage: verify`) `SUCCESS`; historical baseline Pipeline `2966976920`, Job `17311100994` `SUCCESS`. Note: pipeline-level SUCCESS is independently observed via public GitLab API; raw job execution log traces return HTTP 401 unauthenticated (`NOT_OBSERVED` anonymously).
-* **Competition category interpretation:** Fully satisfies GitLab Verify stage (automated CI pipeline running linting, full test suite, and safety contract assertions).
-* **Final recommendation:** **YES (Defensible Core)**
-* **Confidence and remaining uncertainty:** **HIGHEST**. Verified live by official GitLab CI runner on default branch.
+* **Action Executed:** Automated execution of the full 381-test pytest suite, `ruff check`, and 40 network-free safety contract assertions in GitLab CI on every pushed commit.
+* **GitLab Duo Contribution:** None (Duo does not author or run CI tests).
+* **Deterministic Code / CI Contribution:** GitLab CI runner executing `.gitlab-ci.yml` `verification` job: `ruff check`, `pytest`, `scripts/ci_safety_assertions.py`.
+* **Source Evidence:** `.gitlab-ci.yml`, `scripts/ci_safety_assertions.py`, `tests/` directory (381 tests).
+* **Live Execution Evidence:** Official GitLab CI verification pipelines passing on default branch: verified baseline Pipeline `2967239572`, Job `17313891889` `SUCCESS`.
+* **Stage Interpretation:** Fully satisfies GitLab Verify stage (automated CI pipeline running linting, test suite, and safety contract assertions).
+* **Final Recommendation:** **YES (Defensible Core)** | Confidence: **HIGHEST**.
 
 #### 4. Package
-* **Exact action actually executed:** Assembly of a tamper-evident JSON Proof Capsule (`termivance capsule-build`) binding target identity, decision records, evidence receipts, Duo reconciliation records, and resurrection witnesses under a SHA-256 integrity manifest.
-* **GitLab Duo's actual contribution:** None directly (Duo candidate findings are ingested into the capsule dataset).
-* **Deterministic code or CI contribution:** `src/termivance/capsule.py` structures, validates, and hashes the proof capsule.
-* **Source evidence:** `src/termivance/capsule.py`, `evidence/b4/proof_capsule.json`.
-* **Live execution evidence:** `proof_capsule.json` in evidence directory, verified by unit and regression tests.
-* **Competition category interpretation:** Devpost Package stage typically refers to GitLab Package Registry (npm, PyPI, Maven), Container Registry, or release binary packages. Proof Capsule is an application-level data packaging artifact, NOT a GitLab Package Registry workflow.
-* **Final recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)**
-* **Confidence and remaining uncertainty:** **HIGH**. JSON artifact packaging is vital for Termivance auditability, but conflating application JSON export with GitLab Package stage automation is technically inaccurate.
+* **Action Executed:** Assembly of a tamper-evident JSON Proof Capsule (`termivance capsule-build`) binding target identity, decision records, evidence receipts, Duo reconciliation records, and resurrection witnesses under a SHA-256 integrity manifest.
+* **GitLab Duo Contribution:** None directly (Duo candidate findings are ingested into the capsule dataset).
+* **Deterministic Code / CI Contribution:** `src/termivance/capsule.py` structures, validates, and hashes the proof capsule.
+* **Source Evidence:** `src/termivance/capsule.py`, `evidence/b4/proof_capsule.json`.
+* **Live Execution Evidence:** `proof_capsule.json` in evidence directory, verified by unit and regression tests.
+* **Stage Interpretation:** Package typically refers to GitLab Package Registry (npm, PyPI, Container Registry). Proof Capsule is an application data packaging artifact, NOT GitLab Package Registry automation.
+* **Final Recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)** | Confidence: **HIGH**.
 
 #### 5. Secure
-* **Exact action actually executed:** Fail-closed authorization preflights, HMAC-SHA256 signature verification on operator approval tokens, atomic $fsync$-backed single-use ledger reservations, and protected target boundary enforcement.
-* **GitLab Duo's actual contribution:** None (security is strictly deterministic).
-* **Deterministic code or CI contribution:** `src/termivance/ledger.py`, `src/termivance/approval_source.py`, `src/termivance/retirement.py`, `scripts/ci_safety_assertions.py` (40 network-free security assertions).
-* **Source evidence:** `src/termivance/ledger.py`, `src/termivance/approval_source.py`, `tests/test_b4_regression_integrity.py`.
-* **Live execution evidence:** CI job verifies all 40 safety assertions; live CLI enforces single-use ledger and HMAC gating.
-* **Competition category interpretation:** Directly satisfies security governance and policy enforcement, although it uses custom cryptographic/policy contracts rather than GitLab native SAST/DAST scanner pipelines.
-* **Final recommendation:** **YES (Defensible Core)**
-* **Confidence and remaining uncertainty:** **HIGH**. Policy enforcement, single-use ledger, and cryptographic approval gating are deeply implemented and tested.
+* **Action Executed:** Fail-closed authorization preflights, HMAC-SHA256 signature verification on operator approval tokens, atomic $fsync$-backed single-use ledger reservations, and protected target boundary enforcement.
+* **GitLab Duo Contribution:** None (security is strictly deterministic).
+* **Deterministic Code / CI Contribution:** `src/termivance/ledger.py`, `src/termivance/approval_source.py`, `src/termivance/retirement.py`, `scripts/ci_safety_assertions.py` (40 network-free security assertions).
+* **Source Evidence:** `src/termivance/ledger.py`, `src/termivance/approval_source.py`, `tests/test_b4_regression_integrity.py`.
+* **Live Execution Evidence:** CI job verifies all 40 safety assertions; live CLI enforces single-use ledger and HMAC gating.
+* **Stage Interpretation:** Directly satisfies security governance and policy enforcement, using deterministic cryptographic/policy contracts.
+* **Final Recommendation:** **YES (Defensible Core)** | Confidence: **HIGH**.
 
 #### 6. Release
-* **Exact action actually executed:** Implementation of verified GitLab Pages unpublishing protocol (`DELETE /projects/:id/pages`) with pre-state verification, single-use ledger consumption, and post-mutation readback.
-* **GitLab Duo's actual contribution:** Analyzed target repository for deployment configurations.
-* **Deterministic code or CI contribution:** `src/termivance/pages.py`, `src/termivance/retirement.py`.
-* **Source evidence:** `src/termivance/pages.py`, `src/termivance/retirement.py`.
-* **Live execution evidence:** **BLOCKED / NOT_RUN**. Developer role returns HTTP 403 on Pages API. No actual unpublishing mutation was executed against the live provider.
-* **Competition category interpretation:** The release unpublishing lifecycle is implemented in code but gated by external platform permissions. Claiming completed Release automation when the mutation was not executed is inaccurate.
-* **Final recommendation:** **NO (Gated / Leave Unchecked)**
-* **Confidence and remaining uncertainty:** **HIGHEST**. Must remain unchecked on Devpost unless Maintainer access is granted before submission.
+* **Action Executed:** Implementation of verified GitLab Pages unpublishing protocol (`DELETE /projects/:id/pages`) with pre-state verification, single-use ledger consumption, and post-mutation readback.
+* **GitLab Duo Contribution:** Analyzed target repository for deployment configurations.
+* **Deterministic Code / CI Contribution:** `src/termivance/pages.py`, `src/termivance/retirement.py`.
+* **Source Evidence:** `src/termivance/pages.py`, `src/termivance/retirement.py`.
+* **Live Execution Evidence:** **BLOCKED / NOT_RUN**. Developer role returns HTTP 403 on Pages API. No actual unpublishing mutation was executed against the live provider.
+* **Stage Interpretation:** The release unpublishing lifecycle is implemented in code but gated by external platform permissions. Claiming completed Release automation when the mutation was not executed is inaccurate.
+* **Final Recommendation:** **NO (Gated / Leave Unchecked)** | Confidence: **HIGHEST**.
 
 #### 7. Configure
-* **Exact action actually executed:** Read-only GET discovery of environments, deployments, and target configuration across candidate projects (`termivance discover`, `portfolio.py`).
-* **GitLab Duo's actual contribution:** Inspection of `.gitlab-ci.yml` CI variables and environment configurations.
-* **Deterministic code or CI contribution:** Python GET requests to GitLab Environments and Deployments APIs.
-* **Source evidence:** `src/termivance/portfolio.py`, `src/termivance/gitlab_client.py`.
-* **Live execution evidence:** `evidence/b4/portfolio.json` populated with live project observations.
-* **Competition category interpretation:** Devpost Configure stage usually refers to infrastructure-as-code, cluster configuration, or Kubernetes agent management. GET-only discovery of environments is discovery, not configuration automation or configuration management.
-* **Final recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)**
-* **Confidence and remaining uncertainty:** **HIGH**. Read-only configuration inspection does not constitute configuration management.
+* **Action Executed:** Read-only GET discovery of environments, deployments, and target configuration across candidate projects (`termivance discover`, `portfolio.py`).
+* **GitLab Duo Contribution:** Inspection of `.gitlab-ci.yml` CI variables and environment configurations.
+* **Deterministic Code / CI Contribution:** Python GET requests to GitLab Environments and Deployments APIs.
+* **Source Evidence:** `src/termivance/portfolio.py`, `src/termivance/gitlab_client.py`.
+* **Live Execution Evidence:** `evidence/b4/portfolio.json` populated with live project observations.
+* **Stage Interpretation:** Configure usually refers to infrastructure-as-code, cluster configuration, or Kubernetes agent management. GET-only discovery is inspection, not configuration management.
+* **Final Recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)** | Confidence: **HIGH**.
 
 #### 8. Monitor
-* **Exact action actually executed:** External GitHub Actions observer workflow runs on demand (via `workflow_dispatch`) and on a defined schedule (every six hours), independently checking live GitLab APIs, verifying source SHA parity, and detecting drift. Client-side `tripwire.py` queries target endpoints to detect unauthorized resurrection.
-* **GitLab Duo's actual contribution:** None.
-* **Deterministic code or CI contribution:** GitHub Actions workflow `.github/workflows/gitlab-qa.yml`, `observer/selftest.py`, `src/termivance/tripwire.py`.
-* **Source evidence:** `observer/`, `.github/workflows/gitlab-qa.yml`, `src/termivance/tripwire.py`.
-* **Live execution evidence:** GitHub Actions runs: verified repair run [`39412372280`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39412372280) (`qa_status: PASS`, drift `IN_SYNC`); historical baseline run [`39406813557`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39406813557) (`PASS / IN_SYNC`).
-* **Competition category interpretation:** Devpost Monitor stage refers to GitLab-native runtime monitoring (metrics, tracing, incident management, alerting). Our GitHub observer is external CI QA infrastructure, and `tripwire.py` is a client-side probe, not native GitLab Monitoring.
-* **Final recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)**
-* **Confidence and remaining uncertainty:** **HIGH**. External QA bridge is not GitLab Monitor stage automation.
+* **Action Executed:** External GitHub Actions observer workflow runs on demand (`workflow_dispatch`) and on schedule (every six hours), independently checking live GitLab APIs, verifying source SHA parity, and detecting drift. Client-side `tripwire.py` queries target endpoints.
+* **GitLab Duo Contribution:** None.
+* **Deterministic Code / CI Contribution:** GitHub Actions workflow `.github/workflows/gitlab-qa.yml`, `observer/selftest.py`, `src/termivance/tripwire.py`.
+* **Source Evidence:** `observer/`, `.github/workflows/gitlab-qa.yml`, `src/termivance/tripwire.py`.
+* **Live Execution Evidence:** GitHub Actions verified baseline Run [`39415695705`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39415695705) (`qa_status: PASS`, drift `IN_SYNC`).
+* **Stage Interpretation:** Monitor refers to GitLab-native runtime monitoring (metrics, tracing, alerting). The GitHub observer is external CI QA infrastructure, not native GitLab Monitoring. (Target of `WORK-B4-20` for native scheduled CI).
+* **Final Recommendation:** **NEEDS_REVIEW (Lean NO / Operator Discretion)** | Confidence: **HIGH**.
 
 #### 9. Govern
-* **Exact action actually executed:** Strict governance framework enforcing: protected target registry (`protected.py`), non-authoritative AI boundaries (counterfactual verification), fail-closed deterministic policy evaluation (`engine.py`), and immutable audit trail.
-* **GitLab Duo's actual contribution:** Operates within strict non-authoritative boundary; proposals are subjected to deterministic governance.
-* **Deterministic code or CI contribution:** `src/termivance/protected.py`, `src/termivance/engine.py`, `src/termivance/counterfactual.py`.
-* **Source evidence:** `src/termivance/protected.py`, `src/termivance/engine.py`, `tests/test_b4_repair_closure.py`.
-* **Live execution evidence:** Live CLI and CI safety assertions prove protected projects cannot be targeted; counterfactual mathematically verified.
-* **Competition category interpretation:** Directly aligns with GitLab Govern stage (compliance, security policies, audit events, access control governance).
-* **Final recommendation:** **YES (Defensible Core)**
-* **Confidence and remaining uncertainty:** **HIGHEST**. Core thesis of Termivance is retirement governance.
+* **Action Executed:** Strict governance framework enforcing: protected target registry (`protected.py`), non-authoritative AI boundaries (counterfactual verification), fail-closed deterministic policy evaluation (`engine.py`), and immutable audit trail.
+* **GitLab Duo Contribution:** Operates within strict non-authoritative boundary; proposals are subjected to deterministic governance.
+* **Deterministic Code / CI Contribution:** `src/termivance/protected.py`, `src/termivance/engine.py`, `src/termivance/counterfactual.py`.
+* **Source Evidence:** `src/termivance/protected.py`, `src/termivance/engine.py`, `tests/test_b4_repair_closure.py`.
+* **Live Execution Evidence:** Live CLI and CI safety assertions prove protected projects cannot be targeted; counterfactual mathematically verified.
+* **Stage Interpretation:** Directly aligns with GitLab Govern stage (compliance, security policies, audit events, access control governance).
+* **Final Recommendation:** **YES (Defensible Core)** | Confidence: **HIGHEST**.
 
 ---
 
@@ -454,8 +916,8 @@ Independent QA challenged the earlier draft's eight-stage YES recommendation as 
 | **Presentation** | Professional GitHub QA bridge; clean repository structure; comprehensive runbooks | Final execution depends entirely on video narration clarity | Video exceeding 180s results in disqualification | Script storyboard precisely to 174s with word-for-word voice-over | Time recorded audio tracks against cuts | Target 174s; hard cut at 178s |
 
 ### Real-World SRE Scenario: CI/CD Resurrection Risk
-* **The Problem:** An enterprise platform team deprecates a documentation portal. A junior engineer deletes the DNS entry or stops the environment. However, the repository's `.gitlab-ci.yml` still contains an automated `create-pages` job triggered on `main`. Weeks later, a dependency bot or unrelated commit triggers the pipeline, automatically redeploying the stale, vulnerable site.
-* **The Termivance Solution:** Termivance discovers the surviving `create-pages` mechanism, flags `resurrection_possible=MECHANISM_PRESENT_IN_OBSERVED_CONFIG`, and refuses `SAFE_TO_RETIRE` until the redeployment obligation is neutralized.
+* **The Problem:** An enterprise platform team deprecates an internal service or documentation portal. An engineer deletes the DNS entry or stops the server. However, the repository's `.gitlab-ci.yml` still contains an automated `create-pages` job triggered on `main`. Weeks later, a dependency bot or unrelated commit triggers the pipeline, automatically redeploying the stale, vulnerable site.
+* **The Termivance Solution:** Termivance discovers the surviving `create-pages` mechanism, flags `resurrection_possible=MECHANISM_PRESENT_IN_OBSERVED_CONFIG`, and refuses `SAFE_TO_RETIRE` until the redeployment obligation is neutralized or certified.
 
 ---
 
@@ -481,7 +943,6 @@ flowchart TD
 ```
 
 ### Conditional Branch Execution Protocols
-
 * **Branch A (Baseline Preserved — Access Not Granted):**
   * Current verified truth state is maintained.
   * Verdict remains `BLOCKED`. Unpublish remains `NOT_RUN`. Absence remains `NOT_CLAIMED`.
@@ -564,7 +1025,6 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   > *"Retiring software is not the same as proving it has disappeared. A forgotten deployment job can bring a supposedly retired service back."*
 * **On-Screen Subtitle:**
   > *Software retirement without proof is just downtime.*
-* **Cut/Transition:** Cut directly to Independent Retirement Claims card.
 
 #### SCENE 02: Protocol Architecture and Three Claims (00:13–00:30 | 17 s)
 * **Application/URL:** Control Room (`control_room/index.html`), Overview tab, Independent Retirement Claims card.
@@ -574,7 +1034,6 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   > *"Termivance separates three questions: is retirement safe, is absence observed, and can the resource return? Each requires different evidence."*
 * **On-Screen Subtitle:**
   > *Three Independent Claims: Safe to Retire · Observed Absent · Resurrection Controlled.*
-* **Cut/Transition:** Smooth cut to GitLab Web UI.
 
 #### SCENE 03: Genuine GitLab Duo Investigation (00:30–00:52 | 22 s)
 * **Application/URL:** GitLab browser window:
@@ -582,12 +1041,11 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   * Duo Session `9710085`: `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/automate/agent-sessions/9710085`
 * **Action:** Show Issue #5 description, scroll to Duo Agent Note `4045401991`. Show agent inspecting disposable project `87785099` repository tree and `.gitlab-ci.yml`.
 * **Execution Mode:** `RECORDED HISTORICAL EVIDENCE` (genuine previously executed session).
-* **Fallback / Anonymous Access Boundary:** Empirical verification demonstrates that unauthenticated HTTP requests to GitLab Issue #5 notes return HTTP 401, and agent session URLs return HTTP 404 to non-members. Consequently, while authenticated operators can view Issue #5 Note `4045401991` and Session `9710085` directly in the GitLab UI, public judge verification relies on the static recorded historical evidence in the Enterprise Control Room (`control_room/index.html#proof` and `evidence/b4/duo_session_9710085_readback.json`), where authentic Duo investigation artifacts are fully inspectable without credentials.
+* **Fallback / Anonymous Access Boundary:** Empirical verification demonstrates that unauthenticated HTTP requests to GitLab Issue #5 notes return HTTP 401, and agent session URLs return HTTP 404 to non-members. Public judge verification relies on the static recorded historical evidence in the Enterprise Control Room (`control_room/index.html#proof` and `evidence/b4/duo_session_9710085_readback.json`), where authentic Duo investigation artifacts are fully inspectable without credentials.
 * **Voice-Over (English):**
   > *"A genuine GitLab Duo Custom Flow investigated our disposable Pages project. It examined the target repository and identified a surviving deployment path."*
 * **On-Screen Subtitle:**
   > *GitLab Duo Custom Flow (Catalog Item 1018562 · Session 9710085).*
-* **Cut/Transition:** Cut back to Control Room Evidence & Audit tab.
 
 #### SCENE 04: Independently Verifying Discovered Risk (00:52–01:12 | 20 s)
 * **Application/URL:** Control Room (`control_room/index.html#proof`), Evidence & Audit tab, sub-navigation "Candidate corroboration".
@@ -597,7 +1055,6 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   > *"Termivance then checks Duo's findings against separate GitLab provider observations. The redeployment mechanism is corroborated; inaccessible risks remain unresolved."*
 * **On-Screen Subtitle:**
   > *Corroboration: 4 Corroborated · 2 Unresolved · 1 Contextual. AI claims are never auto-promoted.*
-* **Cut/Transition:** Cut to terminal window.
 
 #### SCENE 05: ACTUAL Automation Execution (01:12–01:44 | 32 s)
 * **Application/URL:** Clean terminal window (Command Prompt or PowerShell) at project root.
@@ -608,7 +1065,6 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   > *"The deterministic engine independently checks the target, evaluates retirement obligations and refuses unsafe action. AI recommendations cannot authorize deletion or override provider facts."*
 * **On-Screen Subtitle:**
   > *Live Deterministic Evaluation: Provider-Backed · Fail-Closed · Zero Destructive Calls.*
-* **Cut/Transition:** Cut back to Control Room Graph tab.
 
 #### SCENE 06: Retirement Obligation Graph (01:44–02:06 | 22 s)
 * **Application/URL:** Control Room (`control_room/index.html#graph`), Obligation Graph tab.
@@ -618,7 +1074,6 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   > *"The Retirement Obligation Graph exposes what still blocks retirement: authorization, provider access and an active path that could republish the site."*
 * **On-Screen Subtitle:**
   > *Retirement Obligation Graph: Explicit dependencies block unsafe retirement.*
-* **Cut/Transition:** Click to What-if Simulation tab.
 
 #### SCENE 07: Why Unpublish Alone Is Insufficient (02:06–02:24 | 18 s)
 * **Application/URL:** Control Room (`control_room/index.html#whatif`), What-if tab.
@@ -628,20 +1083,17 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   > *"Even a successful unpublish would not neutralize this CI job. The simulation is clearly labeled hypothetical, never passed off as observed absence."*
 * **On-Screen Subtitle:**
   > *Retirement Reversal Risk: Unpublishing does not neutralize surviving CI triggers.*
-* **Cut/Transition:** Cut to browser showing CI & QA pipelines.
 
 #### SCENE 08: Real CI and Independent QA Observer (02:24–02:42 | 18 s)
 * **Application/URL:** 
-  * Tab 1: GitLab CI Pipeline overview: verified repair Pipeline `2967141211` (Job `17313164853` verify `passed`, commit `6e808b3`; historical baseline Pipeline `2966976920`, Job `17311100994`). For latest revision post-push, operators display the passing pipeline on canonical `origin/main`.
-  * Tab 2: GitHub Actions QA Observer run: verified repair run [`39412372280`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39412372280) (`qa_status: PASS`, drift `IN_SYNC`; historical baseline run `39406813557`). The QA observer workflow runs on demand (`workflow_dispatch`) and on a scheduled 6-hour cron.
+  * Tab 1: GitLab CI Pipeline overview: verified baseline Pipeline `2967239572` (Job `17313891889` verify `passed`, commit `8fd6567`; historical baselines Pipeline `2967141211` and `2966976920`). Operators display passing pipeline on canonical `origin/main`.
+  * Tab 2: GitHub Actions QA Observer run: verified baseline run [`39415695705`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39415695705) (`qa_status: PASS`, drift `IN_SYNC`; historical runs `39412372280` and `39406813557`). The QA observer runs on demand (`workflow_dispatch`) and on a scheduled 6-hour cron.
 * **Action:** Show GitLab pipeline passed status. Switch to GitHub observer showing commit binding match and 21 live API observations.
 * **Execution Mode:** `LIVE CI/CD & INDEPENDENT QA`.
-* **Privacy & Access Fallback:** Canonical GitLab pipeline status (`passed` / `SUCCESS`) is independently observed via public GitLab API and web UI. Test counts (381 pytest tests, 40 safety assertions, Ruff clean) are executor-reported and locally/CI verified; raw GitLab CI job log traces return HTTP 401 unauthenticated (`NOT_OBSERVED` anonymously). The GitHub Actions observer run summary, step logs, and evidence manifests are 100% public without authentication.
 * **Voice-Over (English):**
   > *"Real GitLab CI tests the safety contracts. A separate GitHub Actions observer checks live GitLab APIs and confirms the exact source revision."*
 * **On-Screen Subtitle:**
   > *Continuous Assurance: Canonical GitLab CI + Independent GitHub Actions QA Bridge.*
-* **Cut/Transition:** Return to Control Room Overview for final shot.
 
 #### SCENE 09: Conclusion and Operator Impact (02:42–02:54 | 12 s)
 * **Application/URL:** Control Room (`control_room/index.html`), Overview tab, final centered view.
@@ -668,13 +1120,15 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
 
 ### Official Submission Screenshot Manifest
 
-| Filename | Resolution | Viewport & Source Screen | Click Sequence / Content | Target Destination | Caption & Alt Text |
-|---|---|---|---|---|---|
-| `01_overview_retirement_blocked.png` | 1920×1080 | Control Room, Overview tab | Centered view showing Decision Hero (RETIREMENT BLOCKED), Snapshot Notice, and 3-stage Evidence Chain | README, Devpost | *Termivance Control Room: Deterministic BLOCKED verdict, target details, and evidence chain.* |
-| `02_duo_issue5_discovery.png` | 1920×1080 | GitLab Web UI, Issue #5 | Scroll to Note `4045401991` showing Duo autonomous inspection of target `87785099` | Devpost, Evidence | *Genuine GitLab Duo Custom Flow (Session 9710085) discovering surviving redeployment path.* |
-| `03_candidate_corroboration.png` | 1920×1080 | Control Room, Evidence & Audit tab | Sub-nav Candidate Corroboration; highlight primary Session 9710085 card (4 corroborated, 2 unresolved) | README, Devpost | *Evidence-Grounded Corroboration: Reconciling AI candidate claims against provider facts.* |
-| `04_obligation_graph_focused.png` | 1920×1080 | Control Room, Graph tab | Click `resource:ci_redeployment:87785099` node; edge highlights active | README, Devpost | *Retirement Obligation Graph: Surviving redeployment mechanism blocking retirement.* |
-| `05_real_ci_qa_binding.png` | 1920×1080 | Split browser window | Left: GitLab CI Pipeline (verified repair `2967141211` / historical `2966976920`); Right: GitHub QA run (verified repair `39412372280` / historical `39406813557`, IN_SYNC) | Devpost, README | *Independent Verification: Canonical GitLab CI history bound to external GitHub Actions QA bridge.* |
+| Filename | Resolution | Viewport & Source Screen | Current Status | Caption & Alt Text |
+|---|---|---|---|---|
+| `01_overview_retirement_blocked.png` | 1920×1080 | Control Room, Overview tab | `OPERATOR_ACTION` (Pending Capture) | *Termivance Control Room: Deterministic BLOCKED verdict, target details, and evidence chain.* |
+| `02_duo_issue5_discovery.png` | 1920×1080 | GitLab Web UI, Issue #5 | `OPERATOR_ACTION` (Pending Capture) | *Genuine GitLab Duo Custom Flow (Session 9710085) discovering surviving redeployment path.* |
+| `03_candidate_corroboration.png` | 1920×1080 | Control Room, Evidence & Audit tab | `OPERATOR_ACTION` (Pending Capture) | *Evidence-Grounded Corroboration: Reconciling AI candidate claims against provider facts.* |
+| `04_obligation_graph_focused.png` | 1920×1080 | Control Room, Graph tab | `OPERATOR_ACTION` (Pending Capture) | *Retirement Obligation Graph: Surviving redeployment mechanism blocking retirement.* |
+| `05_real_ci_qa_binding.png` | 1920×1080 | Split browser window (GitLab CI & GitHub QA) | `OPERATOR_ACTION` (Pending Capture) | *Independent Verification: Canonical GitLab CI history bound to external GitHub Actions QA bridge.* |
+
+> **Audit Note (DOC-09):** The 5 screenshot files are currently absent and registered as pending `OPERATOR_ACTION`. They must never be represented as existing deliverables until captured by the operator.
 
 ---
 
@@ -732,8 +1186,8 @@ A correctly blocked unsafe retirement is a real security outcome, not a failure.
 
 #### Real CI/CD and Independent QA Observer
 Termivance is verified by real, visible automation and an independent dual-platform QA bridge:
-* **Canonical GitLab CI:** Official verification pipelines on default branch (verified repair Pipeline `2967141211`, Job `17313164853` `SUCCESS`; historical baseline `2966976920`) confirm all tests pass on canonical GitLab `origin/main`. Pipeline SUCCESS is independently observable via the public GitLab API; the test suite executes **381 deterministic unit and regression tests** and **40 network-free CI safety assertions** with zero failures (note: raw GitLab CI job log traces return HTTP 401 when accessed unauthenticated, and are thus `NOT_OBSERVED` via anonymous HTTP).
-* **External GitHub Actions QA Bridge:** An independent observer workflow (`.github/workflows/gitlab-qa.yml`) on GitHub runs on demand (via `workflow_dispatch`) and on a scheduled 6-hour cron, independently checking 21 live GitLab API endpoints and verifying exact source SHA parity between canonical GitLab `main` and GitHub `gitlab-main` (verified repair Run [`39412372280`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39412372280) `PASS / IN_SYNC`; historical baseline Run `39406813557`).
+* **Canonical GitLab CI:** Official verification pipelines on default branch (verified baseline Pipeline `2967239572`, Job `17313891889` `SUCCESS`) confirm all tests pass on canonical GitLab `origin/main`. Pipeline SUCCESS is independently observable via the public GitLab API; the test suite executes **381 deterministic unit and regression tests** and **40 network-free CI safety assertions** with zero failures (note: raw GitLab CI job log traces return HTTP 401 when accessed unauthenticated, and are thus `NOT_OBSERVED` via anonymous HTTP).
+* **External GitHub Actions QA Bridge:** An independent observer workflow (`.github/workflows/gitlab-qa.yml`) on GitHub runs on demand (via `workflow_dispatch`) and on a scheduled 6-hour cron, independently checking 21 live GitLab API endpoints and verifying exact source SHA parity between canonical GitLab `main` and GitHub `gitlab-main` (verified baseline Run [`39415695705`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39415695705) `PASS / IN_SYNC`).
 
 #### Real-World Platform Engineering Impact
 Termivance gives SREs and platform engineers a defensible, evidence-backed framework for decommissioning services safely:
@@ -781,34 +1235,37 @@ Termivance gives SREs and platform engineers a defensible, evidence-backed frame
 
 ---
 
-## 15. Execution Calendar (October 20–27, 2026)
+## 15. Execution Calendar & Stop-Loss Policy (October 20–27, 2026)
 
-* **October 20–21 (Current Milestone):**
-  * Establish and lock Canonical Master Execution Plan (`plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md`).
-  * Verify full test suite (381 tests), Ruff, and 40 safety assertions.
-  * Deliver safe CLI launcher (`scripts/run_supervised_review.bat`).
-  * Push to canonical GitLab remote and confirm GitHub QA observer `PASS / IN_SYNC`.
-* **October 21–23:**
-  * Track external organizer Pages support request on Showcase #1.
-  * Re-check disposable project permissions if organizer response arrives.
-  * Maintain verified baseline; finalize screenshot assets.
-* **October 23–24:**
-  * Lock source commit and CI verification pipeline.
-  * Prepare operator filming environment (browser tabs, resolution 1920×1080).
-  * Review video script against exact UI screens.
-* **October 24–25 (Filming & Editing):**
-  * Operator records screen captures for Scenes 01–09 per Video Runbook.
-  * Operator records English voice-over narration and generates subtitles.
-  * Edit final MP4 video (< 180s, target 174s).
-* **October 26 (Submission Day):**
-  * Final independent QA verification run on GitHub QA mirror.
-  * Upload edited video to YouTube as Public.
-  * Complete Devpost submission form and perform operator review.
-  * Submit before 22:00 Türkiye. Record submission confirmation SHA and timestamp.
-  * Enforce strict repository freeze.
-* **October 27 (Emergency Buffer Only):**
-  * Official hard deadline: 13:00 UTC / 16:00 Türkiye.
-  * Zero routine development. Emergency contingency only.
+### 15.1 Ten-Step Execution Sequence
+
+```mermaid
+flowchart TD
+    S1["1. Plan Reconstruction & Independent Plan QA"] --> S2["2. Supervised Autonomy Feasibility & Impl (W18)"]
+    S2 --> S3["3. Organizer-Gated Pages Preparedness (W19)"]
+    S3 --> S4["4. Monitoring, Repair Sets & Decay Impl (W20-W22)"]
+    S4 --> S5["5. Cross-Feature Integration & Adversarial Testing"]
+    S5 --> S6["6. Legitimate Permission Action (If Available)"]
+    S6 --> S7["7. Final Atomic Whole-Repo Doc Reconciliation (W25)"]
+    S7 --> S8["8. Independent Final-Source QA & Source Lock (W26)"]
+    S8 --> S9["9. Operator Screenshots, Filming & Video Edit (W13-W15)"]
+    S9 --> S10["10. Devpost Submission & Freeze (W16-W17)"]
+```
+
+1. **Step 1 (October 20):** Canonical Plan Reconstruction and Independent Plan QA.
+2. **Step 2 (October 21):** Award-Critical Supervised Autonomy Feasibility and Implementation (`WORK-B4-18`).
+3. **Step 3 (October 22):** Organizer-Gated Pages Preparedness without unauthorized mutation (`WORK-B4-19`).
+4. **Step 4 (October 23):** Resurrection Monitoring (`WORK-B4-20`), Deterministic Minimal Repair Sets (`WORK-B4-21`), and Proof Decay (`WORK-B4-22`).
+5. **Step 5 (October 24):** Cross-Feature Integration, Nine-Stage DevSecOps Reassessment (`WORK-B4-23`), End-to-End Demo Evidence Binding (`WORK-B4-24`), and Adversarial Testing.
+6. **Step 6 (October 24):** Legitimate External Permission-Dependent Final Action (Branch C only if authorized; otherwise Branch A baseline preserved).
+7. **Step 7 (October 25):** Final Atomic Whole-Repository Evidence & Document Reconciliation (`WORK-B4-25`).
+8. **Step 8 (October 25):** Independent Final-Source QA, Source Lock, and Submission Readiness (`WORK-B4-26`).
+9. **Step 9 (October 25–26):** Operator Media Capture, Screen Recordings, English Voice-Over, Video Editing (`WORK-B4-13`–`15`).
+10. **Step 10 (October 26):** Video Public Upload (`WORK-B4-16`), Devpost Submission (`WORK-B4-17`), and Repository Freeze by 22:00 Türkiye.
+
+### 15.2 Stop-Loss Policy
+> [!IMPORTANT]
+> **Strict Submission Protection Rule:** Never sacrifice the October 27 deadline to chase speculative functionality, organizer permissions, or recurring infrastructure. If a proposed engineering path cannot be credibly completed and verified before the media capture window (October 25, 18:00 Türkiye), development must immediately halt, preserving the strongest verified working path and documenting remaining limitations honestly. Working software and an honest public video outrank speculative features.
 
 ---
 
@@ -826,19 +1283,20 @@ sequenceDiagram
 
     Dev->>GL: git push origin main
     GL->>CI: Trigger verify pipeline (ruff, pytest, safety checks)
-    CI-->>GL: Pipeline SUCCESS (Job 17309794956)
+    CI-->>GL: Pipeline SUCCESS (Pipeline 2967239572)
     Dev->>GH: git push qa-mirror main:gitlab-main
-    GH->>Obs: Trigger gitlab-qa.yml workflow
+    Note over GH,Obs: Observer runs on demand (workflow_dispatch) or scheduled cron (23 */6 * * *)
     Obs->>GL: Query live public GitLab APIs (21 endpoints)
     Obs->>Obs: Verify commit binding & source/evidence SHA-256 manifests
-    Obs-->>GH: qa_status: PASS / IN_SYNC
+    Obs-->>GH: qa_status: PASS / IN_SYNC (Run 39415695705)
 ```
 
 ### Verification Contracts
 1. **One-Way Mirroring:** Exact git commit SHAs mirrored from GitLab `main` to GitHub `gitlab-main`. Never reverse-sync.
 2. **Credential Isolation:** Broad GitLab personal access tokens are NEVER stored in GitHub Secrets. The GitHub observer operates using unauthenticated public API reads.
 3. **Fail-Closed Drift Detection:** If remote GitLab `main` SHA diverges from GitHub mirror SHA, the observer exits with code 1 (`DRIFT_DETECTED`).
-4. **Honest Observation Reporting:** Endpoints requiring authenticated tokens (e.g. internal job traces, private notes) are reported as `NOT_OBSERVED` with exact HTTP status codes (401/403), never mocked or promoted.
+4. **Trigger Precision (DOC-07):** The observer workflow executes on demand via `workflow_dispatch` and on a scheduled 6-hour cron (`23 */6 * * *`). Pushing to `gitlab-main` does not automatically trigger the observer.
+5. **Honest Observation Reporting:** Endpoints requiring authenticated tokens (e.g. internal job traces, private notes) are reported as `NOT_OBSERVED` with exact HTTP status codes (401/403), never mocked or promoted.
 
 ---
 
@@ -847,5 +1305,8 @@ sequenceDiagram
 This document constitutes the sole canonical execution plan for Termivance. It supersedes all prior micro-plans, scratch notes, and conversation transcripts.
 
 * **Repository Single Source of Truth:** `plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md`
-* **Executor Baseline Sign-Off:** All code, tests, CI assertions, and runbooks verified clean.
-* **Operator Next Step:** Review plan, execute push/bridge verification, and proceed to media capture per Section 11 & 12.
+* **Verified Baseline Commit:** `8fd656725929b9d790d4d79f5cff2659af650de5`
+* **Verified Pipeline ID:** `2967239572` (Job ID `17313891889`, SUCCESS)
+* **Verified Observer Run ID:** `39415695705` (`PASS / IN_SYNC`)
+* **Executor Sign-Off:** Reconstructed and strengthened canonical plan complete.
+* **Next Action:** Submit reconstructed plan for independent plan QA audit before authorizing engineering execution.
