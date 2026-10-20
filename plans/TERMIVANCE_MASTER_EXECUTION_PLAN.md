@@ -61,14 +61,35 @@ The core Python engine owns all provider mutations, obligation evaluations, and 
   * All other namespace projects and shared infrastructure.
 * **Prohibited Actions:** No project deletion (`DELETE /projects/:id`), no user or namespace mutations, no fallback environment-stop substitutions for Pages unpublishing.
 
+### 1.6 Permanent Separation Between Both GitLab Pages Sites
+Termivance strictly segregates two distinct project contexts involving GitLab Pages. They must never be confused, merged, or substituted:
+
+1. **Disposable Pages Test Target — Project `87785099` (`termivance-b3-disposable-pages-demo`):**
+   * **Purpose:** Real target-side Pages publication, marker verification, and redeployment resurrection-risk demonstration.
+   * **Role:** The external resource whose retirement lifecycle Termivance assesses. It is **NOT** the Control Room product.
+   * **Invariant:** **Never repurpose project `87785099` as the product UI host.**
+   * **Organizer-Reported Setting:** `pages_access_level` changed from `private` to `enabled` on Showcase Work Item #1.
+   * **Current Target Deployment:** Pending independent verification via `WORK-B4-19` Track 1.
+   * **Target Unpublish:** `NOT_RUN / PERMISSION_BLOCKED` (Developer role returns HTTP 403; Maintainer access denied by organizer).
+   * **Target Absence:** `NOT_CLAIMED`.
+   * **Target Resurrection Control:** `NOT_CLAIMED`.
+
+2. **Potential Judge-Facing Control Room Hosting — Canonical Project `87779099` (`termivance`):**
+   * **Purpose:** Optional public, read-only static demonstration of the Termivance Control Room viewer for hackathon judges.
+   * **Role:** Additive static presentation of the product's interface (`control_room/index.html` and `control_room/data.js`), completely separate from target retirement assessment.
+   * **Current Deployment Status:** `NOT_RUN / NOT_VERIFIED` unless future provider evidence proves otherwise.
+   * **Protected Status:** The canonical repository remains protected against retirement, destructive mutation, and unauthorized scope expansion.
+   * **Configuration Isolation:** A potential static Pages publishing CI job in canonical `.gitlab-ci.yml` must not be confused with the disposable project's `create-pages` redeployment risk.
+   * **Governance Invariant:** Any future additive deployment must be separately researched, justified, and operator-approved under zero personal spend ($0.00). If public hosting is infeasible, fallback cleanly to the local Control Room (`file://`) and repository reproduction instructions. Deployment is optional for Path A eligibility; public UI hosting failure must not block an honest, on-time submission.
+
 ---
 
 ## 2. Verified Current State and Evidence Baseline
 
 | Dimension | Baseline Fact / Evidence Record | Verification Mode |
 |---|---|---|
-| **GitLab Commit SHA (Audited Plan Baseline)** | **`3c53ef4bd37391eeddfface538bba4f3b2f840b1`** (Historical baselines: `8fd656725929b9d790d4d79f5cff2659af650de5`, `6e808b33a4974fc9232ec9b3ca79bdc4b9281d24`, `b4431ec0b2bcba5f94a5636598b9b2ac32967ea5`) | `INDEPENDENTLY_VERIFIED` (GitLab API & remote HEAD) |
-| **GitHub Mirror SHA (Audited Baseline)** | **`3c53ef4bd37391eeddfface538bba4f3b2f840b1`** on `gitlab-main` (Historical baselines: `8fd6567`, `6e808b3`, `b4431ec`) | `INDEPENDENTLY_VERIFIED` (`PASS / IN_SYNC`) |
+| **GitLab Commit SHA (Audited Plan Baseline)** | **`8c28b362a73d6f9e1d623521c12e01a5c021ac7c`** (Historical baselines: `3c53ef4bd37391eeddfface538bba4f3b2f840b1`, `8fd656725929b9d790d4d79f5cff2659af650de5`, `6e808b33a4974fc9232ec9b3ca79bdc4b9281d24`, `b4431ec0b2bcba5f94a5636598b9b2ac32967ea5`) | `INDEPENDENTLY_VERIFIED` (GitLab API & remote HEAD) |
+| **GitHub Mirror SHA (Audited Baseline)** | **`8c28b362a73d6f9e1d623521c12e01a5c021ac7c`** on `gitlab-main` (Historical baselines: `3c53ef4`, `8fd6567`, `6e808b3`, `b4431ec`) | `INDEPENDENTLY_VERIFIED` (`PASS / IN_SYNC`) |
 | **GitLab CI Pipeline (Audited Baseline)** | Verified Pipeline ID **`2967484742`**, Job ID **`17315753763`** (`stage: verify`, `status: success`); Historical baselines: Pipeline `2967239572` (Job `17313891889`), Pipeline `2967141211` (Job `17313164853`), Pipeline `2966976920` (Job `17311100994`) | `INDEPENDENTLY_VERIFIED` (`status: success`) |
 | **GitHub Observer Run (Audited Baseline)** | Verified Run [**`39423997627`**](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39423997627) (`PASS / IN_SYNC`); Historical baselines: Run [`39415695705`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39415695705), Run [`39412372280`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39412372280), Run [`39406813557`](https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39406813557) | `INDEPENDENTLY_VERIFIED` (`PASS / IN_SYNC`) |
 | **Git Commit & Future CI Identity Paradox** | Post-push verification for any new commit is dynamically bound and verified by GitLab CI and GitHub QA observer upon push; this plan records known verified baselines without fabricating future identifiers (Section 4.4) | Immutable Git Provenance Contract |
@@ -80,7 +101,8 @@ The core Python engine owns all provider mutations, obligation evaluations, and 
 | **Autonomy Compliance Status** | **`NEEDS_REVIEW`** (Defensible Supervised with documented handoff boundary; genuine Duo research + live Python review; event daemon not implemented; target of `WORK-B4-18` feasibility study) | System Truth State |
 | **Primary Duo Discovery** | Session `9710085`, Issue #5, Agent Note `4045401991` | `RECORDED_HISTORICAL` & Live API readable |
 | **Contextual Duo Sessions** | Session `9671626` (Issue #3, Agent Note `4040776241`) and Session `9704855` (Issue #4, Agent Note `4044819187`) remain separate historical records | `RECORDED_HISTORICAL` |
-| **Approved Disposable Target** | Project `87785099`, commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d` | `RECORDED_HISTORICAL` (Target CI has `create-pages`) |
+| **Approved Disposable Target (Project 87785099)** | Project `87785099`, commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d`; assessed target resource only, NEVER product UI host | `RECORDED_HISTORICAL` (Target CI has `create-pages`) |
+| **Potential Public UI Hosting (Project 87779099)** | **`NOT_RUN / NOT_VERIFIED`** (Subject to `WORK-B4-24` feasibility research; static local `file://` viewer fully verified; public deployment optional under Path A) | Target of WORK-B4-24 Feasibility |
 | **Organizer Decision on Showcase #1** | Maintainer role: **`DENIED_BY_ORGANIZER`** (preserving contest equity across participants); Pages access level: **`PAGES_ACCESS_ENABLED_BY_ORGANIZER — ORGANIZER_REPORTED`** (reported changed from `private` to `enabled`) | `ORGANIZER_OFFICIAL_REPLY` (Showcase Work Item #1) |
 | **Target Pages Permissions (Provider Fact)** | Developer role returns HTTP 403 on `GET/DELETE /projects/:id/pages` | `INDEPENDENTLY_VERIFIED` (Live GitLab Provider 403) |
 | **Pages Deployment Observation** | **`PENDING_INDEPENDENT_VERIFICATION`** (Target of `WORK-B4-19` Track 1; organizer assertion is not provider proof) | Investigation Required |
@@ -340,15 +362,31 @@ This ledger reconciles all independent model and auditor findings, operator dete
 * **Decision:** **ACCEPTED & CLOSED IN PLAN REPAIR.**
 * **Rationale:** Incorporate organizer decision; update work state model to strict 12-state vocabulary; decouple deterministic work items; harden claim boundaries; establish two-track `WORK-B4-19`.
 * **Exact Scope:** `plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md`.
-* **Implementation Reference:** Commit `3c53ef4` and current plan repair.
+* **Implementation Reference:** Commit `3c53ef4` and `8c28b36`.
 * **Tests:** Local test suite 381 PASS, Ruff clean, 40/40 safety assertions PASS.
 * **Provider Evidence:** GitLab CI Pipeline `2967484742`, GitHub Actions Observer Run `39423997627`.
-* **Independent QA Evidence:** Awaiting Independent Auditor Acceptance.
+* **Independent QA Evidence:** Verified baseline `8c28b36`.
 * **Unresolved Limitation:** Plan QA approval is a prerequisite gate; engineering implementation is not authorized until auditor sign-off.
-* **Next Action:** Await Independent Plan QA Acceptance.
+* **Next Action:** Finalize delivery-gate surgical closure before implementation authorization.
 * **Blocking Dependency:** Independent Auditor Review.
 * **Status:** `CLOSED` in planning; implementation pending authorization.
 * **Future Acceptance Criterion:** Independent auditor awards Plan QA PASS.
+
+#### 13. Final Plan Delivery-Gate Closure: Public UI, Media, Devpost, and Release Consistency
+* **Original Finding:** Independent plan audit identified 4 remaining material planning gaps: (1) lack of a concrete public Control Room delivery feasibility decision and fallback on canonical project `87779099`; (2) need for explicit, permanent separation between disposable Pages project `87785099` and canonical project `87779099`; (3) video and Devpost media planning not conditionally bound to real engineering evidence; (4) invalid composite status on `WORK-B4-19` and circular dependency between `WORK-B4-26` and filming/screenshots (`WORK-B4-13`/`14`).
+* **Risk & Competition Impact:** Ambiguous UI delivery commitments; risk of conflating disposable target with UI host; video/Devpost drift; governance rejection due to non-standard lifecycle state; circular scheduling deadlock preventing execution.
+* **Decision:** **ACCEPTED & CLOSED IN SURGICAL PLAN REPAIR.**
+* **Rationale:** Establish 12-point Control Room hosting feasibility research and clean fallback on canonical project `87779099`; lock permanent separation of both Pages sites; define evidence-dependent conditional video storyboard and 6-deliverable Devpost screenshot register; correct `WORK-B4-19` to standard `BLOCKED_EXTERNAL` with capability-specific track qualifiers; resolve filming deadlock via two-checkpoint delivery gate in `WORK-B4-26` (Checkpoint A for pre-filming source/engine QA, Checkpoint B for submission readiness).
+* **Exact Scope:** `plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md`.
+* **Implementation Reference:** Commit `8c28b36` baseline and current delivery-gate plan repair.
+* **Tests:** Local test suite 381 PASS, Ruff clean, 40/40 safety assertions PASS.
+* **Provider Evidence:** GitLab CI Pipeline `2967484742`, GitHub Actions Observer Run `39423997627`.
+* **Independent QA Evidence:** Awaiting Independent Auditor Acceptance of Plan Delivery-Gate Repair.
+* **Unresolved Limitation:** Plan QA approval is a prerequisite gate; engineering implementation is not authorized until auditor sign-off.
+* **Next Action:** Submit reconstructed plan for independent plan QA audit before authorizing engineering execution.
+* **Blocking Dependency:** Independent Auditor Review.
+* **Status:** `CLOSED` in planning; implementation pending authorization.
+* **Future Acceptance Criterion:** Independent auditor awards Plan Delivery-Gate QA PASS.
 
 ---
 
@@ -477,19 +515,19 @@ To eliminate circular dependencies and prevent fictional SHA fabrication, Termiv
 | `WORK-B4-11` | Consolidated B4 Repair Push & Verification (`6e808b3`) | P0 | **CLOSED_INDEPENDENT_QA** | `WORK-B4-01`–`10` | Executor / Auditor | 2026-10-20 | Eligibility / Verification | Remote SHA `6e808b3`; Pipeline `2967141211`; Run `39412372280` |
 | `WORK-B4-12` | Final Submission-Truth Surgical Closure & Post-Push Observer | P0 | **CLOSED_INDEPENDENT_QA** | `WORK-B4-11` | Executor / Auditor | 2026-10-20 | Eligibility / Verification | Verified SHA `8fd6567`; Pipeline `2967239572`; Run `39415695705` |
 | `WORK-B4-18` | Genuine Supervised Autonomy Integration | P0 | **RESEARCH_REQUIRED** | Plan QA Approval | Executor | 2026-10-22 | Best Supervised Agent | 12-point feasibility study; supported continuation design |
-| `WORK-B4-19` | Organizer-Gated Real Pages Retirement | P0 | **BLOCKED_EXTERNAL / TRACK_1_READY** | Plan QA Approval / Showcase #1 | Operator / Executor | 2026-10-24 | Release Stage / Bounded Absence | Track 1: Verify deployment/URL; Track 2: Fail-closed refusal |
+| `WORK-B4-19` | Organizer-Gated Real Pages Retirement | P0 | **BLOCKED_EXTERNAL** | Plan QA Approval / Showcase #1 | Operator / Executor | 2026-10-24 | Release Stage / Bounded Absence | Track 1: Verify deployment/URL (READY_TO_EXECUTE); Track 2: Fail-closed refusal (BLOCKED_EXTERNAL) |
 | `WORK-B4-20` | Resurrection Monitoring & Current-Truth Downgrade | P1 | **READY_TO_EXECUTE** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | Product Differentiator | Read-only target monitoring, CI schedule feasibility, truth downgrade |
 | `WORK-B4-21` | Deterministic Minimal Repair Set | P1 | **READY_TO_EXECUTE** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | SRE Innovation | Bounded candidate repair guidance from ROG; no authority expansion |
 | `WORK-B4-22` | Bounded Proof Decay and Freshness Revalidation | P1 | **READY_TO_EXECUTE** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | Auditability | 6-state decay machine, 900s TTL enforcement, fail-closed revalidation |
 | `WORK-B4-23` | Nine-Stage DevSecOps Evidence Reassessment | P0 | **NOT_STARTED** | `WORK-B4-18`–`22`, `WORK-B4-19` (Track 1) | Executor | 2026-10-24 | Most Stages Covered | Rigorous post-engineering audit across all 9 stages; Devpost sync |
-| `WORK-B4-24` | Integrated End-to-End Demo and Evidence Binding | P0 | **NOT_STARTED** | `WORK-B4-18`–`23` | Executor | 2026-10-24 | Judge Presentation | Unified reproducible evidence chain, Control Room alignment |
-| `WORK-B4-25` | Atomic Repository-Wide Documentation Reconciliation | P0 | **NOT_STARTED** | `WORK-B4-18`–`24` | Executor | 2026-10-25 | Submission Integrity | Whole-repository contradiction audit (DOC-01 to DOC-10) closed atomically |
-| `WORK-B4-26` | Final Independent QA, Source Lock and Submission Readiness | P0 | **NOT_STARTED** | `WORK-B4-25` | Auditor / Operator | 2026-10-25 | Submission Freeze | All gates pass; final commit locked; ready for filming & Devpost |
-| `WORK-B4-13` | Capture Demonstration Media & Screenshots | P0 | **OPERATOR_ACTION** | `WORK-B4-26` | Operator | 2026-10-25 | Presentation / Devpost | 5 sanitized PNGs captured at 1920x1080 per register (DOC-09) |
-| `WORK-B4-14` | Record Video Screen Captures (Scenes 01–09) | P0 | **OPERATOR_ACTION** | `WORK-B4-26` | Operator | 2026-10-25 | Submission Video | Raw MP4 captures for all 9 scenes per Section 11 Runbook |
-| `WORK-B4-15` | Video Editing, English Voice-Over & Narration | P0 | **OPERATOR_ACTION** | `WORK-B4-14` | Operator | 2026-10-25 | Submission Video | Final MP4 (< 180s, target 174s), clear voice-over, readable text |
-| `WORK-B4-16` | Upload Video to YouTube as Public | P0 | **OPERATOR_ACTION** | `WORK-B4-15` | Operator | 2026-10-26 | Devpost Submission | Public YouTube URL accessible to judges |
-| `WORK-B4-17` | Complete Official Devpost Submission | P0 | **OPERATOR_ACTION** | `WORK-B4-16` | Operator | 2026-10-26 | Contest Eligibility | All fields completed, URL linked, submitted before 22:00 Türkiye |
+| `WORK-B4-24` | Integrated End-to-End Demo, Evidence Binding & UI Hosting Feasibility | P0 | **NOT_STARTED** | `WORK-B4-18`–`23` | Executor | 2026-10-24 | Judge Presentation | Unified evidence chain, Control Room alignment, 12-point canonical Pages feasibility study, conditional video runbook |
+| `WORK-B4-25` | Atomic Repository-Wide Documentation Reconciliation | P0 | **NOT_STARTED** | `WORK-B4-18`–`24` | Executor | 2026-10-25 | Submission Integrity | Whole-repository contradiction audit (DOC-01 to DOC-10); UI deployment docs or local fallback; Sec 13.5 English sync |
+| `WORK-B4-26` | Final Independent QA, Source Lock and Submission Readiness | P0 | **NOT_STARTED** | Checkpoint A: `WORK-B4-25`; Checkpoint B: `WORK-B4-13`–`16` | Auditor / Operator | 2026-10-25 | Submission Freeze | Two checkpoints: Checkpoint A unblocks capture; Checkpoint B validates post-capture assets and authorizes submission |
+| `WORK-B4-13` | Capture Demonstration Media & Screenshots | P0 | **OPERATOR_ACTION** | `WORK-B4-26 (Checkpoint A)` | Operator | 2026-10-25 | Presentation / Devpost | Curate accepted count from 6 candidate deliverables (Sec 12); 1920x1080 sanitized PNGs; zero credentials leaked |
+| `WORK-B4-14` | Record Video Screen Captures (Scenes 01–09) | P0 | **OPERATOR_ACTION** | `WORK-B4-26 (Checkpoint A)` | Operator | 2026-10-25 | Submission Video | Raw MP4 captures for all 9 scenes adhering to conditional evidence rules per Sec 11 |
+| `WORK-B4-15` | Video Editing, English Voice-Over & Narration | P0 | **OPERATOR_ACTION** | `WORK-B4-14` | Operator | 2026-10-25 | Submission Video | Final MP4 (< 180s, target 174s), clear voice-over, readable text, exact scene timings matching declared runtime |
+| `WORK-B4-16` | Upload Video to YouTube as Public | P0 | **OPERATOR_ACTION** | `WORK-B4-15` | Operator | 2026-10-26 | Devpost Submission | Public YouTube URL accessible in clean browser session; unlisted/private forbidden |
+| `WORK-B4-17` | Complete Official Devpost Submission | P0 | **OPERATOR_ACTION** | `WORK-B4-26 (Checkpoint B)` & `WORK-B4-16` | Operator | 2026-10-26 | Contest Eligibility | All fields completed, URL linked, submitted before 22:00 Türkiye; canonical repository frozen |
 
 ---
 
@@ -515,17 +553,23 @@ flowchart TD
         W20 --> W23
         W21 --> W23
         W22 --> W23
-        W23 --> W24["WORK-B4-24: Integrated End-to-End Demo Evidence"]
+        W23 --> W24["WORK-B4-24: Integrated Demo & Public UI Feasibility"]
         W24 --> W25["WORK-B4-25: Atomic Repository Doc Reconciliation"]
-        W25 --> W26["WORK-B4-26: Final Independent QA & Source Lock"]
+        W25 --> W26A["WORK-B4-26 (Checkpoint A): Engineering/Source Ready for Capture"]
     end
     
-    subgraph Operator Delivery
-        W26 --> W13["WORK-B4-13: Capture Screenshots"]
-        W26 --> W14["WORK-B4-14: Record Screen Captures"]
+    subgraph Operator Capture & Production
+        W26A --> W13["WORK-B4-13: Capture Screenshots"]
+        W26A --> W14["WORK-B4-14: Record Screen Captures"]
         W14 --> W15["WORK-B4-15: Video Editing & Narration"]
         W15 --> W16["WORK-B4-16: YouTube Public Upload"]
-        W16 --> W17["WORK-B4-17: Official Devpost Submission"]
+    end
+
+    subgraph Final Submission Gate
+        W13 --> W26B["WORK-B4-26 (Checkpoint B): Ready for Submission"]
+        W16 --> W26B
+        W26B --> W17["WORK-B4-17: Official Devpost Submission"]
+        W17 --> FROZEN["Repository & Materials Frozen"]
     end
 ```
 
@@ -569,16 +613,19 @@ flowchart TD
 
 #### 4.7.2 WORK-B4-19 — Organizer-Gated Real Pages Retirement (Two-Track Architecture)
 * **Priority:** P0 / Externally Gated Dependency.
+* **Controlled Lifecycle Status:** **`BLOCKED_EXTERNAL`** (overall work package status in the 12-state controlled vocabulary).
 * **Prerequisite Gate:** Independent Plan QA Acceptance; Organizer Decision Recorded on Showcase #1.
-* **Objective:** Manage real GitLab Pages publication and retirement lifecycle on disposable project `87785099`, incorporating the authoritative organizer decision on Showcase Work Item #1.
+* **Objective:** Manage real GitLab Pages publication and retirement lifecycle on disposable project `87785099`, incorporating the authoritative organizer decision on Showcase Work Item #1, while strictly preserving separation from canonical Control Room hosting.
+* **Resource Boundary Invariant:** Disposable project `87785099` is the external target whose lifecycle Termivance assesses. **It is never repurposed as the product UI host.**
 * **Organizer Decision Facts:**
   * Maintainer Access: **`DENIED_BY_ORGANIZER`** (to preserve contest equity across participants).
   * Pages Access Level: **`PAGES_ACCESS_ENABLED_BY_ORGANIZER — ORGANIZER_REPORTED`** (reported changed from `private` to `enabled`).
-* **Two-Track Execution Structure:**
+* **Two-Track Execution Structure & Capability-Specific Qualifiers:**
+  *(Note: Track conditions are capability-specific qualifiers describing actionable versus blocked paths within the single controlled work package, not invented additional lifecycle states.)*
 
-  ##### Track 1: Real GitLab Pages Publication Evidence (`READY_TO_EXECUTE` upon Plan QA Approval)
+  ##### Track 1: Real GitLab Pages Publication Evidence (Capability-Specific Qualifier: `READY_TO_EXECUTE` upon Plan QA Approval)
   *Actionable engineering work to verify and document actual Pages publication:*
-  1. Query disposable project `87785099` settings via API; verify `visibility` (`public`) and `pages_access_level` (`enabled`).
+  1. Query disposable project `87785099` settings via API; verify `visibility` (`public`) and `pages_access_level` (`enabled`). Distinguish organizer-reported access setting from verified site deployment.
   2. Inspect target repository at observed commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d` (`.gitlab-ci.yml`, `create-pages` job).
   3. Validate that `create-pages` outputs artifacts to `public/` and sets `pages: true`.
   4. Verify the unique publication marker in source: `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` in `site/index.html`.
@@ -590,7 +637,7 @@ flowchart TD
   10. Preserve honest observation boundaries: if unauthenticated HTTP probes return Cloudflare interstitial or 403, record as `INCONCLUSIVE` or `NOT_OBSERVED`, never promote to verified deployment.
   > **Invariant:** A successful CI job alone is **never** proof of Pages deployment or served URL availability.
 
-  ##### Track 2: Actual Pages Unpublication (`BLOCKED_EXTERNAL — MAINTAINER_DENIED`)
+  ##### Track 2: Actual Pages Unpublication (Capability-Specific Qualifier: `BLOCKED_EXTERNAL — MAINTAINER_DENIED`)
   *Fail-closed security refusal under organizer role denial:*
   1. Maintainer access was explicitly denied by the hackathon organizers on Showcase #1.
   2. Developer role returns HTTP 403 on `DELETE /projects/87785099/pages`.
@@ -705,10 +752,10 @@ flowchart TD
   9. **Govern:** Protected target registry, deterministic graph authority, fail-closed policy engine, immutable audit trail. Status: **`VERIFIED (Core YES)`**.
 * **Devpost Rule:** Defensible default is 4 Core Stages (Plan, Verify, Secure, Govern). Release remains UNCHECKED.
 
-#### 4.7.7 WORK-B4-24 — Integrated End-to-End Judge Evidence
-* **Priority:** P0 / Judge Presentation.
+#### 4.7.7 WORK-B4-24 — Integrated End-to-End Demo, Evidence Binding & UI Hosting Feasibility
+* **Priority:** P0 / Judge Presentation & Delivery Feasibility.
 * **Prerequisite Gate:** Completion of `WORK-B4-18`–`23`.
-* **Objective:** Deliver one unified, reproducible, target-bound demonstration proving what Termivance genuinely does, aligning the Control Room, CLI, and filming storyboard.
+* **Objective:** Deliver one unified, reproducible, target-bound demonstration proving what Termivance genuinely does, aligning the Control Room, CLI, and filming storyboard, and conduct the public Control Room delivery feasibility research on canonical project `87779099`.
 * **End-to-End Evidence Chain:**
   1. Human neutral retirement request on Issue #5.
   2. Genuine GitLab Duo Custom Flow (Session `9710085`) inspecting target repository.
@@ -725,14 +772,42 @@ flowchart TD
   * Preserve 5-tab architecture (Overview, Portfolio, Obligation Graph, What-if, Evidence & Audit).
   * Ensure the first 15 seconds communicate why retirement is blocked and what engineering risk was neutralized.
   * Static guarantee: zero network fetches at view time, runs locally from `file://`.
-* **Video Readiness Gate:**
-  * Filming is not authorized until: engineering evidence is frozen; organizer dependency outcome is fully reflected; canonical remote SHA is settled; and the narration script matches exact UI cards.
+* **Mandatory Public Control Room Delivery Feasibility Research (Canonical Project `87779099`):**
+  Investigate whether existing canonical GitLab project `87779099` can legitimately publish a public, read-only Control Room through GitLab Pages, establishing:
+  1. Whether project-level GitLab Pages publication is available in its current namespace.
+  2. Whether current Developer permissions can support an additive Pages CI deployment.
+  3. Whether the site's public visibility can be enabled without requiring forbidden Maintainer operations.
+  4. Whether a deployment can be performed with existing authorized CI resources at zero incremental personal spend ($0.00).
+  5. Whether publishing would introduce a new Pages mechanism into the protected canonical repository and consequently require fresh portfolio, witness, graph, and evidence reconciliation.
+  6. Whether the existing verification pipeline can remain intact, with a separately scoped static Pages publishing job.
+  7. Whether `index.html`, `data.js`, and every referenced asset can be published without private paths, tokens, credentials, or unsupported third-party dependencies.
+  8. Whether the generated static UI remains fully operational when hosted at a real HTTPS path rather than `file://`.
+  9. Whether unauthenticated external users can load the complete interface in a clean browser session.
+  10. Whether the published interface is stable through the required judging period and remains within authorized free resources.
+  11. Whether the public URL can be reliably linked from README and Devpost.
+  12. Whether this scope can be completed without jeopardizing the submission deadline.
+  *Official research sources:*
+  * `https://docs.gitlab.com/user/project/pages/introduction/`
+  * `https://docs.gitlab.com/user/project/pages/pages_access_control/`
+  * `https://docs.gitlab.com/ci/yaml/`
+* **Hosting Decision and Fallback:**
+  * *Preferred Optional Delivery:* A separately scoped, static, read-only GitLab Pages presentation from existing canonical project `87779099`, but ONLY if supported, authorized, secure, zero spend ($0.00), and operator-approved.
+  * *Safety Boundary:* This is an additive presentation of the product UI, NEVER a Pages unpublish or mutation of disposable test target `87785099`. No new GitLab project, external hosting service, custom domain, paid tier, Cloudflare account, or infrastructure is approved.
+  * *Clean Fallback:* If public hosting is not feasible within the deadline, retain the local Control Room (`control_room/index.html`), maintain complete canonical repository reproduction instructions (`README.md`), ensure the real interface is clearly shown in the YouTube video, and preserve the verified Path A eligibility fallback (under which deployment is optional). Public UI hosting failure must not block an on-time submission.
+  * *Acceptance Testing Criteria:* Plan tests for actual Pages job success; exact published URL from provider information; anonymous HTTP 200 access; HTML/JS asset retrieval; 5-tab functionality; interactive graph/what-if/evidence panels; working links; zero console errors; no credentials/personal paths; accurate evidence classification; mobile/desktop rendering; source revision identity. A successful build without public HTTP verification must remain `PUBLIC_UI_NOT_VERIFIED`.
+* **Evidence-Dependent Video Runbook Specification:**
+  * The 9-scene, 174-second storyboard is a **verified historical baseline**, not a permanently frozen portrayal of future engineering.
+  * Final approved runbook must reflect actual outcomes of `WORK-B4-18` through `WORK-B4-23`:
+    * *Supervised Autonomy:* If automatic handoff is proven, demonstrate the single-request Duo-to-Python chain; if unsupported, preserve real CLI execution and honest boundary.
+    * *Pages Publication:* If disposable Pages deployment and marker are verified, show the real published disposable site briefly with surviving CI redeployment; if unverified, retain honest observation boundary.
+    * *New Capabilities:* If verified, concisely integrate repair sets, proof decay, or active monitoring; do not show unverified features.
+    * *Precise Filming Specs:* Final runbook must specify scene ID, start/end time, screen/URL, tab, actions, observable result, English VO, English subtitles, provenance mode, fallback shot, and supporting evidence record.
   * Video must remain strictly under 180 seconds (target 174 seconds).
 
 #### 4.7.8 WORK-B4-25 — Atomic Repository-Wide Documentation Reconciliation
 * **Priority:** P0 / Mandatory Completion Contract.
 * **Prerequisite Gate:** Completion of `WORK-B4-18`–`24`.
-* **Objective:** Perform a whole-repository contradiction audit and atomically synchronize all documentation, configuration, and evidence files with the verified engineering state.
+* **Objective:** Perform a whole-repository contradiction audit and atomically synchronize all documentation, configuration, evidence, and media registers with the verified engineering state.
 * **Mandatory Defect Repairs (DOC-01 through DOC-10):**
   * **DOC-01 (README Test Count):** Synchronize test counts across README, HANDOFF, and Master Plan to current verified baseline (381 passed).
   * **DOC-02 (README Pages Status):** Reconcile demo narrative to clearly state that real Pages retirement is currently `BLOCKED` and actual unpublishing is `NOT_RUN`, separating intended lifecycle from current truth.
@@ -742,36 +817,62 @@ flowchart TD
   * **DOC-06 (Outdated Secondary Demo Script):** Reconcile `docs/DEMO_SCRIPT.md` with the canonical 174-second video runbook, updating test baselines (381), primary Duo session references, and scene durations.
   * **DOC-07 (Inaccurate QA Trigger Diagram):** Reconcile sequence diagram and text in Master Plan to truthfully reflect GitHub observer triggers: on-demand (`workflow_dispatch`) and scheduled 6-hour cron (`23 */6 * * *`).
   * **DOC-08 (Stale Completion Register):** Reconcile historical `WORK-B4-05` and `WORK-B4-12` in work register to `CLOSED_INDEPENDENT_QA`.
-  * **DOC-09 (Uncaptured Media):** Register the 5 planned screenshot PNGs in `assets/demo/screenshots/` as pending `OPERATOR_ACTION`, never counting them as existing evidence until captured.
+  * **DOC-09 (Uncaptured Media):** Register the 6 candidate screenshot PNGs in `assets/demo/screenshots/` as pending `OPERATOR_ACTION`, never counting them as existing evidence until captured.
   * **DOC-10 (Historic Handoff Instructions):** Reconcile `AGENTS.md`, `plans/MASTER_PLAN.md`, and `docs/HANDOFF.md` to eliminate stale batch directives or conflicting guidance while preserving historical records.
+* **Public UI Documentation & Fallback:**
+  * If public Control Room hosting is verified on `87779099`, document its exact URL, acceptance evidence, and operational boundaries in README, HANDOFF, and Master Plan.
+  * If local fallback is selected, clearly document exact local reproduction instructions (`control_room/index.html`), zero-network guarantee, and verified Path A eligibility compliance (deployment optional).
+* **Mandatory Final-Claims Reconciliation Protocol:**
+  * Atomically synchronize all English materials across repository (README, Devpost story, lifecycle stages, screenshots, captions, video runbook, voice-over, subtitles) in the same coherent change unit per Section 13.5.
 
-#### 4.7.9 WORK-B4-26 — Final Independent QA, Source Lock and Submission Readiness
-* **Priority:** P0 / Submission Freeze.
-* **Prerequisite Gate:** Completion of `WORK-B4-25`. (Designated `NOT_STARTED` until prerequisites are met).
-* **Objective:** Establish the final readiness gate certifying that all engineering, documentation, evidence, and video assets are complete, consistent, and frozen for Devpost submission.
-* **Readiness Gate Dimensions:**
-  1. Technical implementation complete and verified clean.
-  2. Genuine Supervised evidence established with transparent boundary disclosures.
-  3. Pages outcome honestly recorded (Track 1 publication verified, Track 2 unpublish fail-closed `BLOCKED`).
-  4. Resurrection witness and monitoring verified without claiming resurrection prevention.
-  5. Bounded repair guidance and proof decay contracts verified.
-  6. 100% test pass rate (381+ tests, Ruff clean, 40/40 safety assertions).
-  7. Exact source parity between canonical GitLab `main` and GitHub `gitlab-main`.
-  8. Repository-wide documentation synchronized without contradictions.
-  9. Control Room static contract and data consistency verified.
-  10. DevSecOps stage selections justified by observable evidence (ordinary CI separated from agentic action).
-  11. Public YouTube video uploaded (< 180s) and verified accessible.
-  12. Zero personal spend ($0.00) confirmed.
-  13. Zero secrets or credentials leaked.
-  14. Operator acceptance confirmed.
-* **Gate Classifications:**
-  * `ENGINEERING_VERIFIED`
-  * `EXTERNALLY_BLOCKED_WITH_HONEST_FALLBACK`
-  * `INDEPENDENT_QA_PENDING`
-  * `READY_FOR_FILMING`
-  * `READY_FOR_SUBMISSION`
-  * `SUBMITTED_FROZEN`
-* **Freeze Invariant:** Zero commits to canonical GitLab `main` once Devpost submission is complete.
+#### 4.7.9 WORK-B4-26 — Final Independent QA, Source Lock and Submission Readiness (Two-Checkpoint Governance)
+* **Priority:** P0 / Submission Freeze Gate.
+* **Prerequisite Gate:** Completion of `WORK-B4-25` (for Checkpoint A); Completion of `WORK-B4-13`–`16` (for Checkpoint B).
+* **Objective:** Establish an explicit two-checkpoint delivery gate that completely eliminates the circular filming/QA deadlock, ensuring independent technical QA authorizes media capture, and post-capture verification authorizes final submission.
+
+```mermaid
+flowchart LR
+    W25["WORK-B4-25: Atomically Reconciled Repository"] --> CKA["Checkpoint A: Engineering / Source Ready for Capture"]
+    CKA --> MEDIA["Operator Screenshots & Video Filming (W13-W16)"]
+    MEDIA --> CKB["Checkpoint B: Ready for Submission"]
+    CKB --> W17["WORK-B4-17: Devpost Submission & Final Freeze"]
+```
+
+* **Checkpoint A — ENGINEERING / SOURCE READY FOR CAPTURE (Pre-Filming Technical Gate):**
+  * *Prerequisite:* Completion of `WORK-B4-25`.
+  * *Required Technical Dimensions:*
+    1. Appropriate engineering and integrations verified (`WORK-B4-18`–`23`).
+    2. Executable evidence chain confirmed and reproducible.
+    3. Actual public UI hosting outcome known (verified on `87779099`) or authorized local fallback confirmed.
+    4. Real disposable Pages outcome known (`WORK-B4-19` Track 1 verified, Track 2 unpublish fail-closed `BLOCKED`).
+    5. Source code and Control Room UI state completely stable.
+    6. Preliminary repository documentation synchronized (`WORK-B4-25`).
+    7. Correct screenshots register (Section 12) and video runbook (Section 11) prepared.
+    8. 100% test pass rate (381+ tests, Ruff clean, 40/40 safety assertions).
+    9. Independent pre-capture technical QA accepted; zero unresolved material security defects.
+  * *Authorization:* Checkpoint A explicitly authorizes the operator to capture screenshots (`WORK-B4-13`) and record video screen captures (`WORK-B4-14`).
+  * *Deadlock Elimination Invariant:* **A planned screenshot or uploaded YouTube video is NEVER a prerequisite for Checkpoint A.** Checkpoint A evaluates engineering and documentation completeness only.
+
+* **Checkpoint B — READY FOR SUBMISSION (Post-Capture Submission Gate):**
+  * *Prerequisites:* Checkpoint A passed; `WORK-B4-13` (screenshots captured), `WORK-B4-14` (video recorded), `WORK-B4-15` (video edited & narrated), and `WORK-B4-16` (YouTube public upload completed).
+  * *Required Post-Capture Dimensions:*
+    1. Final screenshot images reviewed, aspect ratios verified (1920×1080), and sanitized (zero credentials, personal paths, or invalid composite claims).
+    2. Final voice-over and English subtitles reviewed for clarity and strict truthfulness.
+    3. Exact edited video length validated (< 180s, target 174s).
+    4. YouTube public video URL actually accessible in a clean, unauthenticated browser session (never unlisted or private).
+    5. Final public UI URL validated if claimed, or local fallback verified.
+    6. README and Devpost claims consistent with final footage and evidence.
+    7. Exact source parity between canonical GitLab `main` and GitHub `gitlab-main`.
+    8. Latest canonical GitLab CI and independent GitHub Actions observer pass.
+    9. No post-filming source change contradicts the footage or introduces drift.
+    10. Final operator acceptance confirmed.
+  * *Authorization:* Checkpoint B certifies the submission packet as complete and authorizes `WORK-B4-17` (Official Devpost Submission).
+
+* **Protocol for Legitimate Post-Capture Corrections:**
+  * If an essential defect is discovered after Checkpoint A capture, affected footage, images, evidence bindings, and claims must be refreshed in the same coherent change unit rather than silently diverging before final submission freeze.
+
+* **Repository Freeze Invariant:**
+  * Once Devpost submission is complete, zero commits, tags, or branch updates may be pushed to canonical GitLab `main`. Repository immutability is permanently preserved.
 
 ---
 
@@ -821,6 +922,16 @@ flowchart TD
 +-------------------+----------------------+---------------------------------------------------------+
 | DEC-20261020-07   | 2026-10-20 [FROZEN]  | Stop-loss policy: protect October 26 submission.        |
 |                   |                      | Never sacrifice deadline for speculative infrastructure.|
++-------------------+----------------------+---------------------------------------------------------+
+| DEC-20261020-08   | 2026-10-20 [FROZEN]  | Permanent separation of both GitLab Pages sites.        |
+|                   |                      | Target 87785099 is test target; UI host on 87779099.    |
++-------------------+----------------------+---------------------------------------------------------+
+| DEC-20261020-09   | 2026-10-20 [FROZEN]  | Public Control Room delivery feasibility & fallback.    |
+|                   |                      | Additive Pages on 87779099 if authorized/zero spend;    |
+|                   |                      | clean fallback local file:// UI; Path A deploy optional.|
++-------------------+----------------------+---------------------------------------------------------+
+| DEC-20261020-10   | 2026-10-20 [FROZEN]  | Two-checkpoint delivery gate in WORK-B4-26.             |
+|                   |                      | Checkpoint A unblocks capture; Checkpoint B locks freeze|
 +-------------------+----------------------+---------------------------------------------------------+
 ```
 
@@ -964,11 +1075,11 @@ A rigorous re-audit distinguishes genuine lifecycle automation by the GitLab Duo
 
 | Judging Criterion | Existing Strengths (Backed by Evidence) | Remaining Material Weakness | Competitive Impact | Smallest Legitimate Improvement | Verification Method | Stop-Loss Condition |
 |---|---|---|---|---|---|---|
-| **Technological Implementation** | Deterministic Python core; 381 passing tests; 40 network-free safety checks; durable sealed ledger; fail-closed engine | Real Pages mutation blocked by Developer 403; Maintainer access denied by organizers | Risk of judges viewing BLOCKED as incomplete rather than safe | Deliver one-click live supervised review CLI execution (`--execute`) proving live provider reads; verify Pages deployment via Track 1 | Run `supervised-review --execute` live in Scene 05; verify Track 1 | Never forge provider success; preserve honest BLOCKED |
-| **Design** | Enterprise Control Room with 5 responsive tabs, dark mode, hero hook banner, zero network fetches | Dense technical data; judges have limited attention span | Judge may miss the core "AI proposes, code governs" thesis | Emphasize 15-second Executive Governance Card on Overview tab | Headless Chromium layout verification | No cosmetic redesign loops; preserve current UI |
+| **Technological Implementation** | Deterministic Python core; 381 passing tests; 40 network-free safety checks; durable sealed ledger; fail-closed engine | Real Pages mutation blocked by Developer 403 on target `87785099`; Maintainer access denied by organizers | Risk of judges viewing BLOCKED as incomplete rather than safe | Deliver live supervised review CLI execution proving live reads; verify disposable Pages deployment via Track 1 | Run `supervised-review --execute` live in Scene 05; verify Track 1 | Never forge provider success; preserve honest BLOCKED |
+| **Design** | Enterprise Control Room with 5 responsive tabs, dark mode, hero hook banner, zero network fetches | Public hosting unverified on canonical project `87779099`; potential confusion with target `87785099` | Judge may prefer live URL over local viewer or conflate target with UI host | Conduct 12-point Pages feasibility study on canonical `87779099` in `WORK-B4-24`; deploy additive static presentation if authorized/zero spend, or retain verified local fallback | Provider Pages inspection & anonymous HTTP verification | Retain local viewer (`file://`); deployment is optional under Path A |
 | **Potential Impact** | Solves critical SRE ghost-service problem; prevents CI redeployment disasters; $0 spend | Abstract concept if not tied to a concrete engineering risk | Judges may perceive retirement as a trivial script | Frame the concrete SRE scenario: CI job resurrects dead Pages site | Clear narration in Scenes 01 & 07 | Avoid fabricated financial or carbon savings metrics |
 | **Innovation / Idea** | Three independent claims; Retirement Obligation Graph; Bounded Absence; Resurrection Witness | Judges may conflate Termivance with standard deletion scripts | Novelty overlooked if presented as simple deletion tool | Highlight Counterfactual Analysis proving AI input does not bias verdict | Showcase counterfactual in Control Room & video | Preserve strict separation of the 3 claims |
-| **Presentation** | Professional GitHub QA bridge; clean repository structure; comprehensive runbooks | Final execution depends entirely on video narration clarity | Video exceeding 180s results in disqualification | Script storyboard precisely to 174s with word-for-word voice-over | Time recorded audio tracks against cuts | Target 174s; hard cut at 178s |
+| **Presentation** | Professional GitHub QA bridge; clean repository structure; comprehensive runbooks | Potential filming circular deadlock; video script must reflect real evidence | Video exceeding 180s or filming stalled by circular gates | Implement two-checkpoint gate in `WORK-B4-26`; script conditional evidence-dependent runbook (174s) | Time recorded audio tracks against cuts | Target 174s; hard cut at 178s |
 
 ### Real-World SRE Scenario: CI/CD Resurrection Risk
 * **The Problem:** An enterprise platform team deprecates an internal service or documentation portal. An engineer deletes the DNS entry or stops the server. However, the repository's `.gitlab-ci.yml` still contains an automated `create-pages` job triggered on `main`. Weeks later, a dependency bot or unrelated commit triggers the pipeline, automatically redeploying the stale, vulnerable site.
@@ -980,6 +1091,8 @@ A rigorous re-audit distinguishes genuine lifecycle automation by the GitLab Duo
 
 **Support Work Item:** [GitLab Showcase Work Item #1](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/showcase/-/work_items/1)  
 **Tracking Status:** `RESOLVED — ORGANIZER_DECISION_RECORDED (2026-10-20)`  
+
+> **Permanent Scope Boundary:** The organizer decision applies strictly to disposable test target project `87785099`. It has zero bearing on canonical project `87779099`. Disposable project `87785099` is exclusively an external test target whose retirement lifecycle Termivance evaluates; **it is never repurposed as the product UI host.**
 
 ### 9.1 Authoritative Organizer Reply Summary
 The hackathon organizers reviewed Showcase Work Item #1 and provided an authoritative determination covering two distinct areas:
@@ -1058,6 +1171,61 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
 +----+----------------------+---------------------------+--------------------------------------------+
 ```
 
+### 10.3 Public Control Room Delivery Feasibility, Hosting Decision, and Acceptance Criteria
+
+#### Separation of Roles and Scope Boundary
+* **Disposable Pages Test Target (Project `87785099`):** Purely a test target whose retirement lifecycle Termivance assesses. **Never repurpose project `87785099` as the product UI host.**
+* **Potential Judge-Facing Control Room Hosting (Canonical Project `87779099`):** Potential additive host for a public, read-only static presentation of the Control Room viewer.
+
+#### 12-Point Future Hosting Research Protocol
+Under `WORK-B4-24`, investigate whether existing canonical GitLab project `87779099` can legitimately publish a public, read-only Control Room through GitLab Pages, establishing:
+1. Whether project-level GitLab Pages publication is available in its current namespace.
+2. Whether current Developer permissions can support an additive Pages CI deployment.
+3. Whether the site's public visibility can be enabled without requiring forbidden Maintainer operations.
+4. Whether a deployment can be performed with existing authorized CI resources at zero incremental personal spend ($0.00).
+5. Whether publishing would introduce a new Pages mechanism into the protected canonical repository and consequently require fresh portfolio, witness, graph, and evidence reconciliation.
+6. Whether the existing verification pipeline can remain intact, with a separately scoped static Pages publishing job.
+7. Whether `index.html`, `data.js`, and every referenced asset can be published without private paths, tokens, credentials, or unsupported third-party dependencies.
+8. Whether the generated static UI remains fully operational when hosted at a real HTTPS path rather than `file://`.
+9. Whether unauthenticated external users can load the complete interface in a clean browser session.
+10. Whether the published interface is stable through the required judging period and remains within authorized free resources.
+11. Whether the public URL can be reliably linked from README and Devpost.
+12. Whether this scope can be completed without jeopardizing the submission deadline.
+
+*Official Research Sources:*
+* GitLab Pages Introduction: `https://docs.gitlab.com/user/project/pages/introduction/`
+* GitLab Pages Access Control: `https://docs.gitlab.com/user/project/pages/pages_access_control/`
+* GitLab CI/CD YAML Reference: `https://docs.gitlab.com/ci/yaml/`
+
+#### Hosting Decision and Path A Eligibility Fallback
+* **Preferred Optional Delivery:** A separately scoped, static, read-only GitLab Pages presentation from the existing canonical Termivance repository (`87779099`), but ONLY if supported, authorized, secure, zero personal spend ($0.00), and operator-approved.
+* **Scope Boundary:** This is an additive publication of the product's presentation, NEVER a Pages unpublish or mutation of the disposable test target. No new GitLab project, external hosting service, custom domain, paid tier, Cloudflare account, or additional infrastructure is approved.
+* **Verification Invariant:** Do not assume a working URL merely from the presence of Pages CI configuration.
+* **Fallback Protocol:** If public hosting is not feasible within the deadline, requires elevated permissions, incurs cost, or introduces repository risks:
+  1. Retain the local Control Room (`control_room/index.html` and `control_room/data.js`).
+  2. Maintain a complete, publicly accessible canonical repository with exact, one-command reproduction instructions (`README.md`).
+  3. Ensure the real interface is clearly showcased in the submitted YouTube video.
+  4. Do not invent or advertise a deployed demo URL.
+  5. Preserve the verified Path A eligibility fallback, for which public deployment is optional.
+* **Stop-Loss Invariant:** Public UI hosting failure must not block a truthful, on-time submission.
+
+#### Future Public-Hosting Acceptance Evidence
+If public hosting is executed, verify:
+1. Actual Pages CI job success and artifact identity.
+2. Exact published URL obtained from provider information, never guessed.
+3. Anonymous HTTP access (HTTP 200, no login required).
+4. Required HTML and JS asset retrieval without 404s.
+5. Correct five-tab functionality (Overview, Portfolio, Obligation Graph, What-if, Evidence & Audit).
+6. Interactive graph, what-if, and evidence panels render correctly.
+7. External links do not silently fail.
+8. Browser console and runtime are free of unhandled exceptions.
+9. No tokens, credentials, or machine-specific personal paths exposed.
+10. Accurate historical and provider evidence classification preserved.
+11. No misleading live-status claims.
+12. Mobile and desktop rendering sufficient for basic judge access.
+13. Exact published source revision and evidence snapshot identity recorded.
+> **Evidence Standard:** A successful CI build without public HTTP verification must remain **`PUBLIC_UI_NOT_VERIFIED`**.
+
 ---
 
 ## 11. Complete Shot-by-Shot Video Runbook
@@ -1065,7 +1233,59 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
 **Target Total Duration:** 174 seconds (Hard limit: 180 seconds).  
 **Aspect Ratio:** 16:9 (1920×1080).  
 **Audio:** Clear, professionally paced English voice-over; no background music.  
-**Platform:** YouTube Public upload.
+**Platform:** YouTube Public upload.  
+**Baseline Status:** The 9-scene, 174-second storyboard below is a **verified historical baseline**, not a permanently frozen portrayal of future engineering. Future execution must produce one final, evidence-accurate storyboard after `WORK-B4-18` through `WORK-B4-24` are resolved.
+
+### 11.1 Conditional Evidence-Dependent Storyboard and Narration Rules
+
+#### 11.1.1 Supervised Autonomy Demonstration Rules
+* **If Genuine Single-Request Duo-to-Python Automatic Chain Is Proven (`WORK-B4-18`):**
+  * Replace or adapt Scene SC-05 manual CLI demonstration with the authentic automatic chain.
+  * Show the exact Duo session, handoff execution, deterministic result, and final human-review surface.
+  * Clearly distinguish genuinely agent-driven steps from deterministic Python execution.
+* **If Full Autonomy Remains Unsupported Under Current Permissions:**
+  * Preserve the real CLI execution (`scripts/run_supervised_review.bat --no-pause`) and honest human-triggered boundary.
+  * Never describe the manual handoff as fully autonomous.
+
+#### 11.1.2 Actual Disposable Pages Publication Rules
+* **If Disposable Pages Publication and Marker Are Independently Verified (`WORK-B4-19` Track 1):**
+  * Briefly show the real published disposable site (`https://gitlab-ai-hackathon.gitlab.io/...`) and exact provider deployment identity.
+  * Explicitly explain that while the site is genuinely published, its retirement is intentionally blocked due to missing Maintainer permissions.
+  * Show the surviving CI redeployment mechanism (`create-pages`).
+  * Retain `OBSERVED_ABSENT: NOT_CLAIMED` and `RESURRECTION_CONTROLLED: NOT_CLAIMED`.
+* **If Publication Is Not Independently Verified:**
+  * Do not insert a fictional live site shot.
+  * Preserve an honest publication-access or observation-limit explanation.
+
+#### 11.1.3 New Capabilities Integration Rules
+* Only if implemented and verified, integrate concise demonstrations of:
+  * Deterministic bounded candidate repair recommendations (`WORK-B4-21`);
+  * Evidence expiration and revalidation (`WORK-B4-22`);
+  * Active monitoring or current-truth downgrade (`WORK-B4-20`);
+  * Actual Control Room public deployment (`WORK-B4-24`), if established.
+* Do not clutter the video with unverified features merely because they were planned.
+
+#### 11.1.4 Precise Filming Specifications
+The final approved runbook must specify for every scene:
+1. Scene ID;
+2. Precise start/end time and duration;
+3. Exact screen or URL;
+4. Exact browser tab or UI section;
+5. Actual mouse/keyboard actions;
+6. Expected observable result;
+7. English word-for-word voice-over;
+8. Matching English subtitle text;
+9. Provenance mode (`LIVE`, `RECORDED_HISTORICAL`, `STATIC_VIEWER`, `HYPOTHETICAL`);
+10. Any fallback shot;
+11. Original supporting evidence record.
+
+*Duration & Audio Invariants:*
+* All scene durations must sum to the exact declared final runtime (< 180s, target 174s).
+* Voice-over text must be naturally speakable within the allocated scene duration.
+* The operator personally performs recording and editing with step-by-step assistance.
+* **Plan-Only Invariant:** Video recording and editing are not performed during this plan-only task.
+
+### 11.2 Historical Baseline 174-Second Storyboard
 
 ```
 +----------------------------------------------------------------------------------------------------+
@@ -1189,17 +1409,27 @@ The Control Room UI ([`control_room/index.html`](control_room/index.html)) is ve
   * `submission_media/subtitles/`
   * `submission_media/exports/`
 
-### Official Submission Screenshot Manifest
+### 12.1 Official Submission Media Deliverable Candidates
+The present register defines 6 candidate media deliverables representing Termivance's strongest verified capabilities. The final curator selects 5 of these, or the actual number accepted by the current Devpost media interface:
 
-| Filename | Resolution | Viewport & Source Screen | Current Status | Caption & Alt Text |
+| Candidate ID & Filename | Resolution | Source Viewport & Focus | Condition for Inclusion | Caption & English Alt Text |
 |---|---|---|---|---|
-| `01_overview_retirement_blocked.png` | 1920×1080 | Control Room, Overview tab | `OPERATOR_ACTION` (Pending Capture) | *Termivance Control Room: Deterministic BLOCKED verdict, target details, and evidence chain.* |
-| `02_duo_issue5_discovery.png` | 1920×1080 | GitLab Web UI, Issue #5 | `OPERATOR_ACTION` (Pending Capture) | *Genuine GitLab Duo Custom Flow (Session 9710085) discovering surviving redeployment path.* |
-| `03_candidate_corroboration.png` | 1920×1080 | Control Room, Evidence & Audit tab | `OPERATOR_ACTION` (Pending Capture) | *Evidence-Grounded Corroboration: Reconciling AI candidate claims against provider facts.* |
-| `04_obligation_graph_focused.png` | 1920×1080 | Control Room, Graph tab | `OPERATOR_ACTION` (Pending Capture) | *Retirement Obligation Graph: Surviving redeployment mechanism blocking retirement.* |
-| `05_real_ci_qa_binding.png` | 1920×1080 | Split browser window (GitLab CI & GitHub QA) | `OPERATOR_ACTION` (Pending Capture) | *Independent Verification: Canonical GitLab CI history bound to external GitHub Actions QA bridge.* |
+| **01** `01_overview_retirement_blocked.png` | 1920×1080 | Control Room, Overview tab | Baseline (Always Included) | *Termivance Control Room: Deterministic BLOCKED verdict, target details, and evidence chain.* |
+| **02** `02_duo_issue5_discovery.png` | 1920×1080 | GitLab Web UI, Issue #5 / Duo Session | Baseline (Always Included) | *Genuine GitLab Duo Custom Flow (Session 9710085) discovering surviving redeployment path.* |
+| **03** `03_candidate_corroboration.png` | 1920×1080 | Control Room, Evidence & Audit tab | Baseline (Always Included) | *Evidence-Grounded Corroboration: Reconciling AI candidate claims against provider facts.* |
+| **04** `04_obligation_graph_focused.png` | 1920×1080 | Control Room, Graph tab | Baseline (Always Included) | *Retirement Obligation Graph: Surviving redeployment mechanism blocking retirement.* |
+| **05** `05_real_ci_qa_binding.png` | 1920×1080 | Split browser window (GitLab CI & GitHub QA) | Baseline (Always Included) | *Independent Verification: Canonical GitLab CI history bound to external GitHub Actions QA bridge.* |
+| **06** `06_disposable_pages_published.png` | 1920×1080 | Browser showing served Pages URL & marker | **CONDITIONAL:** Include ONLY if Track 1 publication is verified | *Disposable Target Pages Deployment: Verified public site with surviving CI redeployment mechanism.* |
+| **07** `07_repair_set_and_freshness.png` | 1920×1080 | Control Room, Repair & Freshness view | **CONDITIONAL:** Include ONLY if `WORK-B4-21`/`22` are verified | *Bounded Candidate Repair Sets & Proof Decay: Actionable remediation guidance with temporal TTLs.* |
 
-> **Audit Note (DOC-09):** The 5 screenshot files are currently absent and registered as pending `OPERATOR_ACTION`. They must never be represented as existing deliverables until captured by the operator.
+### 12.2 Media Production, Privacy and Curation Invariants
+1. **Aspect Ratio & Resolution:** Standard 16:9 aspect ratio at 1920×1080 desktop resolution.
+2. **Legibility & Framing:** UI elements must be framed at 100% desktop zoom with clear high-contrast typography; no downscaled or blurry crops.
+3. **Privacy & Redaction Standard:** Screenshots must be rigorously inspected prior to upload. Zero GitLab private tokens, runner registration keys, local personal file paths (`C:\Users\...`), internal email addresses, or unmasked sensitive data may appear in image frames.
+4. **Authenticity Standard:** No fabricated dashboard states, no synthetic mockups, and no screenshot claiming a Pages deletion occurred.
+5. **Obsolescence Protection:** Existing filenames are preserved where underlying views remain truthful. Do not silently keep obsolete screenshots after material UI changes.
+6. **Operator Approval Gate:** All final screenshots require operator preview and explicit approval before upload to Devpost.
+7. **Current Deliverable Status (DOC-09):** Candidate images are currently pending capture under `WORK-B4-13` (`OPERATOR_ACTION`). They must never be represented as existing deliverables until captured and sanitized.
 
 ---
 
@@ -1290,21 +1520,53 @@ Termivance gives SREs and platform engineers a defensible, evidence-backed frame
 |                              | 39306908/termivance                                                 |
 | Video URL                    | [Insert YouTube Public Video URL]                                   |
 | Built With                   | Python, GitLab Duo, GitLab CI/CD, GitLab API, Pytest, HTML5, CSS3    |
-| Try It Out / Demo Link       | [Link to canonical repository README reproduction instructions]     |
+| Try It Out / Demo Link       | [Public Control Room URL if verified on 87779099; else link to      |
+|                              | canonical repository README reproduction instructions (file://)]    |
 | Project Story                | [Paste complete Markdown text from Section 13.3]                    |
 +------------------------------+---------------------------------------------------------------------+
 ```
+
+### 13.5 Mandatory Final-Claims Reconciliation Protocol
+Every future material engineering result must update all directly affected English materials **in the same coherent implementation/documentation change unit**, not in a late standalone copywriting task.
+
+#### Directly Affected Artifacts Inventory:
+1. **Project Title and Short Description** (Sections 13.1 & 13.2);
+2. **Full English Devpost Story** (Section 13.3);
+3. **Genuine Duo Contribution Narrative** (Duo flow Catalog Item `1018562`, Session `9710085`);
+4. **Exact Supervised Autonomy Claim** (honest description of single-request continuation vs. human CLI trigger);
+5. **Nine DevSecOps Lifecycle Stage Selections** (Section 7 and Devpost form);
+6. **Actual Pages Publication vs. Unpublication Outcome** (Track 1 publication vs. Track 2 fail-closed refusal);
+7. **Resurrection-Risk vs. Resurrection-Control Claims** (resurrection risk discovered; control not claimed without active tripwires);
+8. **Bounded Repair Sets and Proof Decay** (if implemented in `WORK-B4-21`/`22`);
+9. **Public Control Room URL** (included ONLY if verified via `WORK-B4-24`; else local fallback);
+10. **README "Try It Out" Reproduction Instructions**;
+11. **Screenshots, Captions, and Alt Text** (Section 12);
+12. **Final Video Voice-Over and Subtitles** (Section 11);
+13. **Limitations and Access-Boundary Disclosures** (honest 401/403/404 disclosures).
+
+#### Core Copywriting and Integrity Invariants:
+* **Approved Product Identity:** **Termivance — Software retirement, proven within bounds.**
+* **Single Truth Baseline:** All English copy, metrics, and claims must derive from the exact same Git commit SHA and provider evidence state.
+* **Readable, Compelling Prose:** Use clear platform engineering and SRE prose rather than internal implementation shorthand, without overstating results.
+* **Anti-Fabrication Rules:**
+  * Never claim that publication proves retirement.
+  * Never claim that static recorded evidence constitutes a live provider observation.
+  * Never claim that conventional GitLab CI is agent-driven execution.
+  * Never promise money saved, carbon avoided, or incident reduction without genuine empirical measurement.
+* **Plan-Only Invariant:** During this planning task, no documentation files outside the master execution plan are modified.
 
 ---
 
 ## 14. Submission Freeze and Post-Deadline Controls
 
-### 14.1 Freeze Rules
-1. **Code Freeze Point:** October 26, 2026, 22:00 Türkiye (19:00 UTC).
-2. **Canonical Immutability:** Once Devpost is submitted, zero commits, tags, or branch updates may be pushed to `origin/main`.
-3. **Public Video Immutability:** The submitted YouTube video must not be edited, replaced, or set to private.
-4. **Devpost Immutability:** Devpost entry fields must remain locked until winner announcements.
-5. **Sanity Check:** If post-deadline experimentation is conducted, it must take place on an isolated local branch or non-canonical fork clearly marked as non-submitted.
+### 14.1 Freeze Rules and Checkpoint B Governance
+1. **Prerequisite Gate:** Devpost submission and repository freeze require formal acceptance of `WORK-B4-26` Checkpoint B (READY FOR SUBMISSION).
+2. **Code Freeze Point:** October 26, 2026, 22:00 Türkiye (19:00 UTC).
+3. **Canonical Immutability:** Once Devpost is submitted, zero commits, tags, or branch updates may be pushed to canonical GitLab `main`.
+4. **Public Video Immutability:** The submitted YouTube video must not be edited, replaced, or set to private.
+5. **Devpost Immutability:** Devpost entry fields must remain locked until winner announcements.
+6. **Post-Capture Correction Protocol:** If a material defect requires correction between media capture and submission, affected footage, images, evidence bindings, and English claims must be refreshed in the same atomic change unit rather than silently diverging before final submission freeze.
+7. **Sanity Check:** If post-deadline experimentation is conducted, it must take place on an isolated local branch or non-canonical fork clearly marked as non-submitted.
 
 ---
 
@@ -1321,22 +1583,23 @@ flowchart TD
     S3 -.-> S5
     S4 --> S5
     S5 --> S6["6. Atomic Repository Doc Reconciliation (W25)"]
-    S6 --> S7["7. Final Independent QA & Source Lock (W26)"]
+    S6 --> S7["7. Pre-Filming Technical QA - Checkpoint A (W26)"]
     S7 --> S8["8. Operator Media & Screenshots (W13)"]
-    S7 --> S9["9. Screen Captures, Voice-Over & Editing (W14-W15)"]
-    S9 --> S10["10. YouTube Public Upload & Devpost Freeze (W16-W17)"]
+    S7 --> S9["9. Screen Captures, Voice-Over & Upload (W14-W16)"]
+    S8 --> S10["10. Submission Gate - Checkpoint B & Freeze (W26-W17)"]
+    S9 --> S10
 ```
 
 1. **Step 1 (October 20):** Canonical Plan QA Repair and Independent Auditor Acceptance.
 2. **Step 2 (October 21):** Award-Critical Supervised Autonomy Feasibility Study (`WORK-B4-18`).
 3. **Step 3 (October 21–22):** Real Pages Publication Evidence Verification (`WORK-B4-19` Track 1).
 4. **Step 4 (October 22–23):** Resurrection Monitoring (`WORK-B4-20`), Deterministic Minimal Repair Sets (`WORK-B4-21`), and Proof Decay (`WORK-B4-22`) proceeding on verified Python authority.
-5. **Step 5 (October 24):** Cross-Feature Integration, Nine-Stage DevSecOps Reassessment (`WORK-B4-23`), End-to-End Demo Evidence Binding (`WORK-B4-24`), and Adversarial Testing.
+5. **Step 5 (October 24):** Cross-Feature Integration, Nine-Stage DevSecOps Reassessment (`WORK-B4-23`), End-to-End Demo Evidence Binding & Public UI Hosting Feasibility (`WORK-B4-24`), and Adversarial Testing.
 6. **Step 6 (October 25):** Final Atomic Whole-Repository Evidence & Document Reconciliation (`WORK-B4-25`).
-7. **Step 7 (October 25):** Independent Final-Source QA, Source Lock, and Submission Readiness (`WORK-B4-26`).
+7. **Step 7 (October 25):** Independent Final-Source Technical QA & Pre-Filming Authorization (`WORK-B4-26` Checkpoint A).
 8. **Step 8 (October 25):** Operator Screenshot Asset Capture (`WORK-B4-13`).
-9. **Step 9 (October 25–26):** Operator Screen Recordings, English Voice-Over, Video Editing (`WORK-B4-14`–`15`).
-10. **Step 10 (October 26):** Video Public Upload (`WORK-B4-16`), Devpost Submission (`WORK-B4-17`), and Repository Freeze by 22:00 Türkiye.
+9. **Step 9 (October 25–26):** Operator Screen Recordings (`WORK-B4-14`), English Voice-Over & Video Editing (`WORK-B4-15`), and YouTube Public Video Upload (`WORK-B4-16`).
+10. **Step 10 (October 26):** Final Submission Readiness Acceptance (`WORK-B4-26` Checkpoint B), Official Devpost Submission (`WORK-B4-17`), and Repository Freeze by 22:00 Türkiye.
 
 ### 15.2 Stop-Loss Policy
 > [!IMPORTANT]
@@ -1380,8 +1643,8 @@ sequenceDiagram
 This document constitutes the sole canonical execution plan for Termivance. It supersedes all prior micro-plans, scratch notes, and conversation transcripts.
 
 * **Repository Single Source of Truth:** `plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md`
-* **Audited Baseline Commit:** `3c53ef4bd37391eeddfface538bba4f3b2f840b1`
+* **Audited Baseline Commit:** `8c28b362a73d6f9e1d623521c12e01a5c021ac7c`
 * **Verified Pipeline ID:** `2967484742` (Job ID `17315753763`, SUCCESS)
 * **Verified Observer Run ID:** `39423997627` (`PASS / IN_SYNC`)
-* **Executor Sign-Off:** Consolidated Plan QA Repair complete.
-* **Next Action:** Submit reconstructed plan for independent plan QA audit before authorizing engineering execution.
+* **Executor Sign-Off:** FINAL CANONICAL PLAN DELIVERY-GATE REPAIR COMPLETE — AWAITING INDEPENDENT PLAN QA. ENGINEERING EXECUTION NOT AUTHORIZED.
+* **Next Action:** Submit reconstructed canonical plan for independent plan QA audit before authorizing engineering execution.
