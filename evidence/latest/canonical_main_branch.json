@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-20T06:59:59Z",
-  "artifact_sha256": "4d48a5f7c2e676d94718f12d27da31b0d450b560567352023f33dc8e811ca57a",
+  "acquired_at_utc": "2026-10-20T07:39:49Z",
+  "artifact_sha256": "9f15b7d955e16c02cd6d002e6a83d183161bcdce8b168e65bc7906e5ce9d8f60",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-20T09:56:53.000+03:00",
-      "committed_date": "2026-10-20T09:56:53.000+03:00",
+      "authored_date": "2026-10-20T10:37:03.000+03:00",
+      "committed_date": "2026-10-20T10:37:03.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-20T09:56:53.000+03:00",
+      "created_at": "2026-10-20T10:37:03.000+03:00",
       "extended_trailers": {},
-      "id": "cd51e5294fd11fee7cc14041e0ae8da7d61a2185",
-      "message": "fix(b4): complete supervised input contract, source corroboration, and readback provenance\n",
+      "id": "97263f6c6fd8ccdea49724a62f2fa16be798e1cf",
+      "message": "fix(b4): align candidate obligation binding to identity, harden git credential store, and consolidate control room governance\n",
       "parent_ids": [
-        "2282da8a924aa839e88b4f5d56fbedb5821c4df6"
+        "cd51e5294fd11fee7cc14041e0ae8da7d61a2185"
       ],
-      "short_id": "cd51e529",
-      "title": "fix(b4): complete supervised input contract, source corroboration, and readback provenance",
+      "short_id": "97263f6c",
+      "title": "fix(b4): align candidate obligation binding to identity, harden git credential store, and consolidate control room governance",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/cd51e5294fd11fee7cc14041e0ae8da7d61a2185"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/97263f6c6fd8ccdea49724a62f2fa16be798e1cf"
     },
     "default": true,
     "developers_can_merge": true,
