@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-20T11:04:51Z",
-  "artifact_sha256": "dd9dc169fc7ce2bbae411eda8cce1e688a27bb09f21735c8f7d0fe4660db6054",
+  "acquired_at_utc": "2026-10-20T11:32:57Z",
+  "artifact_sha256": "378f354d58293010fc7341ed0db2d6e038eab47d5b069ddd50b2293970479ee0",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2967141211/jobs",
+  "endpoint": "/projects/87779099/pipelines/2967239572/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17313164853,
+      "id": 17313891889,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-20T14:01:35.000+03:00",
-        "committed_date": "2026-10-20T14:01:35.000+03:00",
+        "authored_date": "2026-10-20T14:29:36.000+03:00",
+        "committed_date": "2026-10-20T14:29:36.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-20T14:01:35.000+03:00",
+        "created_at": "2026-10-20T14:29:36.000+03:00",
         "extended_trailers": {},
-        "id": "6e808b33a4974fc9232ec9b3ca79bdc4b9281d24",
-        "message": "fix(plan): consolidated master plan truth repair, supervised audit, and hardened filming launchers\n",
+        "id": "8fd656725929b9d790d4d79f5cff2659af650de5",
+        "message": "fix(plan): final submission-truth closure, launcher preflight, and QA trigger precision\n",
         "parent_ids": [
-          "b4431ec0b2bcba5f94a5636598b9b2ac32967ea5"
+          "6e808b33a4974fc9232ec9b3ca79bdc4b9281d24"
         ],
-        "short_id": "6e808b33",
-        "title": "fix(plan): consolidated master plan truth repair, supervised audit, and hardened filming launchers",
+        "short_id": "8fd65672",
+        "title": "fix(plan): final submission-truth closure, launcher preflight, and QA trigger precision",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/6e808b33a4974fc9232ec9b3ca79bdc4b9281d24"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/8fd656725929b9d790d4d79f5cff2659af650de5"
       },
       "coverage": null,
-      "created_at": "2026-10-20T11:01:45.437Z",
-      "duration": 114.142787,
+      "created_at": "2026-10-20T11:29:47.955Z",
+      "duration": 141.516299,
       "erased_at": null,
-      "finished_at": "2026-10-20T11:03:39.963Z",
-      "id": 17313164853,
+      "finished_at": "2026-10-20T11:32:09.877Z",
+      "id": 17313891889,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-20T11:01:45.302Z",
-        "id": 2967141211,
-        "iid": 38,
+        "created_at": "2026-10-20T11:29:47.795Z",
+        "id": 2967239572,
+        "iid": 39,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "6e808b33a4974fc9232ec9b3ca79bdc4b9281d24",
+        "sha": "8fd656725929b9d790d4d79f5cff2659af650de5",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-20T11:03:41.434Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967141211"
+        "updated_at": "2026-10-20T11:32:11.339Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967239572"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.088072,
+      "queued_duration": 0.08267,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-20T11:04:50.894Z",
-        "created_at": "2026-10-19T20:16:58.020Z",
-        "id": 163841079,
+        "contacted_at": "2026-10-20T11:32:57.190Z",
+        "created_at": "2026-10-19T20:24:53.175Z",
+        "id": 163842671,
         "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "77694893",
         "status": "online",
-        "system_id": "r_TZSo9WjAijXG",
+        "system_id": "r_ds8EXG4TRFPq",
         "version": "19.6.0~pre.2336.g77694893"
       },
       "stage": "verify",
-      "started_at": "2026-10-20T11:01:45.820Z",
+      "started_at": "2026-10-20T11:29:48.361Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17313164853"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17313891889"
     }
   ]
 }
