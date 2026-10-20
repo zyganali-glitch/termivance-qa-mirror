@@ -646,11 +646,17 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
         from termivance.target import TargetIdentity
 
         target = TargetIdentity(args.project_id, args.full_path, "GITLAB_PAGES_SITE")
-        client = GitLabClient(None)
+        token = getattr(args, "token", None)
+        if not token:
+            try:
+                token = load_local_token()
+            except Exception:
+                token = None
+        client = GitLabClient(token)
         publisher = None
         if getattr(args, "publish", False):
             try:
-                publisher = GitLabPublisher(load_local_token())
+                publisher = GitLabPublisher(token or load_local_token())
             except Exception:
                 pass
         review = run_supervised_investigation(
@@ -1203,6 +1209,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--policy",
         default=None,
         help="custom retirement policy JSON path",
+    )
+    supervised_review.add_argument(
+        "--token",
+        default=None,
+        help="GitLab private token for authenticated provider reads and publication",
     )
     supervised_review.add_argument("--out", default=None)
     supervised_review.add_argument("--json", action="store_true")

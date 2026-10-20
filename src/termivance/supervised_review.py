@@ -297,10 +297,13 @@ class ProviderObservations:
     ci_digest: str | None
     marker_text: str | None
     marker_status: int | None
-    pages_status: int | None
-    pages_error_kind: str | None
-    policy: object | None
-    canonical_issues: tuple[dict[str, object], ...] | None
+    index_html_text: str | None = None
+    index_html_status: int | None = None
+    pages_status: int | None = None
+    pages_error_kind: str | None = None
+    observing_identity: str = "ANONYMOUS"
+    policy: object | None = None
+    canonical_issues: tuple[dict[str, object], ...] | None = None
 
 
 def gather_target_observations(
@@ -318,6 +321,12 @@ def gather_target_observations(
     ci_digest: str | None = None
     pages_status: int | None = None
     pages_error_kind: str | None = None
+
+    observing_identity = (
+        "AUTHENTICATED"
+        if (client is not None and getattr(client, "token", None))
+        else "ANONYMOUS"
+    )
 
     if witness is not None:
         observed_commit = getattr(witness, "commit_sha", None)
@@ -389,6 +398,20 @@ def gather_target_observations(
         except Exception:
             pass
 
+    index_html_text: str | None = None
+    index_html_status: int | None = None
+    if client is not None and hasattr(client, "get_text"):
+        try:
+            h_reply = client.get_text(
+                f"/projects/{target_pid}/repository/files/site%2Findex.html/raw",
+                params={"ref": commit_to_query},
+            )
+            index_html_status = getattr(h_reply, "status", None)
+            if getattr(h_reply, "ok", False) and isinstance(getattr(h_reply, "data", None), str):
+                index_html_text = h_reply.data
+        except Exception:
+            pass
+
     if pages_status is None and client is not None and hasattr(client, "get_json"):
         try:
             p_reply = client.get_json(f"/projects/{target_pid}/pages")
@@ -417,8 +440,11 @@ def gather_target_observations(
         ci_digest=ci_digest,
         marker_text=marker_text,
         marker_status=marker_status,
+        index_html_text=index_html_text,
+        index_html_status=index_html_status,
         pages_status=pages_status,
         pages_error_kind=pages_error_kind,
+        observing_identity=observing_identity,
         policy=policy,
         canonical_issues=canonical_issues,
     )
@@ -494,7 +520,46 @@ def _corroborate_single_candidate(
             ),
         )
 
-    # 2. CI Redeployment Path (.gitlab-ci.yml, create-pages, pages: true)
+    # 2. Source commit consistency check for all materially source-bound candidate claims
+    is_source_bound = (
+        "redeploy" in combined
+        or "create-pages" in combined
+        or "pages: true" in combined
+        or (".gitlab-ci.yml" in combined and "pages" in combined)
+        or "comment" in combined
+        or "safe to retire" in combined
+        or "marker" in combined
+        or "7f3c9a" in combined
+    )
+    if (
+        is_source_bound
+        and obs is not None
+        and obs.observed_commit_sha
+        and commit_sha
+        and obs.observed_commit_sha != commit_sha
+    ):
+        return CandidateClaim(
+            claim_id=cid,
+            text=f"{topic}: {detail}",
+            origin=f"GitLab Duo Custom Flow Session {active_session_id}",
+            retirement_relevance=(
+                "MATERIAL"
+                if ("marker" in combined or "redeploy" in combined)
+                else "PROCEDURAL"
+            ),
+            source_project=target_pid,
+            corroboration_status="UNRESOLVED",
+            corroboration_source=f"GET /projects/{target_pid}/repository/commits",
+            corroboration_detail=(
+                f"Source commit mismatch: candidate bound to {commit_sha[:10]}, "
+                f"but target HEAD commit is {obs.observed_commit_sha[:10]}; "
+                "source-bound candidate unverified."
+            ),
+            exact_target_relationship="TARGET_BOUND",
+            causal_attribution="UNVERIFIED_AI_CLAIM: Source commit mismatch",
+        )
+
+    # 3. CI Redeployment Path (.gitlab-ci.yml, create-pages, pages: true)
     if (
         "redeploy" in combined
         or "create-pages" in combined
@@ -515,24 +580,6 @@ def _corroborate_single_candidate(
                 ),
                 exact_target_relationship="TARGET_BOUND",
                 causal_attribution="UNVERIFIED_AI_CLAIM: Missing provider observations",
-            )
-
-        if obs.observed_commit_sha and commit_sha and obs.observed_commit_sha != commit_sha:
-            return CandidateClaim(
-                claim_id=cid,
-                text=f"{topic}: {detail}",
-                origin=f"GitLab Duo Custom Flow Session {active_session_id}",
-                retirement_relevance="MATERIAL",
-                source_project=target_pid,
-                corroboration_status="UNRESOLVED",
-                corroboration_source=f"GET /projects/{target_pid}/repository/commits",
-                corroboration_detail=(
-                    f"Source commit mismatch: candidate bound to {commit_sha[:10]}, "
-                    f"but target HEAD commit is {obs.observed_commit_sha[:10]}; "
-                    "redeployment path unverified."
-                ),
-                exact_target_relationship="TARGET_BOUND",
-                causal_attribution="UNVERIFIED_AI_CLAIM: Source commit mismatch",
             )
 
         ci_endpoint = (
@@ -626,7 +673,7 @@ def _corroborate_single_candidate(
             causal_attribution="UNVERIFIED_AI_CLAIM: No redeployment mechanism detected",
         )
 
-    # 3. Marker string verification
+    # 4. Marker string verification
     if "marker" in combined or "7f3c9a" in combined:
         marker_endpoint = (
             f"GET /projects/{target_pid}/repository/files/site%2Fmarker.txt/raw?ref={commit_sha}"
@@ -647,7 +694,7 @@ def _corroborate_single_candidate(
                 causal_attribution="UNVERIFIED_AI_CLAIM: Missing provider observations",
             )
 
-        if obs.marker_status == 404:
+        if obs.marker_status == 404 and (obs.index_html_status in (404, None)):
             return CandidateClaim(
                 claim_id=cid,
                 text=f"{topic}: {detail}",
@@ -666,29 +713,48 @@ def _corroborate_single_candidate(
                 ),
             )
 
-        if obs.marker_text is not None:
-            claimed_marker = (
-                "7f3c9a" if "7f3c9a" in combined else "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER"
+        claimed_marker = (
+            "7f3c9a" if "7f3c9a" in combined else "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER"
+        )
+        txt_ok = obs.marker_text is not None and claimed_marker in obs.marker_text
+        txt_mismatch = obs.marker_text is not None and claimed_marker not in obs.marker_text
+
+        html_ok = obs.index_html_text is not None and claimed_marker in obs.index_html_text
+        html_mismatch = (
+            obs.index_html_text is not None and claimed_marker not in obs.index_html_text
+        )
+
+        if txt_mismatch or html_mismatch:
+            mismatched_surfaces = []
+            if txt_mismatch:
+                mismatched_surfaces.append("site/marker.txt")
+            if html_mismatch:
+                mismatched_surfaces.append("site/index.html")
+            return CandidateClaim(
+                claim_id=cid,
+                text=f"{topic}: {detail}",
+                origin=f"GitLab Duo Custom Flow Session {active_session_id}",
+                retirement_relevance="MATERIAL",
+                source_project=target_pid,
+                corroboration_status="CONTRADICTED",
+                corroboration_source=marker_endpoint,
+                corroboration_detail=(
+                    f"AI claimed marker string in target repository, but actual provider read of "
+                    f"{' and '.join(mismatched_surfaces)} does NOT contain this marker; "
+                    "claim is contradicted."
+                ),
+                exact_target_relationship="TARGET_BOUND",
+                causal_attribution=(
+                    "CONTRADICTED_AI_CLAIM: Marker claimed by AI does not match observed file"
+                ),
             )
-            if claimed_marker not in obs.marker_text:
-                return CandidateClaim(
-                    claim_id=cid,
-                    text=f"{topic}: {detail}",
-                    origin=f"GitLab Duo Custom Flow Session {active_session_id}",
-                    retirement_relevance="MATERIAL",
-                    source_project=target_pid,
-                    corroboration_status="CONTRADICTED",
-                    corroboration_source=marker_endpoint,
-                    corroboration_detail=(
-                        "AI claimed marker string in target repository, but actual provider "
-                        "read of site/marker.txt does NOT contain this marker; "
-                        "claim is contradicted."
-                    ),
-                    exact_target_relationship="TARGET_BOUND",
-                    causal_attribution=(
-                        "CONTRADICTED_AI_CLAIM: Marker claimed by AI does not match observed file"
-                    ),
-                )
+
+        if txt_ok or html_ok:
+            surfaces = []
+            if txt_ok:
+                surfaces.append("site/marker.txt")
+            if html_ok:
+                surfaces.append("site/index.html")
             return CandidateClaim(
                 claim_id=cid,
                 text=f"{topic}: {detail}",
@@ -698,8 +764,10 @@ def _corroborate_single_candidate(
                 corroboration_status="CORROBORATED",
                 corroboration_source=marker_endpoint,
                 corroboration_detail=(
-                    "Marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a independently "
-                    "verified in target files site/marker.txt and site/index.html."
+                    f"Marker string TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a independently "
+                    f"verified in target file(s): {', '.join(surfaces)}. "
+                    "Note: Repository marker presence verifies source repository files only; "
+                    "does NOT prove that GitLab Pages site is currently deployed or published."
                 ),
                 exact_target_relationship="TARGET_BOUND",
                 causal_attribution=(
@@ -738,16 +806,30 @@ def _corroborate_single_candidate(
             causal_attribution="UNVERIFIED_AI_CLAIM: Marker not observed",
         )
 
-    # 4. In-code comment and authorization binding
+    # 5. In-code comment and authorization binding
     if "comment" in combined or "safe to retire" in combined:
         ci_endpoint = (
             f"GET /projects/{target_pid}/repository/files/.gitlab-ci.yml/raw?ref={commit_sha}"
         )
-        if (
-            obs is not None
-            and obs.ci_config_text is not None
-            and "safe to retire" not in obs.ci_config_text.lower()
-        ):
+        if obs is None or obs.ci_config_text is None or obs.ci_status not in (200, None):
+            return CandidateClaim(
+                claim_id=cid,
+                text=f"{topic}: {detail}",
+                origin=f"GitLab Duo Custom Flow Session {active_session_id}",
+                retirement_relevance="PROCEDURAL",
+                source_project=target_pid,
+                corroboration_status="UNRESOLVED",
+                corroboration_source=ci_endpoint,
+                corroboration_detail=(
+                    f"Target .gitlab-ci.yml was not observable "
+                    f"(HTTP {obs.ci_status if obs else 'None'}); "
+                    "cannot corroborate in-code comment claim."
+                ),
+                exact_target_relationship="TARGET_BOUND",
+                causal_attribution="UNVERIFIED_AI_CLAIM: Unobservable CI configuration",
+            )
+
+        if "safe to retire" not in obs.ci_config_text.lower():
             return CandidateClaim(
                 claim_id=cid,
                 text=f"{topic}: {detail}",
@@ -786,7 +868,7 @@ def _corroborate_single_candidate(
             ),
         )
 
-    # 5. Permissions and Pages administration endpoint (HTTP 403 AUTH_DENIED)
+    # 6. Permissions and Pages administration endpoint (HTTP 403 AUTH_DENIED)
     if "permission" in combined or "403" in combined or "pages administration" in combined:
         pages_endpoint = f"GET /projects/{target_pid}/pages"
         if obs is None:
@@ -826,6 +908,7 @@ def _corroborate_single_candidate(
             )
 
         if obs.pages_status == 403:
+            ident_label = obs.observing_identity
             return CandidateClaim(
                 claim_id=cid,
                 text=f"{topic}: {detail}",
@@ -835,9 +918,10 @@ def _corroborate_single_candidate(
                 corroboration_status="CORROBORATED",
                 corroboration_source=f"{pages_endpoint} (HTTP 403 AUTH_DENIED)",
                 corroboration_detail=(
-                    "Verified access boundary: anonymous GET /projects/{target_pid}/pages "
-                    "returned HTTP 403 (AUTH_DENIED); proves anonymous identity is denied access, "
-                    "does not authenticate operator role."
+                    f"Verified access boundary: {ident_label} GET /projects/{target_pid}/pages "
+                    "returned HTTP 403 (AUTH_DENIED). Proves observing identity lacks Pages "
+                    "administration privileges; does NOT authenticate operator role and is not "
+                    "proof of resource absence."
                 ),
                 exact_target_relationship="TARGET_BOUND",
                 causal_attribution=(
@@ -1522,17 +1606,28 @@ def run_supervised_investigation(
                 res = client.get_json(
                     f"/projects/{CANONICAL_PROJECT_ID}/issues/{issue_iid}/notes/{target_note_id}"
                 )
+                note_dict = getattr(res, "data", None)
+                if note_dict is None and isinstance(getattr(res, "payload", None), dict):
+                    note_dict = res.payload
                 if (
-                    getattr(res, "status", None) == 200
-                    and isinstance(getattr(res, "payload", None), dict)
-                    and res.payload.get("body")
+                    getattr(res, "ok", False)
+                    and getattr(res, "status", None) == 200
+                    and isinstance(note_dict, dict)
+                    and note_dict.get("body")
                 ):
-                    note_body = str(res.payload["body"])
-                    note_provenance = "LIVE_PROVIDER_NOTE_READ"
-                    note_author = str(
-                        (res.payload.get("author") or {}).get("username") or "unknown"
-                    )
-                    note_created_at = str(res.payload.get("created_at") or observed.isoformat())
+                    nid = note_dict.get("id")
+                    if nid is None or nid == target_note_id:
+                        note_body = str(note_dict["body"])
+                        is_auth = bool(getattr(client, "token", None))
+                        note_provenance = (
+                            "LIVE_AUTHENTICATED_PROVIDER_NOTE_READ"
+                            if is_auth
+                            else "LIVE_ANONYMOUS_PROVIDER_NOTE_READ"
+                        )
+                        note_author = str(
+                            (note_dict.get("author") or {}).get("username") or "unknown"
+                        )
+                        note_created_at = str(note_dict.get("created_at") or observed.isoformat())
             except Exception:
                 note_body = None
 
@@ -2076,6 +2171,7 @@ def run_supervised_investigation(
             (out_path / "supervised_outcome_note.md").write_text(outcome_note, encoding="utf-8")
 
         pub_status = "NOT_RUN"
+        pub_provenance = "NOT_RUN"
         pub_detail = (
             "Publication requested but no authenticated publisher was provided; "
             "outcome note written to disk only."
@@ -2085,13 +2181,10 @@ def run_supervised_investigation(
         if publisher is not None:
             target_issue = issue_iid or 5
             pub_fn = getattr(publisher, "create_issue_note", None)
-            legacy_fn = False
-            if pub_fn is None and hasattr(publisher, "post_issue_note"):
-                pub_fn = publisher.post_issue_note
-                legacy_fn = True
 
             if pub_fn is None:
                 pub_status = "NOT_VERIFIED"
+                pub_provenance = "PUBLICATION_FAILED"
                 pub_detail = (
                     "Publisher interface mismatch: publisher object lacks supported "
                     "create_issue_note(project_id, issue_iid, *, body) method; "
@@ -2099,12 +2192,9 @@ def run_supervised_investigation(
                 )
             else:
                 try:
-                    if legacy_fn:
-                        pub_res = pub_fn(CANONICAL_PROJECT_ID, target_issue, outcome_note)
-                    else:
-                        pub_res = pub_fn(CANONICAL_PROJECT_ID, target_issue, body=outcome_note)
-
+                    pub_res = pub_fn(CANONICAL_PROJECT_ID, target_issue, body=outcome_note)
                     pub_status_code = getattr(pub_res, "status", None)
+                    published_note_id = None
                     if hasattr(pub_res, "ok") and hasattr(pub_res, "data"):
                         if (
                             pub_res.ok
@@ -2119,10 +2209,11 @@ def run_supervised_investigation(
                                 published_note_id = None
                         else:
                             pub_status = "NOT_VERIFIED"
+                            pub_provenance = "PUBLICATION_FAILED"
                             pub_err = getattr(pub_res, "error", None)
                             pub_detail = (
                                 f"Publication attempted to issue #{target_issue} but "
-                                f"publisher returned status={pub_res.status} "
+                                f"publisher returned status={getattr(pub_res, 'status', None)} "
                                 f"error={pub_err!r}; outcome note not verified"
                             )
                     elif isinstance(pub_res, dict) and pub_res.get("id"):
@@ -2133,19 +2224,21 @@ def run_supervised_investigation(
                         except (TypeError, ValueError):
                             published_note_id = None
                         pub_status_code = 201
-                    elif isinstance(pub_res, int) and pub_res > 0:
-                        published_note_id = pub_res
-                        pub_status_code = 201
                     else:
                         pub_status = "NOT_VERIFIED"
+                        pub_provenance = "PUBLICATION_FAILED"
                         pub_detail = (
                             f"Publication attempted to issue #{target_issue} but returned "
                             f"non-identifying response ({pub_res!r}); outcome note not verified"
                         )
 
                     if published_note_id is not None and published_note_id > 0:
-                        # Distinguish API acknowledgement from independent note read-back
+                        pub_ref = f"gitlab_issue_note:{published_note_id}"
+                        ack_str = f"API acknowledged HTTP {pub_status_code or 201}"
+                        readback_status = "READBACK_NOT_OBSERVED"
                         readback_detail = "independent read-back not performed"
+                        expected_digest = hashlib.sha256(outcome_note.encode("utf-8")).hexdigest()
+
                         if client is not None and hasattr(client, "get_json"):
                             try:
                                 note_ep = (
@@ -2164,33 +2257,57 @@ def run_supervised_investigation(
                                     and isinstance(rb_data, dict)
                                     and rb_data.get("id") == published_note_id
                                 ):
-                                    readback_detail = (
-                                        f"independent read-back verified note {published_note_id}"
-                                    )
+                                    rb_body = str(rb_data.get("body", ""))
+                                    rb_digest = hashlib.sha256(rb_body.encode("utf-8")).hexdigest()
+                                    if rb_digest == expected_digest:
+                                        readback_status = "READBACK_VERIFIED"
+                                        readback_detail = (
+                                            f"independent read-back verified note "
+                                            f"{published_note_id} "
+                                            f"(SHA-256 match: {rb_digest[:16]}…)"
+                                        )
+                                    else:
+                                        readback_status = "READBACK_BODY_MISMATCH"
+                                        readback_detail = (
+                                            f"independent read-back note {published_note_id} "
+                                            f"body digest mismatch (expected "
+                                            f"{expected_digest[:16]}…, observed {rb_digest[:16]}…)"
+                                        )
                                 else:
-                                    rb_st = getattr(rb_res, "status", "unknown")
+                                    rb_st = getattr(rb_res, "status", None)
+                                    readback_status = "READBACK_NOT_OBSERVED"
                                     readback_detail = (
                                         f"independent read-back unverified (HTTP {rb_st})"
                                     )
                             except Exception as rb_exc:
+                                readback_status = "READBACK_NOT_OBSERVED"
                                 readback_detail = f"independent read-back probe failed: {rb_exc}"
 
-                        pub_status = "COMPLETED"
-                        ack_str = f"API acknowledged HTTP {pub_status_code or 201}"
+                        if readback_status == "READBACK_VERIFIED":
+                            pub_status = "COMPLETED"
+                            pub_provenance = "READBACK_VERIFIED"
+                        elif readback_status == "READBACK_BODY_MISMATCH":
+                            pub_status = "NOT_VERIFIED"
+                            pub_provenance = "READBACK_BODY_MISMATCH"
+                        else:
+                            pub_status = "COMPLETED"
+                            pub_provenance = "API_ACKNOWLEDGED"
+
                         pub_detail = (
                             f"EXECUTED NOW: deterministic outcome published to issue "
                             f"#{target_issue} note {published_note_id} "
                             f"({ack_str}; {readback_detail}); awaiting human operator review"
                         )
-                        pub_ref = f"gitlab_issue_note:{published_note_id}"
                     elif pub_status != "NOT_VERIFIED":
                         pub_status = "NOT_VERIFIED"
+                        pub_provenance = "PUBLICATION_FAILED"
                         pub_detail = (
                             f"Publication attempted to issue #{target_issue} but returned "
                             f"non-identifying response ({pub_res!r}); outcome note not verified"
                         )
                 except Exception as exc:
                     pub_status = "NOT_VERIFIED"
+                    pub_provenance = "PUBLICATION_FAILED"
                     pub_detail = (
                         f"Publication attempted to issue #{target_issue} but provider call "
                         f"failed: {exc}; outcome note written to disk only"
@@ -2206,7 +2323,7 @@ def run_supervised_investigation(
                 input_refs=(decision_out_ref or "decision.json",),
                 output_ref=pub_ref,
                 detail=pub_detail,
-                provenance="DETERMINISTIC",
+                provenance=pub_provenance,
                 execution_id=exec_id,
                 executed_at=observed.isoformat(),
             )

@@ -182,6 +182,12 @@ Independent QA of B3 found the GitHub bridge genuinely operational but identifie
 - **Deterministic verdict:** **`BLOCKED`** (unchanged; AI text is advisory and non-authoritative; zero mutations performed).
 - **Records generated:** `evidence/b4/duo_session_9704855_readback.json` and `evidence/b4/demo_duo_target_discovery.json`.
 
+## B4 Final Repair & Regression Integrity Closure (2026-10-20)
+
+- **Defect 1 Closed (Real CLI Publisher Interface):** `src/termivance/supervised_review.py` integrates directly with `GitLabPublisher.create_issue_note(project_id, issue_iid, *, body) -> PublishResult`. Verifies response note ID > 0 and distinguishes HTTP 201 acknowledgment from independent read-back verification with SHA-256 body digest matching (`READBACK_VERIFIED`, `READBACK_BODY_MISMATCH`, `API_ACKNOWLEDGED`, `NOT_RUN`, `PUBLICATION_FAILED`).
+- **Defect 2 Closed (Evidence-Grounded Candidate Corroboration):** Corroboration evaluates claims against live provider observations (`ProviderObservations`). Commit consistency enforced across redeployment, marker, and authorization comment claims; absent `pages: true`, missing marker, or unexpected permissions evaluate to `CONTRADICTED`; unobservable configurations evaluate to `UNRESOLVED`; hosting repository issues evaluate to `CONTEXTUAL_ONLY`. Outcome note truthfully reflects the 4/2/1 candidate breakdown. Duo session remains `RECORDED_HISTORICAL`.
+- **Suite Integrity:** 369 tests pass (including 17 regression/integrity tests in `tests/test_b4_regression_integrity.py`), `ruff check` clean, `scripts/ci_safety_assertions.py` 40/40 PASS network-free. Zero incremental personal spend ($0.00).
+
 ## Minimal bounded-absence receipt fields
 
 `provider=GITLAB_PAGES`, `exact_project_id`, `exact_project_path`, `resource_kind=PAGES_SITE`, `observed_scope`, `observation_time_utc`, `api_request_identity`, `api_status`, `deployment_state`, `served_url`, `http_observation`, `freshness_or_expiry`, `source_sha`, `authorization_binding`, `verdict`.

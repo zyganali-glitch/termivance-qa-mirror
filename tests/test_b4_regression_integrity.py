@@ -5,9 +5,11 @@
 3. Missing publisher, publisher error & interface mismatch
 4. Evidence-driven candidate corroboration (rejecting keyword-only matching)
 5. Adversarial AI claims contradiction (absent pages: true, absent marker, wrong status)
-6. Source commit binding & content mismatch
+6. Source commit binding & content mismatch across all source-bound claims
 7. Historical agent execution vs live note read provenance truth
 8. Mixed candidate status outcome note formatting
+9. Read-back SHA-256 digest comparison and body mismatch detection
+10. Authentic GitLabClient .data response ingestion
 """
 
 from __future__ import annotations
@@ -54,6 +56,10 @@ def mock_target_responses() -> dict[tuple[str, str], HttpReply]:
         ("GET", f"/projects/{TARGET_PID}/repository/files/site%2Fmarker.txt/raw"): HttpReply(
             200, "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a\n"
         ),
+        ("GET", f"/projects/{TARGET_PID}/repository/files/site%2Findex.html/raw"): HttpReply(
+            200,
+            "<html><body>demo marker TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a</body></html>\n",
+        ),
         ("GET", f"/projects/{TARGET_PID}/pages"): HttpReply(403, ""),
         ("GET", f"/projects/{TARGET_PID}/pipelines"): HttpReply(200, "[]"),
         ("GET", f"/projects/{TARGET_PID}/environments"): HttpReply(200, "[]"),
@@ -90,6 +96,25 @@ def mock_target_responses() -> dict[tuple[str, str], HttpReply]:
     }
 
 
+class ReadbackEchoTransport:
+    """Transport that echoes the generated markdown note for exact read-back verification."""
+
+    def __init__(self, out_dir, note_id=4045409264, base_dict=None):
+        self.out_dir = out_dir
+        self.note_id = note_id
+        self.base_dict = base_dict or mock_target_responses()
+
+    def request(self, method, url, headers, timeout):
+        if method == "GET" and f"notes/{self.note_id}" in url:
+            note_file = self.out_dir / "supervised_outcome_note.md"
+            body = note_file.read_text(encoding="utf-8") if note_file.exists() else "body"
+            return HttpReply(200, json.dumps({"id": self.note_id, "body": body}))
+        for (m, fragment), reply in self.base_dict.items():
+            if m == method and fragment in url:
+                return reply
+        return HttpReply(404, "not found")
+
+
 # ---------------------------------------------------------------------------
 # DEFECT 1: REAL PUBLISHER INTERFACE CONTRACT & RESPONSE IDENTITY
 # ---------------------------------------------------------------------------
@@ -97,6 +122,7 @@ def mock_target_responses() -> dict[tuple[str, str], HttpReply]:
 
 def test_successful_provider_acknowledged_issue_note_publication(tmp_path):
     """Use the real GitLabPublisher interface with a mocked HTTP transport."""
+    out_dir = tmp_path / "pub_success"
     pub_transport = FakeTransport(
         {
             ("POST", f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes"): HttpReply(
@@ -106,16 +132,9 @@ def test_successful_provider_acknowledged_issue_note_publication(tmp_path):
     )
     publisher = GitLabPublisher("mock-token", transport=pub_transport)
 
-    # Client providing independent read-back confirmation
-    client_responses = {
-        ("GET", f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes/4045409264"): HttpReply(
-            200, json.dumps({"id": 4045409264, "body": "outcome note content"})
-        ),
-        **mock_target_responses(),
-    }
-    client = GitLabClient(None, transport=FakeTransport(client_responses))
+    # Client providing independent read-back confirmation using exact echoed body
+    client = GitLabClient(None, transport=ReadbackEchoTransport(out_dir))
 
-    out_dir = tmp_path / "pub_success"
     review = run_supervised_investigation(
         client=client,
         publisher=publisher,
@@ -128,16 +147,95 @@ def test_successful_provider_acknowledged_issue_note_publication(tmp_path):
 
     pub_step = next(s for s in review.steps if s.step_id == "supervised_outcome_publication")
     assert pub_step.status == "COMPLETED"
+    assert pub_step.provenance == "READBACK_VERIFIED"
     assert pub_step.execution_mode == "EXECUTED_NOW"
     assert pub_step.output_ref == "gitlab_issue_note:4045409264"
     assert "API acknowledged HTTP 201" in pub_step.detail
     assert "independent read-back verified note 4045409264" in pub_step.detail
+    assert "SHA-256 match" in pub_step.detail
     assert (out_dir / "supervised_outcome_note.md").exists()
+
+
+def test_readback_body_mismatch_fails_closed(tmp_path):
+    """When read-back note body does NOT match the published outcome note, fail closed."""
+    out_dir = tmp_path / "pub_tampered"
+    pub_transport = FakeTransport(
+        {
+            ("POST", f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes"): HttpReply(
+                201, json.dumps({"id": 4045409264, "body": "outcome note"})
+            )
+        }
+    )
+    publisher = GitLabPublisher("mock-token", transport=pub_transport)
+
+    # Mock client returning mismatched/tampered body
+    mismatched_responses = {
+        ("GET", f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes/4045409264"): HttpReply(
+            200, json.dumps({"id": 4045409264, "body": "TAMPERED_NOTE_BODY_DOES_NOT_MATCH"})
+        ),
+        **mock_target_responses(),
+    }
+    client = GitLabClient(None, transport=FakeTransport(mismatched_responses))
+
+    review = run_supervised_investigation(
+        client=client,
+        publisher=publisher,
+        target=TARGET,
+        issue_iid=5,
+        publish_outcome=True,
+        out_dir=out_dir,
+        now=NOW,
+    )
+
+    pub_step = next(s for s in review.steps if s.step_id == "supervised_outcome_publication")
+    assert pub_step.status == "NOT_VERIFIED"
+    assert pub_step.provenance == "READBACK_BODY_MISMATCH"
+    assert "body digest mismatch" in pub_step.detail
+
+
+def test_readback_denied_produces_api_acknowledged(tmp_path):
+    """When read-back returns HTTP 401/403, record API_ACKNOWLEDGED without false verification."""
+    out_dir = tmp_path / "pub_no_readback"
+    pub_transport = FakeTransport(
+        {
+            ("POST", f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes"): HttpReply(
+                201, json.dumps({"id": 4045409264, "body": "outcome note"})
+            )
+        }
+    )
+    publisher = GitLabPublisher("mock-token", transport=pub_transport)
+
+    # Client returns 401 on notes endpoint
+    denied_responses = {
+        ("GET", f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes/4045409264"): HttpReply(
+            401, "Unauthorized"
+        ),
+        **mock_target_responses(),
+    }
+    client = GitLabClient(None, transport=FakeTransport(denied_responses))
+
+    review = run_supervised_investigation(
+        client=client,
+        publisher=publisher,
+        target=TARGET,
+        issue_iid=5,
+        publish_outcome=True,
+        out_dir=out_dir,
+        now=NOW,
+    )
+
+    pub_step = next(s for s in review.steps if s.step_id == "supervised_outcome_publication")
+    assert pub_step.status == "COMPLETED"
+    assert pub_step.provenance == "API_ACKNOWLEDGED"
+    assert "API acknowledged HTTP 201" in pub_step.detail
+    assert "independent read-back unverified (HTTP 401)" in pub_step.detail
 
 
 def test_missing_publisher_produces_honest_not_run(tmp_path):
     """When publish requested but publisher=None, status must be NOT_RUN."""
+    client = GitLabClient(None, transport=FakeTransport(mock_target_responses()))
     review = run_supervised_investigation(
+        client=client,
         publisher=None,
         target=TARGET,
         issue_iid=5,
@@ -162,8 +260,10 @@ def test_publisher_error_produces_honest_not_verified(tmp_path):
         }
     )
     publisher = GitLabPublisher("mock-token", transport=err_transport)
+    client = GitLabClient(None, transport=FakeTransport(mock_target_responses()))
 
     review = run_supervised_investigation(
+        client=client,
         publisher=publisher,
         target=TARGET,
         issue_iid=5,
@@ -173,6 +273,7 @@ def test_publisher_error_produces_honest_not_verified(tmp_path):
     )
     pub_step = next(s for s in review.steps if s.step_id == "supervised_outcome_publication")
     assert pub_step.status == "NOT_VERIFIED"
+    assert pub_step.provenance == "PUBLICATION_FAILED"
     assert pub_step.execution_mode == "NOT_RUN"
     assert "status=500" in pub_step.detail or "500" in pub_step.detail
 
@@ -183,7 +284,9 @@ def test_publisher_interface_mismatch_aborts_with_not_verified(tmp_path):
     class IncompatiblePublisher:
         pass
 
+    client = GitLabClient(None, transport=FakeTransport(mock_target_responses()))
     review = run_supervised_investigation(
+        client=client,
         publisher=IncompatiblePublisher(),
         target=TARGET,
         issue_iid=5,
@@ -193,6 +296,7 @@ def test_publisher_interface_mismatch_aborts_with_not_verified(tmp_path):
     )
     pub_step = next(s for s in review.steps if s.step_id == "supervised_outcome_publication")
     assert pub_step.status == "NOT_VERIFIED"
+    assert pub_step.provenance == "PUBLICATION_FAILED"
     assert pub_step.execution_mode == "NOT_RUN"
     assert "Publisher interface mismatch" in pub_step.detail
     assert "create_issue_note" in pub_step.detail
@@ -208,8 +312,10 @@ def test_incorrect_missing_or_contradictory_note_response_identity(tmp_path):
         }
     )
     publisher = GitLabPublisher("mock-token", transport=non_identifying_transport)
+    client = GitLabClient(None, transport=FakeTransport(mock_target_responses()))
 
     review = run_supervised_investigation(
+        client=client,
         publisher=publisher,
         target=TARGET,
         issue_iid=5,
@@ -219,6 +325,7 @@ def test_incorrect_missing_or_contradictory_note_response_identity(tmp_path):
     )
     pub_step = next(s for s in review.steps if s.step_id == "supervised_outcome_publication")
     assert pub_step.status == "NOT_VERIFIED"
+    assert pub_step.provenance == "PUBLICATION_FAILED"
     assert pub_step.execution_mode == "NOT_RUN"
     assert pub_step.output_ref is None
 
@@ -289,6 +396,69 @@ def test_source_commit_mismatch_returns_unresolved():
     assert "Source commit mismatch" in result.corroboration_detail
 
 
+def test_source_commit_mismatch_enforced_across_all_source_bound_candidates():
+    """Commit consistency must be enforced across redeployment, marker, and comment candidates."""
+    obs = ProviderObservations(
+        target_project_id=TARGET_PID,
+        observed_commit_sha="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",  # Mismatch!
+        ci_config_text="safe to retire",
+        ci_signals=("pages_true",),
+        ci_status=200,
+        ci_digest="abc",
+        marker_text="7f3c9a",
+        marker_status=200,
+        index_html_text="7f3c9a",
+        index_html_status=200,
+        pages_status=403,
+        pages_error_kind="AUTH_DENIED",
+    )
+
+    # 1. Redeployment
+    c1 = {"num": 1, "topic": "CI Redeployment", "detail": "create-pages with pages: true"}
+    r1 = _corroborate_single_candidate(c1, TARGET_PID, COMMIT_SHA, "9710085", obs=obs)
+    assert r1.corroboration_status == "UNRESOLVED"
+    assert "Source commit mismatch" in r1.corroboration_detail
+
+    # 2. In-code comment
+    c4 = {"num": 4, "topic": "Authorization", "detail": "safe to retire comment"}
+    r4 = _corroborate_single_candidate(c4, TARGET_PID, COMMIT_SHA, "9710085", obs=obs)
+    assert r4.corroboration_status == "UNRESOLVED"
+    assert "Source commit mismatch" in r4.corroboration_detail
+
+    # 3. Marker
+    c7 = {"num": 7, "topic": "Marker", "detail": "7f3c9a"}
+    r7 = _corroborate_single_candidate(c7, TARGET_PID, COMMIT_SHA, "9710085", obs=obs)
+    assert r7.corroboration_status == "UNRESOLVED"
+    assert "Source commit mismatch" in r7.corroboration_detail
+
+
+def test_authorization_comment_unresolved_when_ci_not_read():
+    """When target CI file was not read, comment claim must NOT become CORROBORATED."""
+    obs_no_ci = ProviderObservations(
+        target_project_id=TARGET_PID,
+        observed_commit_sha=COMMIT_SHA,
+        ci_config_text=None,  # Not read!
+        ci_signals=(),
+        ci_status=404,
+        ci_digest=None,
+        marker_text="7f3c9a",
+        marker_status=200,
+        pages_status=403,
+        pages_error_kind="AUTH_DENIED",
+    )
+
+    ai_cand = {
+        "num": 4,
+        "topic": "Authorization binding",
+        "detail": "Comment safe to retire in target CI file",
+    }
+    result = _corroborate_single_candidate(
+        ai_cand, TARGET_PID, COMMIT_SHA, "9710085", obs=obs_no_ci
+    )
+    assert result.corroboration_status == "UNRESOLVED"
+    assert "not observable" in result.corroboration_detail
+
+
 def test_absent_or_changed_marker_is_contradicted():
     """When AI claims marker 7f3c9a but observed file returns 404 or different text, contradict."""
     obs_404 = ProviderObservations(
@@ -337,6 +507,34 @@ def test_absent_or_changed_marker_is_contradicted():
     assert "does NOT contain this marker" in res_mismatch.corroboration_detail
 
 
+def test_marker_checked_against_both_txt_and_html():
+    """Marker verification checks both site/marker.txt and site/index.html."""
+    obs = ProviderObservations(
+        target_project_id=TARGET_PID,
+        observed_commit_sha=COMMIT_SHA,
+        ci_config_text="pages: true",
+        ci_signals=("pages_true",),
+        ci_status=200,
+        ci_digest="abc",
+        marker_text="TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a",
+        marker_status=200,
+        index_html_text="<html>TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a</html>",
+        index_html_status=200,
+        pages_status=403,
+        pages_error_kind="AUTH_DENIED",
+    )
+
+    ai_cand = {
+        "num": 7,
+        "topic": "Marker",
+        "detail": "Marker TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a verified",
+    }
+    res = _corroborate_single_candidate(ai_cand, TARGET_PID, COMMIT_SHA, "9710085", obs=obs)
+    assert res.corroboration_status == "CORROBORATED"
+    assert "site/marker.txt, site/index.html" in res.corroboration_detail
+    assert "does NOT prove that GitLab Pages site is currently deployed" in res.corroboration_detail
+
+
 def test_pages_permission_endpoint_unexpected_status_is_contradicted():
     """When AI claims 403 AUTH_DENIED but actual probe returned HTTP 200, contradict."""
     obs = ProviderObservations(
@@ -367,7 +565,7 @@ def test_pages_permission_endpoint_unexpected_status_is_contradicted():
 
 def test_historical_duo_note_read_vs_historical_agent_execution(tmp_path):
     """Reading a note live via REST API keeps duo_candidate_analysis RECORDED_HISTORICAL."""
-    # Live note read simulation
+    # Live note read simulation using ApiResult .data contract
     note_payload = {
         "id": 4045401991,
         "body": (
@@ -377,7 +575,7 @@ def test_historical_duo_note_read_vs_historical_agent_execution(tmp_path):
             "### 3. Candidate obligations\n"
             "1. **CI Redeployment**: create-pages with pages: true\n"
         ),
-        "author": {"username": "duo_agent"},
+        "author": {"username": "ai-termivance-retirement-analyst-gitlab-ai-hackathon"},
         "created_at": "2026-10-19T19:46:42Z",
     }
     note_responses = {
@@ -400,10 +598,45 @@ def test_historical_duo_note_read_vs_historical_agent_execution(tmp_path):
     # Step 1: Agent step MUST remain RECORDED_HISTORICAL
     assert steps["duo_candidate_analysis"].execution_mode == "RECORDED_HISTORICAL"
     assert steps["duo_candidate_analysis"].status == "COMPLETED"
+    assert steps["duo_candidate_analysis"].executed_at == "2026-10-19T19:46:42Z"
 
     # Step 2: Supervised handoff ingestion is EXECUTED_NOW
     assert steps["operator_handoff"].execution_mode == "EXECUTED_NOW"
     assert steps["operator_handoff"].status == "COMPLETED"
+
+
+def test_authenticated_vs_anonymous_provenance(tmp_path):
+    """Client with token records LIVE_AUTHENTICATED_PROVIDER_NOTE_READ."""
+    note_payload = {
+        "id": 4045401991,
+        "body": (
+            "### 1. Target Identity\n"
+            f"- Target project ID: `{TARGET_PID}`\n"
+            f"- Ref commit: `{COMMIT_SHA}`\n\n"
+            "### 3. Candidate obligations\n"
+            "1. **CI Redeployment**: create-pages with pages: true\n"
+        ),
+        "author": {"username": "ai-termivance-retirement-analyst-gitlab-ai-hackathon"},
+        "created_at": "2026-10-19T19:46:42Z",
+    }
+    note_responses = {
+        ("GET", f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes/4045401991"): HttpReply(
+            200, json.dumps(note_payload)
+        ),
+        **mock_target_responses(),
+    }
+    auth_client = GitLabClient("token-123", transport=FakeTransport(note_responses))
+
+    review = run_supervised_investigation(
+        client=auth_client,
+        target=TARGET,
+        issue_iid=5,
+        out_dir=tmp_path / "auth_out",
+        now=NOW,
+    )
+
+    steps = {s.step_id: s for s in review.steps}
+    assert steps["duo_candidate_analysis"].provenance == "LIVE_AUTHENTICATED_PROVIDER_NOTE_READ"
 
 
 def test_mixed_candidate_status_outcome_note_truth():
