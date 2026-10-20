@@ -32,11 +32,17 @@ class GitLabPublisher:
     ALLOWED_ENDPOINTS_SUFFIX = ("/issues", "/notes")
 
     def __init__(
-        self, token: str, *, base_url: str = DEFAULT_BASE_URL, timeout: float = 30.0
+        self,
+        token: str,
+        *,
+        base_url: str = DEFAULT_BASE_URL,
+        timeout: float = 30.0,
+        transport: object | None = None,
     ) -> None:
         self._token = token
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout
+        self._transport = transport
 
     def _post(self, endpoint: str, payload: Mapping[str, object]) -> PublishResult:
         if not endpoint.endswith(self.ALLOWED_ENDPOINTS_SUFFIX):
@@ -45,11 +51,27 @@ class GitLabPublisher:
             )
         url = self._base_url + endpoint
         body = json.dumps(dict(payload)).encode("utf-8")
+        headers = {"PRIVATE-TOKEN": self._token, "Content-Type": "application/json"}
+        if self._transport is not None and hasattr(self._transport, "request"):
+            try:
+                try:
+                    reply = self._transport.request("POST", url, headers, self._timeout, data=body)  # type: ignore[call-arg]
+                except TypeError:
+                    reply = self._transport.request("POST", url, headers, self._timeout)
+                if reply.status in (200, 201):
+                    data = json.loads(reply.body) if reply.body else None
+                    return PublishResult(True, reply.status, endpoint, data)
+                return PublishResult(
+                    False, reply.status, endpoint, None, reply.error or f"HTTP {reply.status}"
+                )
+            except Exception as exc:  # noqa: BLE001
+                return PublishResult(False, None, endpoint, None, str(exc))
+
         req = urllib.request.Request(  # noqa: S310
             url,
             data=body,
             method="POST",
-            headers={"PRIVATE-TOKEN": self._token, "Content-Type": "application/json"},
+            headers=headers,
         )
         try:
             with urllib.request.urlopen(req, timeout=self._timeout) as resp:  # noqa: S310

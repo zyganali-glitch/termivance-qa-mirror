@@ -18,6 +18,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from termivance.cli import build_parser
+from termivance.publish import GitLabPublisher, PublishResult
 from termivance.supervised_review import (
     CANONICAL_PROJECT_ID,
     DEFAULT_TARGET_PROJECT_ID,
@@ -128,8 +129,13 @@ def test_run_supervised_investigation_with_issue_5(tmp_path):
 
 def test_supervised_workflow_publication_step_success(tmp_path):
     out_dir = tmp_path / "pub_out"
-    mock_publisher = MagicMock()
-    mock_publisher.post_issue_note.return_value = {"id": 4045409264}
+    mock_publisher = MagicMock(spec=GitLabPublisher)
+    mock_publisher.create_issue_note.return_value = PublishResult(
+        ok=True,
+        status=201,
+        endpoint=f"/projects/{CANONICAL_PROJECT_ID}/issues/5/notes",
+        data={"id": 4045409264},
+    )
 
     review = run_supervised_investigation(
         publisher=mock_publisher,
@@ -146,12 +152,13 @@ def test_supervised_workflow_publication_step_success(tmp_path):
     assert pub_step.execution_mode == "EXECUTED_NOW"
     assert pub_step.output_ref == "gitlab_issue_note:4045409264"
     assert "4045409264" in pub_step.detail
+    assert "API acknowledged HTTP 201" in pub_step.detail
 
-    mock_publisher.post_issue_note.assert_called_once()
-    args, kwargs = mock_publisher.post_issue_note.call_args
+    mock_publisher.create_issue_note.assert_called_once()
+    args, kwargs = mock_publisher.create_issue_note.call_args
     assert args[0] == CANONICAL_PROJECT_ID
     assert args[1] == 5
-    assert "Termivance Deterministic Supervised Review Outcome" in args[2]
+    assert "Termivance Deterministic Supervised Review Outcome" in kwargs["body"]
 
     # Markdown outcome note written
     assert (out_dir / "supervised_outcome_note.md").exists()
@@ -180,8 +187,8 @@ def test_missing_publisher_marks_publication_not_run(tmp_path):
 def test_publisher_failure_marks_publication_not_verified(tmp_path):
     """When publisher throws an error, status must be NOT_VERIFIED, never false COMPLETED."""
     out_dir = tmp_path / "fail_pub_out"
-    mock_publisher = MagicMock()
-    mock_publisher.post_issue_note.side_effect = RuntimeError("HTTP 500 Server Error")
+    mock_publisher = MagicMock(spec=GitLabPublisher)
+    mock_publisher.create_issue_note.side_effect = RuntimeError("HTTP 500 Server Error")
 
     review = run_supervised_investigation(
         publisher=mock_publisher,
