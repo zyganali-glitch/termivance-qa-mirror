@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-21T12:22:26Z",
-  "artifact_sha256": "b63a315aab11b5c210522feeb3c20786287ed915e3aa41549d634ac121f8c648",
+  "acquired_at_utc": "2026-10-21T12:34:10Z",
+  "artifact_sha256": "ccc691e652908064a003c95a9c0aa9001e636ddff40066605637292c5342a2ff",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2971888764/jobs",
+  "endpoint": "/projects/87779099/pipelines/2971929010/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17348108462,
+      "id": 17348430150,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-21T15:19:06.000+03:00",
-        "committed_date": "2026-10-21T15:19:06.000+03:00",
+        "authored_date": "2026-10-21T15:29:40.000+03:00",
+        "committed_date": "2026-10-21T15:29:40.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-21T15:19:06.000+03:00",
+        "created_at": "2026-10-21T15:29:40.000+03:00",
         "extended_trailers": {},
-        "id": "b59735ff2297f3de5ec7ba4379252fc10d290c61",
-        "message": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary\n",
+        "id": "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c",
+        "message": "docs(b4-integrity): record verified QA bridge baselines for the final causal-authority correction\n",
         "parent_ids": [
-          "c8dbcc80dfe772ab6da5408f50142b1a120b97f9"
+          "b59735ff2297f3de5ec7ba4379252fc10d290c61"
         ],
-        "short_id": "b59735ff",
-        "title": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary",
+        "short_id": "cd51a41c",
+        "title": "docs(b4-integrity): record verified QA bridge baselines for the final causal-authority correction",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/b59735ff2297f3de5ec7ba4379252fc10d290c61"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/cd51a41cf589c265f2224c8ef2b9b1c54ee0800c"
       },
       "coverage": null,
-      "created_at": "2026-10-21T12:19:16.646Z",
-      "duration": 123.973513,
+      "created_at": "2026-10-21T12:29:43.281Z",
+      "duration": 218.212449,
       "erased_at": null,
-      "finished_at": "2026-10-21T12:21:20.999Z",
-      "id": 17348108462,
+      "finished_at": "2026-10-21T12:33:21.864Z",
+      "id": 17348430150,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-21T12:19:16.475Z",
-        "id": 2971888764,
-        "iid": 48,
+        "created_at": "2026-10-21T12:29:43.139Z",
+        "id": 2971929010,
+        "iid": 49,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "b59735ff2297f3de5ec7ba4379252fc10d290c61",
+        "sha": "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-21T12:21:22.553Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971888764"
+        "updated_at": "2026-10-21T12:33:24.246Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971929010"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.068848,
+      "queued_duration": 0.086426,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-21T12:22:25.905Z",
-        "created_at": "2026-10-21T09:42:46.732Z",
-        "id": 164191640,
-        "ip_address": "10.218.11.3",
+        "contacted_at": "2026-10-21T12:34:10.748Z",
+        "created_at": "2026-10-21T09:44:37.953Z",
+        "id": 164192313,
+        "ip_address": "10.218.11.18",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "5d62e0cc",
         "status": "online",
-        "system_id": "r_ZmvdpyFRNpQ7",
+        "system_id": "r_Wt2f67cgnd77",
         "version": "19.6.0~pre.2350.g5d62e0cc"
       },
       "stage": "verify",
-      "started_at": "2026-10-21T12:19:17.025Z",
+      "started_at": "2026-10-21T12:29:43.651Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17348108462"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17348430150"
     }
   ]
 }

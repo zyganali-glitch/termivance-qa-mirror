@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-21T12:22:20Z",
-  "artifact_sha256": "8f006456a7593e319352da5d135ffd14cfd4f8e6f361c4978d83293d410298f4",
+  "acquired_at_utc": "2026-10-21T12:34:03Z",
+  "artifact_sha256": "91fca5e51ce6263bcde3b667b04a66692c8637ea06b71c4a99ba65cab2462490",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-21T15:19:06.000+03:00",
-      "committed_date": "2026-10-21T15:19:06.000+03:00",
+      "authored_date": "2026-10-21T15:29:40.000+03:00",
+      "committed_date": "2026-10-21T15:29:40.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-21T15:19:06.000+03:00",
+      "created_at": "2026-10-21T15:29:40.000+03:00",
       "extended_trailers": {},
-      "id": "b59735ff2297f3de5ec7ba4379252fc10d290c61",
-      "message": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary\n",
+      "id": "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c",
+      "message": "docs(b4-integrity): record verified QA bridge baselines for the final causal-authority correction\n",
       "parent_ids": [
-        "c8dbcc80dfe772ab6da5408f50142b1a120b97f9"
+        "b59735ff2297f3de5ec7ba4379252fc10d290c61"
       ],
-      "short_id": "b59735ff",
-      "title": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary",
+      "short_id": "cd51a41c",
+      "title": "docs(b4-integrity): record verified QA bridge baselines for the final causal-authority correction",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/b59735ff2297f3de5ec7ba4379252fc10d290c61"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/cd51a41cf589c265f2224c8ef2b9b1c54ee0800c"
     },
     "default": true,
     "developers_can_merge": true,

@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-21T12:22:21Z",
-  "artifact_sha256": "8342ff311b27170173129d2c49359030893128718e873d4b8dd94332f1f48290",
+  "acquired_at_utc": "2026-10-21T12:34:04Z",
+  "artifact_sha256": "130c865a7f665540e660ec6e7dc6d44d46a831375e5063a404cae2fa6c410b8a",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/pipelines?per_page=3&order_by=id&sort=desc",
   "http_error": null,
@@ -12,6 +12,19 @@
     "name"
   ],
   "sanitized_body": [
+    {
+      "created_at": "2026-10-21T12:29:43.139Z",
+      "id": 2971929010,
+      "iid": 49,
+      "name": "[REDACTED]",
+      "project_id": 87779099,
+      "ref": "main",
+      "sha": "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c",
+      "source": "push",
+      "status": "success",
+      "updated_at": "2026-10-21T12:33:24.246Z",
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971929010"
+    },
     {
       "created_at": "2026-10-21T12:19:16.475Z",
       "id": 2971888764,
@@ -37,19 +50,6 @@
       "status": "success",
       "updated_at": "2026-10-21T10:36:48.105Z",
       "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971489687"
-    },
-    {
-      "created_at": "2026-10-21T10:27:38.172Z",
-      "id": 2971463550,
-      "iid": 46,
-      "name": "[REDACTED]",
-      "project_id": 87779099,
-      "ref": "main",
-      "sha": "3d12e24d98902f271b9d1b58b858c569497109a6",
-      "source": "push",
-      "status": "success",
-      "updated_at": "2026-10-21T10:29:38.230Z",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971463550"
     }
   ]
 }
