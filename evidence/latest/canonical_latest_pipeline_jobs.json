@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-21T17:20:50Z",
-  "artifact_sha256": "7c89714108263eddbe1f6aae59476de5b7040ab771ec24f1924a98867ba541ed",
+  "acquired_at_utc": "2026-10-21T17:54:15Z",
+  "artifact_sha256": "50424b8dce6067c52a2ecddefb4f65b39d7055c545db944929a18bc459dd9b04",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2972901592/jobs",
+  "endpoint": "/projects/87779099/pipelines/2973233807/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17356147584,
+      "id": 17358574812,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -34,52 +34,52 @@
           "file_format": null,
           "file_type": "trace",
           "filename": "job.log",
-          "size": 17977
+          "size": 18020
         }
       ],
       "artifacts_expire_at": null,
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "zyganali",
-        "authored_date": "2026-10-21T19:19:40.000+03:00",
-        "committed_date": "2026-10-21T19:19:40.000+03:00",
+        "authored_date": "2026-10-21T20:49:12.000+03:00",
+        "committed_date": "2026-10-21T20:49:12.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "zyganali",
-        "created_at": "2026-10-21T19:19:40.000+03:00",
+        "created_at": "2026-10-21T20:49:12.000+03:00",
         "extended_trailers": {},
-        "id": "4985978ee218d521283db4b33c5bb03c997b1d2c",
-        "message": "feat(b4-award-readiness): consolidated W23-W25 nine-stage reassessment, end-to-end demo integration, Control Room polish, and final documentation reconciliation\n\nWORK-B4-23: final evidence-based nine-stage DevSecOps reassessment against the\ncurrent October 2026 official criterion (touching counts, with stricter internal\nattribution preserved); judge-readable matrix at docs/DEVSECOPS_STAGES.md;\nrecommendation 4 core YES (Plan, Verify, Secure, Govern) + 4 qualified YES with\nmandatory disclosures (Create, Package, Configure, Monitor) + Release NO;\nMaster Plan sections 2/4.7.6/7/13 synchronized.\n\nWORK-B4-24: docs/DEMO_SCRIPT.md rewritten as the evidence-labeled end-to-end\ndemonstration path (operator-initiated Supervised chain, never narrated as\nsingle-trigger autonomous); Control Room targeted improvements: first-screen\nproduct explainer, per-section recorded observation timestamps in the header,\ntab/tablist/tabpanel ARIA landmarks, meta description, maintained aria-selected;\nreal-browser validated (all five tabs render, graph/what-if/evidence\ninteractions verified, zero console errors, zero runtime network fetches beyond\nthe two static files, Lighthouse accessibility/best-practices/SEO 100); live\nread-only evidence regenerated 2026-10-21T15:15Z (pages publication\nVERIFIED_LIVE_SERVED across all 5 levels; resurrection monitoring\nHISTORICAL_RECEIPT_UNVERIFIED / MECHANISM_PRESENT, 12 invariants); 12-point\ncanonical Pages feasibility study completed (Master Plan 10.3): deployment\nfeasible at \\.00 but public accessibility requires a Maintainer\npages_access_level change unavailable to the operator - NO deployment\nattempted, NO CI change, local file:// Control Room remains the verified\nfallback.\n\nWORK-B4-25: README fully rewritten product-first (stale claims removed:\nno-mutation-command contradiction, wrong session emphasis, obsolete test\ncounts; final suite 540; guarded retire-pages --execute accurately described);\nDOC-01..DOC-10 reconciled (launcher Python floor aligned to 3.12 matching\npyproject); final 10-scene 174 s video runbook with complete English\nvoice-over and subtitles (Master Plan 11.2); final Devpost packet (Section 13);\n5-image screenshot packet (Section 12); new Turkish operator filming and\nsubmission guide docs/OPERATOR_FILMING_GUIDE.md; evidence matrix and handoff\nsynchronized.\n\nVerification: 540 tests passed, ruff clean, 40/40 network-free CI safety\nassertions, CLI smoke tests positive and negative (fail-closed refusals:\noperator-trust gate, OFFLINE_PUBLICATION_REFUSED). Zero personal spend; no\ndestructive operation, no Pages DELETE, no public UI hosting, no video capture,\nno Devpost submission. Post-push pipeline/observer verification recorded in\nthe completion report per the immutable provenance contract.\n",
+        "id": "e4653169455f0d4553abff715e48116abd704bf7",
+        "message": "fix(b4-award-readiness): presentation-integrity repair - actual launcher verdicts, ten-scene contract, unified screenshot register\n\nLauncher verdict truth (W24 scope): both demo launchers previously printed a\nfixed SAFE_TO_RETIRE = BLOCKED summary on any zero exit. New shared classifier\nscripts/launcher_verdict.py reads the production CLI's structured --out record\n(termivance.supervised_review/v1) and classifies the ACTUAL result - only\nVERDICT_CONFIRMED_BLOCKED (completed-now execution + live provider steps +\nverdict BLOCKED) is presented as the expected safe outcome; unsuccessful\nexecution, missing/malformed results, non-live mode, incomplete steps, missing\nlive evidence, undetermined/inconclusive/unexpected verdicts (including\nSAFE_TO_RETIRE) are displayed as such and never converted. Original CLI exit\ncodes preserved; no mutation, publication or credentials. 23 adversarial tests\nin tests/test_b4_launcher_verdict.py. POSIX preflight now validates interpreter\ncandidates instead of trusting the python3 name (fixes the Windows Git Bash\nWindowsApps python3 stub found during rehearsal).\n\nTen-scene video contract (W25 scope): all current-state nine-scene text\nremoved; SC-07 narration corrected to 'HTTP four-oh-three, forbidden'; SC-06\ngiven conditional LIVE/HISTORICAL narration gated on a fresh browser read (a\nhistorical HTTP 200 never automatically becomes current; Level 2 stays\nNOT_OBSERVED); SC-05 verdict grounding rule added; complete narration-matching\ntimed subtitle track committed (assets/demo/subtitles/termivance_demo_en.srt,\n29 cues, 174 s) with on-screen slogans labeled separately.\n\nScreenshot register unified: ONE authoritative primary selection (01/02/04/\n06/07; alternates 03/05) across Master Plan 12.1, screenshots README and the\nTurkish operator guide; repair-set/freshness navigation corrected to Evidence\n& Audit -> 'Deterministic decision'.\n\nSafe live rehearsal: .bat 21.1 s / .sh (Git Bash) 25.4 s, both exit 0 with\nVERDICT_CONFIRMED_BLOCKED (7/7 steps, 6 live provider steps); safety refusal\nearly-fails 1.5 s (exit 2); Control Room five-tab browser pass; Duo session UI\n404 / Issue #5 notes 401 anonymous (fallbacks valid); disposable Pages site\nfresh HTTP 200 with marker at rehearsal time; committed evidence untouched.\n\nClaims reconciliation: previously accepted W27/W28 register entries reconciled\nto CLOSED_INDEPENDENT_QA with recorded acceptance chains; W23/W24/W25 remain\nIMPLEMENTED_NOT_VERIFIED pending Checkpoint A; Devpost CI/observer references\nlabeled historical verified baselines; suite count synchronized to 563\n(540 + 23 new tests).\n\nVerification: 563 tests passed, ruff clean, 40/40 network-free safety\nassertions. Zero personal spend; no destructive operation, no Pages DELETE,\nno new Duo invocation, no public UI deployment, no filming, no manufactured\nscreenshots, no YouTube upload, no Devpost submission.\n",
         "parent_ids": [
-          "7b32190fde43b4e12a8df41d6aacb2a15b90f615"
+          "4985978ee218d521283db4b33c5bb03c997b1d2c"
         ],
-        "short_id": "4985978e",
-        "title": "feat(b4-award-readiness): consolidated W23-W25 nine-stage reassessment, end-to-end demo integration, Control Room polish, and final documentation reconciliation",
+        "short_id": "e4653169",
+        "title": "fix(b4-award-readiness): presentation-integrity repair - actual launcher verdicts, ten-scene contract, unified screenshot register",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/4985978ee218d521283db4b33c5bb03c997b1d2c"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/e4653169455f0d4553abff715e48116abd704bf7"
       },
       "coverage": null,
-      "created_at": "2026-10-21T16:19:48.409Z",
-      "duration": 182.886944,
+      "created_at": "2026-10-21T17:49:23.362Z",
+      "duration": 128.864451,
       "erased_at": null,
-      "finished_at": "2026-10-21T16:22:51.776Z",
-      "id": 17356147584,
+      "finished_at": "2026-10-21T17:51:32.608Z",
+      "id": 17358574812,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-21T16:19:48.235Z",
-        "id": 2972901592,
-        "iid": 51,
+        "created_at": "2026-10-21T17:49:23.214Z",
+        "id": 2973233807,
+        "iid": 52,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "4985978ee218d521283db4b33c5bb03c997b1d2c",
+        "sha": "e4653169455f0d4553abff715e48116abd704bf7",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-21T16:22:53.216Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2972901592"
+        "updated_at": "2026-10-21T17:51:34.030Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2973233807"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.081974,
+      "queued_duration": 0.087066,
       "ref": "main",
       "runner": {
         "active": true,
@@ -107,24 +107,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-21T17:20:50.137Z",
-        "created_at": "2026-10-21T09:43:57.619Z",
-        "id": 164192119,
-        "ip_address": "10.218.11.18",
+        "contacted_at": "2026-10-21T17:54:14.950Z",
+        "created_at": "2026-10-21T09:41:46.971Z",
+        "id": 164191539,
+        "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "5d62e0cc",
         "status": "online",
-        "system_id": "r_C0T7HJB4fEAi",
+        "system_id": "r_jzbsnTmRsoOa",
         "version": "19.6.0~pre.2350.g5d62e0cc"
       },
       "stage": "verify",
-      "started_at": "2026-10-21T16:19:48.889Z",
+      "started_at": "2026-10-21T17:49:23.744Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17356147584"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17358574812"
     }
   ]
 }
