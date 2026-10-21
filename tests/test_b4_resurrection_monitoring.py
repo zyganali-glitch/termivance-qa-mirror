@@ -15,7 +15,15 @@ Validates:
 4. Protected project refusal (87779099, 87777871, 87786164);
 5. Anti-self-award of RESURRECTION_CONTROLLED;
 6. Historical receipt immobility;
-7. Injectable http_getter in observe_target_surfaces.
+7. Injectable http_getter in observe_target_surfaces;
+8. Current-truth freshness precedence: the freshness of the current
+   observation is an authoritative prerequisite for any positive
+   present-tense classification (RESURRECTED_NOT_ABSENT,
+   REDEPLOYMENT_MECHANISM_ACTIVE); stale, future-skewed, missing and
+   malformed current timestamps fail closed to STALE_REVALIDATION_REQUIRED
+   while stale marker/mechanism sightings are retained as historical
+   evidence only, and a fresh genuine reappearance is never suppressed by
+   an expired historical receipt.
 
 All tests are network-free and exercise the production code paths through
 injected transports and real ledger primitives.
@@ -611,3 +619,265 @@ def test_historical_receipt_immobility(tmp_path):
     assert receipt == orig_copy
     assert report.historical_truth == orig_copy
     assert report.current_truth == CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+
+
+# ---------------------------------------------------------------------------
+# Current-truth freshness correction: the freshness of the current observation
+# is an authoritative prerequisite for any positive present-tense
+# classification based on that observation.
+# ---------------------------------------------------------------------------
+
+
+def test_stale_current_marker_observation_is_not_fresh_resurrection(tmp_path):
+    """Verified historical absence + same target-bound URL + served marker
+    HTTP 200, but the current observation is 1200s old (> 900s TTL): the
+    stale sighting must NOT award a fresh RESURRECTED_NOT_ABSENT verdict."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=200,
+            marker_observed=True,
+            has_mechanism=False,
+            signals=(),
+            observed_at=NOW - timedelta(seconds=1200),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
+    assert report.current_truth != CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+    assert report.current_truth != CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
+    assert report.current_truth != CurrentTruthStatus.CONTINUED_ABSENCE_OBSERVED
+    assert any("CURRENT_OBSERVATION_STALE" in d for d in report.diff_reasons)
+    assert any("STALE_REAPPEARANCE_EVIDENCE_RETAINED" in d for d in report.diff_reasons)
+
+
+def test_fresh_boundary_current_marker_still_detects_resurrection(tmp_path):
+    """Same scenario at the accepted freshness boundary (current observation
+    age exactly 900s = EXPIRING, still valid for evaluation): genuine
+    resurrection remains detectable."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=200,
+            marker_observed=True,
+            has_mechanism=False,
+            signals=(),
+            observed_at=NOW - timedelta(seconds=900),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+    assert any("absence is REVERSED" in d for d in report.diff_reasons)
+
+
+def test_stale_current_ci_observation_is_not_freshly_active_mechanism(tmp_path):
+    """Verified historical absence + CI mechanism present in the current
+    observation, but that observation is stale: no freshly active mechanism
+    claim based solely on stale data; the mechanism remains a recorded
+    historical redevelopment risk only."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=404,
+            marker_observed=False,
+            has_mechanism=True,
+            observed_at=NOW - timedelta(seconds=1200),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
+    assert report.current_truth != CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
+    assert report.redeployment_risk == RedeploymentRisk.MECHANISM_PRESENT
+    assert any("STALE_MECHANISM_EVIDENCE_RETAINED" in d for d in report.diff_reasons)
+
+
+def test_fresh_boundary_current_ci_observation_keeps_mechanism_active(tmp_path):
+    """Same CI mechanism with a fresh, provider-bound observation at the
+    accepted boundary (age exactly 900s): the risk classification remains
+    available."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=404,
+            marker_observed=False,
+            has_mechanism=True,
+            observed_at=NOW - timedelta(seconds=900),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
+    assert report.redeployment_risk == RedeploymentRisk.MECHANISM_PRESENT
+    assert any("active CI deployment mechanism exists" in d for d in report.diff_reasons)
+
+
+def test_stale_marker_and_mechanism_together_still_fail_closed(tmp_path):
+    """A stale current observation carrying BOTH a served-marker sighting and
+    a CI mechanism sighting still fails closed: neither positive present-tense
+    verdict is awarded from stale data, and both sightings are retained as
+    historical evidence only."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=200,
+            marker_observed=True,
+            has_mechanism=True,
+            observed_at=NOW - timedelta(seconds=1200),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
+    assert report.current_truth != CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+    assert report.current_truth != CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
+    assert report.redeployment_risk == RedeploymentRisk.MECHANISM_PRESENT
+    assert any("STALE_REAPPEARANCE_EVIDENCE_RETAINED" in d for d in report.diff_reasons)
+    assert any("STALE_MECHANISM_EVIDENCE_RETAINED" in d for d in report.diff_reasons)
+
+
+def test_invalid_current_timestamps_fail_closed(tmp_path):
+    """Expired, future-skewed, missing and malformed current-observation
+    timestamps all fail closed: never a fresh positive present-tense verdict,
+    never continued absence."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    invalid_observed_ats = (
+        NOW - timedelta(seconds=1200),  # expired
+        NOW + timedelta(seconds=300),  # future-skewed (clock skew)
+        None,  # missing
+        "not-a-timestamp",  # malformed
+    )
+    for bad_observed_at in invalid_observed_ats:
+        report = monitor_resurrection(
+            TARGET,
+            current_observation=_make_obs(
+                served_status=200,
+                marker_observed=True,
+                has_mechanism=True,
+                observed_at=bad_observed_at,
+            ),
+            historical_truth=receipt,
+            ledger=AuthorizationLedger(ledger_file),
+            now=NOW,
+        )
+        assert report.current_truth == CurrentTruthStatus.STALE_REVALIDATION_REQUIRED, (
+            f"observed_at={bad_observed_at!r} must fail closed"
+        )
+        assert report.current_truth != CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+        assert report.current_truth != CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
+        assert report.current_truth != CurrentTruthStatus.CONTINUED_ABSENCE_OBSERVED
+
+
+def test_expired_history_does_not_suppress_fresh_genuine_reappearance(tmp_path):
+    """Expired historical receipt + fresh genuine current served marker: the
+    independently observed current presence is NOT suppressed merely because
+    the old history exceeded its original TTL (historical authenticity and
+    current-observation freshness are separate requirements)."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    stale = json.loads(json.dumps(receipt))
+    stale["eligibility"]["established_at"] = (NOW - timedelta(seconds=1300)).isoformat()
+    stale["mutation"]["requested_at"] = (NOW - timedelta(seconds=1250)).isoformat()
+    stale_at = (NOW - timedelta(seconds=1200)).isoformat()
+    stale["absence"]["observation"]["observed_at"] = stale_at
+    stale["observed_at"] = stale_at
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=200,
+            marker_observed=True,
+            has_mechanism=False,
+            signals=(),
+            observed_at=NOW - timedelta(seconds=60),
+        ),
+        historical_truth=stale,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+    assert report.freshness_state == FreshnessState.EXPIRED
+    assert any("absence is REVERSED" in d for d in report.diff_reasons)
+
+
+def test_continued_absence_at_freshness_boundary_still_correct(tmp_path):
+    """Valid historical absence + fresh two-surface negative observation +
+    verified current CI configuration at the accepted freshness boundary
+    (current observation age exactly 900s): the existing bounded
+    continued-absence contract remains correct."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=404,
+            marker_observed=False,
+            has_mechanism=False,
+            signals=(),
+            pages_api_status=404,
+            pages_api_deployment_count=0,
+            observed_at=NOW - timedelta(seconds=900),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.CONTINUED_ABSENCE_OBSERVED
+
+
+def test_provider_error_with_stale_observation_stays_fail_closed(tmp_path):
+    """Current provider error (Pages API 403, no served status) combined with
+    a stale current observation: uncertainty never becomes negative proof and
+    never becomes a fresh positive claim."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=None,
+            marker_observed=False,
+            pages_api_status=403,
+            has_mechanism=False,
+            signals=(),
+            observed_at=NOW - timedelta(seconds=1200),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
+    assert report.current_truth != CurrentTruthStatus.CONTINUED_ABSENCE_OBSERVED
+    assert report.current_truth != CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+    assert report.current_truth != CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
+
+
+def test_stale_verdict_evaluation_leaves_receipt_immutable(tmp_path):
+    """No mutation or provider publication occurs during these tests: the
+    historical receipt dictionary remains byte-identical after a
+    stale-current-observation evaluation, and the report preserves it."""
+    receipt, ledger_file = _genuine_receipt(tmp_path)
+    orig_copy = json.loads(json.dumps(receipt))
+    report = monitor_resurrection(
+        TARGET,
+        current_observation=_make_obs(
+            served_status=200,
+            marker_observed=True,
+            has_mechanism=True,
+            observed_at=NOW - timedelta(seconds=1200),
+        ),
+        historical_truth=receipt,
+        ledger=AuthorizationLedger(ledger_file),
+        now=NOW,
+    )
+    assert report.current_truth == CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
+    assert receipt == orig_copy
+    assert report.historical_truth == orig_copy
+    assert report.resurrection_control == ResurrectionControlStatus.NOT_CLAIMED

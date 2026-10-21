@@ -21,6 +21,16 @@ Critical evidence boundaries:
 7. Verified Historical Receipt Mandatory: Unverified caller claims cannot award
    CONTINUED_ABSENCE_OBSERVED or downgrade to RESURRECTED_NOT_ABSENT; they evaluate to
    HISTORICAL_RECEIPT_UNVERIFIED.
+8. Current-Freshness Precedence: The freshness of the current observation is an
+   authoritative prerequisite for any positive present-tense classification based
+   on that observation. A stale, future-skewed or otherwise invalid current
+   observation can never award a fresh RESURRECTED_NOT_ABSENT or
+   REDEPLOYMENT_MECHANISM_ACTIVE verdict; a stale served marker or CI mechanism
+   sighting is retained only as historical evidence pending revalidation.
+   Historical authenticity and current-observation freshness are separate
+   requirements: a fresh, authentic, exact-URL-bound served-marker observation
+   still supports RESURRECTED_NOT_ABSENT even when the historical absence record
+   itself is old.
 """
 
 from __future__ import annotations
@@ -326,6 +336,13 @@ class ResurrectionMonitoringReport:
                 "proven negative.",
                 "The current observation must be fresh within the evaluation TTL, "
                 "independently of the historical receipt's original timestamp.",
+                "The freshness of the current observation is an authoritative "
+                "prerequisite for any positive present-tense classification: a "
+                "stale, future-skewed or otherwise invalid current observation "
+                "can never award a fresh RESURRECTED_NOT_ABSENT or "
+                "REDEPLOYMENT_MECHANISM_ACTIVE verdict; stale reappearance or "
+                "mechanism sightings are retained only as historical evidence "
+                "pending revalidation.",
             ],
         }
 
@@ -433,9 +450,18 @@ def monitor_resurrection(
     - If historical truth is missing, malformed, or unverified: reports
       HISTORICAL_RECEIPT_UNVERIFIED and evaluates baseline truth without assuming prior absence.
     - If previously verified OBSERVED_ABSENT:
-      - If served URL returns HTTP 200 with matching marker -> RESURRECTED_NOT_ABSENT
-      - If redeployment mechanism detected in current CI -> REDEPLOYMENT_MECHANISM_ACTIVE
+      - If served URL returns HTTP 200 with matching marker AND the current
+        observation is fresh within the evaluation TTL -> RESURRECTED_NOT_ABSENT
+        (historical authenticity and current-observation freshness are separate
+        requirements: an old historical absence record never suppresses a fresh
+        genuine reappearance)
+      - If redeployment mechanism detected in current CI AND the current
+        observation is fresh -> REDEPLOYMENT_MECHANISM_ACTIVE
       - If historical receipt expired (>900s) -> STALE_REVALIDATION_REQUIRED
+      - If the current observation is expired, future-skewed or otherwise
+        invalid -> STALE_REVALIDATION_REQUIRED (a stale served marker or CI
+        mechanism sighting is retained as historical evidence only, never
+        promoted to a fresh positive verdict)
       - If provider probe failed (401/403/timeout) -> INCONCLUSIVE_PROBE_FAILED
       - If multi-surface corroboration verifies absence -> CONTINUED_ABSENCE_OBSERVED
     """
@@ -647,11 +673,18 @@ def monitor_resurrection(
                 "Provider Pages API returned access restriction; baseline cannot be verified."
             )
 
-    # Case 1: Actual reappearance observed (served marker seen) after verified absence
+    # Case 1: Actual reappearance observed (served marker seen) after verified
+    # absence. The current observation itself must be fresh within the
+    # evaluation TTL: a stale served HTTP 200 + marker is retained as
+    # historical evidence but can never award a fresh present-tense
+    # resurrection verdict. Historical authenticity and current-observation
+    # freshness are separate requirements, so an old (but authentic) history
+    # never suppresses a fresh genuine reappearance.
     elif (
         receipt_verified
         and current_observation.served_marker_observed
         and current_observation.served_http_status == 200
+        and current_freshness.is_valid_for_evaluation
     ):
         current_truth = CurrentTruthStatus.RESURRECTED_NOT_ABSENT
         diff_reasons.append(
@@ -662,8 +695,15 @@ def monitor_resurrection(
             "Conduct full security audit and re-evaluate retirement obligations."
         )
 
-    # Case 2: Historical absence verified, but CI mechanism is active
-    elif receipt_verified and current_observation.redeployment_mechanism:
+    # Case 2: Historical absence verified, but CI mechanism is active. The
+    # current CI observation itself must be fresh: a stale mechanism sighting
+    # remains a recorded historical redevelopment risk (redeployment_risk)
+    # but is never presented as freshly confirmed active.
+    elif (
+        receipt_verified
+        and current_observation.redeployment_mechanism
+        and current_freshness.is_valid_for_evaluation
+    ):
         current_truth = CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
         diff_reasons.append(
             "Historical absence was verified, but an active CI deployment mechanism exists "
@@ -682,7 +722,11 @@ def monitor_resurrection(
 
     # Case 3b: the CURRENT observation itself is stale or invalid. Continued
     # absence is never awarded from an expired current observation, even with
-    # an otherwise valid historical receipt.
+    # an otherwise valid historical receipt — and neither is any fresh
+    # present-tense positive verdict: a stale served marker sighting or a
+    # stale CI mechanism sighting is retained below as historical evidence /
+    # recorded redevelopment risk only, never promoted to a fresh
+    # RESURRECTED_NOT_ABSENT or REDEPLOYMENT_MECHANISM_ACTIVE claim.
     elif receipt_verified and not current_freshness.is_valid_for_evaluation:
         current_truth = CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
         age_str = (
@@ -696,6 +740,25 @@ def monitor_resurrection(
             "evaluation window; continued absence cannot be awarded from a stale "
             "current observation."
         )
+        if (
+            current_observation.served_marker_observed
+            and current_observation.served_http_status == 200
+        ):
+            diff_reasons.append(
+                "STALE_REAPPEARANCE_EVIDENCE_RETAINED: the current observation "
+                "recorded a served HTTP 200 with matching marker, but that "
+                "observation is stale; it is retained as historical evidence of "
+                "possible reappearance and cannot award a fresh "
+                "RESURRECTED_NOT_ABSENT verdict without reobservation."
+            )
+        if current_observation.redeployment_mechanism:
+            diff_reasons.append(
+                "STALE_MECHANISM_EVIDENCE_RETAINED: the current observation "
+                "recorded a CI redeployment mechanism, but that observation is "
+                "stale; it is retained as a recorded historical redevelopment "
+                "risk and is not freshly confirmed active "
+                "(REDEPLOYMENT_MECHANISM_ACTIVE requires a fresh observation)."
+            )
         revalidation_actions.append(
             "Re-observe the target's current provider surfaces now."
         )
