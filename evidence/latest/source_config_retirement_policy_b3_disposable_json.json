@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-21T12:34:08Z",
+  "acquired_at_utc": "2026-10-21T13:39:07Z",
   "artifact_sha256": "4ec991bd0187a13e77411e83988e94353ce6672e0dc3b88143f0e8733e1f65b6",
   "body_sha256": "4ec991bd0187a13e77411e83988e94353ce6672e0dc3b88143f0e8733e1f65b6",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/repository/files/config%2Fretirement_policy.b3_disposable.json/raw?ref=cd51a41cf589c265f2224c8ef2b9b1c54ee0800c",
+  "endpoint": "/projects/87779099/repository/files/config%2Fretirement_policy.b3_disposable.json/raw?ref=7b32190fde43b4e12a8df41d6aacb2a15b90f615",
   "http_error": null,
   "http_status": 200,
   "limitations": "public unauthenticated read",

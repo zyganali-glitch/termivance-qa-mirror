@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-21T12:34:07Z",
+  "acquired_at_utc": "2026-10-21T13:39:07Z",
   "artifact_sha256": "8de5664162bb910036a2917fac7b557c335863656e0b2ca7d77ce34b01f91afd",
   "body_sha256": "8de5664162bb910036a2917fac7b557c335863656e0b2ca7d77ce34b01f91afd",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw?ref=cd51a41cf589c265f2224c8ef2b9b1c54ee0800c",
+  "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw?ref=7b32190fde43b4e12a8df41d6aacb2a15b90f615",
   "http_error": null,
   "http_status": 200,
   "limitations": "public unauthenticated read",

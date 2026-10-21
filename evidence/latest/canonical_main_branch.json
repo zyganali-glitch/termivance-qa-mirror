@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-21T12:34:03Z",
-  "artifact_sha256": "91fca5e51ce6263bcde3b667b04a66692c8637ea06b71c4a99ba65cab2462490",
+  "acquired_at_utc": "2026-10-21T13:39:03Z",
+  "artifact_sha256": "1e84a46a4406f882dfe78defa4a2eec37ab1f95231004bfa7967998c877544cd",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-21T15:29:40.000+03:00",
-      "committed_date": "2026-10-21T15:29:40.000+03:00",
+      "authored_date": "2026-10-21T16:35:41.000+03:00",
+      "committed_date": "2026-10-21T16:35:41.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-21T15:29:40.000+03:00",
+      "created_at": "2026-10-21T16:35:41.000+03:00",
       "extended_trailers": {},
-      "id": "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c",
-      "message": "docs(b4-integrity): record verified QA bridge baselines for the final causal-authority correction\n",
+      "id": "7b32190fde43b4e12a8df41d6aacb2a15b90f615",
+      "message": "fix(b4-integrity): current-observation freshness precedes any positive present-tense verdict\n\nmonitor_resurrection() evaluated RESURRECTED_NOT_ABSENT (served HTTP 200 +\nmarker) and REDEPLOYMENT_MECHANISM_ACTIVE (observed CI mechanism) before\nrejecting an expired or otherwise invalid current observation, so a\nhistorical current observation older than the contractual 900s TTL could be\npromoted into a new present-tense finding. One narrow source-and-test repair\nwithin the existing B4 work (WORK-B4-28, no new work item):\n\n- current_freshness.is_valid_for_evaluation now gates both positive\n  present-tense verdicts; stale marker/mechanism sightings are retained as\n  historical evidence / recorded redevelopment risk only\n  (STALE_REAPPEARANCE_EVIDENCE_RETAINED / STALE_MECHANISM_EVIDENCE_RETAINED)\n- expired, future-skewed, missing and malformed current timestamps fail\n  closed to STALE_REVALIDATION_REQUIRED\n- fresh genuine exact-URL-bound reappearance still awards\n  RESURRECTED_NOT_ABSENT even with an old historical absence record\n  (historical authenticity and current freshness are separate requirements)\n- no weaker-evidence award of CONTINUED_ABSENCE_OBSERVED / OBSERVED_ABSENT /\n  SAFE_TO_RETIRE / RESURRECTION_CONTROLLED; immutable receipts, ledger\n  validation, target/URL/SHA binding and protected-target refusals intact\n- 10 new adversarial production-path tests in\n  tests/test_b4_resurrection_monitoring.py; suite 540 passed; ruff clean;\n  40/40 network-free safety assertions\n- live evidence regenerated read-only (resurrection_monitoring.json, 12\n  invariants, unchanged honest HISTORICAL_RECEIPT_UNVERIFIED verdict);\n  control_room/data.js rebuilt (sha256 00bd24c0...)\n- README / Evidence Matrix / Master Execution Plan / HANDOFF updated in the\n  same change; no live resurrection or unpublish occurred or is claimed\n",
       "parent_ids": [
-        "b59735ff2297f3de5ec7ba4379252fc10d290c61"
+        "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c"
       ],
-      "short_id": "cd51a41c",
-      "title": "docs(b4-integrity): record verified QA bridge baselines for the final causal-authority correction",
+      "short_id": "7b32190f",
+      "title": "fix(b4-integrity): current-observation freshness precedes any positive present-tense verdict",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/cd51a41cf589c265f2224c8ef2b9b1c54ee0800c"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/7b32190fde43b4e12a8df41d6aacb2a15b90f615"
     },
     "default": true,
     "developers_can_merge": true,
