@@ -14,7 +14,14 @@
       "src/termivance/evidence.py",
       "src/termivance/ledger.py",
       "src/termivance/pages.py",
-      "src/termivance/retirement.py"
+      "src/termivance/retirement.py",
+      "src/termivance/resurrection_monitor.py",
+      "src/termivance/supervised_review.py",
+      "src/termivance/continuation_ledger.py",
+      "src/termivance/pages_publication.py",
+      "src/termivance/decay.py",
+      "src/termivance/protected.py",
+      "src/termivance/engine.py"
     ]
   },
   "disposable": {
