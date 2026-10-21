@@ -27,7 +27,7 @@ window.TERMIVANCE_DATA = {
     "Unpublishing targets exactly one disposable Pages project; the canonical repository and every other project are out of scope.",
     "Unsigned SHA-256 digests in the ledger are local tamper evidence, never cryptographic authentication of provider events."
   ],
-  "built_at": "2026-10-21T07:51:09.673443+00:00",
+  "built_at": "2026-10-21T10:11:25.271028+00:00",
   "demo_target_discovery": {
     "candidates": [
       {
@@ -1764,12 +1764,12 @@ window.TERMIVANCE_DATA = {
       }
     },
     "freshness_decay": {
-      "age_seconds": 133.226,
-      "detail": "Evidence is FRESH (age 133.2s <= 600s).",
-      "evaluated_at": "2026-10-21T06:10:22.226256+00:00",
+      "age_seconds": 94.567,
+      "detail": "Evidence is FRESH (age 94.6s <= 600s).",
+      "evaluated_at": "2026-10-21T10:08:38.628238+00:00",
       "expected_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
       "is_valid_for_evaluation": true,
-      "observed_at": "2026-10-21T06:08:09+00:00",
+      "observed_at": "2026-10-21T10:07:04.061602+00:00",
       "observed_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
       "requires_revalidation": false,
       "schema": "termivance.proof_decay/v1",
@@ -1780,21 +1780,25 @@ window.TERMIVANCE_DATA = {
       "authority": "DETERMINISTIC_READ_ONLY_EVIDENCE",
       "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
       "freshness": "FRESH",
+      "freshness_scope": "EVALUATION_TIME_ONLY: the recorded freshness state describes the observation at its recorded evaluation time; it is never a current/live freshness claim at view time",
       "levels": {
         "level1_ci_job_name": "create-pages",
+        "level1_ci_job_status": "success",
         "level1_ci_job_success": true,
         "level1_ci_pipeline_id": 2960507698,
-        "level2_deployment_created": true,
+        "level2_deployment_created": false,
+        "level2_deployment_status": "NOT_OBSERVED_NOT_FOUND",
         "level3_pages_api_detail": "Pages API returned HTTP 403 AUTH_DENIED; observing identity lacks Maintainer permissions (Maintainer access was explicitly denied by hackathon organizer).",
         "level3_pages_api_status": 403,
         "level3_pages_api_visible": false,
         "level4_served_http_status": 200,
         "level4_served_url_accessible": true,
         "level5_marker_independently_observed": true,
-        "level5_observed_marker": "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a"
+        "level5_observed_marker": "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a",
+        "level5_source_corroborated": true
       },
       "marker": "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a",
-      "observed_at": "2026-10-21T06:08:09.856873+00:00",
+      "observed_at": "2026-10-21T10:07:04.061602+00:00",
       "prohibited_actions": [
         "DELETE /projects/87785099/pages was NOT called.",
         "Track 2 remains permanently BLOCKED_EXTERNAL under organizer denial.",
@@ -1804,7 +1808,7 @@ window.TERMIVANCE_DATA = {
       "served_body_digest_sha256": "fce26f65c259effbd9d75faf54e95284ece7fdf259dbe54d2389b341f2269c15",
       "served_url": "https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/",
       "status": "VERIFIED_LIVE_SERVED",
-      "summary": "Disposable Pages site on project 87785099 is genuinely published and live. Served URL https://gitlab-ai-hackathon.gitlab.io/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo/ returned HTTP 200 with matching marker 'TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a' (digest fce26f65c259effb...). Pages API is HTTP 403 (Developer role). This proves pre-retirement presence; unpublish remains BLOCKED_EXTERNAL.",
+      "summary": "Disposable Pages site on 87785099 is genuinely published and live. Served URL https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/ returned HTTP 200 with matching marker 'TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a' (digest fce26f65c259effb...), corroborated against repository source at commit '54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d'. Pages API is HTTP 403 (Developer role). This proves pre-retirement presence; unpublish remains BLOCKED_EXTERNAL.",
       "target": {
         "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
         "project_id": 87785099,
@@ -2295,8 +2299,9 @@ window.TERMIVANCE_DATA = {
         "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
         "default_branch": "main",
         "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
-        "observed_at": "2026-10-21T06:08:42.455033+00:00",
+        "observed_at": "2026-10-21T10:08:49.150982+00:00",
         "pages_api_accessible": false,
+        "pages_api_deployment_count": 0,
         "pages_api_status": 403,
         "project_id": 87785099,
         "redeployment_mechanism": true,
@@ -2308,12 +2313,13 @@ window.TERMIVANCE_DATA = {
         "served_marker_observed": true,
         "served_url": "https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/"
       },
-      "current_truth": "TARGET_MUTATION_BLOCKED",
+      "current_truth": "HISTORICAL_RECEIPT_UNVERIFIED",
       "diff_reasons": [
+        "Historical receipt unverified: Unrecognized schema: 'termivance.retirement_decision/v1' (requires termivance.retirement_receipt/v3).",
         "Surviving CI redeployment mechanism detected: ['pages_keyword', 'pages_true'].",
-        "Target Pages site is currently published and serving its distinctive marker."
+        "Target site is currently published and serving its marker, but historical absence receipt was unverified."
       ],
-      "evaluated_at": "2026-10-21T06:08:44.179084+00:00",
+      "evaluated_at": "2026-10-21T10:08:50.942677+00:00",
       "freshness_state": "EXPIRED",
       "historical_truth": {
         "action": "unpublish_pages",
@@ -2794,10 +2800,15 @@ window.TERMIVANCE_DATA = {
         "Newly observed served marker proves actual reappearance.",
         "Failed provider probe cannot prove continued absence.",
         "Historical transition receipts remain immutable audit records.",
-        "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists."
+        "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists.",
+        "Unverified historical claims cannot award CONTINUED_ABSENCE_OBSERVED.",
+        "The current observation must bind to the same exact target and URL as the historical receipt, not merely a caller-supplied project ID.",
+        "A schema-correct receipt without the durable ledger chain and post-action read-backs is not proof of a previous absence."
       ],
       "redeployment_risk": "MECHANISM_PRESENT",
-      "required_revalidation_actions": [],
+      "required_revalidation_actions": [
+        "Supply an authentic termivance.retirement_receipt/v3 with an OBSERVED_ABSENT verdict, authenticated against the durable authorization ledger of the exact operation."
+      ],
       "resurrection_control": "NOT_CLAIMED",
       "schema": "termivance.resurrection_monitor/v1",
       "target": {

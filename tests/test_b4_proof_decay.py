@@ -244,3 +244,107 @@ def test_failed_provider_probes_not_marked_fresh_in_bundle():
     assert bundle["not_observed_count"] == 2
     assert bundle["overall_state"] == FreshnessState.NOT_OBSERVED.value
 
+
+# ---------------------------------------------------------------------------
+# B4 integrity correction: empty bundle, malformed statuses, TTL parity.
+# ---------------------------------------------------------------------------
+
+
+def test_empty_bundle_never_yields_authoritative_fresh():
+    """Zero observed records cannot yield an authoritative FRESH result."""
+    bundle = evaluate_evidence_bundle([], now=BASE_TIME)
+    assert bundle["total_records"] == 0
+    assert bundle["overall_state"] == FreshnessState.NOT_OBSERVED.value
+    assert bundle["overall_state"] != FreshnessState.FRESH.value
+    assert bundle["not_observed_count"] == 0
+    assert "Empty evidence bundle" in bundle["detail"]
+
+
+def test_provider_error_with_recorded_timestamp_is_not_fresh():
+    """A fresh recorded timestamp never rescues a failed provider probe."""
+    records = [
+        {
+            "endpoint": "/projects/87785099/pages",
+            "status": 403,
+            "error_kind": "AUTH_DENIED",
+            "observed_at": BASE_TIME.isoformat(),  # age 0s — but the probe failed
+        }
+    ]
+    bundle = evaluate_evidence_bundle(records, now=BASE_TIME)
+    assert bundle["overall_state"] == FreshnessState.NOT_OBSERVED.value
+    assert bundle["fresh_count"] == 0
+    assert "never rescues a failed probe" in bundle["records"][0]["detail"]
+
+
+def test_malformed_status_represents_provider_error():
+    """String and boolean status representations fail closed."""
+    records = [
+        {"endpoint": "/a", "status": "403", "observed_at": BASE_TIME.isoformat()},
+        {"endpoint": "/b", "status": "HTTP 500", "observed_at": BASE_TIME.isoformat()},
+        {"endpoint": "/c", "status": True, "observed_at": BASE_TIME.isoformat()},
+        {"endpoint": "/e", "status": "timeout", "observed_at": BASE_TIME.isoformat()},
+    ]
+    bundle = evaluate_evidence_bundle(records, now=BASE_TIME)
+    assert bundle["total_records"] == 4
+    assert bundle["not_observed_count"] == 4
+    assert bundle["overall_state"] == FreshnessState.NOT_OBSERVED.value
+
+
+def test_unexpected_http_error_statuses_are_not_fresh():
+    """Unexpected error statuses (402, 418, 429, 502) also fail closed."""
+    records = [
+        {"endpoint": "/a", "status": 402, "observed_at": BASE_TIME.isoformat()},
+        {"endpoint": "/b", "status": 418, "observed_at": BASE_TIME.isoformat()},
+        {"endpoint": "/c", "status": 429, "observed_at": BASE_TIME.isoformat()},
+    ]
+    bundle = evaluate_evidence_bundle(records, now=BASE_TIME)
+    assert bundle["not_observed_count"] == 3
+    assert bundle["overall_state"] == FreshnessState.NOT_OBSERVED.value
+
+
+def test_bundle_validates_ttl_bounds_like_single_record():
+    """Bundle TTL/threshold bounds are validated consistently with the single path."""
+    import pytest
+
+    with pytest.raises(ValueError, match="must be between 1 and 900s"):
+        evaluate_evidence_bundle(
+            [{"endpoint": "/a", "observed_at": BASE_TIME.isoformat()}],
+            now=BASE_TIME,
+            ttl_seconds=901,
+        )
+    with pytest.raises(ValueError, match="must be between 1 and 900s"):
+        evaluate_evidence_bundle([], now=BASE_TIME, ttl_seconds=0)
+    with pytest.raises(ValueError, match="must be between 0 and"):
+        evaluate_evidence_bundle(
+            [{"endpoint": "/a", "observed_at": BASE_TIME.isoformat()}],
+            now=BASE_TIME,
+            ttl_seconds=600,
+            fresh_threshold_seconds=900,
+        )
+
+
+def test_bundle_boundary_values_match_single_record_path():
+    """Bundle records at 0/600/601/899/900/901s match the single-record states."""
+    for seconds, expected in (
+        (0, FreshnessState.FRESH),
+        (600, FreshnessState.FRESH),
+        (601, FreshnessState.EXPIRING),
+        (899, FreshnessState.EXPIRING),
+        (900, FreshnessState.EXPIRING),
+        (901, FreshnessState.EXPIRED),
+    ):
+        bundle = evaluate_evidence_bundle(
+            [
+                {
+                    "endpoint": "/boundary",
+                    "status": 200,
+                    "observed_at": (BASE_TIME - timedelta(seconds=seconds)).isoformat(),
+                }
+            ],
+            now=BASE_TIME,
+        )
+        assert bundle["records"][0]["state"] == expected.value, (
+            f"age {seconds}s should be {expected.value}"
+        )
+        assert bundle["overall_state"] == expected.value
+

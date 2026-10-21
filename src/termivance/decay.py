@@ -256,6 +256,45 @@ def evaluate_freshness(
     )
 
 
+def _looks_like_probe_failure(
+    status_code: object, error_kind: object, record: dict[str, object]
+) -> bool:
+    """Fail-closed provider-error detection for recorded observation rows.
+
+    Covers malformed and unexpected HTTP status representations: integer
+    statuses >= 400, statuses serialized as strings ("403", "HTTP 403"),
+    unknown error kinds, explicit ``ok: false`` markers, and any non-empty
+    error string. A recorded timestamp never rescues a failed probe.
+    """
+    if error_kind is not None and str(error_kind).strip():
+        return True
+    if record.get("ok") is False:
+        return True
+    error_field = record.get("error")
+    if isinstance(error_field, str) and error_field.strip():
+        return True
+    if isinstance(status_code, bool):
+        # A boolean is not an HTTP status; treat as malformed representation.
+        return True
+    if isinstance(status_code, int):
+        return status_code >= 400 or status_code < 100
+    if isinstance(status_code, str):
+        text = status_code.strip().lower()
+        if not text:
+            return False
+        digits = "".join(ch for ch in text if ch.isdigit())
+        if digits:
+            try:
+                return int(digits) >= 400
+            except ValueError:
+                return True
+        # Non-numeric status text (e.g. "timeout", "unavailable") is an error.
+        return True
+    # None/missing status with no other error signal is not classifiable as
+    # a failure; the record falls through to timestamp evaluation.
+    return False
+
+
 def evaluate_evidence_bundle(
     records: list[dict[str, object]],
     *,
@@ -263,11 +302,34 @@ def evaluate_evidence_bundle(
     expected_sha: str | None = None,
     observed_sha: str | None = None,
     ttl_seconds: int = MAX_TTL_SECONDS,
+    fresh_threshold_seconds: int = FRESH_THRESHOLD_SECONDS,
 ) -> dict[str, object]:
-    """Evaluate freshness for a collection of observation records."""
+    """Evaluate freshness for a collection of observation records.
+
+    Fail-closed contract:
+
+    * TTL and freshness thresholds are validated exactly like the
+      single-record path (``1 <= ttl_seconds <= 900``,
+      ``0 <= fresh_threshold_seconds <= ttl_seconds``);
+    * an empty bundle (zero observed records) can never yield an
+      authoritative ``FRESH`` result: it evaluates to ``NOT_OBSERVED``;
+    * provider errors are detected even when recorded timestamps exist,
+      including malformed and unexpected HTTP status representations;
+      such records evaluate to ``NOT_OBSERVED``.
+    """
+    # Validate TTL/threshold bounds consistently with the single-record path.
+    if ttl_seconds <= 0 or ttl_seconds > MAX_TTL_SECONDS:
+        raise ValueError(
+            f"ttl_seconds ({ttl_seconds}) must be between 1 and {MAX_TTL_SECONDS}s."
+        )
+    if fresh_threshold_seconds < 0 or fresh_threshold_seconds > ttl_seconds:
+        raise ValueError(
+            f"fresh_threshold_seconds ({fresh_threshold_seconds}) "
+            f"must be between 0 and {ttl_seconds}s."
+        )
+
     evaluated_at = _utc(now)
     results: list[dict[str, object]] = []
-    overall_state = FreshnessState.FRESH
 
     priority = {
         FreshnessState.EXPIRED: 5,
@@ -278,17 +340,34 @@ def evaluate_evidence_bundle(
         FreshnessState.FRESH: 0,
     }
 
+    # Zero observed records cannot yield an authoritative FRESH result.
+    if not records:
+        return {
+            "schema": PROOF_DECAY_SCHEMA,
+            "evaluated_at": evaluated_at.isoformat(),
+            "overall_state": FreshnessState.NOT_OBSERVED.value,
+            "total_records": 0,
+            "fresh_count": 0,
+            "expiring_count": 0,
+            "expired_count": 0,
+            "revalidation_required_count": 0,
+            "not_observed_count": 0,
+            "inconclusive_count": 0,
+            "records": [],
+            "detail": (
+                "Empty evidence bundle: zero observed records cannot yield an "
+                "authoritative FRESH result; failing closed as NOT_OBSERVED."
+            ),
+        }
+
     worst_priority = 0
+    overall_state = FreshnessState.FRESH
 
     for rec in records:
         obs_time = rec.get("observed_at") or rec.get("observed_at_utc")
         status_code = rec.get("status")
         error_kind = rec.get("error_kind")
-        is_probe_failure = bool(
-            error_kind in {"AUTH_DENIED", "TIMEOUT", "NOT_FOUND", "CONNECTION_ERROR", "MALFORMED"}
-            or (isinstance(status_code, int) and status_code in (401, 403, 404, 500, 502, 503))
-            or rec.get("ok") is False
-        )
+        is_probe_failure = _looks_like_probe_failure(status_code, error_kind, rec)
         if is_probe_failure:
             item_res = FreshnessResult(
                 state=FreshnessState.NOT_OBSERVED,
@@ -297,8 +376,9 @@ def evaluate_evidence_bundle(
                 observed_at=None,
                 evaluated_at=evaluated_at,
                 detail=(
-                    f"Provider probe failed ({error_kind or status_code}); "
-                    "unobserved facts cannot be FRESH."
+                    f"Provider probe failed (status={status_code!r}, "
+                    f"error_kind={error_kind!r}); a recorded timestamp never "
+                    "rescues a failed probe and unobserved facts cannot be FRESH."
                 ),
                 expected_sha=expected_sha,
                 observed_sha=observed_sha,
@@ -311,6 +391,7 @@ def evaluate_evidence_bundle(
                 expected_sha=expected_sha,
                 observed_sha=observed_sha,
                 ttl_seconds=ttl_seconds,
+                fresh_threshold_seconds=fresh_threshold_seconds,
             )
         res_dict = item_res.to_dict()
         res_dict["endpoint"] = rec.get("endpoint")

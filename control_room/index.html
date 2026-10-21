@@ -1517,28 +1517,29 @@ function pagesPublicationCard(pub) {
   const t = pub.target || {};
   const levels = pub.levels || pub.evidence_levels || {};
   const isLive = pub.status === 'VERIFIED_LIVE_SERVED' || pub.publication_verified;
+  const freshnessLabel = pub.freshness ? (pub.freshness + ' WHEN RECORDED') : 'NOT_OBSERVED';
   return `<div class="card">
     <h2>Real disposable GitLab Pages publication evidence (Target ${escapeHtml(String(t.project_id || '87785099'))})</h2>
-    ${chip(pub.status || (isLive ? 'VERIFIED_LIVE_SERVED' : 'INCONCLUSIVE'), isLive ? 'chip ok' : 'chip amber')}
-    ${chip('freshness: ' + escapeHtml(pub.freshness || 'FRESH'))}
+    ${chip(pub.status || 'NOT_OBSERVED', isLive ? 'chip ok' : 'chip amber')}
+    ${chip('freshness: ' + escapeHtml(freshnessLabel), 'chip amber')}
     ${kv([
       ['disposable project target', `<code>${escapeHtml(String(t.project_id || '87785099'))}</code> ${escapeHtml(t.full_path || '')}`],
       ['observed commit SHA', `<code>${escapeHtml(pub.commit_sha || pub.observed_commit_sha || '—')}</code>`],
       ['served Pages URL', pub.served_url ? `<a href="${escapeHtml(pub.served_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(pub.served_url)}</a>` : '—'],
       ['distinctive marker', `<code>${escapeHtml(pub.marker || pub.distinctive_marker || '—')}</code> (${escapeHtml(pub.served_body_digest_sha256 ? pub.served_body_digest_sha256.substring(0, 16) + '…' : '—')})`],
-      ['HTTP read-back status', `<code>HTTP ${escapeHtml(String(levels.level4_served_http_status != null ? levels.level4_served_http_status : (pub.http_status || '—')))}</code> (served URL independently verified)`],
-      ['Pages API access (Developer)', `<code>HTTP ${escapeHtml(String(levels.level3_pages_api_status || 403))} AUTH_DENIED</code> — ${escapeHtml(levels.level3_pages_api_detail || 'Developer role lacks Maintainer permissions')}`],
+      ['HTTP read-back status', `<code>HTTP ${escapeHtml(String(levels.level4_served_http_status != null ? levels.level4_served_http_status : '—'))}</code> (served URL independently observed at record time)`],
+      ['Pages API access (Developer)', `<code>HTTP ${escapeHtml(String(levels.level3_pages_api_status || '—'))} ${levels.level3_pages_api_visible ? 'ACCESSIBLE' : 'AUTH_DENIED'}</code> — ${escapeHtml(levels.level3_pages_api_detail || 'role-restricted Pages administration surface')}`],
     ])}
     <h3>5-Level evidence model verification</h3>
     <ul class="tight">
-      <li><strong>Level 1 (CI Job):</strong> ${escapeHtml(levels.level1_ci_job_status || (levels.level1_ci_job_success ? 'SUCCESS' : 'NOT_OBSERVED'))} (job: <code>${escapeHtml(levels.level1_ci_job_name || 'create-pages')}</code>)</li>
-      <li><strong>Level 2 (Deployment):</strong> ${escapeHtml(levels.level2_deployment_status || (levels.level2_deployment_created ? 'CREATED' : 'NOT_OBSERVED_AUTH_DENIED'))} — Deployments API read-back</li>
-      <li><strong>Level 3 (Pages API):</strong> HTTP ${escapeHtml(String(levels.level3_pages_api_status || 403))} (${levels.level3_pages_api_visible ? 'ACCESSIBLE' : 'AUTH_DENIED'}) — Access boundary acknowledged</li>
+      <li><strong>Level 1 (CI Job):</strong> ${escapeHtml(levels.level1_ci_job_status || 'NOT_OBSERVED')} (job: <code>${escapeHtml(levels.level1_ci_job_name || '—')}</code>)</li>
+      <li><strong>Level 2 (Deployment):</strong> ${escapeHtml(levels.level2_deployment_status || 'NOT_OBSERVED')} — Pages deployments API read-back only</li>
+      <li><strong>Level 3 (Pages API):</strong> HTTP ${escapeHtml(String(levels.level3_pages_api_status || '—'))} (${levels.level3_pages_api_visible ? 'ACCESSIBLE' : 'AUTH_DENIED'}) — Access boundary acknowledged</li>
       <li><strong>Level 4 (Served URL):</strong> ${levels.level4_served_url_accessible ? 'HTTP 200 ACCESSIBLE' : 'HTTP ' + escapeHtml(String(levels.level4_served_http_status || 'NOT_SERVED'))} — Live website responds to independent HTTP probe</li>
-      <li><strong>Level 5 (Marker Verified):</strong> ${levels.level5_marker_independently_observed ? 'VERIFIED MATCH (' + escapeHtml(levels.level5_observed_marker || pub.marker || '') + ')' : 'MISMATCH / NOT OBSERVED'} — Content marker confirmed</li>
+      <li><strong>Level 5 (Marker Verified):</strong> ${levels.level5_marker_independently_observed ? 'SERVER-RETURNED MATCH (' + escapeHtml(levels.level5_observed_marker || pub.marker || '') + ')' : 'MISMATCH / NOT OBSERVED'} — source corroboration: ${escapeHtml(levels.level5_source_corroborated === true ? 'VERIFIED IN REPOSITORY SOURCE AT OBSERVED COMMIT' : (levels.level5_source_corroborated === false ? 'CONTRADICTED' : 'NOT OBSERVED (source-bound claim not awarded)'))}</li>
     </ul>
     <div class="banner info" style="margin-top:10px;">
-      Live publication evidence confirms the target site is deployed and publicly accessible. In accordance with safety invariants, publication verification is <strong>never</strong> proof of retirement or observed absence.
+      Live publication evidence confirms the target site is deployed and publicly accessible. In accordance with safety invariants, publication verification is <strong>never</strong> proof of retirement or observed absence. Freshness labels describe the observation <strong>at its recorded evaluation time</strong>, never current live freshness (this page performs zero network calls).
     </div>
   </div>`;
 }
@@ -1611,20 +1612,22 @@ function freshnessDecayCard(dec) {
     return `<div class="card"><h2>Proof freshness & contractual decay model</h2>${chip('UNAVAILABLE', 'chip dim')}
       <p class="muted sm">No proof decay record supplied.</p></div>`;
   }
+  const whenRecorded = (dec.state || 'NOT_OBSERVED') + ' WHEN RECORDED';
   return `<div class="card">
     <h2>Proof freshness & contractual decay model (900s TTL)</h2>
-    ${chip(dec.state || 'FRESH', dec.state === 'FRESH' ? 'chip ok' : 'chip amber')}
-    ${chip('valid_for_evaluation: ' + String(dec.is_valid_for_evaluation))}
+    ${chip(escapeHtml(whenRecorded), 'chip amber')}
+    ${chip('valid_at_recorded_evaluation: ' + String(dec.is_valid_for_evaluation))}
     ${chip('requires_revalidation: ' + String(dec.requires_revalidation))}
     ${kv([
       ['observed timestamp', escapeHtml(dec.observed_at || '')],
       ['evaluated timestamp', escapeHtml(dec.evaluated_at || '')],
-      ['evidence age', escapeHtml(String(dec.age_seconds != null ? dec.age_seconds + 's' : '—')) + ' (TTL: ' + escapeHtml(String(dec.ttl_seconds || 900)) + 's)'],
+      ['evidence age at evaluation', escapeHtml(String(dec.age_seconds != null ? dec.age_seconds + 's' : '—')) + ' (TTL: ' + escapeHtml(String(dec.ttl_seconds || 900)) + 's)'],
       ['target commit SHA match', `<code>${escapeHtml(dec.observed_sha || '')}</code> (${dec.expected_sha === dec.observed_sha ? 'MATCH' : 'MISMATCH'})`],
       ['evaluation detail', escapeHtml(dec.detail || '')],
     ])}
     <div class="muted sm prose" style="margin-top:8px;">
       Contractual 6-state freshness machine: <code>FRESH</code> (&le;600s), <code>EXPIRING</code> (601–900s), <code>EXPIRED</code> (&gt;900s), <code>REVALIDATION_REQUIRED</code> (stale or SHA mismatch), <code>INCONCLUSIVE</code> (clock skew &gt;300s into future), <code>NOT_OBSERVED</code>.
+      The displayed state is the <strong>historical evaluation-time freshness</strong> recorded when the evidence was evaluated; it is NOT a current provider truth. No stored JSON file, static browser load or regenerated data bundle can renew an observation — only a fresh provider probe can.
     </div>
   </div>`;
 }

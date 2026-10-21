@@ -673,6 +673,10 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
             note_body=getattr(args, "note_body", None),
             publish_outcome=getattr(args, "publish", False),
             out_dir=getattr(args, "out_dir", None) or (Path(args.out).parent if args.out else None),
+            mode="OFFLINE_REPLAY"
+            if str(getattr(args, "mode", "live")) == "offline-replay"
+            else "LIVE",
+            allow_recovery=bool(getattr(args, "allow_recovery", False)),
         )
         payload = continuation_res.to_dict()
         if args.out:
@@ -681,7 +685,11 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
             print(json.dumps(payload, indent=2, sort_keys=True))
         else:
             print(continuation_res.summary)
-        return 0 if continuation_res.status in ("COMPLETED", "COMPLETED_IDEMPOTENT") else 1
+        return (
+            0
+            if continuation_res.status in ("COMPLETED", "COMPLETED_IDEMPOTENT")
+            else 1
+        )
 
     if getattr(args, "execute", False):
         from termivance.gitlab_client import GitLabClient, load_local_token
@@ -826,7 +834,17 @@ def _cmd_monitor_resurrection(args: argparse.Namespace) -> int:
 
     current_obs = observe_target_surfaces(client, target, served_url=served_url, marker=marker)
     history = _read_json(args.receipt) if args.receipt else None
-    report = monitor_resurrection(target, current_observation=current_obs, historical_truth=history)
+    ledger_obj = None
+    if getattr(args, "ledger", None):
+        from termivance.ledger import AuthorizationLedger
+
+        ledger_obj = AuthorizationLedger(args.ledger)
+    report = monitor_resurrection(
+        target,
+        current_observation=current_obs,
+        historical_truth=history,
+        ledger=ledger_obj,
+    )
     payload = report.to_dict()
     if args.out:
         _write_out(payload, args.out, "")
@@ -1380,6 +1398,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="execute supervised continuation pipeline from issue #5 / session 9710085",
     )
     supervised_review.add_argument(
+        "--mode",
+        dest="mode",
+        choices=["live", "offline-replay"],
+        default="live",
+        help=(
+            "continuation mode: live (provider-backed, fail-closed) or "
+            "offline-replay (fixture/recorded-input development mode whose "
+            "results are never live authenticated continuation)"
+        ),
+    )
+    supervised_review.add_argument(
+        "--recover",
+        dest="allow_recovery",
+        action="store_true",
+        help=(
+            "explicitly re-reserve an incomplete prior causal execution "
+            "(FIRST_STARTED/PARTIAL/FAILED) in the durable continuation ledger"
+        ),
+    )
+    supervised_review.add_argument(
         "--issue",
         dest="issue_iid",
         type=int,
@@ -1484,6 +1522,14 @@ def build_parser() -> argparse.ArgumentParser:
     monitor_resurrection.add_argument("--marker", default=None, help="distinctive content marker")
     monitor_resurrection.add_argument(
         "--receipt", default=None, help="historical receipt/decision JSON"
+    )
+    monitor_resurrection.add_argument(
+        "--ledger",
+        default=None,
+        help=(
+            "durable authorization ledger JSON backing the historical receipt "
+            "(required to authenticate a termivance.retirement_receipt/v3 claim)"
+        ),
     )
     monitor_resurrection.add_argument("--out", default=None)
     monitor_resurrection.add_argument("--json", action="store_true")

@@ -59,6 +59,10 @@ DUO_SESSION_ID = "9671626"
 DUO_SESSION_ID_DISCOVERY = "9704855"
 DUO_SESSION_ID_NEUTRAL = "9710085"
 DUO_CATALOG_ITEM_ID = 1018562
+#: The GitLab service-account identity that authors genuine Duo Custom Flow
+#: agent notes. A provider note whose author differs cannot support session
+#: identity and fails closed in LIVE mode.
+DUO_SERVICE_ACCOUNT_USERNAME = "ai-termivance-retirement-analyst-gitlab-ai-hackathon"
 
 
 @dataclass(frozen=True, slots=True)
@@ -172,6 +176,10 @@ class SupervisedReview:
     observed_at: datetime = field(default_factory=lambda: datetime.now(tz=UTC))
     autonomy_summary: str = ""
     target_validation: dict[str, object] = field(default_factory=dict)
+    #: The deterministic verdict actually derived from the executed review
+    #: (engine decision), never a hard-coded success substitute. ``None`` when
+    #: no deterministic decision step executed.
+    deterministic_verdict: str | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -192,6 +200,7 @@ class SupervisedReview:
             "counterfactual": self.counterfactual.to_dict() if self.counterfactual else None,
             "observed_at": self.observed_at.isoformat(),
             "autonomy_summary": self.autonomy_summary,
+            "deterministic_verdict": self.deterministic_verdict,
             "authority": "NON_AUTHORITATIVE",
             "boundary": (
                 "this review connects the genuine Duo analysis to deterministic "
@@ -1495,6 +1504,7 @@ def build_supervised_review(
         observed_at=observed,
         autonomy_summary=autonomy_summary,
         target_validation=target_val,
+        deterministic_verdict=decision_verdict or None,
     )
 
 
@@ -2370,6 +2380,7 @@ def run_supervised_investigation(
         observed_at=observed,
         autonomy_summary=autonomy_summary,
         target_validation=target_val,
+        deterministic_verdict=decision.verdict.value,
     )
 
     if out_path:
@@ -2598,10 +2609,20 @@ class ContinuationPreflight:
     canonical_project_id: int = CANONICAL_PROJECT_ID
     target_full_path: str = DEFAULT_TARGET_FULL_PATH
     provenance: str = "LOCAL_OPERATOR_SUPPLIED_NOTE"
+    #: "LIVE" (provider-backed, fail-closed on any unobserved prerequisite) or
+    #: "OFFLINE_REPLAY" (fixture/recorded-input development mode whose results
+    #: carry FIXTURE/RECORDED_INPUT provenance and never present themselves as
+    #: live authenticated continuation).
+    mode: str = "LIVE"
+    note_author: str | None = None
+    provider_note_status: int | None = None
+    provider_target_path: str | None = None
+    provider_branch_head: str | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
             "passed": self.passed,
+            "mode": self.mode,
             "canonical_project_id": self.canonical_project_id,
             "target_project_id": self.target_project_id,
             "target_full_path": self.target_full_path,
@@ -2611,6 +2632,10 @@ class ContinuationPreflight:
             "issue_iid": self.issue_iid,
             "note_id": self.note_id,
             "provenance": self.provenance,
+            "note_author": self.note_author,
+            "provider_note_status": self.provider_note_status,
+            "provider_target_path": self.provider_target_path,
+            "provider_branch_head": self.provider_branch_head,
             "failure_reason": self.failure_reason,
             "checks": list(self.checks),
         }
@@ -2623,16 +2648,32 @@ class SupervisedContinuationResult:
     execution_id: str
     preflight: ContinuationPreflight
     supervised_review: SupervisedReview | None
-    status: str  # COMPLETED | REFUSED_PREFLIGHT | INACCESSIBLE | PARTIAL | COMPLETED_IDEMPOTENT
+    status: str  # COMPLETED | REFUSED_PREFLIGHT | INACCESSIBLE | PARTIAL_REVIEW | FAILED
     deterministic_verdict: str
     is_duplicate: bool
     summary: str
     duplicate_status: str = "NOT_VERIFIED"
+    #: "LIVE" or "OFFLINE_REPLAY"; replay results carry FIXTURE/RECORDED_INPUT
+    #: provenance and never present themselves as live authenticated execution.
+    mode: str = "LIVE"
+    #: True only when a durable causal ledger store backs the idempotency claim.
+    durable_store: bool = False
 
     def to_dict(self) -> dict[str, object]:
+        if self.mode == "OFFLINE_REPLAY":
+            autonomy = (
+                "OFFLINE_REPLAY_FIXTURE_EXECUTION (RECORDED_INPUT provenance; "
+                "never a live authenticated Supervised continuation)"
+            )
+        else:
+            autonomy = (
+                "SUPERVISED_CONTINUATION_WITH_DOCUMENTED_HANDOFF_LIMITATION (NEEDS_REVIEW)"
+            )
         return {
             "schema": "termivance.supervised_continuation/v1",
             "execution_id": self.execution_id,
+            "mode": self.mode,
+            "durable_store": self.durable_store,
             "status": self.status,
             "deterministic_verdict": self.deterministic_verdict,
             "is_duplicate": self.is_duplicate,
@@ -2642,9 +2683,7 @@ class SupervisedContinuationResult:
             "supervised_review": self.supervised_review.to_dict()
             if self.supervised_review
             else None,
-            "autonomy_classification": (
-                "SUPERVISED_CONTINUATION_WITH_DOCUMENTED_HANDOFF_LIMITATION (NEEDS_REVIEW)"
-            ),
+            "autonomy_classification": autonomy,
         }
 
 
@@ -2659,12 +2698,29 @@ def validate_continuation_preflight(
     duo_note_id: int = 4045401991,
     note_body: str | None = None,
     client: object | None = None,
+    mode: str = "LIVE",
 ) -> tuple[ContinuationPreflight, int | None, str | None, list[dict[str, object]]]:
     """Validate all mandatory fail-closed invariants before continuation execution.
 
     Authenticates canonical identity, target path, issue IID, session identity,
-    note source provenance, commit SHA match, and target default branch HEAD.
+    note source provenance (exact note ID, Duo service-account authorship,
+    issue ownership and body match), provider-backed target full path, commit
+    SHA match, and target default branch HEAD.
+
+    Modes:
+
+    - ``LIVE`` (default): every provider-backed prerequisite must actually be
+      observed. An inaccessible note (401/403/404/timeout/network), an
+      unauthenticated note identity, a wrong author, a mismatched note body,
+      an unobservable target path or branch HEAD, or an ambiguous/stale
+      provider observation fails closed. Optimistic initialization is
+      forbidden: an unobserved security prerequisite can never pass.
+    - ``OFFLINE_REPLAY``: development-only replay of recorded inputs. The
+      locally supplied note is consumed as ``FIXTURE_RECORDED_INPUT`` and the
+      result never presents itself as a live authenticated continuation.
     """
+    if mode not in ("LIVE", "OFFLINE_REPLAY"):
+        raise ValueError(f"unknown continuation mode {mode!r}")
     checks: list[dict[str, object]] = []
 
     # Check 1: Canonical hosting project identity
@@ -2712,55 +2768,137 @@ def validate_continuation_preflight(
         }
     )
 
-    # Check 4: Provider read-back and note provenance
+    # Check 4: Provider read-back and note provenance (fail-closed in LIVE mode)
     effective_note_body = note_body
-    note_provenance = "LOCAL_OPERATOR_SUPPLIED_NOTE" if note_body else "NOT_OBSERVED"
-    provider_read_ok = True
-    provider_note_err = None
+    provider_read_ok: bool | None = None
+    provider_note_err: str | None = None
+    note_provenance: str
+    note_author: str | None = None
+    provider_note_status: int | None = None
 
-    if client is not None and hasattr(client, "get_json"):
-        res = client.get_json(
-            f"/projects/{canonical_project_id}/issues/{issue_iid}/notes/{duo_note_id}"
+    if mode == "OFFLINE_REPLAY":
+        # Development replay: no provider observation is performed or claimed.
+        provider_read_ok = bool(note_body)
+        note_provenance = "FIXTURE_RECORDED_INPUT"
+        if not note_body:
+            provider_note_err = (
+                "OFFLINE_REPLAY requires a recorded note body; none was supplied."
+            )
+        checks.append(
+            {
+                "check": "provider_note_readback_and_provenance",
+                "passed": bool(provider_read_ok),
+                "detail": (
+                    "OFFLINE_REPLAY: provider read-back NOT performed; note consumed "
+                    "as FIXTURE/RECORDED_INPUT and never presented as live "
+                    "authenticated continuation."
+                    if provider_read_ok
+                    else provider_note_err
+                ),
+            }
         )
-        if getattr(res, "ok", False) and getattr(res, "status", None) == 200:
-            data = getattr(res, "data", None)
-            if isinstance(data, dict) and data.get("body"):
-                prov_body = str(data["body"])
-                is_auth = bool(getattr(client, "token", None))
-                note_provenance = (
-                    "LIVE_AUTHENTICATED_PROVIDER_NOTE"
-                    if is_auth
-                    else "LIVE_ANONYMOUS_PROVIDER_NOTE"
-                )
-                if effective_note_body is None:
-                    effective_note_body = prov_body
-                elif effective_note_body.strip() != prov_body.strip():
-                    provider_read_ok = False
-                    provider_note_err = (
-                        "NOTE_BODY_MISMATCH: Supplied note text does not match provider note body."
-                    )
+    else:
+        # LIVE mode: the provider note read-back is a mandatory prerequisite.
+        # It starts UNOBSERVED (None) and can only pass through an actual,
+        # identity-verified provider observation.
+        if client is None or not hasattr(client, "get_json"):
+            provider_read_ok = False
+            provider_note_err = (
+                "PROVIDER_NOTE_NOT_OBSERVED: no provider client is available; a "
+                "live continuation cannot proceed on unobserved prerequisites."
+            )
         else:
-            status = getattr(res, "status", None)
-            if effective_note_body is None:
+            try:
+                res = client.get_json(
+                    f"/projects/{canonical_project_id}/issues/{issue_iid}/notes/{duo_note_id}"
+                )
+            except Exception as exc:  # noqa: BLE001 - timeouts/network fail closed
+                res = None
                 provider_read_ok = False
                 provider_note_err = (
-                    f"INACCESSIBLE_PROVIDER_NOTE: Note {duo_note_id} could not be read "
-                    f"from provider (HTTP {status})."
+                    f"PROVIDER_NOTE_READ_FAILED: reading note {duo_note_id} from the "
+                    f"provider raised {exc!r}; failing closed."
                 )
-            else:
-                note_provenance = f"LOCAL_UNAUTHENTICATED_INPUT_PROVIDER_HTTP_{status}"
-
-    checks.append(
-        {
-            "check": "provider_note_readback_and_provenance",
-            "passed": provider_read_ok,
-            "detail": (
-                f"Note {duo_note_id} provenance: {note_provenance}"
-                if provider_read_ok
-                else provider_note_err
-            ),
-        }
-    )
+            if res is not None:
+                provider_note_status = getattr(res, "status", None)
+                data = getattr(res, "data", None)
+                if not (getattr(res, "ok", False) and getattr(res, "status", None) == 200):
+                    provider_read_ok = False
+                    provider_note_err = (
+                        f"INACCESSIBLE_PROVIDER_NOTE: Note {duo_note_id} could not be "
+                        f"read from provider (HTTP {provider_note_status}); a "
+                        "well-formed local note can never substitute the provider "
+                        "read-back in LIVE mode."
+                    )
+                elif not (isinstance(data, dict) and data.get("body")):
+                    provider_read_ok = False
+                    provider_note_err = (
+                        "MALFORMED_PROVIDER_NOTE: provider returned HTTP 200 without a "
+                        "readable note body; failing closed."
+                    )
+                else:
+                    prov_body = str(data["body"])
+                    returned_id = data.get("id")
+                    if returned_id is None or int(returned_id) != int(duo_note_id):
+                        provider_read_ok = False
+                        provider_note_err = (
+                            f"NOTE_ID_MISMATCH: provider returned note id {returned_id!r} "
+                            f"for requested note {duo_note_id}; identity cannot be "
+                            "authenticated."
+                        )
+                    else:
+                        note_author = str(
+                            (data.get("author") or {}).get("username") or "unknown"
+                        )
+                        if note_author != DUO_SERVICE_ACCOUNT_USERNAME:
+                            provider_read_ok = False
+                            provider_note_err = (
+                                f"NOTE_AUTHOR_MISMATCH: provider note {duo_note_id} was "
+                                f"authored by {note_author!r}, expected the Duo Custom "
+                                f"Flow service account {DUO_SERVICE_ACCOUNT_USERNAME!r}; "
+                                "session identity cannot be supported by provider evidence."
+                            )
+                        else:
+                            noteable_iid = data.get("noteable_iid")
+                            if (
+                                noteable_iid is not None
+                                and int(noteable_iid) != int(issue_iid)
+                            ):
+                                provider_read_ok = False
+                                provider_note_err = (
+                                    f"NOTE_ISSUE_OWNERSHIP_MISMATCH: provider note "
+                                    f"{duo_note_id} belongs to issue #{noteable_iid}, "
+                                    f"expected #{issue_iid}."
+                                )
+                            elif note_body is not None and note_body.strip() != prov_body.strip():
+                                provider_read_ok = False
+                                provider_note_err = (
+                                    "NOTE_BODY_MISMATCH: Supplied note text does not "
+                                    "match provider note body."
+                                )
+                            else:
+                                provider_read_ok = True
+                                effective_note_body = prov_body
+                                is_auth = bool(getattr(client, "token", None))
+                                note_provenance = (
+                                    "LIVE_AUTHENTICATED_PROVIDER_NOTE"
+                                    if is_auth
+                                    else "LIVE_ANONYMOUS_PROVIDER_NOTE"
+                                )
+        if not provider_read_ok:
+            note_provenance = "NOT_OBSERVED"
+        checks.append(
+            {
+                "check": "provider_note_readback_and_provenance",
+                "passed": bool(provider_read_ok),
+                "detail": (
+                    f"Note {duo_note_id} provenance: {note_provenance} "
+                    f"(author: {note_author or 'unobserved'})"
+                    if provider_read_ok
+                    else provider_note_err
+                ),
+            }
+        )
 
     # Check 5: Note parsing
     parsed_pid = None
@@ -2811,35 +2949,150 @@ def validate_continuation_preflight(
         }
     )
 
-    # Check 8: Target default branch HEAD drift check
-    branch_drift_ok = True
-    branch_drift_detail = None
-    if client is not None and hasattr(client, "get_json"):
-        b_res = client.get_json(f"/projects/{target_project_id}/repository/branches/main")
-        if getattr(b_res, "ok", False) and isinstance(getattr(b_res, "data", None), dict):
-            c = b_res.data.get("commit")
-            if isinstance(c, dict) and c.get("id"):
-                observed_head = str(c["id"])
-                if observed_head != expected_commit_sha:
-                    branch_drift_ok = False
-                    branch_drift_detail = (
-                        f"STALE_SOURCE_SHA: Target default branch HEAD drifted to "
-                        f"'{observed_head}' (expected '{expected_commit_sha}')."
+    # Check 8: Provider-backed target full path (fail-closed in LIVE mode)
+    provider_target_path: str | None = None
+    chk_provider_path: bool | None = None
+    provider_path_err: str | None = None
+    if mode == "OFFLINE_REPLAY":
+        chk_provider_path = True
+        checks.append(
+            {
+                "check": "provider_target_full_path_binding",
+                "passed": True,
+                "detail": (
+                    "OFFLINE_REPLAY: provider project read NOT performed; target path "
+                    "binding accepted from recorded input only."
+                ),
+            }
+        )
+    elif client is None or not hasattr(client, "get_json"):
+        chk_provider_path = False
+        provider_path_err = (
+            "TARGET_PATH_NOT_OBSERVED: no provider client is available to verify the "
+            "target project full path."
+        )
+        checks.append(
+            {
+                "check": "provider_target_full_path_binding",
+                "passed": False,
+                "detail": provider_path_err,
+            }
+        )
+    else:
+        try:
+            p_res = client.get_json(f"/projects/{target_project_id}")
+        except Exception as exc:  # noqa: BLE001 - timeouts/network fail closed
+            p_res = None
+            provider_path_err = (
+                f"TARGET_PATH_READ_FAILED: reading project {target_project_id} from the "
+                f"provider raised {exc!r}; failing closed."
+            )
+        if p_res is not None:
+            p_data = getattr(p_res, "data", None)
+            if not (getattr(p_res, "ok", False) and isinstance(p_data, dict)):
+                chk_provider_path = False
+                provider_path_err = (
+                    f"TARGET_PATH_NOT_OBSERVED: project {target_project_id} could not be "
+                    f"read from provider (HTTP {getattr(p_res, 'status', None)})."
+                )
+            else:
+                provider_target_path = str(p_data.get("path_with_namespace") or "")
+                if provider_target_path != target_full_path:
+                    chk_provider_path = False
+                    provider_path_err = (
+                        f"PROVIDER_TARGET_PATH_MISMATCH: provider reports project "
+                        f"{target_project_id} at {provider_target_path!r}, expected "
+                        f"{target_full_path!r}."
                     )
+                else:
+                    chk_provider_path = True
+        checks.append(
+            {
+                "check": "provider_target_full_path_binding",
+                "passed": bool(chk_provider_path),
+                "detail": (
+                    f"Provider reports project {target_project_id} at "
+                    f"{provider_target_path!r} (matches bound target path)"
+                    if chk_provider_path
+                    else provider_path_err
+                ),
+            }
+        )
 
-    checks.append(
-        {
-            "check": "target_branch_head_drift",
-            "passed": branch_drift_ok,
-            "detail": (
-                f"Observed default branch HEAD matches expected '{expected_commit_sha}'"
-                if branch_drift_ok
-                else branch_drift_detail
-            ),
-        }
-    )
+    # Check 9: Target default branch HEAD drift (fail-closed in LIVE mode)
+    provider_branch_head: str | None = None
+    branch_drift_ok: bool | None = None
+    branch_drift_detail: str | None = None
+    if mode == "OFFLINE_REPLAY":
+        branch_drift_ok = True
+        checks.append(
+            {
+                "check": "target_branch_head_drift",
+                "passed": True,
+                "detail": (
+                    "OFFLINE_REPLAY: provider branch read NOT performed; drift check "
+                    "accepted from recorded input only."
+                ),
+            }
+        )
+    elif client is None or not hasattr(client, "get_json"):
+        branch_drift_ok = False
+        branch_drift_detail = (
+            "BRANCH_HEAD_NOT_OBSERVED: no provider client is available to verify the "
+            "target default branch HEAD."
+        )
+        checks.append(
+            {
+                "check": "target_branch_head_drift",
+                "passed": False,
+                "detail": branch_drift_detail,
+            }
+        )
+    else:
+        try:
+            b_res = client.get_json(f"/projects/{target_project_id}/repository/branches/main")
+        except Exception as exc:  # noqa: BLE001 - timeouts/network fail closed
+            b_res = None
+            branch_drift_detail = (
+                f"BRANCH_HEAD_READ_FAILED: reading the target default branch raised "
+                f"{exc!r}; failing closed."
+            )
+        if b_res is not None:
+            b_data = getattr(b_res, "data", None)
+            if not (getattr(b_res, "ok", False) and isinstance(b_data, dict)):
+                branch_drift_detail = (
+                    f"BRANCH_HEAD_NOT_OBSERVED: target default branch could not be read "
+                    f"from provider (HTTP {getattr(b_res, 'status', None)}); an "
+                    "inaccessible branch HEAD can never satisfy the drift check."
+                )
+            else:
+                c = b_data.get("commit")
+                if not (isinstance(c, dict) and c.get("id")):
+                    branch_drift_detail = (
+                        "BRANCH_HEAD_NOT_OBSERVED: provider branch response carries no "
+                        "commit identity."
+                    )
+                else:
+                    provider_branch_head = str(c["id"])
+                    if provider_branch_head != expected_commit_sha:
+                        branch_drift_detail = (
+                            f"STALE_SOURCE_SHA: Target default branch HEAD drifted to "
+                            f"'{provider_branch_head}' (expected '{expected_commit_sha}')."
+                        )
+        branch_drift_ok = branch_drift_detail is None
+        checks.append(
+            {
+                "check": "target_branch_head_drift",
+                "passed": bool(branch_drift_ok),
+                "detail": (
+                    f"Observed default branch HEAD matches expected '{expected_commit_sha}'"
+                    if branch_drift_ok
+                    else branch_drift_detail
+                ),
+            }
+        )
 
-    all_passed = (
+    all_passed = bool(
         chk_canon
         and chk_path
         and chk_ident
@@ -2847,6 +3100,7 @@ def validate_continuation_preflight(
         and chk_parse
         and chk_target
         and chk_sha
+        and chk_provider_path
         and branch_drift_ok
     )
 
@@ -2888,6 +3142,8 @@ def validate_continuation_preflight(
             f"STALE_SOURCE_SHA: Agent note references commit {parsed_sha}, "
             f"expected {expected_commit_sha}."
         )
+    elif not chk_provider_path:
+        failure_reason = provider_path_err
     elif not branch_drift_ok:
         failure_reason = branch_drift_detail
 
@@ -2901,9 +3157,18 @@ def validate_continuation_preflight(
         duo_session_id=duo_session_id,
         issue_iid=issue_iid,
         note_id=duo_note_id,
-        provenance=note_provenance,
+        provenance=(
+            note_provenance
+            if provider_read_ok or mode == "OFFLINE_REPLAY"
+            else "NOT_OBSERVED"
+        ),
         checks=tuple(checks),
         failure_reason=failure_reason,
+        mode=mode,
+        note_author=note_author,
+        provider_note_status=provider_note_status,
+        provider_target_path=provider_target_path,
+        provider_branch_head=provider_branch_head,
     )
     return preflight, parsed_pid, parsed_sha, candidates
 
@@ -2922,35 +3187,68 @@ def run_supervised_continuation(
     note_body: str | None = None,
     publish_outcome: bool = False,
     out_dir: str | Path | None = None,
+    mode: str = "LIVE",
+    allow_recovery: bool = False,
+    ledger_path: str | Path | None = None,
     now: datetime | None = None,
 ) -> SupervisedContinuationResult:
     """Execute the end-to-end supervised continuation from human request to conclusion.
 
     Validates preflight safety assertions, executes the deterministic investigation,
-    derives verdict from actual review steps, and enforces human review boundary.
-    Fails closed upon malformed notes, mismatched targets, stale commit SHAs, or inaccessible notes.
+    derives verdict and completion status from the executed review, and enforces the
+    human review boundary. Fails closed upon malformed notes, mismatched targets,
+    stale commit SHAs, inaccessible notes, unobservable provider prerequisites,
+    or an unusable durable causal ledger.
+
+    Durable idempotency contract (see :mod:`termivance.continuation_ledger`):
+
+    * a durable causal reservation (``FIRST_STARTED``) is written *before* the
+      review executes and finalized to ``FIRST_COMPLETED``/``PARTIAL``/``FAILED``
+      only from the actually executed outcome;
+    * a duplicate of a recorded ``FIRST_COMPLETED`` execution returns
+      ``COMPLETED_IDEMPOTENT`` with the *stored* verdict of that authentic
+      completed record — never a hard-coded substitute;
+    * a duplicate of an incomplete (``FIRST_STARTED``/``PARTIAL``/``FAILED``)
+      execution fails closed with ``REFUSED_INCOMPLETE_PRIOR_EXECUTION``
+      unless explicitly recovered (``allow_recovery=True``);
+    * a corrupted or unreadable ledger fails closed and can never silently
+      become a clean ledger;
+    * omitting ``out_dir`` (no durable store) means no durable idempotency
+      claim is made — the result is explicitly marked ``NOT_DURABLE_NO_LEDGER_STORE``.
+
+    ``mode="OFFLINE_REPLAY"`` is a development-only replay of recorded inputs;
+    its results carry FIXTURE/RECORDED_INPUT provenance and never present
+    themselves as live authenticated Supervised continuation.
     """
+    from termivance.continuation_ledger import (
+        RESERVE_DUPLICATE_COMPLETED,
+        RESERVE_INCOMPLETE_PRIOR,
+        ContinuationLedger,
+        ContinuationLedgerError,
+    )
+
     observed = _utc(now)
     exec_id = f"cont-{observed.strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:6]}"
 
-    # Durable duplicate execution detection
     causal_key = (
         f"{canonical_project_id}:{issue_iid}:{duo_session_id}:{duo_note_id}:"
         f"{target_project_id}:{expected_commit_sha}"
     )
-    executions_file = (Path(out_dir) / ".continuation_executions.json") if out_dir else None
-    is_duplicate = False
-    duplicate_status = "NOT_VERIFIED"
-    if executions_file is not None and executions_file.exists():
+
+    # Durable causal execution ledger (mandatory for any durable idempotency claim)
+    store_path = Path(ledger_path) if ledger_path else (
+        Path(out_dir) / ".continuation_executions.json" if out_dir else None
+    )
+    ledger = ContinuationLedger(store_path) if store_path is not None else None
+    durable_store = False
+    ledger_error: str | None = None
+    if ledger is not None:
         try:
-            records = json.loads(executions_file.read_text(encoding="utf-8"))
-            if isinstance(records, dict) and causal_key in records:
-                is_duplicate = True
-                duplicate_status = "RECORDED_DUPLICATE_IDEMPOTENT"
-        except Exception:
-            pass
-    elif executions_file is not None:
-        duplicate_status = "FIRST_RECORDED_EXECUTION"
+            ledger.health_check()
+            durable_store = True
+        except ContinuationLedgerError as exc:
+            ledger_error = str(exc)
+            ledger = None
 
     preflight, _, _, _ = validate_continuation_preflight(
         canonical_project_id=canonical_project_id,
@@ -2962,39 +3260,112 @@ def run_supervised_continuation(
         duo_note_id=duo_note_id,
         note_body=note_body,
         client=client,
+        mode=mode,
     )
 
-    if not preflight.passed:
+    def _result(
+        *,
+        status: str,
+        verdict: str,
+        is_duplicate: bool,
+        duplicate_status: str,
+        summary: str,
+        review: SupervisedReview | None = None,
+    ) -> SupervisedContinuationResult:
         return SupervisedContinuationResult(
             execution_id=exec_id,
             preflight=preflight,
-            supervised_review=None,
-            status="REFUSED_PREFLIGHT",
-            deterministic_verdict="BLOCKED",
+            supervised_review=review,
+            status=status,
+            deterministic_verdict=verdict,
             is_duplicate=is_duplicate,
             duplicate_status=duplicate_status,
+            summary=summary,
+            mode=mode,
+            durable_store=durable_store,
+        )
+
+    if not preflight.passed:
+        return _result(
+            status="REFUSED_PREFLIGHT",
+            verdict="NOT_DETERMINED",
+            is_duplicate=False,
+            duplicate_status=(
+                "LEDGER_UNAVAILABLE" if ledger_error else "NOT_EVALUATED_PREFLIGHT_REFUSED"
+            ),
             summary=(
                 f"Supervised continuation refused by fail-closed preflight: "
                 f"{preflight.failure_reason}"
             ),
         )
 
-    if is_duplicate:
-        return SupervisedContinuationResult(
-            execution_id=exec_id,
-            preflight=preflight,
-            supervised_review=None,
-            status="COMPLETED_IDEMPOTENT",
-            deterministic_verdict="BLOCKED",
-            is_duplicate=True,
-            duplicate_status="RECORDED_DUPLICATE_IDEMPOTENT",
+    if ledger_error and store_path is not None:
+        # A requested durable store that cannot be trusted fails closed before
+        # any execution: the run must not silently downgrade to in-memory.
+        return _result(
+            status="REFUSED_LEDGER_UNAVAILABLE",
+            verdict="NOT_DETERMINED",
+            is_duplicate=False,
+            duplicate_status="LEDGER_UNAVAILABLE",
             summary=(
-                f"Supervised continuation execution {exec_id} is an idempotent duplicate. "
-                f"Bound to Duo Session {duo_session_id}, Note {duo_note_id}, "
-                f"and Target Commit {expected_commit_sha}. "
-                "Deterministic verdict remains BLOCKED; awaiting final human review."
+                f"Supervised continuation refused: the durable causal execution "
+                f"ledger is unusable ({ledger_error})."
             ),
         )
+
+    # Reserve the causal execution (or classify the duplicate) BEFORE executing.
+    reservation = None
+    if ledger is not None:
+        try:
+            reservation = ledger.reserve(
+                causal_key,
+                execution_id=exec_id,
+                now=observed,
+                allow_recovery=allow_recovery,
+            )
+        except ContinuationLedgerError as exc:
+            return _result(
+                status="REFUSED_LEDGER_UNAVAILABLE",
+                verdict="NOT_DETERMINED",
+                is_duplicate=False,
+                duplicate_status="LEDGER_UNAVAILABLE",
+                summary=(
+                    f"Supervised continuation refused: the durable causal execution "
+                    f"ledger could not be reserved ({exc})."
+                ),
+            )
+        if reservation.outcome == RESERVE_DUPLICATE_COMPLETED:
+            record = reservation.record or {}
+            stored_verdict = str(record.get("verdict") or "NOT_DETERMINED")
+            return _result(
+                status="COMPLETED_IDEMPOTENT",
+                verdict=stored_verdict,
+                is_duplicate=True,
+                duplicate_status="DUPLICATE_OF_RECORDED_COMPLETED_EXECUTION",
+                summary=(
+                    f"Supervised continuation execution {exec_id} is an idempotent "
+                    f"duplicate of the durably recorded first completed execution "
+                    f"{record.get('execution_id')}. Bound to Duo Session {duo_session_id}, "
+                    f"Note {duo_note_id}, and Target Commit {expected_commit_sha}. "
+                    f"Deterministic verdict {stored_verdict} retrieved from the "
+                    "authentic completed record; awaiting final human review."
+                ),
+            )
+        if reservation.outcome == RESERVE_INCOMPLETE_PRIOR:
+            record = reservation.record or {}
+            return _result(
+                status="REFUSED_INCOMPLETE_PRIOR_EXECUTION",
+                verdict="NOT_DETERMINED",
+                is_duplicate=False,
+                duplicate_status="PRIOR_EXECUTION_INCOMPLETE_RECOVERY_REQUIRED",
+                summary=(
+                    f"Supervised continuation refused: the prior execution "
+                    f"{record.get('execution_id')} for this exact causal identity is "
+                    f"{record.get('state')}, not FIRST_COMPLETED; a duplicate attempt "
+                    "cannot be presented as idempotent completion. Verified recovery "
+                    "(allow_recovery=True) is required to re-execute."
+                ),
+            )
 
     # Execute deterministic review pipeline
     target_ident = TargetIdentity(target_project_id, target_full_path, "GITLAB_PAGES_SITE")
@@ -3009,18 +3380,22 @@ def run_supervised_continuation(
         out_dir=out_dir,
         now=observed,
     )
+    if mode == "OFFLINE_REPLAY":
+        import dataclasses
 
-    # Derive verdict strictly from deterministic review
-    deterministic_verdict = "BLOCKED"
-    if review and getattr(review, "decision", None) and getattr(review.decision, "verdict", None):
-        deterministic_verdict = str(review.decision.verdict.value)
-    elif review and getattr(review, "verdict", None):
-        deterministic_verdict = str(review.verdict)
+        review = dataclasses.replace(review, investigation_mode="OFFLINE_REPLAY")
+        if out_dir:
+            (Path(out_dir) / "supervised_review.json").write_text(
+                json.dumps(review.to_dict(), indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+
+    # Derive verdict strictly from the executed deterministic review; a refusal
+    # or duplicate never substitutes a hard-coded verdict for the real one.
+    deterministic_verdict = review.deterministic_verdict or "NOT_DETERMINED"
 
     # Derive status from step outcomes
-    if is_duplicate:
-        status = "COMPLETED_IDEMPOTENT"
-    elif review and all(
+    if review and all(
         s.status
         in (
             "COMPLETED",
@@ -3036,41 +3411,52 @@ def run_supervised_continuation(
     else:
         status = "FAILED"
 
-    # Save to durable executions store if out_dir provided
-    if executions_file is not None and not is_duplicate:
+    # Finalize the durable causal record from the actually executed outcome.
+    if ledger is not None and reservation is not None:
         try:
-            records = {}
-            if executions_file.exists():
-                records = json.loads(executions_file.read_text(encoding="utf-8"))
-                if not isinstance(records, dict):
-                    records = {}
-            records[causal_key] = {
-                "execution_id": exec_id,
-                "executed_at": observed.isoformat(),
-                "verdict": deterministic_verdict,
-                "status": status,
-            }
-            executions_file.parent.mkdir(parents=True, exist_ok=True)
-            executions_file.write_text(json.dumps(records, indent=2) + "\n", encoding="utf-8")
-        except Exception:
-            pass
+            ledger.finalize(
+                causal_key,
+                execution_id=exec_id,
+                status=status,
+                verdict=deterministic_verdict,
+                now=observed,
+            )
+        except ContinuationLedgerError as exc:
+            # The reservation stays durable; report the finalization failure
+            # honestly instead of claiming a clean completed execution.
+            return _result(
+                status="PARTIAL_REVIEW",
+                verdict=deterministic_verdict,
+                is_duplicate=False,
+                duplicate_status="LEDGER_FINALIZATION_FAILED",
+                summary=(
+                    f"Supervised continuation executed (verdict {deterministic_verdict}) "
+                    f"but the durable causal ledger could not be finalized ({exc}); "
+                    "the execution record remains incomplete and requires recovery."
+                ),
+                review=review,
+            )
 
+    duplicate_status = (
+        "FIRST_RECORDED_EXECUTION"
+        if durable_store
+        else "NOT_DURABLE_NO_LEDGER_STORE"
+    )
     summary = (
-        f"Supervised continuation completed ({status}, execution {exec_id}). "
+        f"Supervised continuation completed ({status}, execution {exec_id}"
+        f"{' durable' if durable_store else ', no durable idempotency store'}). "
         f"Bound to Duo Session {duo_session_id}, Note {duo_note_id}, "
         f"and Target Commit {expected_commit_sha}. "
         f"Deterministic verdict is {deterministic_verdict}; awaiting final human review."
     )
 
-    return SupervisedContinuationResult(
-        execution_id=exec_id,
-        preflight=preflight,
-        supervised_review=review,
+    return _result(
         status=status,
-        deterministic_verdict=deterministic_verdict,
-        is_duplicate=is_duplicate,
+        verdict=deterministic_verdict,
+        is_duplicate=False,
         duplicate_status=duplicate_status,
         summary=summary,
+        review=review,
     )
 
 
@@ -3079,6 +3465,7 @@ __all__ = [
     "DEFAULT_TARGET_FULL_PATH",
     "DEFAULT_TARGET_PROJECT_ID",
     "DUO_CATALOG_ITEM_ID",
+    "DUO_SERVICE_ACCOUNT_USERNAME",
     "DUO_SESSION_ID",
     "DUO_SESSION_ID_DISCOVERY",
     "DUO_SESSION_ID_NEUTRAL",

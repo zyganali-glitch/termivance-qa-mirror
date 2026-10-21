@@ -56,6 +56,7 @@ class CurrentTruthStatus(StrEnum):
     ABSENCE_NOT_CLAIMED = "ABSENCE_NOT_CLAIMED"
     TARGET_MUTATION_BLOCKED = "TARGET_MUTATION_BLOCKED"
     HISTORICAL_RECEIPT_UNVERIFIED = "HISTORICAL_RECEIPT_UNVERIFIED"
+    CURRENT_OBSERVATION_MISMATCH = "CURRENT_OBSERVATION_MISMATCH"
 
 
 class RedeploymentRisk(StrEnum):
@@ -84,17 +85,35 @@ def _utc(value: datetime | None = None) -> datetime:
 def validate_historical_absence_receipt(
     history: dict[str, object] | None,
     target: TargetIdentity,
+    *,
+    ledger: object | None = None,
+    now: datetime | None = None,
 ) -> tuple[bool, str]:
     """Validate that historical truth is an authentic v3 retirement receipt proving absence.
 
-    Requirements:
-    1. history is a non-empty dictionary.
-    2. schema == "termivance.retirement_receipt/v3".
-    3. Target is not protected (reject 87779099, 87777871, 87786164).
-    4. Target project ID matches history target project ID.
-    5. Prior mutation was attempted and accepted (mutation_attempted=True, accepted=True or 2xx).
-    6. Prior verdict was OBSERVED_ABSENT.
-    7. Valid observation timestamp present.
+    This is NOT a receipt-shape check. A dictionary with a plausible schema,
+    ``mutation_attempted: true``, ``accepted: true``, ``verdict:
+    OBSERVED_ABSENT`` and a parseable timestamp is not proof. The actual
+    authoritative receipt chain is validated by reusing the established
+    contracts:
+
+    1. history is a non-empty dictionary with schema
+       ``termivance.retirement_receipt/v3``;
+    2. the target is not protected (reject 87779099, 87777871, 87786164) and
+       the receipt is bound to exactly this target (project ID *and* full
+       path);
+    3. the recorded verdict is ``OBSERVED_ABSENT``;
+    4. the full mutation receipt chain validates through
+       :func:`termivance.capsule.validate_mutation_receipt` against a durable
+       authorization ledger in state ``CONSUMED_ACCEPTED``: exact project ID,
+       full path and resource kind; authorized pre-state with independently
+       observed original publication (marker digest binding); the exact
+       approved action and an accepted provider DELETE on the exact Pages
+       endpoint; durable single-use ledger evidence; temporal and SHA
+       coherence; receipt integrity;
+    5. the post-action absence section records independent read-backs of the
+       Pages API and of the *same* served URL, observed after the mutation
+       was requested, with an ``OBSERVED_ABSENT`` bounded verdict.
     """
     if not isinstance(history, dict) or not history:
         return False, "No historical receipt dictionary supplied."
@@ -115,28 +134,96 @@ def validate_historical_absence_receipt(
     hist_pid = hist_target.get("project_id")
     if hist_pid != target.project_id:
         return False, f"Target project ID mismatch: expected {target.project_id}, got {hist_pid}."
+    hist_path = str(hist_target.get("full_path") or "")
+    if hist_path != target.full_path:
+        return False, (
+            f"Target full path mismatch: expected {target.full_path!r}, got {hist_path!r}."
+        )
 
     if isinstance(hist_pid, int) and is_protected(hist_pid):
         return False, f"Historical receipt targets protected project {hist_pid}."
 
-    mutation_attempted = history.get("mutation_attempted")
-    if mutation_attempted is not True:
-        return False, (
-            "Historical receipt does not record an attempted mutation "
-            "(mutation_attempted is not True)."
-        )
-
-    mutation = history.get("mutation")
-    if isinstance(mutation, dict):
-        accepted = mutation.get("accepted") is True or mutation.get("status") in (200, 204)
-        if not accepted:
-            return False, "Historical receipt mutation was not accepted by provider."
-    else:
-        return False, "Historical receipt lacks mutation record."
-
     verdict = history.get("verdict")
     if verdict != "OBSERVED_ABSENT":
         return False, f"Historical receipt verdict is '{verdict}', not 'OBSERVED_ABSENT'."
+
+    # Full mutation receipt chain against the durable ledger. Without a
+    # durable ledger the receipt cannot be authenticated at all.
+    from termivance.capsule import ReceiptValidationError, validate_mutation_receipt
+
+    if ledger is None:
+        return False, (
+            "No durable authorization ledger was supplied; a locally recorded "
+            "receipt cannot be authenticated without the durable single-use "
+            "ledger evidence of the exact operation."
+        )
+    try:
+        binding = validate_mutation_receipt(history, target, ledger=ledger, now=now)
+    except ReceiptValidationError as exc:
+        return False, f"Historical receipt failed the authoritative receipt chain: {exc}"
+    if not binding.accepted:
+        return False, "Historical receipt mutation was not accepted by provider."
+
+    # Post-action absence read-backs: independent observations of the Pages
+    # API and the same served URL, recorded after the mutation was requested.
+    absence = history.get("absence")
+    if not isinstance(absence, dict):
+        return False, "Historical receipt lacks the post-action absence read-back section."
+    absence_verdict = str(absence.get("verdict") or "")
+    if absence_verdict != "OBSERVED_ABSENT":
+        return False, (
+            f"Post-action absence verdict is '{absence_verdict}', not 'OBSERVED_ABSENT'; "
+            "an unverified post-state cannot prove a previous absence."
+        )
+    pages_api = absence.get("pages_api")
+    if not isinstance(pages_api, dict) or pages_api.get("status") is None:
+        return False, "Post-action absence lacks an independent Pages API read-back."
+    if pages_api.get("status") in (401, 403):
+        return False, (
+            "Post-action Pages API read-back was access-denied (HTTP "
+            f"{pages_api.get('status')}); an access boundary is not absence."
+        )
+    served = absence.get("served_url")
+    if not isinstance(served, dict) or served.get("http_status") != 404:
+        return False, (
+            "Post-action absence lacks an independent served-URL 404 read-back "
+            "of the same URL."
+        )
+    observation = absence.get("observation")
+    receipt_served_url = None
+    if isinstance(observation, dict):
+        receipt_served_url = observation.get("served_url")
+    if not receipt_served_url:
+        return False, "Historical receipt does not record the served URL that was observed."
+    pre_state_served_url = getattr(binding.pre_state, "served_url", None)
+    if pre_state_served_url and receipt_served_url != pre_state_served_url:
+        return False, (
+            "Post-action absence observed a different URL than the pre-state "
+            "publication; absence must be read back at the same exact URL."
+        )
+
+    # Temporal coherence: the absence read-back must postdate the mutation.
+    try:
+        mutation = history.get("mutation")
+        requested_at = (
+            datetime.fromisoformat(str(mutation.get("requested_at")))
+            if isinstance(mutation, dict) and mutation.get("requested_at")
+            else None
+        )
+        absence_observed = (
+            datetime.fromisoformat(str(observation.get("observed_at")))
+            if isinstance(observation, dict) and observation.get("observed_at")
+            else None
+        )
+        if requested_at is None or absence_observed is None:
+            return False, "Historical receipt lacks mutation/absence observation timestamps."
+        if absence_observed < requested_at:
+            return False, (
+                "Clock inversion: the post-action absence observation predates "
+                "the mutation request; temporal coherence is violated."
+            )
+    except (TypeError, ValueError) as exc:
+        return False, f"Historical receipt timestamps are malformed: {exc}"
 
     ts = (
         history.get("observed_at")
@@ -147,10 +234,10 @@ def validate_historical_absence_receipt(
         return False, "Historical receipt lacks valid observation timestamp."
     try:
         datetime.fromisoformat(str(ts))
-    except Exception:
+    except Exception:  # noqa: BLE001
         return False, f"Historical receipt observation timestamp is malformed: '{ts}'."
 
-    return True, "Historical retirement receipt verified."
+    return True, "Historical retirement receipt verified against the durable ledger chain."
 
 
 @dataclass(frozen=True, slots=True)
@@ -227,6 +314,10 @@ class ResurrectionMonitoringReport:
                 "Historical transition receipts remain immutable audit records.",
                 "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists.",
                 "Unverified historical claims cannot award CONTINUED_ABSENCE_OBSERVED.",
+                "The current observation must bind to the same exact target and URL "
+                "as the historical receipt, not merely a caller-supplied project ID.",
+                "A schema-correct receipt without the durable ledger chain and "
+                "post-action read-backs is not proof of a previous absence.",
             ],
         }
 
@@ -302,6 +393,7 @@ def monitor_resurrection(
     *,
     current_observation: TargetCurrentObservation,
     historical_truth: dict[str, object] | None = None,
+    ledger: object | None = None,
     now: datetime | None = None,
     ttl_seconds: int = DEFAULT_TTL_SECONDS,
 ) -> ResurrectionMonitoringReport:
@@ -309,8 +401,14 @@ def monitor_resurrection(
 
     Implements strict current-truth downgrade semantics:
     - Protects protected targets permanently (TARGET_MUTATION_BLOCKED).
-    - Requires verified historical absence receipt (termivance.retirement_receipt/v3)
-      before evaluating downgrade from OBSERVED_ABSENT.
+    - Validates that the current observation is actually for the same target
+      (project ID *and* full path) and, when both are recorded, the same
+      served URL as the historical receipt — a caller-supplied project ID
+      alone is not sufficient (CURRENT_OBSERVATION_MISMATCH).
+    - Requires a verified historical absence receipt
+      (termivance.retirement_receipt/v3 authenticated against a durable
+      authorization ledger, with post-action read-backs) before evaluating
+      downgrade from OBSERVED_ABSENT.
     - If historical truth is missing, malformed, or unverified: reports
       HISTORICAL_RECEIPT_UNVERIFIED and evaluates baseline truth without assuming prior absence.
     - If previously verified OBSERVED_ABSENT:
@@ -343,14 +441,68 @@ def monitor_resurrection(
             freshness_state=FreshnessState.FRESH,
         )
 
-    # Evaluate historical receipt verification
+    # Current observation must be for the same exact target, not merely a
+    # caller-supplied project ID.
+    observation_target_ok = (
+        current_observation.project_id == target.project_id
+        and current_observation.full_path == target.full_path
+    )
+    receipt_served_url: str | None = None
+    if isinstance(history.get("absence"), dict):
+        absence_obs = history["absence"].get("observation")  # type: ignore[union-attr]
+        if isinstance(absence_obs, dict):
+            receipt_served_url = absence_obs.get("served_url")
+    observation_url_ok = True
+    if (
+        receipt_served_url
+        and current_observation.served_url
+        and current_observation.served_url != receipt_served_url
+    ):
+        observation_url_ok = False
+
+    if not observation_target_ok or not observation_url_ok:
+        mismatch_reasons: list[str] = []
+        if not observation_target_ok:
+            mismatch_reasons.append(
+                f"Current observation is for project {current_observation.project_id} "
+                f"({current_observation.full_path}), expected {target.project_id} "
+                f"({target.full_path})."
+            )
+        if not observation_url_ok:
+            mismatch_reasons.append(
+                f"Current observation probes URL {current_observation.served_url!r}, "
+                f"but the historical receipt observed {receipt_served_url!r}."
+            )
+        return ResurrectionMonitoringReport(
+            target=target,
+            evaluated_at=evaluated_at,
+            historical_truth=history,
+            current_observation=current_observation,
+            current_truth=CurrentTruthStatus.CURRENT_OBSERVATION_MISMATCH,
+            redeployment_risk=RedeploymentRisk.NO_MECHANISM_FOUND,
+            resurrection_control=ResurrectionControlStatus.NOT_CLAIMED,
+            diff_reasons=(
+                "CURRENT_OBSERVATION_MISMATCH: " + " ".join(mismatch_reasons),
+            ),
+            required_revalidation_actions=(
+                "Re-observe the exact target (project ID, full path and served URL) "
+                "bound by the historical receipt.",
+            ),
+            freshness_state=FreshnessState.NOT_OBSERVED,
+        )
+
+    # Evaluate historical receipt verification (full authoritative chain)
     receipt_verified = False
     if history:
-        receipt_verified, receipt_reason = validate_historical_absence_receipt(history, target)
+        receipt_verified, receipt_reason = validate_historical_absence_receipt(
+            history, target, ledger=ledger, now=evaluated_at
+        )
         if not receipt_verified:
             diff_reasons.append(f"Historical receipt unverified: {receipt_reason}")
             revalidation_actions.append(
-                "Supply authentic termivance.retirement_receipt/v3 with OBSERVED_ABSENT verdict."
+                "Supply an authentic termivance.retirement_receipt/v3 with an "
+                "OBSERVED_ABSENT verdict, authenticated against the durable "
+                "authorization ledger of the exact operation."
             )
 
     # Historical truth facts

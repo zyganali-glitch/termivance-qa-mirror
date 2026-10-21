@@ -5,8 +5,9 @@
     "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
     "default_branch": "main",
     "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
-    "observed_at": "2026-10-21T06:08:42.455033+00:00",
+    "observed_at": "2026-10-21T10:08:49.150982+00:00",
     "pages_api_accessible": false,
+    "pages_api_deployment_count": 0,
     "pages_api_status": 403,
     "project_id": 87785099,
     "redeployment_mechanism": true,
@@ -18,12 +19,13 @@
     "served_marker_observed": true,
     "served_url": "https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/"
   },
-  "current_truth": "TARGET_MUTATION_BLOCKED",
+  "current_truth": "HISTORICAL_RECEIPT_UNVERIFIED",
   "diff_reasons": [
+    "Historical receipt unverified: Unrecognized schema: 'termivance.retirement_decision/v1' (requires termivance.retirement_receipt/v3).",
     "Surviving CI redeployment mechanism detected: ['pages_keyword', 'pages_true'].",
-    "Target Pages site is currently published and serving its distinctive marker."
+    "Target site is currently published and serving its marker, but historical absence receipt was unverified."
   ],
-  "evaluated_at": "2026-10-21T06:08:44.179084+00:00",
+  "evaluated_at": "2026-10-21T10:08:50.942677+00:00",
   "freshness_state": "EXPIRED",
   "historical_truth": {
     "action": "unpublish_pages",
@@ -504,10 +506,15 @@
     "Newly observed served marker proves actual reappearance.",
     "Failed provider probe cannot prove continued absence.",
     "Historical transition receipts remain immutable audit records.",
-    "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists."
+    "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists.",
+    "Unverified historical claims cannot award CONTINUED_ABSENCE_OBSERVED.",
+    "The current observation must bind to the same exact target and URL as the historical receipt, not merely a caller-supplied project ID.",
+    "A schema-correct receipt without the durable ledger chain and post-action read-backs is not proof of a previous absence."
   ],
   "redeployment_risk": "MECHANISM_PRESENT",
-  "required_revalidation_actions": [],
+  "required_revalidation_actions": [
+    "Supply an authentic termivance.retirement_receipt/v3 with an OBSERVED_ABSENT verdict, authenticated against the durable authorization ledger of the exact operation."
+  ],
   "resurrection_control": "NOT_CLAIMED",
   "schema": "termivance.resurrection_monitor/v1",
   "target": {
