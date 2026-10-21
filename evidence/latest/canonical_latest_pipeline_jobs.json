@@ -1,15 +1,15 @@
 {
-  "acquired_at_utc": "2026-10-21T10:30:03Z",
-  "artifact_sha256": "096ed130536ba38b818b085d9778c22d322d18b9185adc6318e64dff6bdb9c03",
+  "acquired_at_utc": "2026-10-21T10:35:03Z",
+  "artifact_sha256": "aa52bad45eb98c094684ae6ca167cce3f3fe89719a40980b456f0829226e4299",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2971463550/jobs",
+  "endpoint": "/projects/87779099/pipelines/2971489687/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17344869001,
+      "id": 17345075033,
       "name": "[REDACTED]",
       "stage": "verify",
-      "status": "success"
+      "status": "running"
     }
   ],
   "http_error": null,
@@ -34,45 +34,45 @@
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-21T13:27:31.000+03:00",
-        "committed_date": "2026-10-21T13:27:31.000+03:00",
+        "authored_date": "2026-10-21T13:34:28.000+03:00",
+        "committed_date": "2026-10-21T13:34:28.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-21T13:27:31.000+03:00",
+        "created_at": "2026-10-21T13:34:28.000+03:00",
         "extended_trailers": {},
-        "id": "3d12e24d98902f271b9d1b58b858c569497109a6",
-        "message": "fix(b4-integrity): final evidence-integrity correction for supervised continuation, durable causal ledger, pages 5-level evidence, resurrection receipt authority, decay fail-closed, and control room parity\n\nDefects 1+2: LIVE-mode continuation preflight fails closed on every unobserved\nprovider prerequisite (note 401/403/404/timeout, note-ID/author/issue-ownership\nmismatch, provider target full-path mismatch, branch-HEAD inaccessibility or\ndrift); OFFLINE_REPLAY mode carries FIXTURE/RECORDED_INPUT provenance and never\npresents itself as live authenticated continuation; new durable continuation\ncausal ledger (atomic fsynced writes, cross-process lock, per-entry integrity\ndigests, FIRST_STARTED != FIRST_COMPLETED, PARTIAL/FAILED never\nCOMPLETED_IDEMPOTENT, corruption/recovery/concurrency fail-closed); verdict\nderived from the executed review, never hard-coded BLOCKED.\n\nDefect 3: Level 1 requires the exact Pages job with commit binding (pipeline\nSUCCESS never inferred); Level 2 uses only the documented Pages deployments\nAPI (honestly NOT_OBSERVED); Level 4 probes only the pinned target URLs\n(generic *.gitlab.io refused); Level 5 separates served presence from\nsource-corroborated publication; marker/URL override refused; fixed latent\npositional-timeout bug in the default served-URL getter.\n\nDefect 4: resurrection receipt authority reuses the established\ncapsule/ledger/absence contracts; forged schema-correct receipts fail; current\nobservation must bind to the same exact target and URL.\n\nDefect 5: empty evidence bundles never evaluate to authoritative FRESH;\nprovider errors fail closed with malformed status representations; TTL bounds\nvalidated in the bundle path.\n\nDefect 6: evidence records regenerated live (read-only, \\.00); Control Room\ndisplays FRESH WHEN RECORDED with no success-looking fallbacks; data.js\nregenerated; verified in a real browser (5 tabs, zero console errors, zero\nnetwork fetches).\n\nDefect 7: README, master execution plan (baseline rows + WORK-B4-27), evidence\nmatrix and handoff updated atomically; IMPLEMENTED_NOT_VERIFIED until\nindependent QA.\n\nSuite: 505 passed (network-free adversarial paths via injected transports),\nruff clean, 40/40 network-free safety assertions.\n",
+        "id": "c8dbcc80dfe772ab6da5408f50142b1a120b97f9",
+        "message": "docs(b4-integrity): record verified QA bridge baselines for the final evidence-integrity correction\n\nRecords the independently observed verification of 3d12e24: GitLab pipeline\n2971463550 (verification job 17344869001, success) and GitHub observer run\n39584994230 (qa_status PASS, drift IN_SYNC, exact SHA parity, 21/29 live\nobservations, source manifest 358563cc\u2026, evidence manifest 203877a6\u2026).\nPer the immutable git provenance contract (plan section 4.4), this\ndocumentation commit's own post-push verification is dynamically bound and\nobservable via the public GitLab API and the GitHub observer.\n",
         "parent_ids": [
-          "0d59a370287cbfc26f11a266468fbc99534bedd4"
+          "3d12e24d98902f271b9d1b58b858c569497109a6"
         ],
-        "short_id": "3d12e24d",
-        "title": "fix(b4-integrity): final evidence-integrity correction for supervised continuation, durable causal ledger, pages 5-level evidence, resurrection receipt authority, decay fail-closed, and control room parity",
+        "short_id": "c8dbcc80",
+        "title": "docs(b4-integrity): record verified QA bridge baselines for the final evidence-integrity correction",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/3d12e24d98902f271b9d1b58b858c569497109a6"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/c8dbcc80dfe772ab6da5408f50142b1a120b97f9"
       },
       "coverage": null,
-      "created_at": "2026-10-21T10:27:38.322Z",
-      "duration": 117.884069,
+      "created_at": "2026-10-21T10:34:32.200Z",
+      "duration": 30.391882128,
       "erased_at": null,
-      "finished_at": "2026-10-21T10:29:36.815Z",
-      "id": 17344869001,
+      "finished_at": null,
+      "id": 17345075033,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-21T10:27:38.172Z",
-        "id": 2971463550,
-        "iid": 46,
+        "created_at": "2026-10-21T10:34:32.050Z",
+        "id": 2971489687,
+        "iid": 47,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "3d12e24d98902f271b9d1b58b858c569497109a6",
+        "sha": "c8dbcc80dfe772ab6da5408f50142b1a120b97f9",
         "source": "push",
-        "status": "success",
-        "updated_at": "2026-10-21T10:29:38.230Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971463550"
+        "status": "running",
+        "updated_at": "2026-10-21T10:34:32.695Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971489687"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.151437,
+      "queued_duration": 0.069398,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-21T10:30:02.955Z",
-        "created_at": "2026-10-21T09:39:51.814Z",
-        "id": 164191190,
-        "ip_address": "10.218.11.18",
+        "contacted_at": "2026-10-21T10:35:02.835Z",
+        "created_at": "2026-10-21T09:42:59.074Z",
+        "id": 164191678,
+        "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "5d62e0cc",
         "status": "online",
-        "system_id": "r_SwsQv4NNLcXT",
+        "system_id": "r_DFrhG9NCgy5n",
         "version": "19.6.0~pre.2350.g5d62e0cc"
       },
       "stage": "verify",
-      "started_at": "2026-10-21T10:27:38.931Z",
-      "status": "success",
+      "started_at": "2026-10-21T10:34:32.553Z",
+      "status": "running",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17344869001"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17345075033"
     }
   ]
 }
