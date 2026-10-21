@@ -129,6 +129,25 @@ console.log(JSON.stringify(out));
     # The resurrection monitor truth state is surfaced.
     assert "HISTORICAL_RECEIPT_UNVERIFIED" in proof
 
+    # B4 final causal-authority repair: served presence must never be
+    # promoted into deployment API proof in the rendered DOM.
+    assert "Served presence, not deployment proof" in proof
+    assert "were actually served at the recorded URL" in proof
+    assert "did not establish a deployment object under the observing identity" in proof
+    assert (
+        "served presence must not be read as independently observed provider "
+        "deployment metadata" in proof
+    )
+    # The old inflated caption is gone from the rendered output.
+    assert "site is deployed" not in proof
+    assert "confirms the target site is deployed" not in proof
+    # The CI mechanism caption keeps the observed/unobserved truth boundary:
+    # an absent mechanism is either qualified as observed ("None detected in
+    # observed CI configuration") or as unobserved uncertainty — never a bare
+    # unqualified "None detected" that could substitute False for a proven
+    # negative. (The current evidence set shows an ACTIVE mechanism.)
+    assert "None detected" not in proof or "None detected in observed CI configuration" in proof
+
 
 def test_control_room_generated_data_matches_corrected_evidence():
     """The generated data.js must carry the corrected evidence values with
@@ -164,6 +183,13 @@ def test_control_room_generated_data_matches_corrected_evidence():
     assert pp["levels"]["level5_marker_independently_observed"] is True
     assert pp["levels"]["level5_source_corroborated"] is True
     assert pp["freshness_scope"].startswith("EVALUATION_TIME_ONLY")
+    # B4 final causal-authority repair: the generated summary states the
+    # precise truth boundary — served presence at the recorded URL, and
+    # separately that the deployment API established no deployment object.
+    assert "were actually served at the recorded URL" in pp["summary"]
+    assert "did not establish a deployment object" in pp["summary"]
+    assert "served-presence evidence, not provider deployment metadata" in pp["summary"]
+    assert "is deployed" not in pp["summary"]
 
     rm = data["sections"]["resurrection_monitoring"]
     assert rm["schema"] == "termivance.resurrection_monitor/v1"

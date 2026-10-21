@@ -644,6 +644,24 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
         from termivance.publish import GitLabPublisher
         from termivance.supervised_review import run_supervised_continuation
 
+        continuation_mode = (
+            "OFFLINE_REPLAY"
+            if str(getattr(args, "mode", "live")) == "offline-replay"
+            else "LIVE"
+        )
+        if continuation_mode == "OFFLINE_REPLAY" and getattr(args, "publish", False):
+            # CLI boundary rejection: offline replay executes recorded/fixture
+            # inputs and categorically prohibits provider mutations,
+            # including GitLab issue-note publication.
+            print(
+                "OFFLINE_PUBLICATION_REFUSED: --mode offline-replay categorically "
+                "prohibits provider mutations, including issue-note publication; "
+                "combining it with --publish is rejected. Use LIVE mode for the "
+                "authorized publication path.",
+                file=sys.stderr,
+            )
+            return 2
+
         token = getattr(args, "token", None)
         if not token:
             try:
@@ -673,9 +691,7 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
             note_body=getattr(args, "note_body", None),
             publish_outcome=getattr(args, "publish", False),
             out_dir=getattr(args, "out_dir", None) or (Path(args.out).parent if args.out else None),
-            mode="OFFLINE_REPLAY"
-            if str(getattr(args, "mode", "live")) == "offline-replay"
-            else "LIVE",
+            mode=continuation_mode,
             allow_recovery=bool(getattr(args, "allow_recovery", False)),
         )
         payload = continuation_res.to_dict()

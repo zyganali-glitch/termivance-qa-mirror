@@ -167,7 +167,11 @@ def test_publication_verified_live_served():
     assert record.levels.level5_source_corroborated is True
     assert record.levels.level5_observed_marker == EXPECTED_MARKER
     assert record.served_body_digest_sha256 is not None
-    assert "genuinely published and live" in record.summary
+    # The summary states the precise truth boundary: served presence at the
+    # recorded URL, and separately that the deployment API established nothing.
+    assert "were actually served at the recorded URL" in record.summary
+    assert "did not establish a deployment object" in record.summary
+    assert "served-presence evidence, not provider deployment metadata" in record.summary
     data = record.to_dict()
     assert data["freshness_scope"].startswith("EVALUATION_TIME_ONLY")
 

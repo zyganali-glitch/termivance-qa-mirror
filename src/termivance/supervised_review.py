@@ -1518,6 +1518,7 @@ def run_supervised_investigation(
     duo_note_id: int | None = None,
     duo_note_path: str | Path | None = None,
     duo_note_body: str | None = None,
+    verified_note: VerifiedNoteHandoff | None = None,
     issue_iid: int | None = None,
     publish_outcome: bool = False,
     out_dir: str | Path | None = None,
@@ -1537,6 +1538,12 @@ def run_supervised_investigation(
 
     Distinguishes freshly executed steps (``EXECUTED_NOW`` / ``COMPLETED``)
     from historical Duo activity (``RECORDED_HISTORICAL``).
+
+    When ``verified_note`` is supplied (LIVE supervised continuation), the
+    preflight-verified provider note IS the note executed: candidate parsing
+    is bound to those exact bytes and their SHA-256 digest, no second
+    provider note read is performed, and no local recorded/fixture note can
+    silently substitute the authenticated provider content.
     """
     from termivance.capsule import build_capsule, save_capsule
     from termivance.dependencies import cross_resource_view
@@ -1601,8 +1608,24 @@ def run_supervised_investigation(
         note_provenance: str = "UNKNOWN"
         note_author: str = "unknown"
         note_created_at: str = observed.isoformat()
+        verified_note_digest: str | None = None
 
-        if duo_note_body:
+        if verified_note is not None:
+            # The preflight-verified provider note IS the note executed. Bind
+            # candidate parsing to these exact bytes and their digest; never
+            # re-read the provider note and never fall back to a local
+            # recorded/fixture note during a LIVE continuation.
+            if verified_note.digest_ok():
+                note_body = verified_note.body
+                note_provenance = verified_note.provenance
+                note_author = verified_note.note_author
+                note_created_at = verified_note.verified_at
+                verified_note_digest = verified_note.body_sha256
+            else:
+                # An altered/empty handoff is refused, never rescued by a
+                # fixture or a fresh provider read.
+                note_provenance = "VERIFIED_HANDOFF_ALTERED"
+        elif duo_note_body:
             note_body = duo_note_body
             note_provenance = "OPERATOR_CONFIRMED_NOTE_INPUT"
         elif client is not None and hasattr(client, "get_json") and target_note_id is not None:
@@ -1635,7 +1658,11 @@ def run_supervised_investigation(
             except Exception:
                 note_body = None
 
-        if note_body is None:
+        if note_body is None and verified_note is None:
+            # Local recorded/fixture notes are permitted only when no
+            # preflight-verified provider handoff exists. During a LIVE
+            # continuation the validated provider note must never be silently
+            # replaced by local recorded content.
             cand_note_file = (
                 Path(duo_note_path)
                 if duo_note_path
@@ -1659,10 +1686,17 @@ def run_supervised_investigation(
 
         target_mismatches: list[str] = []
         if note_body is None:
-            target_mismatches.append(
-                f"Duo note for issue #{issue_iid} (note {target_note_id}) is unavailable or "
-                "inaccessible"
-            )
+            if verified_note is not None:
+                target_mismatches.append(
+                    "The preflight-verified provider note handoff is altered or "
+                    "empty (digest mismatch); the continuation refuses to "
+                    "substitute it with any other note source"
+                )
+            else:
+                target_mismatches.append(
+                    f"Duo note for issue #{issue_iid} (note {target_note_id}) is unavailable or "
+                    "inaccessible"
+                )
             parsed_pid, parsed_sha, parsed_candidates = None, None, []
         else:
             parsed_pid, parsed_sha, parsed_candidates = parse_duo_note(note_body)
@@ -1780,7 +1814,13 @@ def run_supervised_investigation(
                     detail=(
                         f"ingested {len(parsed_candidates)} non-authoritative candidate claims "
                         f"from Duo session {active_session_id} (provenance: {note_provenance}); "
-                        "passed to deterministic verification"
+                        + (
+                            f"candidate parsing bound to the exact preflight-verified "
+                            f"provider note bytes (sha256 {verified_note_digest[:16]}…); "
+                            if verified_note_digest
+                            else ""
+                        )
+                        + "passed to deterministic verification"
                     ),
                     provenance=note_provenance,
                     execution_id=exec_id,
@@ -2594,6 +2634,58 @@ FEASIBILITY_EVALUATION_12_POINTS: dict[str, dict[str, object]] = {
 
 
 @dataclass(frozen=True, slots=True)
+class VerifiedNoteHandoff:
+    """The exact provider-authenticated agent note handed to the investigation.
+
+    When the LIVE preflight successfully reads and identity-verifies the
+    provider note, this object captures the *exact* provider-returned bytes
+    and their SHA-256 digest together with the authenticated note identity
+    (note ID, author, issue, canonical project, target, expected commit SHA)
+    and provenance. ``run_supervised_continuation`` carries this object
+    *unchanged* into ``run_supervised_investigation`` so that the downstream
+    candidate parsing is bound to those exact bytes: no second provider note
+    read is performed and no local recorded/fixture note can silently
+    substitute the validated provider content during a LIVE continuation
+    (no time-of-check/time-of-use substitution).
+    """
+
+    body: str
+    body_sha256: str
+    note_id: int
+    note_author: str
+    issue_iid: int
+    canonical_project_id: int
+    target_project_id: int
+    expected_commit_sha: str
+    provenance: str
+    verified_at: str
+
+    def bindings_match(
+        self,
+        *,
+        note_id: int,
+        issue_iid: int,
+        canonical_project_id: int,
+        target_project_id: int,
+        expected_commit_sha: str,
+    ) -> bool:
+        """True when the handoff is bound to exactly this invocation identity."""
+        return (
+            self.note_id == note_id
+            and self.issue_iid == issue_iid
+            and self.canonical_project_id == canonical_project_id
+            and self.target_project_id == target_project_id
+            and self.expected_commit_sha == expected_commit_sha
+        )
+
+    def digest_ok(self) -> bool:
+        """True when the carried body still hashes to its recorded digest."""
+        return bool(self.body) and (
+            hashlib.sha256(self.body.encode("utf-8")).hexdigest() == self.body_sha256
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class ContinuationPreflight:
     """Preflight check result before supervised continuation execution."""
 
@@ -2618,6 +2710,9 @@ class ContinuationPreflight:
     provider_note_status: int | None = None
     provider_target_path: str | None = None
     provider_branch_head: str | None = None
+    #: The exact provider-verified note handoff (LIVE mode only). ``None`` in
+    #: OFFLINE_REPLAY mode, where no provider observation is performed.
+    verified_note: VerifiedNoteHandoff | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -2633,6 +2728,9 @@ class ContinuationPreflight:
             "note_id": self.note_id,
             "provenance": self.provenance,
             "note_author": self.note_author,
+            "note_body_sha256": self.verified_note.body_sha256
+            if self.verified_note
+            else None,
             "provider_note_status": self.provider_note_status,
             "provider_target_path": self.provider_target_path,
             "provider_branch_head": self.provider_branch_head,
@@ -2775,6 +2873,7 @@ def validate_continuation_preflight(
     note_provenance: str
     note_author: str | None = None
     provider_note_status: int | None = None
+    verified_note: VerifiedNoteHandoff | None = None
 
     if mode == "OFFLINE_REPLAY":
         # Development replay: no provider observation is performed or claimed.
@@ -2884,6 +2983,30 @@ def validate_continuation_preflight(
                                     "LIVE_AUTHENTICATED_PROVIDER_NOTE"
                                     if is_auth
                                     else "LIVE_ANONYMOUS_PROVIDER_NOTE"
+                                )
+                                # Capture the exact provider-returned bytes and
+                                # the authenticated note identity as an
+                                # immutable handoff object. This is the note
+                                # the continuation must execute — no second
+                                # provider read and no local fallback may
+                                # ever substitute it (time-of-check/time-of-use
+                                # binding).
+                                verified_note = VerifiedNoteHandoff(
+                                    body=prov_body,
+                                    body_sha256=hashlib.sha256(
+                                        prov_body.encode("utf-8")
+                                    ).hexdigest(),
+                                    note_id=int(duo_note_id),
+                                    note_author=note_author or "unknown",
+                                    issue_iid=int(issue_iid),
+                                    canonical_project_id=int(canonical_project_id),
+                                    target_project_id=int(target_project_id),
+                                    expected_commit_sha=str(expected_commit_sha),
+                                    provenance=note_provenance,
+                                    verified_at=str(
+                                        data.get("created_at")
+                                        or datetime.now(tz=UTC).isoformat()
+                                    ),
                                 )
         if not provider_read_ok:
             note_provenance = "NOT_OBSERVED"
@@ -3169,6 +3292,7 @@ def validate_continuation_preflight(
         provider_note_status=provider_note_status,
         provider_target_path=provider_target_path,
         provider_branch_head=provider_branch_head,
+        verified_note=verified_note,
     )
     return preflight, parsed_pid, parsed_sha, candidates
 
@@ -3218,7 +3342,16 @@ def run_supervised_continuation(
 
     ``mode="OFFLINE_REPLAY"`` is a development-only replay of recorded inputs;
     its results carry FIXTURE/RECORDED_INPUT provenance and never present
-    themselves as live authenticated Supervised continuation.
+    themselves as live authenticated Supervised continuation. OFFLINE_REPLAY
+    categorically prohibits provider mutations: combining it with
+    ``publish_outcome=True`` is refused with ``OFFLINE_PUBLICATION_REFUSED``,
+    and a supplied publisher can never cause a mutation in offline mode.
+
+    In LIVE mode the preflight-verified provider note handoff (exact bytes,
+    digest and authenticated identity) is carried unchanged into the
+    deterministic investigation; a missing, altered or contradictory handoff
+    refuses the continuation, and the validated note is never replaced by a
+    second provider read or a local recorded fallback.
     """
     from termivance.continuation_ledger import (
         RESERVE_DUPLICATE_COMPLETED,
@@ -3299,6 +3432,25 @@ def run_supervised_continuation(
             ),
         )
 
+    # OFFLINE_REPLAY categorically prohibits provider mutations, including
+    # GitLab issue-note publication. A replay executes recorded/fixture
+    # inputs and must never be able to publish provider evidence, regardless
+    # of any supplied publisher or --publish flag.
+    if mode == "OFFLINE_REPLAY" and publish_outcome:
+        return _result(
+            status="REFUSED_OFFLINE_PUBLICATION",
+            verdict="NOT_DETERMINED",
+            is_duplicate=False,
+            duplicate_status="NOT_EVALUATED_OFFLINE_PUBLICATION_REFUSED",
+            summary=(
+                "OFFLINE_PUBLICATION_REFUSED: offline replay executes recorded or "
+                "fixture-origin inputs and categorically prohibits provider "
+                "mutations, including GitLab issue-note publication. Re-run "
+                "without --publish, or use LIVE mode for the authorized "
+                "publication path."
+            ),
+        )
+
     if ledger_error and store_path is not None:
         # A requested durable store that cannot be trusted fails closed before
         # any execution: the run must not silently downgrade to in-memory.
@@ -3369,14 +3521,71 @@ def run_supervised_continuation(
 
     # Execute deterministic review pipeline
     target_ident = TargetIdentity(target_project_id, target_full_path, "GITLAB_PAGES_SITE")
+    effective_publisher: object | None = publisher if mode == "LIVE" else None
+    effective_publish_outcome: bool = bool(publish_outcome) if mode == "LIVE" else False
+    effective_note_body: str | None = None
+    effective_verified_note: VerifiedNoteHandoff | None = None
+    if mode == "LIVE":
+        # The preflight-verified provider note is the note executed. If the
+        # verified handoff object is missing, altered, or contradictory, the
+        # continuation is refused — the validated note is never silently
+        # replaced by a second provider read or a local fallback.
+        effective_verified_note = preflight.verified_note
+        if effective_verified_note is None:
+            return _result(
+                status="REFUSED_VERIFIED_NOTE_HANDOFF",
+                verdict="NOT_DETERMINED",
+                is_duplicate=False,
+                duplicate_status="VERIFIED_NOTE_HANDOFF_MISSING",
+                summary=(
+                    "VERIFIED_NOTE_HANDOFF_MISSING: LIVE preflight passed but no "
+                    "provider-verified note handoff was captured; a LIVE "
+                    "continuation cannot execute an unverified note source."
+                ),
+            )
+        if not effective_verified_note.digest_ok():
+            return _result(
+                status="REFUSED_VERIFIED_NOTE_HANDOFF",
+                verdict="NOT_DETERMINED",
+                is_duplicate=False,
+                duplicate_status="VERIFIED_NOTE_HANDOFF_ALTERED",
+                summary=(
+                    "VERIFIED_NOTE_HANDOFF_ALTERED: the preflight-verified note "
+                    "body no longer matches its recorded SHA-256 digest; the "
+                    "continuation refuses to execute altered handoff bytes."
+                ),
+            )
+        if not effective_verified_note.bindings_match(
+            note_id=duo_note_id,
+            issue_iid=issue_iid,
+            canonical_project_id=canonical_project_id,
+            target_project_id=target_project_id,
+            expected_commit_sha=expected_commit_sha,
+        ):
+            return _result(
+                status="REFUSED_VERIFIED_NOTE_HANDOFF",
+                verdict="NOT_DETERMINED",
+                is_duplicate=False,
+                duplicate_status="VERIFIED_NOTE_HANDOFF_CONTRADICTORY",
+                summary=(
+                    "VERIFIED_NOTE_HANDOFF_CONTRADICTORY: the preflight-verified "
+                    "note identity (note/issue/project/target/commit binding) "
+                    "does not match this invocation's causal identity; the "
+                    "continuation is refused."
+                ),
+            )
+    else:
+        # OFFLINE_REPLAY consumes the recorded/fixture note body as-is.
+        effective_note_body = note_body
     review = run_supervised_investigation(
         client=client,
-        publisher=publisher,
+        publisher=effective_publisher,
         target=target_ident,
         duo_note_id=duo_note_id,
-        duo_note_body=note_body,
+        duo_note_body=effective_note_body,
+        verified_note=effective_verified_note,
         issue_iid=issue_iid,
-        publish_outcome=publish_outcome,
+        publish_outcome=effective_publish_outcome,
         out_dir=out_dir,
         now=observed,
     )
@@ -3478,6 +3687,7 @@ __all__ = [
     "ReviewStep",
     "SupervisedContinuationResult",
     "SupervisedReview",
+    "VerifiedNoteHandoff",
     "build_supervised_review",
     "gather_target_observations",
     "parse_duo_note",

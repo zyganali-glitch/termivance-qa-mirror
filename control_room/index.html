@@ -1533,13 +1533,13 @@ function pagesPublicationCard(pub) {
     <h3>5-Level evidence model verification</h3>
     <ul class="tight">
       <li><strong>Level 1 (CI Job):</strong> ${escapeHtml(levels.level1_ci_job_status || 'NOT_OBSERVED')} (job: <code>${escapeHtml(levels.level1_ci_job_name || '—')}</code>)</li>
-      <li><strong>Level 2 (Deployment):</strong> ${escapeHtml(levels.level2_deployment_status || 'NOT_OBSERVED')} — Pages deployments API read-back only</li>
+      <li><strong>Level 2 (Deployment):</strong> ${escapeHtml(levels.level2_deployment_status || 'NOT_OBSERVED')} — Pages deployments API read-back only; no deployment object established under the observing identity</li>
       <li><strong>Level 3 (Pages API):</strong> HTTP ${escapeHtml(String(levels.level3_pages_api_status || '—'))} (${levels.level3_pages_api_visible ? 'ACCESSIBLE' : 'AUTH_DENIED'}) — Access boundary acknowledged</li>
       <li><strong>Level 4 (Served URL):</strong> ${levels.level4_served_url_accessible ? 'HTTP 200 ACCESSIBLE' : 'HTTP ' + escapeHtml(String(levels.level4_served_http_status || 'NOT_SERVED'))} — Live website responds to independent HTTP probe</li>
       <li><strong>Level 5 (Marker Verified):</strong> ${levels.level5_marker_independently_observed ? 'SERVER-RETURNED MATCH (' + escapeHtml(levels.level5_observed_marker || pub.marker || '') + ')' : 'MISMATCH / NOT OBSERVED'} — source corroboration: ${escapeHtml(levels.level5_source_corroborated === true ? 'VERIFIED IN REPOSITORY SOURCE AT OBSERVED COMMIT' : (levels.level5_source_corroborated === false ? 'CONTRADICTED' : 'NOT OBSERVED (source-bound claim not awarded)'))}</li>
     </ul>
     <div class="banner info" style="margin-top:10px;">
-      Live publication evidence confirms the target site is deployed and publicly accessible. In accordance with safety invariants, publication verification is <strong>never</strong> proof of retirement or observed absence. Freshness labels describe the observation <strong>at its recorded evaluation time</strong>, never current live freshness (this page performs zero network calls).
+      <strong>Served presence, not deployment proof.</strong> The target's HTML and distinctive marker were actually served at the recorded URL (independent HTTP 200 read-back at record time). Independently, the Pages deployment API did not establish a deployment object under the observing identity (Level 2 ${escapeHtml(levels.level2_deployment_status || 'NOT_OBSERVED')}); served presence must not be read as independently observed provider deployment metadata. In accordance with safety invariants, publication verification is <strong>never</strong> proof of retirement or observed absence. Freshness labels describe the observation <strong>at its recorded evaluation time</strong>, never current live freshness (this page performs zero network calls).
     </div>
   </div>`;
 }
@@ -1563,7 +1563,7 @@ function resurrectionMonitoringCard(rm) {
       ['target', `<code>${escapeHtml(String(t.project_id || '87785099'))}</code> ${escapeHtml(t.full_path || '')}`],
       ['evaluated at', escapeHtml(rm.evaluated_at || rm.monitored_at || '—')],
       ['observed commit SHA', `<code>${escapeHtml(obs.commit_sha || rm.observed_commit_sha || '—')}</code>`],
-      ['CI deployment mechanism', obs.redeployment_mechanism ? 'ACTIVE: ' + escapeHtml(JSON.stringify(obs.redeployment_signals || [])) : 'None detected'],
+      ['CI deployment mechanism', obs.redeployment_mechanism ? 'ACTIVE: ' + escapeHtml(JSON.stringify(obs.redeployment_signals || [])) : (obs.ci_config_present === false ? 'NOT OBSERVED (current CI configuration inaccessible; uncertainty, not a proven negative)' : 'None detected in observed CI configuration')],
       ['served Pages probe', `HTTP ${escapeHtml(String(obs.served_http_status != null ? obs.served_http_status : '—'))} (marker observed: ${escapeHtml(String(obs.served_marker_observed))})`],
       ['diff reasons', (rm.diff_reasons && rm.diff_reasons.length) ? rm.diff_reasons.map(escapeHtml).join('; ') : '—'],
       ['required revalidation', (rm.required_revalidation_actions && rm.required_revalidation_actions.length) ? rm.required_revalidation_actions.map(escapeHtml).join('; ') : '—'],

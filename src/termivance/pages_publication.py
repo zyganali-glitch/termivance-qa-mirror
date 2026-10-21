@@ -492,12 +492,15 @@ def verify_disposable_pages_publication(
             verif_status = PublicationVerificationStatus.VERIFIED_LIVE_SERVED
             digest_prefix = body_digest[:16] if body_digest else "unknown"
             summary = (
-                f"Disposable Pages site on {tgt.project_id} is genuinely published and "
-                f"live. Served URL {active_url} returned HTTP 200 with matching marker "
-                f"'{marker}' (digest {digest_prefix}...), corroborated against "
-                f"repository source at commit '{commit_sha}'. Pages API is HTTP 403 "
-                "(Developer role). This proves pre-retirement presence; unpublish "
-                "remains BLOCKED_EXTERNAL."
+                f"Served presence verified: the target's HTML and distinctive "
+                f"marker '{marker}' were actually served at the recorded URL "
+                f"{active_url} (HTTP 200 read-back, body digest {digest_prefix}...), "
+                f"corroborated against repository source at commit '{commit_sha}'. "
+                f"Independently, the Pages deployment API did not establish a "
+                f"deployment object under the observing identity (Level 2 "
+                f"{l2_status}; Pages API HTTP {l3_status}); this record is "
+                "served-presence evidence, not provider deployment metadata. "
+                "Unpublish remains BLOCKED_EXTERNAL."
             )
     elif l4_accessible and not l5_marker_seen:
         verif_status = PublicationVerificationStatus.MARKER_MISMATCH

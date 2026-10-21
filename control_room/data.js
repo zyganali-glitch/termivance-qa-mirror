@@ -27,7 +27,7 @@ window.TERMIVANCE_DATA = {
     "Unpublishing targets exactly one disposable Pages project; the canonical repository and every other project are out of scope.",
     "Unsigned SHA-256 digests in the ledger are local tamper evidence, never cryptographic authentication of provider events."
   ],
-  "built_at": "2026-10-21T10:11:25.271028+00:00",
+  "built_at": "2026-10-21T11:59:39.785005+00:00",
   "demo_target_discovery": {
     "candidates": [
       {
@@ -1798,7 +1798,7 @@ window.TERMIVANCE_DATA = {
         "level5_source_corroborated": true
       },
       "marker": "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a",
-      "observed_at": "2026-10-21T10:07:04.061602+00:00",
+      "observed_at": "2026-10-21T11:58:22.683902+00:00",
       "prohibited_actions": [
         "DELETE /projects/87785099/pages was NOT called.",
         "Track 2 remains permanently BLOCKED_EXTERNAL under organizer denial.",
@@ -1808,7 +1808,7 @@ window.TERMIVANCE_DATA = {
       "served_body_digest_sha256": "fce26f65c259effbd9d75faf54e95284ece7fdf259dbe54d2389b341f2269c15",
       "served_url": "https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/",
       "status": "VERIFIED_LIVE_SERVED",
-      "summary": "Disposable Pages site on 87785099 is genuinely published and live. Served URL https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/ returned HTTP 200 with matching marker 'TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a' (digest fce26f65c259effb...), corroborated against repository source at commit '54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d'. Pages API is HTTP 403 (Developer role). This proves pre-retirement presence; unpublish remains BLOCKED_EXTERNAL.",
+      "summary": "Served presence verified: the target's HTML and distinctive marker 'TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a' were actually served at the recorded URL https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/ (HTTP 200 read-back, body digest fce26f65c259effb...), corroborated against repository source at commit '54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d'. Independently, the Pages deployment API did not establish a deployment object under the observing identity (Level 2 NOT_OBSERVED_NOT_FOUND; Pages API HTTP 403); this record is served-presence evidence, not provider deployment metadata. Unpublish remains BLOCKED_EXTERNAL.",
       "target": {
         "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
         "project_id": 87785099,
@@ -2299,7 +2299,7 @@ window.TERMIVANCE_DATA = {
         "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
         "default_branch": "main",
         "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
-        "observed_at": "2026-10-21T10:08:49.150982+00:00",
+        "observed_at": "2026-10-21T11:58:42.002517+00:00",
         "pages_api_accessible": false,
         "pages_api_deployment_count": 0,
         "pages_api_status": 403,
@@ -2319,7 +2319,7 @@ window.TERMIVANCE_DATA = {
         "Surviving CI redeployment mechanism detected: ['pages_keyword', 'pages_true'].",
         "Target site is currently published and serving its marker, but historical absence receipt was unverified."
       ],
-      "evaluated_at": "2026-10-21T10:08:50.942677+00:00",
+      "evaluated_at": "2026-10-21T11:58:43.856219+00:00",
       "freshness_state": "EXPIRED",
       "historical_truth": {
         "action": "unpublish_pages",
@@ -2803,7 +2803,10 @@ window.TERMIVANCE_DATA = {
         "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists.",
         "Unverified historical claims cannot award CONTINUED_ABSENCE_OBSERVED.",
         "The current observation must bind to the same exact target and URL as the historical receipt, not merely a caller-supplied project ID.",
-        "A schema-correct receipt without the durable ledger chain and post-action read-backs is not proof of a previous absence."
+        "A schema-correct receipt without the durable ledger chain and post-action read-backs is not proof of a previous absence.",
+        "A verified historical absence requires a nonempty exact current served URL matching the authenticated historical URL; a missing or unrelated current URL proves nothing about the authorized URL.",
+        "Continued absence requires the current CI configuration to be positively observed; CONFIG_INACCESSIBLE is uncertainty, not a proven negative.",
+        "The current observation must be fresh within the evaluation TTL, independently of the historical receipt's original timestamp."
       ],
       "redeployment_risk": "MECHANISM_PRESENT",
       "required_revalidation_actions": [

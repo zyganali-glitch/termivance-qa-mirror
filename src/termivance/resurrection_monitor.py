@@ -318,6 +318,14 @@ class ResurrectionMonitoringReport:
                 "as the historical receipt, not merely a caller-supplied project ID.",
                 "A schema-correct receipt without the durable ledger chain and "
                 "post-action read-backs is not proof of a previous absence.",
+                "A verified historical absence requires a nonempty exact current "
+                "served URL matching the authenticated historical URL; a missing "
+                "or unrelated current URL proves nothing about the authorized URL.",
+                "Continued absence requires the current CI configuration to be "
+                "positively observed; CONFIG_INACCESSIBLE is uncertainty, not a "
+                "proven negative.",
+                "The current observation must be fresh within the evaluation TTL, "
+                "independently of the historical receipt's original timestamp.",
             ],
         }
 
@@ -409,6 +417,19 @@ def monitor_resurrection(
       (termivance.retirement_receipt/v3 authenticated against a durable
       authorization ledger, with post-action read-backs) before evaluating
       downgrade from OBSERVED_ABSENT.
+    - When a verified historical absence is the prerequisite, requires a
+      nonempty exact current served URL matching the authenticated
+      historical URL; a missing or unrelated current URL is refused
+      (CURRENT_OBSERVATION_MISMATCH) and a synthetic served status is never
+      attributed to the authorized URL.
+    - Requires the current CI configuration to be positively observed before
+      claiming the redeployment mechanism is absent; an inaccessible CI
+      configuration is reported as uncertainty (CONFIG_INACCESSIBLE), never
+      substituted with a proven negative.
+    - Validates the freshness of the current observation independently of
+      the historical receipt's original timestamp; continued absence is
+      never awarded from expired, target-mismatched, failed or unbound
+      current observations.
     - If historical truth is missing, malformed, or unverified: reports
       HISTORICAL_RECEIPT_UNVERIFIED and evaluates baseline truth without assuming prior absence.
     - If previously verified OBSERVED_ABSENT:
@@ -505,6 +526,58 @@ def monitor_resurrection(
                 "authorization ledger of the exact operation."
             )
 
+    # Strict current-URL binding to the AUTHENTICATED historical receipt URL.
+    # A verified historical absence is the prerequisite for any current-truth
+    # downgrade, so the current observation must carry a nonempty exact served
+    # URL matching the authenticated receipt URL. A missing or unrelated
+    # current URL can never support continued absence, actual reappearance, or
+    # any inference that a synthetic served status came from the authorized
+    # URL.
+    if receipt_verified and receipt_served_url:
+        if not current_observation.served_url:
+            return ResurrectionMonitoringReport(
+                target=target,
+                evaluated_at=evaluated_at,
+                historical_truth=history,
+                current_observation=current_observation,
+                current_truth=CurrentTruthStatus.CURRENT_OBSERVATION_MISMATCH,
+                redeployment_risk=RedeploymentRisk.NO_MECHANISM_FOUND,
+                resurrection_control=ResurrectionControlStatus.NOT_CLAIMED,
+                diff_reasons=(
+                    "CURRENT_SERVED_URL_MISSING: the verified historical absence "
+                    f"receipt observed {receipt_served_url!r}, but the current "
+                    "observation records no served URL; a missing current URL "
+                    "can never support continued absence or reappearance.",
+                ),
+                required_revalidation_actions=(
+                    "Re-observe the exact served URL bound by the authenticated "
+                    "historical receipt.",
+                ),
+                freshness_state=FreshnessState.NOT_OBSERVED,
+            )
+        if current_observation.served_url != receipt_served_url:
+            return ResurrectionMonitoringReport(
+                target=target,
+                evaluated_at=evaluated_at,
+                historical_truth=history,
+                current_observation=current_observation,
+                current_truth=CurrentTruthStatus.CURRENT_OBSERVATION_MISMATCH,
+                redeployment_risk=RedeploymentRisk.NO_MECHANISM_FOUND,
+                resurrection_control=ResurrectionControlStatus.NOT_CLAIMED,
+                diff_reasons=(
+                    "CURRENT_SERVED_URL_UNBOUND: the current observation probes "
+                    f"{current_observation.served_url!r}, but the authenticated "
+                    f"historical receipt observed {receipt_served_url!r}; a "
+                    "synthetic served status from an unrelated URL is never "
+                    "evidence about the authorized URL.",
+                ),
+                required_revalidation_actions=(
+                    "Re-observe the exact served URL bound by the authenticated "
+                    "historical receipt.",
+                ),
+                freshness_state=FreshnessState.NOT_OBSERVED,
+            )
+
     # Historical truth facts
     prior_verdict = str(history.get("verdict", "BLOCKED")) if receipt_verified else "BLOCKED"
     prior_sha = (
@@ -522,6 +595,16 @@ def monitor_resurrection(
         now=evaluated_at,
         expected_sha=str(prior_sha) if prior_sha else None,
         observed_sha=current_observation.commit_sha,
+        ttl_seconds=ttl_seconds,
+    )
+
+    # Validate the freshness of the CURRENT observation independently of the
+    # historical receipt's original timestamp: an expired (or otherwise
+    # invalid) current observation can never award continued absence, no
+    # matter how fresh or authentic the historical receipt is.
+    current_freshness = evaluate_freshness(
+        current_observation.observed_at,
+        now=evaluated_at,
         ttl_seconds=ttl_seconds,
     )
 
@@ -597,28 +680,66 @@ def monitor_resurrection(
         )
         revalidation_actions.append("Perform fresh independent provider read-back probes.")
 
-    # Case 4: Probe failed or inaccessible (multi-surface corroboration required!)
+    # Case 3b: the CURRENT observation itself is stale or invalid. Continued
+    # absence is never awarded from an expired current observation, even with
+    # an otherwise valid historical receipt.
+    elif receipt_verified and not current_freshness.is_valid_for_evaluation:
+        current_truth = CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
+        age_str = (
+            f"{current_freshness.age_seconds:.1f}s"
+            if current_freshness.age_seconds is not None
+            else "unknown"
+        )
+        diff_reasons.append(
+            f"CURRENT_OBSERVATION_STALE: the current observation (age {age_str}, "
+            f"state {current_freshness.state.value}) is outside the {ttl_seconds}s "
+            "evaluation window; continued absence cannot be awarded from a stale "
+            "current observation."
+        )
+        revalidation_actions.append(
+            "Re-observe the target's current provider surfaces now."
+        )
+
+    # Case 4: Probe failed or inaccessible (multi-surface corroboration
+    # required!). An unobserved current CI configuration is included here:
+    # CONFIG_INACCESSIBLE is uncertainty, never a proven negative, so the
+    # absence of a redeployment mechanism cannot be claimed from it.
     elif receipt_verified and (
         current_observation.pages_api_status in (401, 403, 500, 502, 503)
         or current_observation.pages_api_status is None
         or current_observation.served_http_status in (None, 0, 401, 403, 500, 502, 503)
+        or not current_observation.ci_config_present
     ):
         current_truth = CurrentTruthStatus.INCONCLUSIVE_PROBE_FAILED
-        diff_reasons.append(
-            "Provider surfaces are inaccessible or returned errors (Pages API: "
-            f"{current_observation.pages_api_status}, "
-            f"Served URL: {current_observation.served_http_status}); "
-            "unknown cannot be promoted to continued absence."
-        )
+        if (
+            current_observation.pages_api_status in (401, 403, 500, 502, 503)
+            or current_observation.pages_api_status is None
+            or current_observation.served_http_status in (None, 0, 401, 403, 500, 502, 503)
+        ):
+            diff_reasons.append(
+                "Provider surfaces are inaccessible or returned errors (Pages API: "
+                f"{current_observation.pages_api_status}, "
+                f"Served URL: {current_observation.served_http_status}); "
+                "unknown cannot be promoted to continued absence."
+            )
+        if not current_observation.ci_config_present:
+            diff_reasons.append(
+                "CURRENT_CI_CONFIGURATION_NOT_OBSERVED: the current CI "
+                "configuration was not observed; the absence of a redeployment "
+                "mechanism is unproven (CONFIG_INACCESSIBLE is uncertainty, not "
+                "a proven negative)."
+            )
         revalidation_actions.append("Retry probes with appropriate network/access permissions.")
 
     # Case 5: Continued absence legitimately observed across ALL surfaces:
     # - Pages API reports undeployed (status 404 or 200 with deployment_count == 0)
     # - Served URL returns HTTP 404 and marker NOT observed
-    # - CI redeployment mechanism NOT present
+    # - Current CI configuration POSITIVELY observed with NO redeployment mechanism
+    # - Current observation itself is fresh within the evaluation window
     # - Evidence is fresh and valid for evaluation
     elif (
         receipt_verified
+        and current_observation.ci_config_present
         and (
             current_observation.pages_api_status == 404
             or (
@@ -631,6 +752,7 @@ def monitor_resurrection(
         and not current_observation.served_marker_observed
         and not current_observation.redeployment_mechanism
         and freshness.is_valid_for_evaluation
+        and current_freshness.is_valid_for_evaluation
     ):
         current_truth = CurrentTruthStatus.CONTINUED_ABSENCE_OBSERVED
 

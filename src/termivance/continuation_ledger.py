@@ -20,7 +20,12 @@ one consistent transaction contract as :mod:`termivance.ledger`, applied to
   - ``FIRST_STARTED`` is written *before* the review executes; it is a
     reservation, never a completed execution;
   - ``FIRST_STARTED`` may finalize to ``FIRST_COMPLETED`` (only when the
-    executed review actually completed), ``PARTIAL`` or ``FAILED``;
+    executed review actually completed), ``PARTIAL`` or ``FAILED`` — and
+    only from the execution that owns the reservation: ``finalize``
+    verifies the reserved ``execution_id`` before any state transition, so
+    a competing or stale execution (e.g. the original invocation after an
+    explicit recovery transferred ownership) can never finalize another
+    invocation's reservation;
   - ``FIRST_COMPLETED`` is never flipped by a competing finalization; a
     conflicting second outcome is appended to ``ambiguous_outcomes`` and the
     first durable state wins;
@@ -400,16 +405,28 @@ class ContinuationLedger:
     ) -> dict[str, object]:
         """Record the outcome of an already-reserved causal execution.
 
-        Transition contract (one-way, race-safe):
+        Transition contract (one-way, race-safe, owner-bound):
 
         * the record must already exist — finalizing an unknown binding is an
           operational error, not a silent no-op;
+        * only the execution that owns the reservation (its ``execution_id``
+          matches the caller's) may transition it — a competing or stale
+          execution (e.g. the original invocation attempting to finalize
+          after an explicit recovery transferred ownership to the recovering
+          invocation) is refused with ``EXECUTION_OWNER_MISMATCH``;
         * ``FIRST_STARTED`` may move to ``FIRST_COMPLETED`` (only for a
           genuinely completed review), ``PARTIAL`` or ``FAILED``;
         * ``FIRST_COMPLETED`` is never flipped; a conflicting second outcome is
-          appended to ``ambiguous_outcomes`` and reported verbatim;
-        * a write failure raises but never removes the reservation.
+          appended to ``ambiguous_outcomes`` (audit-only) and reported
+          verbatim — the authoritative first verdict is never modified;
+        * a write failure raises but never removes the reservation;
+        * after writing, the durable recorded result and its integrity digest
+          are verified by an independent read-back.
         """
+        if not execution_id:
+            raise ContinuationLedgerError(
+                "finalizing a causal execution requires a non-empty execution id"
+            )
         final_state = {
             "COMPLETED": COMPLETED_STATE,
             "COMPLETED_IDEMPOTENT": COMPLETED_STATE,
@@ -434,6 +451,8 @@ class ContinuationLedger:
                 first_status = str(existing.get("status") or "")
                 first_verdict = str(existing.get("verdict") or "")
                 if first_status != status or first_verdict != verdict:
+                    # Audit-only record of a contradictory follow-up attempt:
+                    # the authoritative first verdict is preserved verbatim.
                     ambiguous = list(existing.get("ambiguous_outcomes") or [])  # type: ignore[arg-type]
                     ambiguous.append(
                         {
@@ -453,6 +472,16 @@ class ContinuationLedger:
                     f"continuation record for {causal_key[:24]}… carries "
                     f"untransitional state {state!r}; refusing to finalize it"
                 )
+            reserved_owner = str(existing.get("execution_id") or "")
+            if reserved_owner != execution_id:
+                raise ContinuationLedgerError(
+                    f"EXECUTION_OWNER_MISMATCH: the causal record for "
+                    f"{causal_key[:24]}… is reserved by execution "
+                    f"{reserved_owner!r}; execution {execution_id!r} cannot "
+                    "finalize another invocation's reservation (a stale "
+                    "pre-recovery owner is refused after explicit recovery "
+                    "transferred ownership)"
+                )
             entry = dict(existing)
             entry.pop("digest", None)
             entry["state"] = final_state
@@ -461,7 +490,20 @@ class ContinuationLedger:
             entry["completed_at"] = _as_utc(now).isoformat()
             records[causal_key] = entry
             self._write(records)
-            return dict(entry)
+            # Independent read-back: verify the durable recorded result (and,
+            # through _read, its integrity digest) after finalization.
+            stored = self._read().get(causal_key)
+            if (
+                not isinstance(stored, dict)
+                or str(stored.get("state")) != final_state
+                or str(stored.get("execution_id")) != execution_id
+                or str(stored.get("verdict")) != verdict
+            ):
+                raise ContinuationLedgerError(
+                    "durable continuation finalization could not be verified "
+                    "by read-back after writing"
+                )
+            return dict(stored)
 
 
 __all__ = [
