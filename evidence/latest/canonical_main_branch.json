@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-21T04:59:01Z",
-  "artifact_sha256": "6a35b930119935bf03c010707caa8a6573397d6e6c51eca98c925122f803dc6b",
+  "acquired_at_utc": "2026-10-21T10:29:58Z",
+  "artifact_sha256": "c964ad7a47c131eb45c9da48a04b6ddd245a9462e8b80389069b2cc3a3490d38",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-20T16:43:28.000+03:00",
-      "committed_date": "2026-10-20T16:43:28.000+03:00",
+      "authored_date": "2026-10-21T13:27:31.000+03:00",
+      "committed_date": "2026-10-21T13:27:31.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-20T16:43:28.000+03:00",
+      "created_at": "2026-10-21T13:27:31.000+03:00",
       "extended_trailers": {},
-      "id": "209b22eabe85af7fc38f76e4d03ca56af3ba69ab",
-      "message": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency\n",
+      "id": "3d12e24d98902f271b9d1b58b858c569497109a6",
+      "message": "fix(b4-integrity): final evidence-integrity correction for supervised continuation, durable causal ledger, pages 5-level evidence, resurrection receipt authority, decay fail-closed, and control room parity\n\nDefects 1+2: LIVE-mode continuation preflight fails closed on every unobserved\nprovider prerequisite (note 401/403/404/timeout, note-ID/author/issue-ownership\nmismatch, provider target full-path mismatch, branch-HEAD inaccessibility or\ndrift); OFFLINE_REPLAY mode carries FIXTURE/RECORDED_INPUT provenance and never\npresents itself as live authenticated continuation; new durable continuation\ncausal ledger (atomic fsynced writes, cross-process lock, per-entry integrity\ndigests, FIRST_STARTED != FIRST_COMPLETED, PARTIAL/FAILED never\nCOMPLETED_IDEMPOTENT, corruption/recovery/concurrency fail-closed); verdict\nderived from the executed review, never hard-coded BLOCKED.\n\nDefect 3: Level 1 requires the exact Pages job with commit binding (pipeline\nSUCCESS never inferred); Level 2 uses only the documented Pages deployments\nAPI (honestly NOT_OBSERVED); Level 4 probes only the pinned target URLs\n(generic *.gitlab.io refused); Level 5 separates served presence from\nsource-corroborated publication; marker/URL override refused; fixed latent\npositional-timeout bug in the default served-URL getter.\n\nDefect 4: resurrection receipt authority reuses the established\ncapsule/ledger/absence contracts; forged schema-correct receipts fail; current\nobservation must bind to the same exact target and URL.\n\nDefect 5: empty evidence bundles never evaluate to authoritative FRESH;\nprovider errors fail closed with malformed status representations; TTL bounds\nvalidated in the bundle path.\n\nDefect 6: evidence records regenerated live (read-only, \\.00); Control Room\ndisplays FRESH WHEN RECORDED with no success-looking fallbacks; data.js\nregenerated; verified in a real browser (5 tabs, zero console errors, zero\nnetwork fetches).\n\nDefect 7: README, master execution plan (baseline rows + WORK-B4-27), evidence\nmatrix and handoff updated atomically; IMPLEMENTED_NOT_VERIFIED until\nindependent QA.\n\nSuite: 505 passed (network-free adversarial paths via injected transports),\nruff clean, 40/40 network-free safety assertions.\n",
       "parent_ids": [
-        "8c28b362a73d6f9e1d623521c12e01a5c021ac7c"
+        "0d59a370287cbfc26f11a266468fbc99534bedd4"
       ],
-      "short_id": "209b22ea",
-      "title": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency",
+      "short_id": "3d12e24d",
+      "title": "fix(b4-integrity): final evidence-integrity correction for supervised continuation, durable causal ledger, pages 5-level evidence, resurrection receipt authority, decay fail-closed, and control room parity",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/209b22eabe85af7fc38f76e4d03ca56af3ba69ab"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/3d12e24d98902f271b9d1b58b858c569497109a6"
     },
     "default": true,
     "developers_can_merge": true,

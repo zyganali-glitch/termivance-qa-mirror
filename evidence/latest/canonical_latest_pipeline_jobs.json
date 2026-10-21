@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-21T04:59:07Z",
-  "artifact_sha256": "a7683e04b4da49c036224554a10dbde3e8a3363e220600b3e505608ee298d08f",
+  "acquired_at_utc": "2026-10-21T10:30:03Z",
+  "artifact_sha256": "096ed130536ba38b818b085d9778c22d322d18b9185adc6318e64dff6bdb9c03",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2967807167/jobs",
+  "endpoint": "/projects/87779099/pipelines/2971463550/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17318078119,
+      "id": 17344869001,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -29,57 +29,50 @@
     {
       "allow_failure": false,
       "archived": false,
-      "artifacts": [
-        {
-          "file_format": null,
-          "file_type": "trace",
-          "filename": "job.log",
-          "size": 17635
-        }
-      ],
+      "artifacts": [],
       "artifacts_expire_at": null,
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-20T16:43:28.000+03:00",
-        "committed_date": "2026-10-20T16:43:28.000+03:00",
+        "authored_date": "2026-10-21T13:27:31.000+03:00",
+        "committed_date": "2026-10-21T13:27:31.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-20T16:43:28.000+03:00",
+        "created_at": "2026-10-21T13:27:31.000+03:00",
         "extended_trailers": {},
-        "id": "209b22eabe85af7fc38f76e4d03ca56af3ba69ab",
-        "message": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency\n",
+        "id": "3d12e24d98902f271b9d1b58b858c569497109a6",
+        "message": "fix(b4-integrity): final evidence-integrity correction for supervised continuation, durable causal ledger, pages 5-level evidence, resurrection receipt authority, decay fail-closed, and control room parity\n\nDefects 1+2: LIVE-mode continuation preflight fails closed on every unobserved\nprovider prerequisite (note 401/403/404/timeout, note-ID/author/issue-ownership\nmismatch, provider target full-path mismatch, branch-HEAD inaccessibility or\ndrift); OFFLINE_REPLAY mode carries FIXTURE/RECORDED_INPUT provenance and never\npresents itself as live authenticated continuation; new durable continuation\ncausal ledger (atomic fsynced writes, cross-process lock, per-entry integrity\ndigests, FIRST_STARTED != FIRST_COMPLETED, PARTIAL/FAILED never\nCOMPLETED_IDEMPOTENT, corruption/recovery/concurrency fail-closed); verdict\nderived from the executed review, never hard-coded BLOCKED.\n\nDefect 3: Level 1 requires the exact Pages job with commit binding (pipeline\nSUCCESS never inferred); Level 2 uses only the documented Pages deployments\nAPI (honestly NOT_OBSERVED); Level 4 probes only the pinned target URLs\n(generic *.gitlab.io refused); Level 5 separates served presence from\nsource-corroborated publication; marker/URL override refused; fixed latent\npositional-timeout bug in the default served-URL getter.\n\nDefect 4: resurrection receipt authority reuses the established\ncapsule/ledger/absence contracts; forged schema-correct receipts fail; current\nobservation must bind to the same exact target and URL.\n\nDefect 5: empty evidence bundles never evaluate to authoritative FRESH;\nprovider errors fail closed with malformed status representations; TTL bounds\nvalidated in the bundle path.\n\nDefect 6: evidence records regenerated live (read-only, \\.00); Control Room\ndisplays FRESH WHEN RECORDED with no success-looking fallbacks; data.js\nregenerated; verified in a real browser (5 tabs, zero console errors, zero\nnetwork fetches).\n\nDefect 7: README, master execution plan (baseline rows + WORK-B4-27), evidence\nmatrix and handoff updated atomically; IMPLEMENTED_NOT_VERIFIED until\nindependent QA.\n\nSuite: 505 passed (network-free adversarial paths via injected transports),\nruff clean, 40/40 network-free safety assertions.\n",
         "parent_ids": [
-          "8c28b362a73d6f9e1d623521c12e01a5c021ac7c"
+          "0d59a370287cbfc26f11a266468fbc99534bedd4"
         ],
-        "short_id": "209b22ea",
-        "title": "fix(plan): final delivery-gate closure, public UI hosting, media, and release consistency",
+        "short_id": "3d12e24d",
+        "title": "fix(b4-integrity): final evidence-integrity correction for supervised continuation, durable causal ledger, pages 5-level evidence, resurrection receipt authority, decay fail-closed, and control room parity",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/209b22eabe85af7fc38f76e4d03ca56af3ba69ab"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/3d12e24d98902f271b9d1b58b858c569497109a6"
       },
       "coverage": null,
-      "created_at": "2026-10-20T13:43:43.443Z",
-      "duration": 137.341158,
+      "created_at": "2026-10-21T10:27:38.322Z",
+      "duration": 117.884069,
       "erased_at": null,
-      "finished_at": "2026-10-20T13:46:01.205Z",
-      "id": 17318078119,
+      "finished_at": "2026-10-21T10:29:36.815Z",
+      "id": 17344869001,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-20T13:43:43.304Z",
-        "id": 2967807167,
-        "iid": 42,
+        "created_at": "2026-10-21T10:27:38.172Z",
+        "id": 2971463550,
+        "iid": 46,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "209b22eabe85af7fc38f76e4d03ca56af3ba69ab",
+        "sha": "3d12e24d98902f271b9d1b58b858c569497109a6",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-20T13:46:02.641Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2967807167"
+        "updated_at": "2026-10-21T10:29:38.230Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971463550"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.104466,
+      "queued_duration": 0.151437,
       "ref": "main",
       "runner": {
         "active": true,
@@ -105,14 +98,26 @@
         "runner_type": "instance_type",
         "status": "online"
       },
-      "runner_manager": null,
+      "runner_manager": {
+        "architecture": "amd64",
+        "contacted_at": "2026-10-21T10:30:02.955Z",
+        "created_at": "2026-10-21T09:39:51.814Z",
+        "id": 164191190,
+        "ip_address": "10.218.11.18",
+        "job_execution_status": "active",
+        "platform": "linux",
+        "revision": "5d62e0cc",
+        "status": "online",
+        "system_id": "r_SwsQv4NNLcXT",
+        "version": "19.6.0~pre.2350.g5d62e0cc"
+      },
       "stage": "verify",
-      "started_at": "2026-10-20T13:43:43.864Z",
+      "started_at": "2026-10-21T10:27:38.931Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17318078119"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17344869001"
     }
   ]
 }
