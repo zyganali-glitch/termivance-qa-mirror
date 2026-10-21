@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-21T13:39:09Z",
-  "artifact_sha256": "a525a7ad28ba8251e3460541fcb8f3261d96b0068ae269c2c0837254f8f6b495",
+  "acquired_at_utc": "2026-10-21T16:25:27Z",
+  "artifact_sha256": "a8c7cef464e0b5d5860d4a94db4440c206c0fdc1b337890b7ffe11cc4340a856",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2972207180/jobs",
+  "endpoint": "/projects/87779099/pipelines/2972901592/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17350597778,
+      "id": 17356147584,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -33,46 +33,46 @@
       "artifacts_expire_at": null,
       "commit": {
         "author_email": "[REDACTED]",
-        "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-21T16:35:41.000+03:00",
-        "committed_date": "2026-10-21T16:35:41.000+03:00",
+        "author_name": "zyganali",
+        "authored_date": "2026-10-21T19:19:40.000+03:00",
+        "committed_date": "2026-10-21T19:19:40.000+03:00",
         "committer_email": "[REDACTED]",
-        "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-21T16:35:41.000+03:00",
+        "committer_name": "zyganali",
+        "created_at": "2026-10-21T19:19:40.000+03:00",
         "extended_trailers": {},
-        "id": "7b32190fde43b4e12a8df41d6aacb2a15b90f615",
-        "message": "fix(b4-integrity): current-observation freshness precedes any positive present-tense verdict\n\nmonitor_resurrection() evaluated RESURRECTED_NOT_ABSENT (served HTTP 200 +\nmarker) and REDEPLOYMENT_MECHANISM_ACTIVE (observed CI mechanism) before\nrejecting an expired or otherwise invalid current observation, so a\nhistorical current observation older than the contractual 900s TTL could be\npromoted into a new present-tense finding. One narrow source-and-test repair\nwithin the existing B4 work (WORK-B4-28, no new work item):\n\n- current_freshness.is_valid_for_evaluation now gates both positive\n  present-tense verdicts; stale marker/mechanism sightings are retained as\n  historical evidence / recorded redevelopment risk only\n  (STALE_REAPPEARANCE_EVIDENCE_RETAINED / STALE_MECHANISM_EVIDENCE_RETAINED)\n- expired, future-skewed, missing and malformed current timestamps fail\n  closed to STALE_REVALIDATION_REQUIRED\n- fresh genuine exact-URL-bound reappearance still awards\n  RESURRECTED_NOT_ABSENT even with an old historical absence record\n  (historical authenticity and current freshness are separate requirements)\n- no weaker-evidence award of CONTINUED_ABSENCE_OBSERVED / OBSERVED_ABSENT /\n  SAFE_TO_RETIRE / RESURRECTION_CONTROLLED; immutable receipts, ledger\n  validation, target/URL/SHA binding and protected-target refusals intact\n- 10 new adversarial production-path tests in\n  tests/test_b4_resurrection_monitoring.py; suite 540 passed; ruff clean;\n  40/40 network-free safety assertions\n- live evidence regenerated read-only (resurrection_monitoring.json, 12\n  invariants, unchanged honest HISTORICAL_RECEIPT_UNVERIFIED verdict);\n  control_room/data.js rebuilt (sha256 00bd24c0...)\n- README / Evidence Matrix / Master Execution Plan / HANDOFF updated in the\n  same change; no live resurrection or unpublish occurred or is claimed\n",
+        "id": "4985978ee218d521283db4b33c5bb03c997b1d2c",
+        "message": "feat(b4-award-readiness): consolidated W23-W25 nine-stage reassessment, end-to-end demo integration, Control Room polish, and final documentation reconciliation\n\nWORK-B4-23: final evidence-based nine-stage DevSecOps reassessment against the\ncurrent October 2026 official criterion (touching counts, with stricter internal\nattribution preserved); judge-readable matrix at docs/DEVSECOPS_STAGES.md;\nrecommendation 4 core YES (Plan, Verify, Secure, Govern) + 4 qualified YES with\nmandatory disclosures (Create, Package, Configure, Monitor) + Release NO;\nMaster Plan sections 2/4.7.6/7/13 synchronized.\n\nWORK-B4-24: docs/DEMO_SCRIPT.md rewritten as the evidence-labeled end-to-end\ndemonstration path (operator-initiated Supervised chain, never narrated as\nsingle-trigger autonomous); Control Room targeted improvements: first-screen\nproduct explainer, per-section recorded observation timestamps in the header,\ntab/tablist/tabpanel ARIA landmarks, meta description, maintained aria-selected;\nreal-browser validated (all five tabs render, graph/what-if/evidence\ninteractions verified, zero console errors, zero runtime network fetches beyond\nthe two static files, Lighthouse accessibility/best-practices/SEO 100); live\nread-only evidence regenerated 2026-10-21T15:15Z (pages publication\nVERIFIED_LIVE_SERVED across all 5 levels; resurrection monitoring\nHISTORICAL_RECEIPT_UNVERIFIED / MECHANISM_PRESENT, 12 invariants); 12-point\ncanonical Pages feasibility study completed (Master Plan 10.3): deployment\nfeasible at \\.00 but public accessibility requires a Maintainer\npages_access_level change unavailable to the operator - NO deployment\nattempted, NO CI change, local file:// Control Room remains the verified\nfallback.\n\nWORK-B4-25: README fully rewritten product-first (stale claims removed:\nno-mutation-command contradiction, wrong session emphasis, obsolete test\ncounts; final suite 540; guarded retire-pages --execute accurately described);\nDOC-01..DOC-10 reconciled (launcher Python floor aligned to 3.12 matching\npyproject); final 10-scene 174 s video runbook with complete English\nvoice-over and subtitles (Master Plan 11.2); final Devpost packet (Section 13);\n5-image screenshot packet (Section 12); new Turkish operator filming and\nsubmission guide docs/OPERATOR_FILMING_GUIDE.md; evidence matrix and handoff\nsynchronized.\n\nVerification: 540 tests passed, ruff clean, 40/40 network-free CI safety\nassertions, CLI smoke tests positive and negative (fail-closed refusals:\noperator-trust gate, OFFLINE_PUBLICATION_REFUSED). Zero personal spend; no\ndestructive operation, no Pages DELETE, no public UI hosting, no video capture,\nno Devpost submission. Post-push pipeline/observer verification recorded in\nthe completion report per the immutable provenance contract.\n",
         "parent_ids": [
-          "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c"
+          "7b32190fde43b4e12a8df41d6aacb2a15b90f615"
         ],
-        "short_id": "7b32190f",
-        "title": "fix(b4-integrity): current-observation freshness precedes any positive present-tense verdict",
+        "short_id": "4985978e",
+        "title": "feat(b4-award-readiness): consolidated W23-W25 nine-stage reassessment, end-to-end demo integration, Control Room polish, and final documentation reconciliation",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/7b32190fde43b4e12a8df41d6aacb2a15b90f615"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/4985978ee218d521283db4b33c5bb03c997b1d2c"
       },
       "coverage": null,
-      "created_at": "2026-10-21T13:35:50.057Z",
-      "duration": 158.641108,
+      "created_at": "2026-10-21T16:19:48.409Z",
+      "duration": 182.886944,
       "erased_at": null,
-      "finished_at": "2026-10-21T13:38:29.092Z",
-      "id": 17350597778,
+      "finished_at": "2026-10-21T16:22:51.776Z",
+      "id": 17356147584,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-21T13:35:49.897Z",
-        "id": 2972207180,
-        "iid": 50,
+        "created_at": "2026-10-21T16:19:48.235Z",
+        "id": 2972901592,
+        "iid": 51,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "7b32190fde43b4e12a8df41d6aacb2a15b90f615",
+        "sha": "4985978ee218d521283db4b33c5bb03c997b1d2c",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-21T13:38:30.472Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2972207180"
+        "updated_at": "2026-10-21T16:22:53.216Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2972901592"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.077391,
+      "queued_duration": 0.081974,
       "ref": "main",
       "runner": {
         "active": true,
@@ -100,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-21T13:39:09.336Z",
-        "created_at": "2026-10-21T09:40:31.024Z",
-        "id": 164191263,
+        "contacted_at": "2026-10-21T16:25:27.694Z",
+        "created_at": "2026-10-21T09:43:57.619Z",
+        "id": 164192119,
         "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "5d62e0cc",
         "status": "online",
-        "system_id": "r_MTeFw1U4kEQv",
+        "system_id": "r_C0T7HJB4fEAi",
         "version": "19.6.0~pre.2350.g5d62e0cc"
       },
       "stage": "verify",
-      "started_at": "2026-10-21T13:35:50.450Z",
+      "started_at": "2026-10-21T16:19:48.889Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17350597778"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17356147584"
     }
   ]
 }

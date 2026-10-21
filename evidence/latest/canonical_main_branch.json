@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-21T13:39:03Z",
-  "artifact_sha256": "1e84a46a4406f882dfe78defa4a2eec37ab1f95231004bfa7967998c877544cd",
+  "acquired_at_utc": "2026-10-21T16:25:16Z",
+  "artifact_sha256": "e6e6fe95460ec1fcb052e6e47f7ffb8196fe9675aa5dbe7dcc5be99f5c2d2ac3",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -17,22 +17,22 @@
     "can_push": false,
     "commit": {
       "author_email": "[REDACTED]",
-      "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-21T16:35:41.000+03:00",
-      "committed_date": "2026-10-21T16:35:41.000+03:00",
+      "author_name": "zyganali",
+      "authored_date": "2026-10-21T19:19:40.000+03:00",
+      "committed_date": "2026-10-21T19:19:40.000+03:00",
       "committer_email": "[REDACTED]",
-      "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-21T16:35:41.000+03:00",
+      "committer_name": "zyganali",
+      "created_at": "2026-10-21T19:19:40.000+03:00",
       "extended_trailers": {},
-      "id": "7b32190fde43b4e12a8df41d6aacb2a15b90f615",
-      "message": "fix(b4-integrity): current-observation freshness precedes any positive present-tense verdict\n\nmonitor_resurrection() evaluated RESURRECTED_NOT_ABSENT (served HTTP 200 +\nmarker) and REDEPLOYMENT_MECHANISM_ACTIVE (observed CI mechanism) before\nrejecting an expired or otherwise invalid current observation, so a\nhistorical current observation older than the contractual 900s TTL could be\npromoted into a new present-tense finding. One narrow source-and-test repair\nwithin the existing B4 work (WORK-B4-28, no new work item):\n\n- current_freshness.is_valid_for_evaluation now gates both positive\n  present-tense verdicts; stale marker/mechanism sightings are retained as\n  historical evidence / recorded redevelopment risk only\n  (STALE_REAPPEARANCE_EVIDENCE_RETAINED / STALE_MECHANISM_EVIDENCE_RETAINED)\n- expired, future-skewed, missing and malformed current timestamps fail\n  closed to STALE_REVALIDATION_REQUIRED\n- fresh genuine exact-URL-bound reappearance still awards\n  RESURRECTED_NOT_ABSENT even with an old historical absence record\n  (historical authenticity and current freshness are separate requirements)\n- no weaker-evidence award of CONTINUED_ABSENCE_OBSERVED / OBSERVED_ABSENT /\n  SAFE_TO_RETIRE / RESURRECTION_CONTROLLED; immutable receipts, ledger\n  validation, target/URL/SHA binding and protected-target refusals intact\n- 10 new adversarial production-path tests in\n  tests/test_b4_resurrection_monitoring.py; suite 540 passed; ruff clean;\n  40/40 network-free safety assertions\n- live evidence regenerated read-only (resurrection_monitoring.json, 12\n  invariants, unchanged honest HISTORICAL_RECEIPT_UNVERIFIED verdict);\n  control_room/data.js rebuilt (sha256 00bd24c0...)\n- README / Evidence Matrix / Master Execution Plan / HANDOFF updated in the\n  same change; no live resurrection or unpublish occurred or is claimed\n",
+      "id": "4985978ee218d521283db4b33c5bb03c997b1d2c",
+      "message": "feat(b4-award-readiness): consolidated W23-W25 nine-stage reassessment, end-to-end demo integration, Control Room polish, and final documentation reconciliation\n\nWORK-B4-23: final evidence-based nine-stage DevSecOps reassessment against the\ncurrent October 2026 official criterion (touching counts, with stricter internal\nattribution preserved); judge-readable matrix at docs/DEVSECOPS_STAGES.md;\nrecommendation 4 core YES (Plan, Verify, Secure, Govern) + 4 qualified YES with\nmandatory disclosures (Create, Package, Configure, Monitor) + Release NO;\nMaster Plan sections 2/4.7.6/7/13 synchronized.\n\nWORK-B4-24: docs/DEMO_SCRIPT.md rewritten as the evidence-labeled end-to-end\ndemonstration path (operator-initiated Supervised chain, never narrated as\nsingle-trigger autonomous); Control Room targeted improvements: first-screen\nproduct explainer, per-section recorded observation timestamps in the header,\ntab/tablist/tabpanel ARIA landmarks, meta description, maintained aria-selected;\nreal-browser validated (all five tabs render, graph/what-if/evidence\ninteractions verified, zero console errors, zero runtime network fetches beyond\nthe two static files, Lighthouse accessibility/best-practices/SEO 100); live\nread-only evidence regenerated 2026-10-21T15:15Z (pages publication\nVERIFIED_LIVE_SERVED across all 5 levels; resurrection monitoring\nHISTORICAL_RECEIPT_UNVERIFIED / MECHANISM_PRESENT, 12 invariants); 12-point\ncanonical Pages feasibility study completed (Master Plan 10.3): deployment\nfeasible at \\.00 but public accessibility requires a Maintainer\npages_access_level change unavailable to the operator - NO deployment\nattempted, NO CI change, local file:// Control Room remains the verified\nfallback.\n\nWORK-B4-25: README fully rewritten product-first (stale claims removed:\nno-mutation-command contradiction, wrong session emphasis, obsolete test\ncounts; final suite 540; guarded retire-pages --execute accurately described);\nDOC-01..DOC-10 reconciled (launcher Python floor aligned to 3.12 matching\npyproject); final 10-scene 174 s video runbook with complete English\nvoice-over and subtitles (Master Plan 11.2); final Devpost packet (Section 13);\n5-image screenshot packet (Section 12); new Turkish operator filming and\nsubmission guide docs/OPERATOR_FILMING_GUIDE.md; evidence matrix and handoff\nsynchronized.\n\nVerification: 540 tests passed, ruff clean, 40/40 network-free CI safety\nassertions, CLI smoke tests positive and negative (fail-closed refusals:\noperator-trust gate, OFFLINE_PUBLICATION_REFUSED). Zero personal spend; no\ndestructive operation, no Pages DELETE, no public UI hosting, no video capture,\nno Devpost submission. Post-push pipeline/observer verification recorded in\nthe completion report per the immutable provenance contract.\n",
       "parent_ids": [
-        "cd51a41cf589c265f2224c8ef2b9b1c54ee0800c"
+        "7b32190fde43b4e12a8df41d6aacb2a15b90f615"
       ],
-      "short_id": "7b32190f",
-      "title": "fix(b4-integrity): current-observation freshness precedes any positive present-tense verdict",
+      "short_id": "4985978e",
+      "title": "feat(b4-award-readiness): consolidated W23-W25 nine-stage reassessment, end-to-end demo integration, Control Room polish, and final documentation reconciliation",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/7b32190fde43b4e12a8df41d6aacb2a15b90f615"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/4985978ee218d521283db4b33c5bb03c997b1d2c"
     },
     "default": true,
     "developers_can_merge": true,

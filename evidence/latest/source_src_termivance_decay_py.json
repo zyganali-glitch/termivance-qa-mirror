@@ -1,0 +1,13 @@
+{
+  "acquired_at_utc": "2026-10-21T16:25:26Z",
+  "artifact_sha256": "d219eccb881766751e7b9ebe8dedaed458d03f7d1017d69753ba87e5829dc663",
+  "body_sha256": "d219eccb881766751e7b9ebe8dedaed458d03f7d1017d69753ba87e5829dc663",
+  "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fdecay.py/raw?ref=4985978ee218d521283db4b33c5bb03c997b1d2c",
+  "http_error": null,
+  "http_status": 200,
+  "limitations": "public unauthenticated read",
+  "method": "GET",
+  "name": "source_src_termivance_decay_py",
+  "redacted_keys": []
+}
