@@ -528,34 +528,14 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     risk_map = _load(args.risk_map)
     simulation = _load(args.simulation)
     capsule = _load(args.capsule)
-    duo_ext_path = getattr(args, "duo_external", None)
-    if duo_ext_path is None:
-        p_duo = (
-            Path(__file__).resolve().parents[1]
-            / "evidence"
-            / "b4"
-            / "duo_session_9671626_readback.json"
-        )
-        if p_duo.exists():
-            duo_ext_path = str(p_duo)
-    duo_evidence = _load(duo_ext_path)
+    duo_evidence = _load(getattr(args, "duo_external", None))
     demo_discovery_path = (
         Path(__file__).resolve().parents[1] / "evidence" / "b4" / "demo_duo_target_discovery.json"
     )
     demo_discovery = _load(str(demo_discovery_path)) if demo_discovery_path.exists() else None
 
     # Primary target-specific Duo reconciliation (Session 9710085, Issue #5)
-    duo_recon_primary_path = getattr(args, "duo_reconciliation_primary", None)
-    if duo_recon_primary_path is None:
-        p5 = (
-            Path(__file__).resolve().parents[1]
-            / "evidence"
-            / "b4"
-            / "duo_reconciliation_issue_5.json"
-        )
-        if p5.exists():
-            duo_recon_primary_path = str(p5)
-    duo_reconciliation_primary = _load(duo_recon_primary_path)
+    duo_reconciliation_primary = _load(getattr(args, "duo_reconciliation_primary", None))
 
     # Historical contextual Duo reconciliation (Session 9671626, Issue #3)
     duo_reconciliation = _load(getattr(args, "duo_reconciliation", None))
