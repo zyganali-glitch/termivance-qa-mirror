@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-21T16:25:27Z",
-  "artifact_sha256": "a8c7cef464e0b5d5860d4a94db4440c206c0fdc1b337890b7ffe11cc4340a856",
+  "acquired_at_utc": "2026-10-21T17:20:50Z",
+  "artifact_sha256": "7c89714108263eddbe1f6aae59476de5b7040ab771ec24f1924a98867ba541ed",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/pipelines/2972901592/jobs",
   "extracted": [
@@ -29,7 +29,14 @@
     {
       "allow_failure": false,
       "archived": false,
-      "artifacts": [],
+      "artifacts": [
+        {
+          "file_format": null,
+          "file_type": "trace",
+          "filename": "job.log",
+          "size": 17977
+        }
+      ],
       "artifacts_expire_at": null,
       "commit": {
         "author_email": "[REDACTED]",
@@ -100,10 +107,10 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-21T16:25:27.694Z",
+        "contacted_at": "2026-10-21T17:20:50.137Z",
         "created_at": "2026-10-21T09:43:57.619Z",
         "id": 164192119,
-        "ip_address": "10.218.11.3",
+        "ip_address": "10.218.11.18",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "5d62e0cc",
