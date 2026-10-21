@@ -528,12 +528,19 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     risk_map = _load(args.risk_map)
     simulation = _load(args.simulation)
     capsule = _load(args.capsule)
-    duo_evidence = _load(args.duo_external)
+    duo_ext_path = getattr(args, "duo_external", None)
+    if duo_ext_path is None:
+        p_duo = (
+            Path(__file__).resolve().parents[1]
+            / "evidence"
+            / "b4"
+            / "duo_session_9671626_readback.json"
+        )
+        if p_duo.exists():
+            duo_ext_path = str(p_duo)
+    duo_evidence = _load(duo_ext_path)
     demo_discovery_path = (
-        Path(__file__).resolve().parents[1]
-        / "evidence"
-        / "b4"
-        / "demo_duo_target_discovery.json"
+        Path(__file__).resolve().parents[1] / "evidence" / "b4" / "demo_duo_target_discovery.json"
     )
     demo_discovery = _load(str(demo_discovery_path)) if demo_discovery_path.exists() else None
 
@@ -557,6 +564,11 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     workflow = _load(args.workflow)
     tripwire = _load(args.tripwire)
 
+    pages_publication = _load(getattr(args, "pages_publication", None))
+    resurrection_monitoring = _load(getattr(args, "resurrection_monitoring", None))
+    repair_sets = _load(getattr(args, "repair_sets", None))
+    freshness_decay = _load(getattr(args, "freshness_decay", None))
+
     def _recognized(record: object, schema: str) -> dict[str, object] | None:
         if isinstance(record, dict) and record.get("schema") == schema:
             return record
@@ -568,6 +580,12 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     )
     witness_section = _recognized(witness, "termivance.resurrection_witness/v1")
     supervised_review_section = _recognized(supervised_review, "termivance.supervised_review/v1")
+    pages_publication_section = _recognized(pages_publication, "termivance.pages_publication/v1")
+    resurrection_monitoring_section = _recognized(
+        resurrection_monitoring, "termivance.resurrection_monitor/v1"
+    )
+    repair_sets_section = _recognized(repair_sets, "termivance.bounded_repair_set/v1")
+    freshness_decay_section = _recognized(freshness_decay, "termivance.proof_decay/v1")
 
     # QA-FIX D & Defect A: receipt truth is decided by the fail-closed classifier.
     # A locally supplied JSON receipt in the static builder can never raise top-level
@@ -640,6 +658,24 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
             "simulation": (simulation if isinstance(simulation, dict) else {"state": UNAVAILABLE}),
             "workflow": workflow if isinstance(workflow, dict) else {"state": UNAVAILABLE},
             "tripwire": tripwire if isinstance(tripwire, dict) else {"state": UNAVAILABLE},
+            "pages_publication": (
+                pages_publication_section
+                if pages_publication_section is not None
+                else {"state": UNAVAILABLE}
+            ),
+            "resurrection_monitoring": (
+                resurrection_monitoring_section
+                if resurrection_monitoring_section is not None
+                else {"state": UNAVAILABLE}
+            ),
+            "bounded_repair_sets": (
+                repair_sets_section if repair_sets_section is not None else {"state": UNAVAILABLE}
+            ),
+            "freshness_decay": (
+                freshness_decay_section
+                if freshness_decay_section is not None
+                else {"state": UNAVAILABLE}
+            ),
         },
         "authorization_gates": _gates(classification),
         # Rendered as inert text by the page: live proof that provider-shaped
@@ -711,6 +747,10 @@ def main() -> int:
         "witness",
         "supervised-review",
         "ledger",
+        "pages-publication",
+        "resurrection-monitoring",
+        "repair-sets",
+        "freshness-decay",
     ):
         parser.add_argument(f"--{name}", dest=name.replace("-", "_"), default=None)
     parser.add_argument("--out-dir", default="control_room")

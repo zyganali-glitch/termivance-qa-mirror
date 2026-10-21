@@ -8,15 +8,15 @@ Core concepts: **Retirement Obligation Graph**, **Bounded Absence**, and **Retir
 
 ## Status
 
-**B4 final product, supervised workflow & evidence closure completed (2026-10-20)**. Closes Material Defects 1 & 2 (real CLI publisher interface contract and evidence-grounded candidate corroboration) with 17 new regression and integrity tests. B1 (live Duo Custom Flow) and B2 (deterministic BLOCKED gate) stand; B3's deterministic executor and bounded absence stand, with the live unpublish still **`BLOCKED` on a real access boundary**; genuine operator-triggered B4 Duo sessions exist (neutral unprimed session `9710085` on canonical issue #5; target discovery session `9704855` on canonical issue #4; historical session `9671626` on canonical issue #3). The final closure delivers:
+**B4 final product, supervised workflow & evidence closure completed (2026-10-21)**. Covers the award-critical B4 consolidated engineering execution:
 
-- **Real CLI Publisher Interface Contract** — `supervised-review --publish` uses the authentic `GitLabPublisher.create_issue_note(project_id, issue_iid, *, body)` contract returning `PublishResult`. Publisher verifies note response identity (`PublishResult.ok` and integer note ID > 0), distinguishes HTTP 201 acknowledgement from independent note read-back with SHA-256 digest comparison (`READBACK_VERIFIED`, `READBACK_BODY_MISMATCH`, `API_ACKNOWLEDGED`, `NOT_RUN`, `PUBLICATION_FAILED`), and produces honest `NOT_RUN`/`NOT_VERIFIED` on missing credentials.
-- **Evidence-Grounded Candidate Corroboration** — candidate claims are strictly corroborated against authoritative provider observations (`ProviderObservations` / `witness.py` facts) gathered during execution. Enforces commit consistency across all claims; adversarial claims (absent `pages: true`, missing marker, wrong HTTP status) evaluate to `CONTRADICTED`; unobservable configurations evaluate to `UNRESOLVED`; hosting repo issues evaluate to `CONTEXTUAL_ONLY`. Outcome note truthfully reports the 4/2/1 candidate breakdown. Duo session remains `RECORDED_HISTORICAL`.
-- **SRE & Platform Engineering Impact** — Control Room features an Executive 15-second 4-question governance card answering core SRE retirement questions without network calls; deterministic engine prevents accidental outages, dangling DNS/Pages endpoints, and zombie resurrections.
-- **Trust-bound approvals & One-contract ledger** — approval identity bound to operator trust policy; durable ledger serializes mutations under cross-process lock with one-way state transitions.
-- **Multi-resource Portfolio & Control Room v2** — GET-only multi-asset discovery with zero network fetch at view time.
+- **Genuine Supervised Autonomy Integration (`WORK-B4-18`)** — Supported single-flow continuation (`supervised-review --continue`), 12-point platform feasibility study documenting GitLab Duo Custom Flow ambient runtime boundaries (`coding_environment: none`), and fail-closed security preflight invariants.
+- **Real Disposable Pages Publication Evidence (`WORK-B4-19` Track 1)** — Live HTTP 200 observation on disposable target `87785099` at served Pages URL with distinctive marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` verified across all 5 evidence levels; destructive deletion (`DELETE /projects/87785099/pages`) strictly forbidden (Track 2 `BLOCKED_EXTERNAL`).
+- **Resurrection Monitoring & Truth Downgrade (`WORK-B4-20`)** — On-demand read-only monitor (`monitor-resurrection`) checking CI redeployment mechanisms (`create-pages` with `pages: true`) and served markers, downgrading current truth (`REDEPLOYMENT_MECHANISM_ACTIVE`) while strictly preserving historical receipts without rewriting.
+- **Deterministic Bounded Candidate Repair Sets (`WORK-B4-21`)** — ROG-derived remediation planning (`repair-sets`) producing topologically ordered prerequisite repair actions; organizer Maintainer denial honestly classified as `EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS`.
+- **Proof Freshness Decay & 900s TTL (`WORK-B4-22`)** — Contractual 6-state temporal decay state machine (`check-decay`) enforcing 600s fresh threshold, 900s expiration TTL, and future clock skew rejection boundaries.
 
-Suite: **369 tests**, ruff clean, **40/40** network-free CI safety assertions.
+Suite: **424 tests passed**, ruff clean, **40/40** network-free CI safety assertions.
 
 B4 also closes the P0 security defects (durable sealed-reservation ledger, GitLab-issue approval provenance, receipt-bound absence) and adds the six-capability **Retirement Control Plane**: read-only Portfolio, deterministic Risk Map, hypothetical Simulation, judge-facing Control Room, tamper-evident Proof Capsule with `capsule-verify`, and a 7-stage single-flow workflow orchestration. The final integrity repair closes receipt classification loopholes and establishes the evidence-bound supervised review pipeline.
 
@@ -50,6 +50,16 @@ termivance reconcile-duo --claims evidence/b4/duo_claims.json --project-id 87779
 termivance witness-build --project-id 87785099 --full-path gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo --out evidence/b4/witness_87785099.json
 # supervised retirement review: genuinely execute the 7-step read-only investigation live (anonymous):
 termivance supervised-review --execute --target 87785099
+# execute supervised single-flow continuation from Issue #5 / Session 9710085:
+termivance supervised-review --continue --execute
+# verify disposable GitLab Pages publication across all 5 evidence levels:
+termivance verify-pages-publication --project-id 87785099 --json
+# read-only exact-target resurrection monitor & truth downgrade:
+termivance monitor-resurrection --project-id 87785099 --json
+# compute bounded candidate repair sets derived from Retirement Obligation Graph:
+termivance repair-sets --project-id 87785099 --from-record evidence/b4/snapshot.json --json
+# evaluate evidence freshness against contractual 900s TTL and clock skew boundaries:
+termivance check-decay --timestamp 2026-10-21T06:08:09Z --expected-sha 54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d --json
 # or inspect recorded evidence without network access:
 termivance supervised-review --duo-claims evidence/b4/duo_claims.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --decision evidence/b4/decision.json --risk-map evidence/b4/risk_map.json --capsule evidence/b4/proof_capsule.json --out evidence/b4/supervised_review.json
 # judge control room v2 (rebuild data, then open control_room/index.html in a browser):

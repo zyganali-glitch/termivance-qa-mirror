@@ -698,8 +698,7 @@ def test_mixed_candidate_status_outcome_note_truth():
 
     # Must NOT say 'All candidate obligations ... were independently verified'
     assert (
-        "All candidate obligations proposed by GitLab Duo were independently verified"
-        not in note
+        "All candidate obligations proposed by GitLab Duo were independently verified" not in note
     )
     # Must report truthful breakdown
     assert "4 corroborated, 2 unresolved, 1 contextual" in note

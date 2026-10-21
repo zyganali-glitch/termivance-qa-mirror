@@ -121,23 +121,23 @@ class TestDefectBPrivacyHygiene:
 
     def test_data_js_has_no_absolute_user_paths(self):
         data_text = (ROOT / "control_room" / "data.js").read_text(encoding="utf-8")
-        assert not re.search(
-            r"[A-Za-z]:[/\\]Users[/\\]", data_text, re.IGNORECASE
-        ), "control_room/data.js must not contain absolute Windows user paths"
-        assert not re.search(
-            r"/home/[^/]+/", data_text
-        ), "control_room/data.js must not contain absolute Linux home paths"
-        assert (
-            "scratch\\Termivance" not in data_text and "scratch/Termivance" not in data_text
-        ), "control_room/data.js must not contain private scratch paths"
+        assert not re.search(r"[A-Za-z]:[/\\]Users[/\\]", data_text, re.IGNORECASE), (
+            "control_room/data.js must not contain absolute Windows user paths"
+        )
+        assert not re.search(r"/home/[^/]+/", data_text), (
+            "control_room/data.js must not contain absolute Linux home paths"
+        )
+        assert "scratch\\Termivance" not in data_text and "scratch/Termivance" not in data_text, (
+            "control_room/data.js must not contain private scratch paths"
+        )
 
     def test_evidence_reconciliation_claims_source_is_relative(self):
         recon_path = ROOT / "evidence" / "b4" / "duo_reconciliation.json"
         raw = json.loads(recon_path.read_text(encoding="utf-8"))
         claims_source = raw.get("claims_source", "")
-        assert not re.search(
-            r"[A-Za-z]:[/\\]Users[/\\]", claims_source, re.IGNORECASE
-        ), "claims_source must not contain absolute Windows user path"
+        assert not re.search(r"[A-Za-z]:[/\\]Users[/\\]", claims_source, re.IGNORECASE), (
+            "claims_source must not contain absolute Windows user path"
+        )
         assert claims_source.startswith("evidence/"), "claims_source must be repository-relative"
 
 
@@ -195,9 +195,9 @@ class TestDefectEDeveloperDiagnosticsRemoved:
 
     def test_escaping_probe_is_collapsed_in_details(self):
         html = _load_html()
-        assert (
-            "Developer diagnostic: DOM escaping verification probe" in html
-        ), "Diagnostic probe must be sequestered behind collapsed details"
+        assert "Developer diagnostic: DOM escaping verification probe" in html, (
+            "Diagnostic probe must be sequestered behind collapsed details"
+        )
         assert "Security &amp; input sanitization contract" in html
 
 

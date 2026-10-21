@@ -1,0 +1,35 @@
+{
+  "authority": "DETERMINISTIC_READ_ONLY_EVIDENCE",
+  "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+  "freshness": "FRESH",
+  "levels": {
+    "level1_ci_job_name": "create-pages",
+    "level1_ci_job_success": true,
+    "level1_ci_pipeline_id": 2960507698,
+    "level2_deployment_created": true,
+    "level3_pages_api_detail": "Pages API returned HTTP 403 AUTH_DENIED; observing identity lacks Maintainer permissions (Maintainer access was explicitly denied by hackathon organizer).",
+    "level3_pages_api_status": 403,
+    "level3_pages_api_visible": false,
+    "level4_served_http_status": 200,
+    "level4_served_url_accessible": true,
+    "level5_marker_independently_observed": true,
+    "level5_observed_marker": "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a"
+  },
+  "marker": "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a",
+  "observed_at": "2026-10-21T06:08:09.856873+00:00",
+  "prohibited_actions": [
+    "DELETE /projects/87785099/pages was NOT called.",
+    "Track 2 remains permanently BLOCKED_EXTERNAL under organizer denial.",
+    "Publication is proof of presence, NOT proof of retirement or absence."
+  ],
+  "schema": "termivance.pages_publication_evidence/v1",
+  "served_body_digest_sha256": "fce26f65c259effbd9d75faf54e95284ece7fdf259dbe54d2389b341f2269c15",
+  "served_url": "https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/",
+  "status": "VERIFIED_LIVE_SERVED",
+  "summary": "Disposable Pages site on project 87785099 is genuinely published and live. Served URL https://gitlab-ai-hackathon.gitlab.io/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo/ returned HTTP 200 with matching marker 'TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a' (digest fce26f65c259effb...). Pages API is HTTP 403 (Developer role). This proves pre-retirement presence; unpublish remains BLOCKED_EXTERNAL.",
+  "target": {
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+    "project_id": 87785099,
+    "resource_kind": "GITLAB_PAGES_SITE"
+  }
+}

@@ -514,16 +514,16 @@ To eliminate circular dependencies and prevent fictional SHA fabrication, Termiv
 | `WORK-B4-10` | Supervised Autonomy Continuous-Handoff Evaluation | P0 | **NEEDS_REVIEW** | Platform Boundary | Operator / Executor | 2026-10-24 | Contest Category Claim | Operational boundary documented; target of `WORK-B4-18` |
 | `WORK-B4-11` | Consolidated B4 Repair Push & Verification (`6e808b3`) | P0 | **CLOSED_INDEPENDENT_QA** | `WORK-B4-01`–`10` | Executor / Auditor | 2026-10-20 | Eligibility / Verification | Remote SHA `6e808b3`; Pipeline `2967141211`; Run `39412372280` |
 | `WORK-B4-12` | Final Submission-Truth Surgical Closure & Post-Push Observer | P0 | **CLOSED_INDEPENDENT_QA** | `WORK-B4-11` | Executor / Auditor | 2026-10-20 | Eligibility / Verification | Verified SHA `8fd6567`; Pipeline `2967239572`; Run `39415695705` |
-| `WORK-B4-18` | Genuine Supervised Autonomy Integration | P0 | **RESEARCH_REQUIRED** | Plan QA Approval | Executor | 2026-10-22 | Best Supervised Agent | 12-point feasibility study; supported continuation design |
-| `WORK-B4-19` | Organizer-Gated Real Pages Retirement | P0 | **BLOCKED_EXTERNAL** | Plan QA Approval / Showcase #1 | Operator / Executor | 2026-10-24 | Release Stage / Bounded Absence | Track 1: Verify deployment/URL (READY_TO_EXECUTE); Track 2: Fail-closed refusal (BLOCKED_EXTERNAL) |
-| `WORK-B4-20` | Resurrection Monitoring & Current-Truth Downgrade | P1 | **READY_TO_EXECUTE** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | Product Differentiator | Read-only target monitoring, CI schedule feasibility, truth downgrade |
-| `WORK-B4-21` | Deterministic Minimal Repair Set | P1 | **READY_TO_EXECUTE** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | SRE Innovation | Bounded candidate repair guidance from ROG; no authority expansion |
-| `WORK-B4-22` | Bounded Proof Decay and Freshness Revalidation | P1 | **READY_TO_EXECUTE** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | Auditability | 6-state decay machine, 900s TTL enforcement, fail-closed revalidation |
+| `WORK-B4-18` | Genuine Supervised Autonomy Integration | P0 | **NEEDS_REVIEW** | Platform Boundary | Executor | 2026-10-22 | Best Supervised Agent | 12-point feasibility study completed; supported CLI continuation implemented; runtime limitations documented |
+| `WORK-B4-19` | Organizer-Gated Real Pages Retirement | P0 | **BLOCKED_EXTERNAL** | Plan QA Approval / Showcase #1 | Operator / Executor | 2026-10-24 | Release Stage / Bounded Absence | Track 1: Verify deployment/URL (VERIFIED); Track 2: Fail-closed refusal (BLOCKED_EXTERNAL) |
+| `WORK-B4-20` | Resurrection Monitoring & Current-Truth Downgrade | P1 | **VERIFIED** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | Product Differentiator | Read-only target monitoring, CI schedule feasibility, truth downgrade |
+| `WORK-B4-21` | Deterministic Minimal Repair Set | P1 | **VERIFIED** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | SRE Innovation | Bounded candidate repair guidance from ROG; no authority expansion |
+| `WORK-B4-22` | Bounded Proof Decay and Freshness Revalidation | P1 | **VERIFIED** | Plan QA Approval / `WORK-B4-12` | Executor | 2026-10-23 | Auditability | 6-state decay machine, 900s TTL enforcement, fail-closed revalidation |
 | `WORK-B4-23` | Nine-Stage DevSecOps Evidence Reassessment | P0 | **NOT_STARTED** | `WORK-B4-18`–`22`, `WORK-B4-19` (Track 1) | Executor | 2026-10-24 | Most Stages Covered | Rigorous post-engineering audit across all 9 stages; Devpost sync |
 | `WORK-B4-24` | Integrated End-to-End Demo, Evidence Binding & UI Hosting Feasibility | P0 | **NOT_STARTED** | `WORK-B4-18`–`23` | Executor | 2026-10-24 | Judge Presentation | Unified evidence chain, Control Room alignment, 12-point canonical Pages feasibility study, conditional video runbook |
 | `WORK-B4-25` | Atomic Repository-Wide Documentation Reconciliation | P0 | **NOT_STARTED** | `WORK-B4-18`–`24` | Executor | 2026-10-25 | Submission Integrity | Whole-repository contradiction audit (DOC-01 to DOC-10); UI deployment docs or local fallback; Sec 13.5 English sync |
 | `WORK-B4-26` | Final Independent QA, Source Lock and Submission Readiness | P0 | **NOT_STARTED** | Checkpoint A: `WORK-B4-25`; Checkpoint B: `WORK-B4-13`–`16` | Auditor / Operator | 2026-10-25 | Submission Freeze | Two checkpoints: Checkpoint A unblocks capture; Checkpoint B validates post-capture assets and authorizes submission |
-| `WORK-B4-13` | Capture Demonstration Media & Screenshots | P0 | **OPERATOR_ACTION** | `WORK-B4-26 (Checkpoint A)` | Operator | 2026-10-25 | Presentation / Devpost | Curate accepted count from 6 candidate deliverables (Sec 12); 1920x1080 sanitized PNGs; zero credentials leaked |
+| `WORK-B4-13` | Capture Demonstration Media & Screenshots | P0 | **OPERATOR_ACTION** | `WORK-B4-26 (Checkpoint A)` | Operator | 2026-10-25 | Presentation / Devpost | Curate accepted count from 7 candidate deliverables (Sec 12); 1920x1080 sanitized PNGs; zero credentials leaked |
 | `WORK-B4-14` | Record Video Screen Captures (Scenes 01–09) | P0 | **OPERATOR_ACTION** | `WORK-B4-26 (Checkpoint A)` | Operator | 2026-10-25 | Submission Video | Raw MP4 captures for all 9 scenes adhering to conditional evidence rules per Sec 11 |
 | `WORK-B4-15` | Video Editing, English Voice-Over & Narration | P0 | **OPERATOR_ACTION** | `WORK-B4-14` | Operator | 2026-10-25 | Submission Video | Final MP4 (< 180s, target 174s), clear voice-over, readable text, exact scene timings matching declared runtime |
 | `WORK-B4-16` | Upload Video to YouTube as Public | P0 | **OPERATOR_ACTION** | `WORK-B4-15` | Operator | 2026-10-26 | Devpost Submission | Public YouTube URL accessible in clean browser session; unlisted/private forbidden |
@@ -623,7 +623,7 @@ flowchart TD
 * **Two-Track Execution Structure & Capability-Specific Qualifiers:**
   *(Note: Track conditions are capability-specific qualifiers describing actionable versus blocked paths within the single controlled work package, not invented additional lifecycle states.)*
 
-  ##### Track 1: Real GitLab Pages Publication Evidence (Capability-Specific Qualifier: `READY_TO_EXECUTE` upon Plan QA Approval)
+  ##### Track 1: Real GitLab Pages Publication Evidence (Capability-Specific Qualifier: `VERIFIED`)
   *Actionable engineering work to verify and document actual Pages publication:*
   1. Query disposable project `87785099` settings via API; verify `visibility` (`public`) and `pages_access_level` (`enabled`). Distinguish organizer-reported access setting from verified site deployment.
   2. Inspect target repository at observed commit `54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d` (`.gitlab-ci.yml`, `create-pages` job).
@@ -844,7 +844,7 @@ flowchart LR
     1. Appropriate engineering and integrations verified (`WORK-B4-18`–`23`).
     2. Executable evidence chain confirmed and reproducible.
     3. Actual public UI hosting outcome known (verified on `87779099`) or authorized local fallback confirmed.
-    4. Real disposable Pages outcome known (`WORK-B4-19` Track 1 verified, Track 2 unpublish fail-closed `BLOCKED`).
+    4. Real disposable Pages outcome known (`WORK-B4-19` Track 1 verified or accepted as truthful fallback `INCONCLUSIVE`, Track 2 unpublish fail-closed `BLOCKED`).
     5. Source code and Control Room UI state completely stable.
     6. Preliminary repository documentation synchronized (`WORK-B4-25`).
     7. Correct screenshots register (Section 12) and video runbook (Section 11) prepared.
@@ -1410,7 +1410,7 @@ The final approved runbook must specify for every scene:
   * `submission_media/exports/`
 
 ### 12.1 Official Submission Media Deliverable Candidates
-The present register defines 6 candidate media deliverables representing Termivance's strongest verified capabilities. The final curator selects 5 of these, or the actual number accepted by the current Devpost media interface:
+The present register defines 7 candidate media deliverables representing Termivance's strongest verified capabilities. The final curator selects 5 of these, or the actual number accepted by the current Devpost media interface:
 
 | Candidate ID & Filename | Resolution | Source Viewport & Focus | Condition for Inclusion | Caption & English Alt Text |
 |---|---|---|---|---|

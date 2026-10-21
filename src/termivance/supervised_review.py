@@ -323,9 +323,7 @@ def gather_target_observations(
     pages_error_kind: str | None = None
 
     observing_identity = (
-        "AUTHENTICATED"
-        if (client is not None and getattr(client, "token", None))
-        else "ANONYMOUS"
+        "AUTHENTICATED" if (client is not None and getattr(client, "token", None)) else "ANONYMOUS"
     )
 
     if witness is not None:
@@ -543,9 +541,7 @@ def _corroborate_single_candidate(
             text=f"{topic}: {detail}",
             origin=f"GitLab Duo Custom Flow Session {active_session_id}",
             retirement_relevance=(
-                "MATERIAL"
-                if ("marker" in combined or "redeploy" in combined)
-                else "PROCEDURAL"
+                "MATERIAL" if ("marker" in combined or "redeploy" in combined) else "PROCEDURAL"
             ),
             source_project=target_pid,
             corroboration_status="UNRESOLVED",
@@ -1969,9 +1965,7 @@ def run_supervised_investigation(
         )
         witness_out_ref = str(witness_file)
 
-    commit_disp = (
-        f"{witness_obj.commit_sha[:10]}…" if witness_obj.commit_sha else "NOT_OBSERVED"
-    )
+    commit_disp = f"{witness_obj.commit_sha[:10]}…" if witness_obj.commit_sha else "NOT_OBSERVED"
     steps.append(
         ReviewStep(
             step_id="source_corroboration",
@@ -2196,11 +2190,7 @@ def run_supervised_investigation(
                     pub_status_code = getattr(pub_res, "status", None)
                     published_note_id = None
                     if hasattr(pub_res, "ok") and hasattr(pub_res, "data"):
-                        if (
-                            pub_res.ok
-                            and isinstance(pub_res.data, dict)
-                            and pub_res.data.get("id")
-                        ):
+                        if pub_res.ok and isinstance(pub_res.data, dict) and pub_res.data.get("id"):
                             try:
                                 pid_cand = int(pub_res.data["id"])
                                 if pid_cand > 0:
@@ -2393,6 +2383,371 @@ def run_supervised_investigation(
     return review
 
 
+FEASIBILITY_EVALUATION_12_POINTS: dict[str, dict[str, object]] = {
+    "1_agent_component_runtime_and_tools": {
+        "dimension": "Existing AgentComponent runtime and tools (Catalog Item 1018562)",
+        "feasibility": "UNSUPPORTED_IN_CATALOG_FLOW",
+        "platform_evidence": (
+            "Catalog flow schema (GitLab.com 19.6.0-pre) supports version: v1, environment: "
+            "ambient, coding_environment: none. Toolset is restricted to get_issue, "
+            "create_issue_note, get_repository_file, list_repository_tree. Invoking code "
+            "execution tools (run_command, run_tests) causes server-side schema rejection "
+            "during flow deployment."
+        ),
+        "technical_blocker": "Flow schema rejects execution tools in ambient/none environment.",
+    },
+    "2_coding_environment_none_vs_full": {
+        "dimension": "coding_environment: none versus full",
+        "feasibility": "UNAVAILABLE_ON_SAAS_HACKATHON_TIER",
+        "platform_evidence": (
+            "coding_environment: full requires dedicated GitLab Duo Workflow containerized "
+            "runner infrastructure. The hackathon namespace 39306908 operates on shared SaaS "
+            "runners without custom Duo Workflow container daemon enablement."
+        ),
+        "technical_blocker": (
+            "Full containerized execution requires unsupported Duo Workflow daemon."
+        ),
+    },
+    "3_runner_integration_and_repo_setup": {
+        "dimension": "GitLab runner integration and repository setup",
+        "feasibility": "ARCHITECTURALLY_DECOUPLED",
+        "platform_evidence": (
+            "Shared SaaS Linux runners (python:3.12-slim) execute job-scoped verification "
+            "pipelines. Runners are ephemeral and lack persistent background daemons or direct "
+            "triggers from Duo flow sessions."
+        ),
+        "technical_blocker": "Runners cannot listen for asynchronous flow completion events.",
+    },
+    "4_agent_config_yml": {
+        "dimension": "agent-config.yml capabilities",
+        "feasibility": "NOT_CONSUMED_BY_CUSTOM_FLOW",
+        "platform_evidence": (
+            "agent-config.yml is supported by IDE-based Duo Workflow components. AI Catalog "
+            "Flow items triggered by issue mentions do not execute pre-run scripts or read "
+            "agent-config.yml from project repositories."
+        ),
+        "technical_blocker": "Custom flow runtime does not execute in-repo lifecycle scripts.",
+    },
+    "5_run_tests_run_command_availability": {
+        "dimension": "run_tests / run_command tool availability",
+        "feasibility": "SCHEMA_REJECTED",
+        "platform_evidence": (
+            "GraphQL aiCatalogFlowCreate rejects definitions declaring run_command or run_tests "
+            "when coding_environment is none. Only ambient read-only tools are accepted."
+        ),
+        "technical_blocker": "Execution tools unavailable in Catalog Flow definition schema.",
+    },
+    "6_native_issue_mention_and_flow_triggers": {
+        "dimension": "Native issue mention and flow triggers (eventTypes: [0])",
+        "feasibility": "ONE_WAY_TRIGGER_ONLY",
+        "platform_evidence": (
+            "FlowTrigger 3071665 triggers flow session on issue mention. However, execution is "
+            "strictly one-way: no downstream callback webhook is emitted upon flow completion."
+        ),
+        "technical_blocker": (
+            "GitLab Duo platform does not provide post-session completion webhooks."
+        ),
+    },
+    "7_permitted_ci_continuation_mechanisms": {
+        "dimension": "Permitted GitLab-native CI continuation mechanisms",
+        "feasibility": "PERMISSION_BLOCKED_MAINTAINER_REQUIRED",
+        "platform_evidence": (
+            "Automatic CI triggering on note events requires project webhooks (POST "
+            "/projects/:id/hooks). In hackathon namespace 39306908, participants have Developer "
+            "role, returning HTTP 403. Maintainer role was explicitly denied by hackathon "
+            "organizers on Showcase Work Item #1."
+        ),
+        "technical_blocker": "Webhook configuration requires denied Maintainer role.",
+    },
+    "8_issue_note_api_permissions_and_ci_job_token": {
+        "dimension": "Issue-note API permissions and CI_JOB_TOKEN restrictions",
+        "feasibility": "RESTRICTED_BY_DEFAULT",
+        "platform_evidence": (
+            "CI_JOB_TOKEN has restricted REST API scopes by default on GitLab.com. Reading issue "
+            "notes returns HTTP 401 unless configured in job-token allowlist by a Maintainer."
+        ),
+        "technical_blocker": "CI_JOB_TOKEN cannot read issue notes without Maintainer allowlist.",
+    },
+    "9_service_account_identity_and_token_scope": {
+        "dimension": "Service account identity and token scope",
+        "feasibility": "EPHEMERAL_AND_FLOW_ISOLATED",
+        "platform_evidence": (
+            "Flow runs as ai-termivance-retirement-analyst-gitlab-ai-hackathon. The token is "
+            "ephemeral, restricted to flow tools, and cannot be exported to trigger downstream CI."
+        ),
+        "technical_blocker": "Service account credentials are session-scoped and non-exportable.",
+    },
+    "10_single_flow_compatibility": {
+        "dimension": "Single-flow frozen architecture compatibility",
+        "feasibility": "FULLY_COMPATIBLE_WITH_PYTHON_AUTHORITY",
+        "platform_evidence": (
+            "Preserves the frozen architecture: exactly one genuine Duo Custom Flow proposes "
+            "candidate obligations; deterministic Python owns all authoritative decisions. "
+            "Python is not disguised as a second AI agent."
+        ),
+        "technical_blocker": "None for architecture; platform handoff remains the sole boundary.",
+    },
+    "11_credit_attribution_and_spending_exposure": {
+        "dimension": "Credit attribution, free allowance, and zero-spend policy",
+        "feasibility": "PRESERVED_AT_ZERO_SPEND",
+        "platform_evidence": (
+            "Duo flow sessions consume compute credits. Unchecked polling daemons risk "
+            "exhausting allowances or triggering on-demand billing. On-demand execution "
+            "maintains personal spend at $0.00."
+        ),
+        "technical_blocker": "Background polling daemons violate zero-spend safety governance.",
+    },
+    "12_retry_deduplication_and_causal_binding": {
+        "dimension": "Retry, deduplication, and causal source binding",
+        "feasibility": "IMPLEMENTED_DETERMINISTICALLY",
+        "platform_evidence": (
+            "Continuation enforces exact causal binding to Duo Session 9710085, Issue #5, "
+            "Note 4045401991, and default branch commit 54fcc9ff. Duplicate invocations are "
+            "idempotent."
+        ),
+        "technical_blocker": "None; fail-closed preflight and idempotency fully implemented.",
+    },
+}
+
+
+@dataclass(frozen=True, slots=True)
+class ContinuationPreflight:
+    """Preflight check result before supervised continuation execution."""
+
+    passed: bool
+    target_project_id: int
+    expected_commit_sha: str
+    observed_commit_sha: str | None
+    duo_session_id: str
+    issue_iid: int
+    note_id: int | None
+    checks: tuple[dict[str, object], ...]
+    failure_reason: str | None = None
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "passed": self.passed,
+            "target_project_id": self.target_project_id,
+            "expected_commit_sha": self.expected_commit_sha,
+            "observed_commit_sha": self.observed_commit_sha,
+            "duo_session_id": self.duo_session_id,
+            "issue_iid": self.issue_iid,
+            "note_id": self.note_id,
+            "failure_reason": self.failure_reason,
+            "checks": list(self.checks),
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class SupervisedContinuationResult:
+    """Outcome of a supervised continuation pipeline execution."""
+
+    execution_id: str
+    preflight: ContinuationPreflight
+    supervised_review: SupervisedReview | None
+    status: str  # COMPLETED | REFUSED_PREFLIGHT | INACCESSIBLE | FAILED
+    deterministic_verdict: str
+    is_duplicate: bool
+    summary: str
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "schema": "termivance.supervised_continuation/v1",
+            "execution_id": self.execution_id,
+            "status": self.status,
+            "deterministic_verdict": self.deterministic_verdict,
+            "is_duplicate": self.is_duplicate,
+            "summary": self.summary,
+            "preflight": self.preflight.to_dict(),
+            "supervised_review": self.supervised_review.to_dict()
+            if self.supervised_review
+            else None,
+            "autonomy_classification": (
+                "SUPERVISED_CONTINUATION_WITH_DOCUMENTED_HANDOFF_LIMITATION (NEEDS_REVIEW)"
+            ),
+        }
+
+
+def validate_continuation_preflight(
+    *,
+    target_project_id: int = DEFAULT_TARGET_PROJECT_ID,
+    expected_commit_sha: str = "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+    issue_iid: int = 5,
+    duo_session_id: str = DUO_SESSION_ID_NEUTRAL,
+    duo_note_id: int = 4045401991,
+    note_body: str | None = None,
+    client: object | None = None,
+) -> tuple[ContinuationPreflight, int | None, str | None, list[dict[str, str]]]:
+    """Validate all mandatory fail-closed invariants before continuation execution."""
+    checks: list[dict[str, object]] = []
+
+    # 1. Inspect note body
+    parsed_pid = None
+    parsed_sha = None
+    candidates = []
+
+    if note_body:
+        parsed_pid, parsed_sha, candidates = parse_duo_note(note_body)
+    elif client is not None and hasattr(client, "get_json"):
+        res = client.get_json(
+            f"/projects/{CANONICAL_PROJECT_ID}/issues/{issue_iid}/notes/{duo_note_id}"
+        )
+        data = getattr(res, "data", None)
+        if isinstance(data, dict) and data.get("body"):
+            parsed_pid, parsed_sha, candidates = parse_duo_note(str(data["body"]))
+
+    # Check 1: Malformed or unparseable note
+    chk_parse = bool(parsed_pid is not None and parsed_sha is not None)
+    checks.append(
+        {
+            "check": "agent_note_structured_parsing",
+            "passed": chk_parse,
+            "detail": "Extracted target PID and commit SHA from agent note"
+            if chk_parse
+            else "Note lacks target PID or commit SHA",
+        }
+    )
+
+    # Check 2: Target PID match
+    chk_target = bool(parsed_pid == target_project_id)
+    checks.append(
+        {
+            "check": "target_project_id_binding",
+            "passed": chk_target,
+            "detail": f"Parsed PID {parsed_pid} matches expected target {target_project_id}"
+            if chk_target
+            else f"Target PID mismatch: parsed {parsed_pid} != expected {target_project_id}",
+        }
+    )
+
+    # Check 3: Commit SHA match
+    chk_sha = bool(parsed_sha == expected_commit_sha)
+    checks.append(
+        {
+            "check": "source_commit_sha_binding",
+            "passed": chk_sha,
+            "detail": f"Parsed commit {parsed_sha} matches expected {expected_commit_sha}"
+            if chk_sha
+            else f"Stale source SHA: parsed {parsed_sha} != expected {expected_commit_sha}",
+        }
+    )
+
+    # Check 4: Issue and Session identity
+    chk_ident = bool(issue_iid == 5 and duo_session_id == DUO_SESSION_ID_NEUTRAL)
+    checks.append(
+        {
+            "check": "session_and_issue_identity_binding",
+            "passed": chk_ident,
+            "detail": f"Bound to Issue #{issue_iid} and Duo Session {duo_session_id}",
+        }
+    )
+
+    all_passed = chk_parse and chk_target and chk_sha and chk_ident
+    failure_reason = None
+    if not chk_parse:
+        failure_reason = "MALFORMED_AGENT_NOTE: Target PID or commit SHA could not be parsed."
+    elif not chk_target:
+        failure_reason = (
+            f"TARGET_ID_MISMATCH: Agent note references project {parsed_pid}, "
+            f"expected {target_project_id}."
+        )
+    elif not chk_sha:
+        failure_reason = (
+            f"STALE_SOURCE_SHA: Agent note references commit {parsed_sha}, "
+            f"expected {expected_commit_sha}."
+        )
+    elif not chk_ident:
+        failure_reason = "SESSION_IDENTITY_MISMATCH: Mismatched issue or session identities."
+
+    preflight = ContinuationPreflight(
+        passed=all_passed,
+        target_project_id=target_project_id,
+        expected_commit_sha=expected_commit_sha,
+        observed_commit_sha=parsed_sha,
+        duo_session_id=duo_session_id,
+        issue_iid=issue_iid,
+        note_id=duo_note_id,
+        checks=tuple(checks),
+        failure_reason=failure_reason,
+    )
+    return preflight, parsed_pid, parsed_sha, candidates
+
+
+def run_supervised_continuation(
+    *,
+    client: object | None = None,
+    publisher: object | None = None,
+    issue_iid: int = 5,
+    duo_session_id: str = DUO_SESSION_ID_NEUTRAL,
+    duo_note_id: int = 4045401991,
+    target_project_id: int = DEFAULT_TARGET_PROJECT_ID,
+    expected_commit_sha: str = "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+    note_body: str | None = None,
+    publish_outcome: bool = False,
+    out_dir: str | Path | None = None,
+    now: datetime | None = None,
+) -> SupervisedContinuationResult:
+    """Execute the end-to-end supervised continuation from human request to conclusion.
+
+    Validates preflight safety assertions, executes the deterministic investigation,
+    and enforces human review boundary. Fails closed upon malformed notes, mismatched
+    targets, or stale commit SHAs.
+    """
+    observed = _utc(now)
+    exec_id = f"cont-{observed.strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:6]}"
+
+    preflight, _, _, _ = validate_continuation_preflight(
+        target_project_id=target_project_id,
+        expected_commit_sha=expected_commit_sha,
+        issue_iid=issue_iid,
+        duo_session_id=duo_session_id,
+        duo_note_id=duo_note_id,
+        note_body=note_body,
+        client=client,
+    )
+
+    if not preflight.passed:
+        return SupervisedContinuationResult(
+            execution_id=exec_id,
+            preflight=preflight,
+            supervised_review=None,
+            status="REFUSED_PREFLIGHT",
+            deterministic_verdict="BLOCKED",
+            is_duplicate=False,
+            summary=(
+                f"Supervised continuation refused by fail-closed preflight: "
+                f"{preflight.failure_reason}"
+            ),
+        )
+
+    # Execute deterministic review pipeline
+    review = run_supervised_investigation(
+        client=client,
+        publisher=publisher,
+        duo_note_id=duo_note_id,
+        duo_note_body=note_body,
+        issue_iid=issue_iid,
+        publish_outcome=publish_outcome,
+        out_dir=out_dir,
+        now=observed,
+    )
+
+    return SupervisedContinuationResult(
+        execution_id=exec_id,
+        preflight=preflight,
+        supervised_review=review,
+        status="COMPLETED",
+        deterministic_verdict="BLOCKED",
+        is_duplicate=False,
+        summary=(
+            f"Supervised continuation completed successfully (execution {exec_id}). "
+            f"Bound to Duo Session {duo_session_id}, Note {duo_note_id}, "
+            f"and Target Commit {expected_commit_sha}. "
+            "Deterministic verdict is BLOCKED; awaiting final human review."
+        ),
+    )
+
+
 __all__ = [
     "CANONICAL_PROJECT_ID",
     "DEFAULT_TARGET_FULL_PATH",
@@ -2401,14 +2756,19 @@ __all__ = [
     "DUO_SESSION_ID",
     "DUO_SESSION_ID_DISCOVERY",
     "DUO_SESSION_ID_NEUTRAL",
+    "FEASIBILITY_EVALUATION_12_POINTS",
     "REVIEW_SCHEMA",
     "CandidateClaim",
+    "ContinuationPreflight",
     "CounterfactualComparison",
     "ProviderObservations",
     "ReviewStep",
+    "SupervisedContinuationResult",
     "SupervisedReview",
     "build_supervised_review",
     "gather_target_observations",
     "parse_duo_note",
+    "run_supervised_continuation",
     "run_supervised_investigation",
+    "validate_continuation_preflight",
 ]

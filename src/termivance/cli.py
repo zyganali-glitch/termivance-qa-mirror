@@ -639,6 +639,41 @@ def _cmd_witness_build(args: argparse.Namespace) -> int:
 
 
 def _cmd_supervised_review(args: argparse.Namespace) -> int:
+    if getattr(args, "continue_flow", False):
+        from termivance.gitlab_client import GitLabClient, load_local_token
+        from termivance.publish import GitLabPublisher
+        from termivance.supervised_review import run_supervised_continuation
+
+        token = getattr(args, "token", None)
+        if not token:
+            try:
+                token = load_local_token()
+            except Exception:
+                token = None
+        client = GitLabClient(token)
+        publisher = None
+        if getattr(args, "publish", False):
+            try:
+                publisher = GitLabPublisher(token or load_local_token())
+            except Exception:
+                pass
+        continuation_res = run_supervised_continuation(
+            client=client,
+            publisher=publisher,
+            issue_iid=getattr(args, "issue_iid", 5) or 5,
+            target_project_id=args.project_id,
+            publish_outcome=getattr(args, "publish", False),
+            out_dir=getattr(args, "out_dir", None) or (Path(args.out).parent if args.out else None),
+        )
+        payload = continuation_res.to_dict()
+        if args.out:
+            _write_out(payload, args.out, "")
+        if args.json:
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(continuation_res.summary)
+        return 0 if continuation_res.status == "COMPLETED" else 1
+
     if getattr(args, "execute", False):
         from termivance.gitlab_client import GitLabClient, load_local_token
         from termivance.publish import GitLabPublisher
@@ -690,6 +725,134 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
     else:
         print(review.render())
     return 0
+
+
+def _cmd_repair_sets(args: argparse.Namespace) -> int:
+    from termivance.discovery import discover_live, graph_from_snapshot, load_snapshot
+    from termivance.engine import evaluate
+    from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.policy import load_policy
+    from termivance.repair import compute_bounded_repair_sets
+
+    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE", anonymous=True)
+    policy = load_policy(args.policy)
+    if getattr(args, "from_record", None):
+        snapshot = load_snapshot(args.from_record)
+    else:
+        try:
+            token = load_local_token()
+        except Exception:
+            token = None
+        client = GitLabClient(token)
+        snapshot = discover_live(client, target)
+    graph = graph_from_snapshot(snapshot)
+    decision = evaluate(graph, policy=policy, action="unpublish_pages")
+    repair_set = compute_bounded_repair_sets(graph, decision, target=target)
+    payload = repair_set.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"target: {repair_set.target_project_id} ({repair_set.target_full_path})")
+        print(f"verdict: {repair_set.decision_verdict}")
+        print(f"unsatisfied obligations: {repair_set.total_unsatisfied_obligations}")
+        print(f"actionable now: {list(repair_set.actionable_now_ids)}")
+        print(f"externally blocked: {list(repair_set.externally_blocked_ids)}")
+        for cand in repair_set.candidate_repairs:
+            print(
+                f"  - [{cand.availability_classification.value}] {cand.obligation_id}: "
+                f"{cand.failing_condition}"
+            )
+    return 0
+
+
+def _cmd_check_decay(args: argparse.Namespace) -> int:
+    from termivance.decay import evaluate_freshness
+
+    res = evaluate_freshness(
+        args.timestamp,
+        expected_sha=args.expected_sha,
+        observed_sha=args.observed_sha,
+        ttl_seconds=args.ttl,
+    )
+    payload = res.to_dict()
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(f"saved: {out_path}")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"state: {res.state.value}")
+        print(f"age: {res.age_seconds}s (ttl: {res.ttl_seconds}s)")
+        print(f"detail: {res.detail}")
+    return 0 if res.is_valid_for_evaluation else 1
+
+
+def _cmd_monitor_resurrection(args: argparse.Namespace) -> int:
+    from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.resurrection_monitor import monitor_resurrection, observe_target_surfaces
+
+    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE", anonymous=True)
+    try:
+        token = load_local_token()
+    except Exception:
+        token = None
+    client = GitLabClient(token)
+    current_obs = observe_target_surfaces(client, target, served_url=args.url, marker=args.marker)
+    history = _read_json(args.receipt) if args.receipt else None
+    report = monitor_resurrection(target, current_observation=current_obs, historical_truth=history)
+    payload = report.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"target: {report.target.project_id} ({report.target.full_path})")
+        print(f"current truth: {report.current_truth.value}")
+        print(f"redeployment risk: {report.redeployment_risk.value}")
+        print(f"resurrection control: {report.resurrection_control.value}")
+        for diff in report.diff_reasons:
+            print(f"  diff: {diff}")
+    return 0
+
+
+def _cmd_verify_pages_publication(args: argparse.Namespace) -> int:
+    from termivance.gitlab_client import GitLabClient, load_local_token
+    from termivance.pages_publication import verify_disposable_pages_publication
+
+    target = _resolve_target(args.project_id, "GITLAB_PAGES_SITE", anonymous=True)
+    try:
+        token = load_local_token()
+    except Exception:
+        token = None
+    client = GitLabClient(token)
+    rec = verify_disposable_pages_publication(
+        client, target, served_url=args.url, marker=args.marker
+    )
+    payload = rec.to_dict()
+    if args.out:
+        _write_out(payload, args.out, "")
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"target: {rec.target.project_id} ({rec.target.full_path})")
+        print(f"status: {rec.status.value}")
+        print(f"verified live: {rec.is_verified_live}")
+        print(
+            f"level 1 (CI job): {rec.levels.level1_ci_job_success} "
+            f"(pipeline {rec.levels.level1_ci_pipeline_id})"
+        )
+        print(f"level 2 (deployment created): {rec.levels.level2_deployment_created}")
+        print(f"level 3 (pages API): HTTP {rec.levels.level3_pages_api_status}")
+        print(
+            f"level 4 (served URL): HTTP {rec.levels.level4_served_http_status} ({rec.served_url})"
+        )
+        print(f"level 5 (marker observed): {rec.levels.level5_marker_independently_observed}")
+        print(f"summary: {rec.summary}")
+    return 0 if rec.is_verified_live else 1
 
 
 def _cmd_capsule_build(args: argparse.Namespace) -> int:
@@ -1188,6 +1351,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="actually execute the 7-step read-only investigation pipeline live (anonymous)",
     )
     supervised_review.add_argument(
+        "--continue",
+        dest="continue_flow",
+        action="store_true",
+        help="execute supervised continuation pipeline from issue #5 / session 9710085",
+    )
+    supervised_review.add_argument(
         "--issue",
         dest="issue_iid",
         type=int,
@@ -1217,6 +1386,58 @@ def build_parser() -> argparse.ArgumentParser:
     )
     supervised_review.add_argument("--out", default=None)
     supervised_review.add_argument("--json", action="store_true")
+
+    repair_sets = sub.add_parser(
+        "repair-sets",
+        help="compute bounded candidate repair sets derived from Retirement Obligation Graph",
+    )
+    repair_sets.add_argument("--project-id", type=int, default=87785099)
+    repair_sets.add_argument("--policy", default=None, help="policy JSON path")
+    repair_sets.add_argument("--from-record", default=None, help="snapshot record JSON path")
+    repair_sets.add_argument("--out", default=None)
+    repair_sets.add_argument("--json", action="store_true")
+
+    check_decay = sub.add_parser(
+        "check-decay",
+        help="evaluate evidence freshness against contractual 900s TTL and clock skew boundaries",
+    )
+    check_decay.add_argument("--timestamp", required=True, help="ISO-8601 observation timestamp")
+    check_decay.add_argument("--expected-sha", default=None, help="expected git commit SHA")
+    check_decay.add_argument("--observed-sha", default=None, help="observed git commit SHA")
+    check_decay.add_argument("--ttl", type=int, default=900, help="TTL window in seconds")
+    check_decay.add_argument("--out", default=None)
+    check_decay.add_argument("--json", action="store_true")
+
+    monitor_resurrection = sub.add_parser(
+        "monitor-resurrection",
+        help="read-only exact-target resurrection monitor and current-truth downgrade",
+    )
+    monitor_resurrection.add_argument("--project-id", type=int, default=87785099)
+    monitor_resurrection.add_argument("--url", default=None, help="served Pages URL")
+    monitor_resurrection.add_argument("--marker", default=None, help="distinctive content marker")
+    monitor_resurrection.add_argument(
+        "--receipt", default=None, help="historical receipt/decision JSON"
+    )
+    monitor_resurrection.add_argument("--out", default=None)
+    monitor_resurrection.add_argument("--json", action="store_true")
+
+    verify_pages_pub = sub.add_parser(
+        "verify-pages-publication",
+        help="verify disposable GitLab Pages publication across all 5 evidence levels",
+    )
+    verify_pages_pub.add_argument("--project-id", type=int, default=87785099)
+    verify_pages_pub.add_argument(
+        "--url",
+        default="https://gitlab-ai-hackathon.gitlab.io/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo/",
+        help="served Pages URL",
+    )
+    verify_pages_pub.add_argument(
+        "--marker",
+        default="TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a",
+        help="distinctive content marker",
+    )
+    verify_pages_pub.add_argument("--out", default=None)
+    verify_pages_pub.add_argument("--json", action="store_true")
 
     return parser
 
@@ -1273,6 +1494,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _cmd_witness_build(args)
     if args.command == "supervised-review":
         return _cmd_supervised_review(args)
+    if args.command == "repair-sets":
+        return _cmd_repair_sets(args)
+    if args.command == "check-decay":
+        return _cmd_check_decay(args)
+    if args.command == "monitor-resurrection":
+        return _cmd_monitor_resurrection(args)
+    if args.command == "verify-pages-publication":
+        return _cmd_verify_pages_publication(args)
     return 1  # pragma: no cover
 
 

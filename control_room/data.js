@@ -27,7 +27,7 @@ window.TERMIVANCE_DATA = {
     "Unpublishing targets exactly one disposable Pages project; the canonical repository and every other project are out of scope.",
     "Unsigned SHA-256 digests in the ledger are local tamper evidence, never cryptographic authentication of provider events."
   ],
-  "built_at": "2026-10-20T08:56:50.833278+00:00",
+  "built_at": "2026-10-21T06:25:24.138097+00:00",
   "demo_target_discovery": {
     "candidates": [
       {
@@ -206,6 +206,112 @@ window.TERMIVANCE_DATA = {
   "read_provenance": "LIVE_ANONYMOUS",
   "schema": "termivance.control_room/v2",
   "sections": {
+    "bounded_repair_sets": {
+      "actionable_now_ids": [
+        "obl:ownership_authorization",
+        "obl:pages_published",
+        "obl:provider_observation",
+        "obl:redeployment_path"
+      ],
+      "authority": "NON_AUTHORITATIVE_REMEDIATION_GUIDANCE",
+      "candidate_repairs": [
+        {
+          "actionable_now": true,
+          "availability_classification": "AVAILABLE",
+          "capability": "OPERATOR_APPROVAL",
+          "externally_unavailable": false,
+          "failing_condition": "Operator authorization token with valid HMAC signature missing.",
+          "obligation_id": "obl:ownership_authorization",
+          "obligation_kind": "OWNERSHIP_AUTHORIZATION",
+          "prerequisites": [],
+          "provider_evidence_ref": "GET /projects/87785099/issues",
+          "required_authority": "OPERATOR",
+          "resolution_evidence": "Valid OperatorApproval record referencing target project ID and matching HMAC signature.",
+          "revalidation_required": false
+        },
+        {
+          "actionable_now": true,
+          "availability_classification": "AVAILABLE",
+          "capability": "AUTOMATED_CONFIG",
+          "externally_unavailable": false,
+          "failing_condition": "Target Pages site publication not independently observed.",
+          "obligation_id": "obl:pages_published",
+          "obligation_kind": "PAGES_PUBLISHED",
+          "prerequisites": [],
+          "provider_evidence_ref": "Served Pages URL probe",
+          "required_authority": "AUTOMATION",
+          "resolution_evidence": "Served Pages URL returning HTTP 200 with matching distinctive marker.",
+          "revalidation_required": true
+        },
+        {
+          "actionable_now": true,
+          "availability_classification": "AVAILABLE",
+          "capability": "HUMAN_ACTION",
+          "externally_unavailable": false,
+          "failing_condition": "provider evidence is RECORDED_LIVE, not a live observation; fixtures and records cannot satisfy a live requirement",
+          "obligation_id": "obl:provider_observation",
+          "obligation_kind": "PROVIDER_OBSERVATION",
+          "prerequisites": [],
+          "provider_evidence_ref": "Obligation obl:provider_observation",
+          "required_authority": "OPERATOR",
+          "resolution_evidence": "Resolution of obligation obl:provider_observation with provider proof.",
+          "revalidation_required": true
+        },
+        {
+          "actionable_now": true,
+          "availability_classification": "AVAILABLE",
+          "capability": "AUTOMATED_CONFIG",
+          "externally_unavailable": false,
+          "failing_condition": "Target repository CI configuration contains active create-pages Pages deployment mechanism.",
+          "obligation_id": "obl:redeployment_path",
+          "obligation_kind": "REDEPLOYMENT_PATH",
+          "prerequisites": [],
+          "provider_evidence_ref": "GET /projects/87785099/repository/files/.gitlab-ci.yml/raw",
+          "required_authority": "OPERATOR",
+          "resolution_evidence": "Neutralized .gitlab-ci.yml omitting pages: true or signed RedeploymentControlAttestation.",
+          "revalidation_required": true
+        },
+        {
+          "actionable_now": false,
+          "availability_classification": "EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS",
+          "capability": "ORGANIZER_PERMISSION",
+          "externally_unavailable": true,
+          "failing_condition": "Developer role lacks permission to unpublish Pages; Maintainer role required.",
+          "obligation_id": "obl:retirement_permission",
+          "obligation_kind": "RETIREMENT_PERMISSION",
+          "prerequisites": [],
+          "provider_evidence_ref": "GET /projects/87785099/pages (HTTP 403)",
+          "required_authority": "MAINTAINER",
+          "resolution_evidence": "GitLab API GET /projects/87785099/pages returning HTTP 200 or Maintainer membership record.",
+          "revalidation_required": true
+        }
+      ],
+      "decision_verdict": "BLOCKED",
+      "dependency_order": [
+        "obl:ownership_authorization",
+        "obl:pages_published",
+        "obl:provider_observation",
+        "obl:redeployment_path",
+        "obl:retirement_permission"
+      ],
+      "externally_blocked_ids": [
+        "obl:retirement_permission"
+      ],
+      "generated_at": "2026-10-21T06:09:40.040999+00:00",
+      "invariants": [
+        "Proposals never mutate provider state or authorize actions.",
+        "Proposals never mark tasks completed without provider evidence.",
+        "Proposals cannot improve a deterministic verdict by suggestion alone.",
+        "Organizer Maintainer denial is EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS."
+      ],
+      "malformed_graph_errors": [],
+      "schema": "termivance.bounded_repair_set/v1",
+      "target": {
+        "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+        "project_id": 87785099
+      },
+      "total_unsatisfied_obligations": 5
+    },
     "capsule": {
       "manifest": {
         "sections": {
@@ -1657,6 +1763,22 @@ window.TERMIVANCE_DATA = {
         "UNRESOLVED": 2
       }
     },
+    "freshness_decay": {
+      "age_seconds": 133.226,
+      "detail": "Evidence is FRESH (age 133.2s <= 600s).",
+      "evaluated_at": "2026-10-21T06:10:22.226256+00:00",
+      "expected_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+      "is_valid_for_evaluation": true,
+      "observed_at": "2026-10-21T06:08:09+00:00",
+      "observed_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+      "requires_revalidation": false,
+      "schema": "termivance.proof_decay/v1",
+      "state": "FRESH",
+      "ttl_seconds": 900
+    },
+    "pages_publication": {
+      "state": "UNAVAILABLE"
+    },
     "portfolio": {
       "assets": [
         {
@@ -2133,6 +2255,524 @@ window.TERMIVANCE_DATA = {
       "receipt_state": "NOT_RUN",
       "record": null,
       "recorded_verdict": null
+    },
+    "resurrection_monitoring": {
+      "authority": "DETERMINISTIC_READ_ONLY_MONITOR",
+      "current_observation": {
+        "ci_config_present": true,
+        "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
+        "default_branch": "main",
+        "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+        "observed_at": "2026-10-21T06:08:42.455033+00:00",
+        "pages_api_accessible": false,
+        "pages_api_status": 403,
+        "project_id": 87785099,
+        "redeployment_mechanism": true,
+        "redeployment_signals": [
+          "pages_keyword",
+          "pages_true"
+        ],
+        "served_http_status": 200,
+        "served_marker_observed": true,
+        "served_url": "https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/"
+      },
+      "current_truth": "TARGET_MUTATION_BLOCKED",
+      "diff_reasons": [
+        "Surviving CI redeployment mechanism detected: ['pages_keyword', 'pages_true'].",
+        "Target Pages site is currently published and serving its distinctive marker."
+      ],
+      "evaluated_at": "2026-10-21T06:08:44.179084+00:00",
+      "freshness_state": "EXPIRED",
+      "historical_truth": {
+        "action": "unpublish_pages",
+        "authoritative": false,
+        "evaluated_at": "2026-10-19T20:47:44.867015+00:00",
+        "graph": {
+          "dependencies": [
+            {
+              "active": true,
+              "dependency_id": "dep:active_redeployment",
+              "description": "observed Pages deployment mechanism in CI configuration",
+              "evidence_id": "ev:ci_config",
+              "kind": "ACTIVE_REDEPLOYMENT"
+            },
+            {
+              "active": false,
+              "dependency_id": "dep:open_work_item",
+              "description": "0 open retirement-related work item(s)",
+              "evidence_id": "ev:open_issues",
+              "kind": "OPEN_WORK_ITEM"
+            }
+          ],
+          "edges": [
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:target_scope"
+            },
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:ownership_authorization"
+            },
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:retirement_permission"
+            },
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:pages_published"
+            },
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:identity_binding"
+            },
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:provider_observation"
+            },
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:unresolved_work"
+            },
+            {
+              "from": "target:87785099:GITLAB_PAGES_SITE",
+              "relation": "HAS_OBLIGATION",
+              "to": "obl:redeployment_path"
+            },
+            {
+              "from": "obl:provider_observation",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:project_identity"
+            },
+            {
+              "from": "obl:identity_binding",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:project_identity"
+            },
+            {
+              "from": "obl:identity_binding",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:branch"
+            },
+            {
+              "from": "obl:redeployment_path",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:ci_config"
+            },
+            {
+              "from": "obl:unresolved_work",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:open_issues"
+            },
+            {
+              "from": "obl:retirement_permission",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:effective_permission"
+            },
+            {
+              "from": "obl:identity_binding",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:effective_permission"
+            },
+            {
+              "from": "obl:pages_published",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:pages_deployment"
+            },
+            {
+              "from": "obl:identity_binding",
+              "relation": "REQUIRES_EVIDENCE",
+              "to": "ev:pages_deployment"
+            },
+            {
+              "from": "obl:unresolved_work",
+              "relation": "BLOCKED_BY",
+              "to": "dep:open_work_item"
+            },
+            {
+              "from": "obl:redeployment_path",
+              "relation": "BLOCKED_BY",
+              "to": "dep:active_redeployment"
+            }
+          ],
+          "evidence": [
+            {
+              "classification": "LIVE",
+              "detail": {
+                "branch": "main",
+                "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
+              },
+              "digest": "11688fd09e0d06312ba2934b2b5aad899e1dc1b71e254639310c8b1cb9714aba",
+              "endpoint": "/projects/87785099/repository/branches/main",
+              "error_kind": null,
+              "evidence_id": "ev:branch",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "BRANCH",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 200,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "bytes": 320,
+                "file": ".gitlab-ci.yml",
+                "includes_present": false,
+                "pages_mechanism": true,
+                "pages_signals": [
+                  "pages_true",
+                  "pages_keyword"
+                ],
+                "present": true,
+                "ref": "main",
+                "refs_examined": [
+                  "main"
+                ]
+              },
+              "digest": "ff9ca84d2117058681353e234a6cda441b6831cd9e8b3540a22cf02595a32b37",
+              "endpoint": "/projects/87785099/repository/files/.gitlab-ci.yml/raw",
+              "error_kind": null,
+              "evidence_id": "ev:ci_config",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "CI_CONFIG",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 200,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "can_manage_pages": false,
+                "effective_access_level": null,
+                "pages_api_error": "AUTH_DENIED",
+                "pages_api_status": 403
+              },
+              "digest": "034fcec2a8deeee99eadeac6496228730fa29905e4d807d8a8487d96b8dd7ec5",
+              "endpoint": "/projects/87785099",
+              "error_kind": null,
+              "evidence_id": "ev:effective_permission",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "EFFECTIVE_PERMISSION",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 200,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "error": "AUTH_DENIED"
+              },
+              "digest": "be458994bf4fae39544bf92130b1d29908c0c918ca5515468d47e326bb9406df",
+              "endpoint": "/projects/87785099/environments",
+              "error_kind": "AUTH_DENIED",
+              "evidence_id": "ev:environment",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "ENVIRONMENT",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 401,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "open_count": 0,
+                "retirement_related": []
+              },
+              "digest": "e53888a5d945e88f379bf5b2d42b12de6b07f7eb50a01a60d7182ba9d8dbd941",
+              "endpoint": "/projects/87785099/issues",
+              "error_kind": null,
+              "evidence_id": "ev:open_issues",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "OPEN_ISSUES",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 200,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "error": "AUTH_DENIED"
+              },
+              "digest": "ed76fbefd375028ae456c69ae43ea1760fe0127b3b265b01a6da7365e1f30b57",
+              "endpoint": "/projects/87785099/pages",
+              "error_kind": "AUTH_DENIED",
+              "evidence_id": "ev:pages",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "PAGES",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 403,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "error": "AUTH_DENIED"
+              },
+              "digest": "a457b85e3514de39f9ee1d8efa9a930957bd150e349e0a19bec335458186dee2",
+              "endpoint": "/projects/87785099/pages",
+              "error_kind": "AUTH_DENIED",
+              "evidence_id": "ev:pages_deployment",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "PAGES_DEPLOYMENT",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 403,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "latest_id": 2960507698,
+                "latest_status": "success"
+              },
+              "digest": "139526b14c99f11599c55963a526587621660279ee86e1f6dc295997f46548ea",
+              "endpoint": "/projects/87785099/pipelines",
+              "error_kind": null,
+              "evidence_id": "ev:pipeline",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "PIPELINE",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 200,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            },
+            {
+              "classification": "LIVE",
+              "detail": {
+                "archived": null,
+                "default_branch": "main",
+                "namespace_full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908",
+                "path_with_namespace": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "visibility": "public",
+                "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo"
+              },
+              "digest": "9a3e0e8923f564e7f51d2c2e7930ce020ba5983e37b83ec751a6d2c946599f64",
+              "endpoint": "/projects/87785099",
+              "error_kind": null,
+              "evidence_id": "ev:project_identity",
+              "fresh_until": "2026-10-19T21:02:44.867015+00:00",
+              "kind": "PROJECT_IDENTITY",
+              "method": "GET",
+              "observed_at": "2026-10-19T20:47:44.867015+00:00",
+              "status": 200,
+              "target": {
+                "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+                "project_id": 87785099,
+                "resource_kind": "GITLAB_PAGES_SITE"
+              }
+            }
+          ],
+          "obligations": [
+            {
+              "description": "all evidence is bound to the exact target identity",
+              "kind": "IDENTITY_BINDING",
+              "mandatory": true,
+              "obligation_id": "obl:identity_binding"
+            },
+            {
+              "description": "an exact-target authorization exists for the requested action",
+              "kind": "OWNERSHIP_AUTHORIZATION",
+              "mandatory": true,
+              "obligation_id": "obl:ownership_authorization"
+            },
+            {
+              "description": "the target is a genuinely published Pages site observed before retirement",
+              "kind": "PAGES_PUBLISHED",
+              "mandatory": true,
+              "obligation_id": "obl:pages_published"
+            },
+            {
+              "description": "a fresh provider observation of the target is available",
+              "kind": "PROVIDER_OBSERVATION",
+              "mandatory": true,
+              "obligation_id": "obl:provider_observation"
+            },
+            {
+              "description": "no active mechanism can redeploy or recreate the target",
+              "kind": "REDEPLOYMENT_PATH",
+              "mandatory": true,
+              "obligation_id": "obl:redeployment_path"
+            },
+            {
+              "description": "the acting identity can administer GitLab Pages on the target",
+              "kind": "RETIREMENT_PERMISSION",
+              "mandatory": true,
+              "obligation_id": "obl:retirement_permission"
+            },
+            {
+              "description": "target is in the permitted, non-protected retirement scope",
+              "kind": "TARGET_SCOPE",
+              "mandatory": true,
+              "obligation_id": "obl:target_scope"
+            },
+            {
+              "description": "no unresolved retirement-related work item remains",
+              "kind": "UNRESOLVED_WORK",
+              "mandatory": true,
+              "obligation_id": "obl:unresolved_work"
+            }
+          ],
+          "schema": "termivance.retirement_obligation_graph/v1",
+          "targets": [
+            {
+              "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+              "project_id": 87785099,
+              "resource_kind": "GITLAB_PAGES_SITE"
+            }
+          ]
+        },
+        "missing_conditions": [
+          "resolve TARGET_NOT_AUTHORIZED: no bound authorization supplied",
+          "resolve INSUFFICIENT_PROVIDER_ACCESS: publication could not be observed (AUTH_DENIED)",
+          "resolve REDEPLOYMENT_RISK: 1 observed redeployment/recreation mechanism(s)",
+          "resolve INSUFFICIENT_PERMISSION: the acting identity lacks Maintainer/Owner Pages administration on the target"
+        ],
+        "obligations": [
+          {
+            "kind": "IDENTITY_BINDING",
+            "mandatory": true,
+            "obligation_id": "obl:identity_binding",
+            "status": "SATISFIED"
+          },
+          {
+            "kind": "OWNERSHIP_AUTHORIZATION",
+            "mandatory": true,
+            "obligation_id": "obl:ownership_authorization",
+            "status": "VIOLATED"
+          },
+          {
+            "kind": "PAGES_PUBLISHED",
+            "mandatory": true,
+            "obligation_id": "obl:pages_published",
+            "status": "UNKNOWN"
+          },
+          {
+            "kind": "PROVIDER_OBSERVATION",
+            "mandatory": true,
+            "obligation_id": "obl:provider_observation",
+            "status": "SATISFIED"
+          },
+          {
+            "kind": "REDEPLOYMENT_PATH",
+            "mandatory": true,
+            "obligation_id": "obl:redeployment_path",
+            "status": "VIOLATED"
+          },
+          {
+            "kind": "RETIREMENT_PERMISSION",
+            "mandatory": true,
+            "obligation_id": "obl:retirement_permission",
+            "status": "VIOLATED"
+          },
+          {
+            "kind": "TARGET_SCOPE",
+            "mandatory": true,
+            "obligation_id": "obl:target_scope",
+            "status": "SATISFIED"
+          },
+          {
+            "kind": "UNRESOLVED_WORK",
+            "mandatory": true,
+            "obligation_id": "obl:unresolved_work",
+            "status": "SATISFIED"
+          }
+        ],
+        "read_only": true,
+        "reasons": [
+          {
+            "code": "TARGET_NOT_AUTHORIZED",
+            "detail": "no bound authorization supplied",
+            "evidence_id": null,
+            "obligation_id": "obl:ownership_authorization"
+          },
+          {
+            "code": "INSUFFICIENT_PROVIDER_ACCESS",
+            "detail": "publication could not be observed (AUTH_DENIED)",
+            "evidence_id": "ev:pages_deployment",
+            "obligation_id": "obl:pages_published"
+          },
+          {
+            "code": "REDEPLOYMENT_RISK",
+            "detail": "1 observed redeployment/recreation mechanism(s)",
+            "evidence_id": "ev:ci_config",
+            "obligation_id": "obl:redeployment_path"
+          },
+          {
+            "code": "INSUFFICIENT_PERMISSION",
+            "detail": "the acting identity lacks Maintainer/Owner Pages administration on the target",
+            "evidence_id": "ev:effective_permission",
+            "obligation_id": "obl:retirement_permission"
+          }
+        ],
+        "schema": "termivance.retirement_decision/v1",
+        "target": {
+          "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+          "project_id": 87785099,
+          "resource_kind": "GITLAB_PAGES_SITE"
+        },
+        "verdict": "BLOCKED"
+      },
+      "invariants": [
+        "Mechanism presence proves redeployment risk, not active resurrection.",
+        "Newly observed served marker proves actual reappearance.",
+        "Failed provider probe cannot prove continued absence.",
+        "Historical transition receipts remain immutable audit records.",
+        "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists."
+      ],
+      "redeployment_risk": "MECHANISM_PRESENT",
+      "required_revalidation_actions": [],
+      "resurrection_control": "NOT_CLAIMED",
+      "schema": "termivance.resurrection_monitor/v1",
+      "target": {
+        "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+        "project_id": 87785099,
+        "resource_kind": "GITLAB_PAGES_SITE"
+      }
     },
     "risk_map": {
       "edges": [

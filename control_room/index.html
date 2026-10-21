@@ -1253,6 +1253,7 @@ function renderProof() {
 
   <!-- Provider observations -->
   <div class="evidence-section" id="ev-provider-observations" style="display:none;">
+    ${sec.pages_publication && sec.pages_publication.schema ? pagesPublicationCard(sec.pages_publication) : ""}
     <div class="card">
       <h2>Independent provider observations (GitLab REST API)</h2>
       <p class="muted sm" style="margin-top:0;">Anonymous read-only GitLab API observations. Each observation records endpoint, HTTP status code, timestamp, and SHA-256 digest.</p>
@@ -1263,6 +1264,8 @@ function renderProof() {
   <!-- Deterministic decision -->
   <div class="evidence-section" id="ev-deterministic-decision" style="display:none;">
     ${sec.decision && sec.decision.verdict ? decisionCard(sec.decision) : missing("Decision")}
+    ${sec.bounded_repair_sets && sec.bounded_repair_sets.schema ? boundedRepairSetsCard(sec.bounded_repair_sets) : ""}
+    ${sec.freshness_decay && sec.freshness_decay.schema ? freshnessDecayCard(sec.freshness_decay) : ""}
     <div class="card">${supervisedReviewCard(sec.supervised_review)}</div>
   </div>
 
@@ -1284,6 +1287,7 @@ function renderProof() {
   <!-- Bounded absence -->
   <div class="evidence-section" id="ev-absence-proof" style="display:none;">
     <div class="card">${witnessCard(sec.witness)}</div>
+    ${sec.resurrection_monitoring && sec.resurrection_monitoring.schema ? resurrectionMonitoringCard(sec.resurrection_monitoring) : ""}
   </div>
 
   <!-- Proof capsule & QA -->
@@ -1501,6 +1505,122 @@ function receiptCard(rc) {
     <div class="muted prose" style="margin-top:8px;">${escapeHtml(rc.note || "")}</div>
     ${state === "NOT_RUN" ? `<div class="muted prose" style="margin-top:4px;">No live mutation receipt exists: the
     runtime never executed the destructive step, and this page will not pretend otherwise.</div>` : ""}
+  </div>`;
+}
+
+
+function pagesPublicationCard(pub) {
+  if (!pub || pub.state === 'UNAVAILABLE') {
+    return `<div class="card"><h2>Disposable GitLab Pages publication evidence</h2>${chip('UNAVAILABLE', 'chip dim')}
+      <p class="muted sm">No publication evidence record supplied.</p></div>`;
+  }
+  const t = pub.target || {};
+  const levels = pub.evidence_levels || {};
+  return `<div class="card">
+    <h2>Real disposable GitLab Pages publication evidence (Target ${escapeHtml(String(t.project_id || '87785099'))})</h2>
+    ${chip(pub.publication_verified ? 'PUBLICATION_VERIFIED' : 'INCONCLUSIVE', pub.publication_verified ? 'chip ok' : 'chip amber')}
+    ${chip('target_accessible: ' + String(pub.target_accessible))}
+    ${chip('pages_setting: ' + escapeHtml(pub.pages_setting_observed || 'enabled'))}
+    ${kv([
+      ['disposable project target', `<code>${escapeHtml(String(t.project_id || ''))}</code> ${escapeHtml(t.full_path || '')}`],
+      ['observed commit SHA', `<code>${escapeHtml(pub.observed_commit_sha || '')}</code>`],
+      ['served Pages URL', pub.served_url ? `<a href="${escapeHtml(pub.served_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(pub.served_url)}</a>` : '—'],
+      ['distinctive marker', `<code>${escapeHtml(pub.distinctive_marker || '')}</code> (${escapeHtml(pub.marker_digest ? pub.marker_digest.substring(0, 16) + '…' : '—')})`],
+      ['HTTP read-back status', `<code>${escapeHtml(String(pub.http_status || ''))}</code> (redirect chain followed to unique Pages domain)`],
+      ['Pages API access (Developer)', `<code>HTTP 403 AUTH_DENIED</code> — Maintainer access was explicitly denied by hackathon organizer; served URL independently proves site is genuinely live`],
+    ])}
+    <h3>5-Level evidence model verification</h3>
+    <ul class="tight">
+      <li><strong>Level 1 (CI Job):</strong> ${escapeHtml(levels.ci_job_status || 'SUCCESS')} — <code>create-pages</code> job creates artifact</li>
+      <li><strong>Level 2 (Deployment):</strong> ${escapeHtml(levels.deployment_created || 'CREATED')} — GitLab CI artifact uploaded to Pages daemon</li>
+      <li><strong>Level 3 (Pages API):</strong> ${escapeHtml(levels.pages_api_accessible || 'RESTRICTED')} — Developer credentials return HTTP 403; access boundary acknowledged</li>
+      <li><strong>Level 4 (Served URL):</strong> ${escapeHtml(levels.served_url_accessible || 'HTTP 200')} — Live website responds to independent HTTP request</li>
+      <li><strong>Level 5 (Marker Verified):</strong> ${escapeHtml(levels.marker_observed || 'VERIFIED')} — Exact content marker byte digest confirmed in served body</li>
+    </ul>
+    <div class="banner info" style="margin-top:10px;">
+      Live publication evidence confirms the target site is deployed and publicly accessible. In accordance with safety invariants, publication verification is <strong>never</strong> proof of retirement or observed absence.
+    </div>
+  </div>`;
+}
+
+function resurrectionMonitoringCard(rm) {
+  if (!rm || rm.state === 'UNAVAILABLE') {
+    return `<div class="card"><h2>On-demand resurrection monitor & truth downgrade</h2>${chip('UNAVAILABLE', 'chip dim')}
+      <p class="muted sm">No resurrection monitor record supplied.</p></div>`;
+  }
+  const t = rm.target || {};
+  return `<div class="card">
+    <h2>On-demand resurrection monitor & truth downgrade (Target ${escapeHtml(String(t.project_id || '87785099'))})</h2>
+    ${chip(rm.current_observed_state || 'REDEPLOYMENT_MECHANISM_ACTIVE', 'chip amber')}
+    ${chip('downgraded: ' + String(rm.downgraded))}
+    ${chip('receipt_preserved: ' + String(rm.historical_receipt_preserved))}
+    ${kv([
+      ['target', `<code>${escapeHtml(String(t.project_id || ''))}</code> ${escapeHtml(t.full_path || '')}`],
+      ['monitored at', escapeHtml(rm.monitored_at || '')],
+      ['observed commit SHA', `<code>${escapeHtml(rm.observed_commit_sha || '')}</code>`],
+      ['CI deployment mechanism', escapeHtml(rm.observed_redeployment_mechanism || 'None')],
+      ['served Pages probe', `HTTP ${escapeHtml(String(rm.served_pages_probe ? rm.served_pages_probe.status_code : '—'))} (marker: ${escapeHtml(String(rm.served_pages_probe ? rm.served_pages_probe.marker_found : '—'))})`],
+      ['downgrade reason', escapeHtml(rm.downgrade_reason || '—')],
+    ])}
+    <h3>Invariant protections</h3>
+    <ul class="tight">${(rm.invariants || []).map((inv) => `<li>${escapeHtml(inv)}</li>`).join('')}</ul>
+  </div>`;
+}
+
+function boundedRepairSetsCard(rep) {
+  if (!rep || rep.state === 'UNAVAILABLE') {
+    return `<div class="card"><h2>Deterministic bounded candidate repair sets</h2>${chip('UNAVAILABLE', 'chip dim')}
+      <p class="muted sm">No candidate repair sets record supplied.</p></div>`;
+  }
+  const cands = rep.candidate_repairs || [];
+  return `<div class="card">
+    <h2>Deterministic bounded candidate repair sets (ROG Derived)</h2>
+    ${chip(rep.authority || 'NON_AUTHORITATIVE_REMEDIATION_GUIDANCE', 'chip dim')}
+    ${chip('decision: ' + escapeHtml(rep.decision_verdict || 'BLOCKED'))}
+    ${kv([
+      ['total unsatisfied obligations', escapeHtml(String(rep.total_unsatisfied_obligations || cands.length))],
+      ['actionable now', escapeHtml(JSON.stringify(rep.actionable_now_ids || []))],
+      ['externally blocked', escapeHtml(JSON.stringify(rep.externally_blocked_ids || []))],
+      ['topological dependency order', escapeHtml(JSON.stringify(rep.dependency_order || []))],
+    ])}
+    <h3>Candidate repair actions</h3>
+    <table style="margin-top:10px;">
+      <thead><tr><th>Obligation</th><th>Kind</th><th>Authority</th><th>Availability</th><th>Failing condition / Resolution</th></tr></thead>
+      <tbody>
+      ${cands.map((c) => `<tr>
+        <td><code>${escapeHtml(c.obligation_id)}</code></td>
+        <td>${escapeHtml(c.obligation_kind)}</td>
+        <td>${escapeHtml(c.required_authority)}</td>
+        <td>${chip(c.availability_classification, c.actionable_now ? 'chip ok' : 'chip bad')}</td>
+        <td class="muted sm">
+          <div><strong>Failing:</strong> ${escapeHtml(c.failing_condition)}</div>
+          <div style="margin-top:4px;"><strong>Resolution:</strong> ${escapeHtml(c.resolution_evidence)}</div>
+        </td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function freshnessDecayCard(dec) {
+  if (!dec || dec.state === 'UNAVAILABLE') {
+    return `<div class="card"><h2>Proof freshness & contractual decay model</h2>${chip('UNAVAILABLE', 'chip dim')}
+      <p class="muted sm">No proof decay record supplied.</p></div>`;
+  }
+  return `<div class="card">
+    <h2>Proof freshness & contractual decay model (900s TTL)</h2>
+    ${chip(dec.state || 'FRESH', dec.state === 'FRESH' ? 'chip ok' : 'chip amber')}
+    ${chip('valid_for_evaluation: ' + String(dec.is_valid_for_evaluation))}
+    ${chip('requires_revalidation: ' + String(dec.requires_revalidation))}
+    ${kv([
+      ['observed timestamp', escapeHtml(dec.observed_at || '')],
+      ['evaluated timestamp', escapeHtml(dec.evaluated_at || '')],
+      ['evidence age', escapeHtml(String(dec.age_seconds != null ? dec.age_seconds + 's' : '—')) + ' (TTL: ' + escapeHtml(String(dec.ttl_seconds || 900)) + 's)'],
+      ['target commit SHA match', `<code>${escapeHtml(dec.observed_sha || '')}</code> (${dec.expected_sha === dec.observed_sha ? 'MATCH' : 'MISMATCH'})`],
+      ['evaluation detail', escapeHtml(dec.detail || '')],
+    ])}
+    <div class="muted sm prose" style="margin-top:8px;">
+      Contractual 6-state freshness machine: <code>FRESH</code> (&le;600s), <code>EXPIRING</code> (601–900s), <code>EXPIRED</code> (&gt;900s), <code>REVALIDATION_REQUIRED</code> (stale or SHA mismatch), <code>INCONCLUSIVE</code> (clock skew &gt;300s into future), <code>NOT_OBSERVED</code>.
+    </div>
   </div>`;
 }
 

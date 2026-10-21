@@ -1,0 +1,106 @@
+{
+  "actionable_now_ids": [
+    "obl:ownership_authorization",
+    "obl:pages_published",
+    "obl:provider_observation",
+    "obl:redeployment_path"
+  ],
+  "authority": "NON_AUTHORITATIVE_REMEDIATION_GUIDANCE",
+  "candidate_repairs": [
+    {
+      "actionable_now": true,
+      "availability_classification": "AVAILABLE",
+      "capability": "OPERATOR_APPROVAL",
+      "externally_unavailable": false,
+      "failing_condition": "Operator authorization token with valid HMAC signature missing.",
+      "obligation_id": "obl:ownership_authorization",
+      "obligation_kind": "OWNERSHIP_AUTHORIZATION",
+      "prerequisites": [],
+      "provider_evidence_ref": "GET /projects/87785099/issues",
+      "required_authority": "OPERATOR",
+      "resolution_evidence": "Valid OperatorApproval record referencing target project ID and matching HMAC signature.",
+      "revalidation_required": false
+    },
+    {
+      "actionable_now": true,
+      "availability_classification": "AVAILABLE",
+      "capability": "AUTOMATED_CONFIG",
+      "externally_unavailable": false,
+      "failing_condition": "Target Pages site publication not independently observed.",
+      "obligation_id": "obl:pages_published",
+      "obligation_kind": "PAGES_PUBLISHED",
+      "prerequisites": [],
+      "provider_evidence_ref": "Served Pages URL probe",
+      "required_authority": "AUTOMATION",
+      "resolution_evidence": "Served Pages URL returning HTTP 200 with matching distinctive marker.",
+      "revalidation_required": true
+    },
+    {
+      "actionable_now": true,
+      "availability_classification": "AVAILABLE",
+      "capability": "HUMAN_ACTION",
+      "externally_unavailable": false,
+      "failing_condition": "provider evidence is RECORDED_LIVE, not a live observation; fixtures and records cannot satisfy a live requirement",
+      "obligation_id": "obl:provider_observation",
+      "obligation_kind": "PROVIDER_OBSERVATION",
+      "prerequisites": [],
+      "provider_evidence_ref": "Obligation obl:provider_observation",
+      "required_authority": "OPERATOR",
+      "resolution_evidence": "Resolution of obligation obl:provider_observation with provider proof.",
+      "revalidation_required": true
+    },
+    {
+      "actionable_now": true,
+      "availability_classification": "AVAILABLE",
+      "capability": "AUTOMATED_CONFIG",
+      "externally_unavailable": false,
+      "failing_condition": "Target repository CI configuration contains active create-pages Pages deployment mechanism.",
+      "obligation_id": "obl:redeployment_path",
+      "obligation_kind": "REDEPLOYMENT_PATH",
+      "prerequisites": [],
+      "provider_evidence_ref": "GET /projects/87785099/repository/files/.gitlab-ci.yml/raw",
+      "required_authority": "OPERATOR",
+      "resolution_evidence": "Neutralized .gitlab-ci.yml omitting pages: true or signed RedeploymentControlAttestation.",
+      "revalidation_required": true
+    },
+    {
+      "actionable_now": false,
+      "availability_classification": "EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS",
+      "capability": "ORGANIZER_PERMISSION",
+      "externally_unavailable": true,
+      "failing_condition": "Developer role lacks permission to unpublish Pages; Maintainer role required.",
+      "obligation_id": "obl:retirement_permission",
+      "obligation_kind": "RETIREMENT_PERMISSION",
+      "prerequisites": [],
+      "provider_evidence_ref": "GET /projects/87785099/pages (HTTP 403)",
+      "required_authority": "MAINTAINER",
+      "resolution_evidence": "GitLab API GET /projects/87785099/pages returning HTTP 200 or Maintainer membership record.",
+      "revalidation_required": true
+    }
+  ],
+  "decision_verdict": "BLOCKED",
+  "dependency_order": [
+    "obl:ownership_authorization",
+    "obl:pages_published",
+    "obl:provider_observation",
+    "obl:redeployment_path",
+    "obl:retirement_permission"
+  ],
+  "externally_blocked_ids": [
+    "obl:retirement_permission"
+  ],
+  "generated_at": "2026-10-21T06:09:40.040999+00:00",
+  "invariants": [
+    "Proposals never mutate provider state or authorize actions.",
+    "Proposals never mark tasks completed without provider evidence.",
+    "Proposals cannot improve a deterministic verdict by suggestion alone.",
+    "Organizer Maintainer denial is EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS."
+  ],
+  "malformed_graph_errors": [],
+  "schema": "termivance.bounded_repair_set/v1",
+  "target": {
+    "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
+    "project_id": 87785099
+  },
+  "total_unsatisfied_obligations": 5
+}
