@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-21T12:00:26Z",
-  "artifact_sha256": "172522217033ab7bdda0ca43a6d80854df35b001daee218deaaa1a0902036cd4",
+  "acquired_at_utc": "2026-10-21T12:22:26Z",
+  "artifact_sha256": "b63a315aab11b5c210522feeb3c20786287ed915e3aa41549d634ac121f8c648",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2971489687/jobs",
+  "endpoint": "/projects/87779099/pipelines/2971888764/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17345075033,
+      "id": 17348108462,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -29,57 +29,50 @@
     {
       "allow_failure": false,
       "archived": false,
-      "artifacts": [
-        {
-          "file_format": null,
-          "file_type": "trace",
-          "filename": "job.log",
-          "size": 18020
-        }
-      ],
+      "artifacts": [],
       "artifacts_expire_at": null,
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "Mehmet Aydo\u011fan",
-        "authored_date": "2026-10-21T13:34:28.000+03:00",
-        "committed_date": "2026-10-21T13:34:28.000+03:00",
+        "authored_date": "2026-10-21T15:19:06.000+03:00",
+        "committed_date": "2026-10-21T15:19:06.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "Mehmet Aydo\u011fan",
-        "created_at": "2026-10-21T13:34:28.000+03:00",
+        "created_at": "2026-10-21T15:19:06.000+03:00",
         "extended_trailers": {},
-        "id": "c8dbcc80dfe772ab6da5408f50142b1a120b97f9",
-        "message": "docs(b4-integrity): record verified QA bridge baselines for the final evidence-integrity correction\n\nRecords the independently observed verification of 3d12e24: GitLab pipeline\n2971463550 (verification job 17344869001, success) and GitHub observer run\n39584994230 (qa_status PASS, drift IN_SYNC, exact SHA parity, 21/29 live\nobservations, source manifest 358563cc\u2026, evidence manifest 203877a6\u2026).\nPer the immutable git provenance contract (plan section 4.4), this\ndocumentation commit's own post-push verification is dynamically bound and\nobservable via the public GitLab API and the GitHub observer.\n",
+        "id": "b59735ff2297f3de5ec7ba4379252fc10d290c61",
+        "message": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary\n",
         "parent_ids": [
-          "3d12e24d98902f271b9d1b58b858c569497109a6"
+          "c8dbcc80dfe772ab6da5408f50142b1a120b97f9"
         ],
-        "short_id": "c8dbcc80",
-        "title": "docs(b4-integrity): record verified QA bridge baselines for the final evidence-integrity correction",
+        "short_id": "b59735ff",
+        "title": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/c8dbcc80dfe772ab6da5408f50142b1a120b97f9"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/b59735ff2297f3de5ec7ba4379252fc10d290c61"
       },
       "coverage": null,
-      "created_at": "2026-10-21T10:34:32.200Z",
-      "duration": 134.155338,
+      "created_at": "2026-10-21T12:19:16.646Z",
+      "duration": 123.973513,
       "erased_at": null,
-      "finished_at": "2026-10-21T10:36:46.708Z",
-      "id": 17345075033,
+      "finished_at": "2026-10-21T12:21:20.999Z",
+      "id": 17348108462,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-21T10:34:32.050Z",
-        "id": 2971489687,
-        "iid": 47,
+        "created_at": "2026-10-21T12:19:16.475Z",
+        "id": 2971888764,
+        "iid": 48,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "c8dbcc80dfe772ab6da5408f50142b1a120b97f9",
+        "sha": "b59735ff2297f3de5ec7ba4379252fc10d290c61",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-21T10:36:48.105Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971489687"
+        "updated_at": "2026-10-21T12:21:22.553Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2971888764"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.069398,
+      "queued_duration": 0.068848,
       "ref": "main",
       "runner": {
         "active": true,
@@ -107,24 +100,24 @@
       },
       "runner_manager": {
         "architecture": "amd64",
-        "contacted_at": "2026-10-21T12:00:26.254Z",
-        "created_at": "2026-10-21T09:42:59.074Z",
-        "id": 164191678,
+        "contacted_at": "2026-10-21T12:22:25.905Z",
+        "created_at": "2026-10-21T09:42:46.732Z",
+        "id": 164191640,
         "ip_address": "10.218.11.3",
         "job_execution_status": "active",
         "platform": "linux",
         "revision": "5d62e0cc",
         "status": "online",
-        "system_id": "r_DFrhG9NCgy5n",
+        "system_id": "r_ZmvdpyFRNpQ7",
         "version": "19.6.0~pre.2350.g5d62e0cc"
       },
       "stage": "verify",
-      "started_at": "2026-10-21T10:34:32.553Z",
+      "started_at": "2026-10-21T12:19:17.025Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17345075033"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17348108462"
     }
   ]
 }

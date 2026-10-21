@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-21T12:00:19Z",
-  "artifact_sha256": "566e5c0099717bd7e9947e0151ee8c1eed2fceeec17a9d3d363036441140529e",
+  "acquired_at_utc": "2026-10-21T12:22:20Z",
+  "artifact_sha256": "8f006456a7593e319352da5d135ffd14cfd4f8e6f361c4978d83293d410298f4",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/repository/branches/main",
   "http_error": null,
@@ -18,21 +18,21 @@
     "commit": {
       "author_email": "[REDACTED]",
       "author_name": "Mehmet Aydo\u011fan",
-      "authored_date": "2026-10-21T13:34:28.000+03:00",
-      "committed_date": "2026-10-21T13:34:28.000+03:00",
+      "authored_date": "2026-10-21T15:19:06.000+03:00",
+      "committed_date": "2026-10-21T15:19:06.000+03:00",
       "committer_email": "[REDACTED]",
       "committer_name": "Mehmet Aydo\u011fan",
-      "created_at": "2026-10-21T13:34:28.000+03:00",
+      "created_at": "2026-10-21T15:19:06.000+03:00",
       "extended_trailers": {},
-      "id": "c8dbcc80dfe772ab6da5408f50142b1a120b97f9",
-      "message": "docs(b4-integrity): record verified QA bridge baselines for the final evidence-integrity correction\n\nRecords the independently observed verification of 3d12e24: GitLab pipeline\n2971463550 (verification job 17344869001, success) and GitHub observer run\n39584994230 (qa_status PASS, drift IN_SYNC, exact SHA parity, 21/29 live\nobservations, source manifest 358563cc\u2026, evidence manifest 203877a6\u2026).\nPer the immutable git provenance contract (plan section 4.4), this\ndocumentation commit's own post-push verification is dynamically bound and\nobservable via the public GitLab API and the GitHub observer.\n",
+      "id": "b59735ff2297f3de5ec7ba4379252fc10d290c61",
+      "message": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary\n",
       "parent_ids": [
-        "3d12e24d98902f271b9d1b58b858c569497109a6"
+        "c8dbcc80dfe772ab6da5408f50142b1a120b97f9"
       ],
-      "short_id": "c8dbcc80",
-      "title": "docs(b4-integrity): record verified QA bridge baselines for the final evidence-integrity correction",
+      "short_id": "b59735ff",
+      "title": "fix(b4-integrity): final causal-authority and proof-boundary closure for offline publication, verified-note handoff, ledger ownership, current-observation binding, and control room truth boundary",
       "trailers": {},
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/c8dbcc80dfe772ab6da5408f50142b1a120b97f9"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/b59735ff2297f3de5ec7ba4379252fc10d290c61"
     },
     "default": true,
     "developers_can_merge": true,
