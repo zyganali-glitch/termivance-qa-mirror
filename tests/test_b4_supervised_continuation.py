@@ -142,3 +142,87 @@ def test_zero_unauthorized_mutation_guarantee():
     for s in steps:
         assert "mutation" not in s["step_id"].lower()
         assert s["status"] in {"COMPLETED", "NOT_RUN", "RECORDED_INPUT_USED"}
+
+
+def test_continuation_durable_idempotent_duplicate_detection(tmp_path):
+    """Subsequent continuation run with identical causal keys detects duplicate."""
+    out_dir = tmp_path / "idempotent_test"
+    res1 = run_supervised_continuation(
+        note_body=AUTHENTIC_NOTE_BODY,
+        issue_iid=5,
+        duo_session_id=DUO_SESSION_ID_NEUTRAL,
+        duo_note_id=4045401991,
+        target_project_id=DEFAULT_TARGET_PROJECT_ID,
+        expected_commit_sha=AUTHENTIC_COMMIT_SHA,
+        out_dir=out_dir,
+        now=NOW,
+    )
+    assert res1.status == "COMPLETED"
+    assert res1.is_duplicate is False
+    assert res1.duplicate_status == "FIRST_RECORDED_EXECUTION"
+
+    res2 = run_supervised_continuation(
+        note_body=AUTHENTIC_NOTE_BODY,
+        issue_iid=5,
+        duo_session_id=DUO_SESSION_ID_NEUTRAL,
+        duo_note_id=4045401991,
+        target_project_id=DEFAULT_TARGET_PROJECT_ID,
+        expected_commit_sha=AUTHENTIC_COMMIT_SHA,
+        out_dir=out_dir,
+        now=NOW,
+    )
+    assert res2.is_duplicate is True
+    assert res2.duplicate_status == "RECORDED_DUPLICATE_IDEMPOTENT"
+    assert res2.status == "COMPLETED_IDEMPOTENT"
+
+
+def test_cli_supervised_review_continue_dispatch(tmp_path):
+    """CLI contract parity: all continuation arguments are parsed and dispatched."""
+    from termivance.cli import main
+
+    out_file = tmp_path / "cli_cont.json"
+    cmd = [
+        "supervised-review",
+        "--continue",
+        "--issue-iid",
+        "5",
+        "--session-id",
+        DUO_SESSION_ID_NEUTRAL,
+        "--note-id",
+        "4045401991",
+        "--target-id",
+        str(DEFAULT_TARGET_PROJECT_ID),
+        "--expected-sha",
+        AUTHENTIC_COMMIT_SHA,
+        "--note-body",
+        AUTHENTIC_NOTE_BODY,
+        "--out",
+        str(out_file),
+    ]
+    exit_code = main(cmd)
+    assert exit_code == 0
+    assert out_file.exists()
+
+
+def test_cli_supervised_review_continue_failure_exit_code():
+    """CLI exits with code 1 when preflight fails on mismatched target ID."""
+    from termivance.cli import main
+
+    cmd = [
+        "supervised-review",
+        "--continue",
+        "--issue-iid",
+        "5",
+        "--session-id",
+        DUO_SESSION_ID_NEUTRAL,
+        "--note-id",
+        "4045401991",
+        "--target-id",
+        "99999999",
+        "--expected-sha",
+        AUTHENTIC_COMMIT_SHA,
+        "--note-body",
+        AUTHENTIC_NOTE_BODY,
+    ]
+    exit_code = main(cmd)
+    assert exit_code == 1

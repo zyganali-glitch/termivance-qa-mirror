@@ -120,6 +120,16 @@ def evaluate_freshness(
       - 600 < age <= 900: EXPIRING
       - age > 900: EXPIRED
     """
+    if ttl_seconds <= 0 or ttl_seconds > MAX_TTL_SECONDS:
+        raise ValueError(
+            f"ttl_seconds ({ttl_seconds}) must be between 1 and {MAX_TTL_SECONDS}s."
+        )
+    if fresh_threshold_seconds < 0 or fresh_threshold_seconds > ttl_seconds:
+        raise ValueError(
+            f"fresh_threshold_seconds ({fresh_threshold_seconds}) "
+            f"must be between 0 and {ttl_seconds}s."
+        )
+
     evaluated_at = _utc(now)
 
     if not_observed:
@@ -272,15 +282,36 @@ def evaluate_evidence_bundle(
 
     for rec in records:
         obs_time = rec.get("observed_at") or rec.get("observed_at_utc")
-        not_obs = bool(rec.get("error_kind") in {"AUTH_DENIED", "TIMEOUT", "NOT_FOUND"})
-        item_res = evaluate_freshness(
-            str(obs_time) if obs_time else None,
-            now=evaluated_at,
-            expected_sha=expected_sha,
-            observed_sha=observed_sha,
-            ttl_seconds=ttl_seconds,
-            not_observed=not_obs and not obs_time,
+        status_code = rec.get("status")
+        error_kind = rec.get("error_kind")
+        is_probe_failure = bool(
+            error_kind in {"AUTH_DENIED", "TIMEOUT", "NOT_FOUND", "CONNECTION_ERROR", "MALFORMED"}
+            or (isinstance(status_code, int) and status_code in (401, 403, 404, 500, 502, 503))
+            or rec.get("ok") is False
         )
+        if is_probe_failure:
+            item_res = FreshnessResult(
+                state=FreshnessState.NOT_OBSERVED,
+                age_seconds=None,
+                ttl_seconds=ttl_seconds,
+                observed_at=None,
+                evaluated_at=evaluated_at,
+                detail=(
+                    f"Provider probe failed ({error_kind or status_code}); "
+                    "unobserved facts cannot be FRESH."
+                ),
+                expected_sha=expected_sha,
+                observed_sha=observed_sha,
+                requires_revalidation=True,
+            )
+        else:
+            item_res = evaluate_freshness(
+                str(obs_time) if obs_time else None,
+                now=evaluated_at,
+                expected_sha=expected_sha,
+                observed_sha=observed_sha,
+                ttl_seconds=ttl_seconds,
+            )
         res_dict = item_res.to_dict()
         res_dict["endpoint"] = rec.get("endpoint")
         res_dict["kind"] = rec.get("kind")
@@ -300,6 +331,12 @@ def evaluate_evidence_bundle(
         "expired_count": sum(1 for r in results if r["state"] == FreshnessState.EXPIRED.value),
         "revalidation_required_count": sum(
             1 for r in results if r["state"] == FreshnessState.REVALIDATION_REQUIRED.value
+        ),
+        "not_observed_count": sum(
+            1 for r in results if r["state"] == FreshnessState.NOT_OBSERVED.value
+        ),
+        "inconclusive_count": sum(
+            1 for r in results if r["state"] == FreshnessState.INCONCLUSIVE.value
         ),
         "records": results,
     }

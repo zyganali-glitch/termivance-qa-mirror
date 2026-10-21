@@ -193,3 +193,54 @@ def test_decay_cannot_improve_blocked_verdict():
         Verdict.INCONCLUSIVE if not expired_res.is_valid_for_evaluation else prior_verdict
     )
     assert effective_verdict != Verdict.SAFE_TO_RETIRE
+
+
+def test_contractual_ttl_bounds_enforcement():
+    """Evaluate contractual TTL bounds: 0 < ttl_seconds <= 900."""
+    import pytest
+
+    with pytest.raises(ValueError, match="must be between 1 and 900s"):
+        evaluate_freshness(BASE_TIME, now=BASE_TIME, ttl_seconds=901)
+
+    with pytest.raises(ValueError, match="must be between 1 and 900s"):
+        evaluate_freshness(BASE_TIME, now=BASE_TIME, ttl_seconds=0)
+
+    with pytest.raises(ValueError, match="must be between 1 and 900s"):
+        evaluate_freshness(BASE_TIME, now=BASE_TIME, ttl_seconds=-10)
+
+    # 900 is allowed
+    res = evaluate_freshness(BASE_TIME, now=BASE_TIME, ttl_seconds=900)
+    assert res.state == FreshnessState.FRESH
+
+
+def test_failed_provider_probes_not_marked_fresh_in_bundle():
+    """Failed provider probes (401, 403, 404, 500) must evaluate to NOT_OBSERVED."""
+    failed_records = [
+        {
+            "id": "probe_403",
+            "endpoint": "/projects/87785099/pages",
+            "status": 403,
+            "error_kind": "AUTH_DENIED",
+            "observed_at": BASE_TIME.isoformat(),
+        },
+        {
+            "id": "probe_401",
+            "endpoint": "/projects/87785099/deployments",
+            "status": 401,
+            "error": "Unauthorized",
+            "observed_at": BASE_TIME.isoformat(),
+        },
+        {
+            "id": "probe_ok",
+            "endpoint": "/projects/87785099",
+            "status": 200,
+            "ok": True,
+            "observed_at": BASE_TIME.isoformat(),
+        },
+    ]
+    bundle = evaluate_evidence_bundle(failed_records, now=BASE_TIME)
+    assert bundle["total_records"] == 3
+    assert bundle["fresh_count"] == 1
+    assert bundle["not_observed_count"] == 2
+    assert bundle["overall_state"] == FreshnessState.NOT_OBSERVED.value
+

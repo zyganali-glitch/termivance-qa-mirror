@@ -8,15 +8,15 @@ Core concepts: **Retirement Obligation Graph**, **Bounded Absence**, and **Retir
 
 ## Status
 
-**B4 final product, supervised workflow & evidence closure completed (2026-10-21)**. Covers the award-critical B4 consolidated engineering execution:
+**B4 award-critical engineering execution & integrity repair completed (2026-10-21)**. Covers the award-critical B4 consolidated engineering execution:
 
-- **Genuine Supervised Autonomy Integration (`WORK-B4-18`)** — Supported single-flow continuation (`supervised-review --continue`), 12-point platform feasibility study documenting GitLab Duo Custom Flow ambient runtime boundaries (`coding_environment: none`), and fail-closed security preflight invariants.
-- **Real Disposable Pages Publication Evidence (`WORK-B4-19` Track 1)** — Live HTTP 200 observation on disposable target `87785099` at served Pages URL with distinctive marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` verified across all 5 evidence levels; destructive deletion (`DELETE /projects/87785099/pages`) strictly forbidden (Track 2 `BLOCKED_EXTERNAL`).
-- **Resurrection Monitoring & Truth Downgrade (`WORK-B4-20`)** — On-demand read-only monitor (`monitor-resurrection`) checking CI redeployment mechanisms (`create-pages` with `pages: true`) and served markers, downgrading current truth (`REDEPLOYMENT_MECHANISM_ACTIVE`) while strictly preserving historical receipts without rewriting.
+- **Genuine Supervised Autonomy Integration (`WORK-B4-18`)** — Fail-closed supervised continuation (`supervised-review --continue`), binding causal execution to Issue #5 / Session 9710085 with durable idempotent duplicate detection. Honest 12-point feasibility study proves true single-request Duo-to-Python automation remains constrained by platform limitations (`coding_environment: none` and lack of execution tools); execution is an operator-triggered CLI continuation.
+- **Real Disposable Pages Publication Evidence (`WORK-B4-19` Track 1)** — Live HTTP 200 observation on disposable target `87785099` at served Pages URL with distinctive marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` verified across all 5 evidence levels, corroborating Level 4 & 5 against repository source bytes; destructive deletion (`DELETE /projects/87785099/pages`) strictly forbidden (Track 2 `BLOCKED_EXTERNAL`).
+- **Resurrection Monitoring & Truth Downgrade (`WORK-B4-20`)** — Exact-target resurrection monitor & truth downgrade (`monitor-resurrection`), requiring verified v3 retirement receipts with `OBSERVED_ABSENT` verdict before evaluating downgrade, and requiring multi-surface corroboration (Pages API undeployed + served URL 404 + no CI redeployment mechanism) for `CONTINUED_ABSENCE_OBSERVED`.
 - **Deterministic Bounded Candidate Repair Sets (`WORK-B4-21`)** — ROG-derived remediation planning (`repair-sets`) producing topologically ordered prerequisite repair actions; organizer Maintainer denial honestly classified as `EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS`.
-- **Proof Freshness Decay & 900s TTL (`WORK-B4-22`)** — Contractual 6-state temporal decay state machine (`check-decay`) enforcing 600s fresh threshold, 900s expiration TTL, and future clock skew rejection boundaries.
+- **Proof Freshness Decay & 900s TTL (`WORK-B4-22`)** — Contractual 6-state temporal decay state machine (`check-decay`) enforcing 600s fresh threshold, 900s expiration TTL, and isolating failed probes into `NOT_OBSERVED`.
 
-Suite: **424 tests passed**, ruff clean, **40/40** network-free CI safety assertions.
+Suite: **437 tests passed**, ruff clean, **40/40** network-free CI safety assertions.
 
 B4 also closes the P0 security defects (durable sealed-reservation ledger, GitLab-issue approval provenance, receipt-bound absence) and adds the six-capability **Retirement Control Plane**: read-only Portfolio, deterministic Risk Map, hypothetical Simulation, judge-facing Control Room, tamper-evident Proof Capsule with `capsule-verify`, and a 7-stage single-flow workflow orchestration. The final integrity repair closes receipt classification loopholes and establishes the evidence-bound supervised review pipeline.
 
@@ -51,7 +51,7 @@ termivance witness-build --project-id 87785099 --full-path gitlab-ai-hackathon/t
 # supervised retirement review: genuinely execute the 7-step read-only investigation live (anonymous):
 termivance supervised-review --execute --target 87785099
 # execute supervised single-flow continuation from Issue #5 / Session 9710085:
-termivance supervised-review --continue --execute
+termivance supervised-review --continue --issue-iid 5 --session-id 9710085 --note-id 4045401991 --target-id 87785099 --expected-sha 54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d
 # verify disposable GitLab Pages publication across all 5 evidence levels:
 termivance verify-pages-publication --project-id 87785099 --json
 # read-only exact-target resurrection monitor & truth downgrade:
@@ -62,8 +62,8 @@ termivance repair-sets --project-id 87785099 --from-record evidence/b4/snapshot.
 termivance check-decay --timestamp 2026-10-21T06:08:09Z --expected-sha 54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d --json
 # or inspect recorded evidence without network access:
 termivance supervised-review --duo-claims evidence/b4/duo_claims.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --decision evidence/b4/decision.json --risk-map evidence/b4/risk_map.json --capsule evidence/b4/proof_capsule.json --out evidence/b4/supervised_review.json
-# judge control room v2 (rebuild data, then open control_room/index.html in a browser):
-python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --supervised-review evidence/b4/supervised_review.json
+# judge control room v2 (rebuild data with all B4 evidence artifacts, then open control_room/index.html in a browser):
+python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --duo-reconciliation-primary evidence/b4/duo_reconciliation_issue_5.json --witness evidence/b4/witness_87785099.json --supervised-review evidence/b4/supervised_review.json --pages-publication evidence/b4/disposable_pages_publication.json --resurrection-monitoring evidence/b4/resurrection_monitoring.json --repair-sets evidence/b4/bounded_repair_sets.json --freshness-decay evidence/b4/freshness_decay_record.json
 # proof capsule (local integrity only):
 termivance capsule-build --receipt <receipt.json> --out proof_capsule.json
 termivance capsule-verify proof_capsule.json

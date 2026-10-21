@@ -549,8 +549,8 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     repair_sets = _load(getattr(args, "repair_sets", None))
     freshness_decay = _load(getattr(args, "freshness_decay", None))
 
-    def _recognized(record: object, schema: str) -> dict[str, object] | None:
-        if isinstance(record, dict) and record.get("schema") == schema:
+    def _recognized(record: object, *schemas: str) -> dict[str, object] | None:
+        if isinstance(record, dict) and record.get("schema") in schemas:
             return record
         return None
 
@@ -560,7 +560,11 @@ def build_data(args: argparse.Namespace) -> dict[str, object]:
     )
     witness_section = _recognized(witness, "termivance.resurrection_witness/v1")
     supervised_review_section = _recognized(supervised_review, "termivance.supervised_review/v1")
-    pages_publication_section = _recognized(pages_publication, "termivance.pages_publication/v1")
+    pages_publication_section = _recognized(
+        pages_publication,
+        "termivance.pages_publication_evidence/v1",
+        "termivance.pages_publication/v1",
+    )
     resurrection_monitoring_section = _recognized(
         resurrection_monitoring, "termivance.resurrection_monitor/v1"
     )

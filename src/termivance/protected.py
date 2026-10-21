@@ -12,12 +12,14 @@ PROTECTED_PROJECT_IDS: frozenset[int] = frozenset(
     {
         87779099,  # canonical Termivance repository
         87777871,  # organizer Showcase project
+        87786164,  # diagnostic project
     }
 )
 
 _PROTECTION_REASON: dict[int, str] = {
     87779099: "canonical Termivance repository is expressly excluded from retirement",
     87777871: "organizer Showcase project is shared and must never be retired",
+    87786164: "diagnostic project is excluded from retirement",
 }
 
 

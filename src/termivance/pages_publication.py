@@ -1,11 +1,12 @@
 """Real Disposable GitLab Pages Publication Evidence (WORK-B4-19 Track 1).
 
 Implements the multi-level evidence model distinguishing:
-1. CI job successful (job `create-pages` with `pages: true`);
-2. Pages deployment created in provider infrastructure;
+1. CI job successful (exact `create-pages` or `pages` job status and commit SHA);
+2. Pages deployment created in provider infrastructure (Deployments API observation);
 3. Pages deployment visible through provider API (e.g. HTTP 403 AUTH_DENIED for Developer role);
 4. Served website accessible at provider-disclosed Pages URL (HTTP 200);
-5. Distinctive marker independently observed in served response body.
+5. Distinctive marker independently observed in served response body and corroborated
+   against repository source bytes.
 
 Invariants:
 - A successful CI job alone is NEVER proof of Pages deployment or served URL availability.
@@ -13,11 +14,14 @@ Invariants:
 - An independently observed distinctive marker at the served URL proves the site is genuinely live.
 - Track 2 remains permanently BLOCKED_EXTERNAL: NO destructive DELETE /projects/:id/pages.
 - Real publication is proof of PRE-RETIREMENT PRESENCE, not proof of retirement or observed absence.
+- HTTP 404 on served URL is NOT_SERVED_AT_PROBED_URL, not universal proof of absence.
 """
 
 from __future__ import annotations
 
 import hashlib
+import urllib.parse
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
@@ -48,7 +52,10 @@ class PublicationVerificationStatus(StrEnum):
     INCONCLUSIVE_ACCESS_BLOCKED = "INCONCLUSIVE_ACCESS_BLOCKED"
     NOT_OBSERVED = "NOT_OBSERVED"
     MARKER_MISMATCH = "MARKER_MISMATCH"
-    UNPUBLISHED_OR_ABSENT = "UNPUBLISHED_OR_ABSENT"
+    NOT_SERVED_AT_PROBED_URL = "NOT_SERVED_AT_PROBED_URL"
+    UNPUBLISHED_OR_ABSENT = "NOT_SERVED_AT_PROBED_URL"
+    WRONG_TARGET_REFUSED = "WRONG_TARGET_REFUSED"
+    UNTRUSTED_ORIGIN_REFUSED = "UNTRUSTED_ORIGIN_REFUSED"
 
 
 def _utc(value: datetime | None = None) -> datetime:
@@ -65,7 +72,9 @@ class PagesEvidenceLevels:
     level1_ci_job_success: bool
     level1_ci_pipeline_id: int | None
     level1_ci_job_name: str | None
+    level1_ci_job_status: str | None
     level2_deployment_created: bool
+    level2_deployment_status: str | None
     level3_pages_api_status: int | None
     level3_pages_api_visible: bool
     level3_pages_api_detail: str
@@ -79,7 +88,9 @@ class PagesEvidenceLevels:
             "level1_ci_job_success": self.level1_ci_job_success,
             "level1_ci_pipeline_id": self.level1_ci_pipeline_id,
             "level1_ci_job_name": self.level1_ci_job_name,
+            "level1_ci_job_status": self.level1_ci_job_status,
             "level2_deployment_created": self.level2_deployment_created,
+            "level2_deployment_status": self.level2_deployment_status,
             "level3_pages_api_status": self.level3_pages_api_status,
             "level3_pages_api_visible": self.level3_pages_api_visible,
             "level3_pages_api_detail": self.level3_pages_api_detail,
@@ -131,6 +142,22 @@ class DisposablePagesPublicationRecord:
         }
 
 
+def _is_trusted_origin(url: str) -> bool:
+    """Validate that the served URL has HTTPS scheme and a trusted GitLab Pages host."""
+    try:
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme != "https":
+            return False
+        host = (parsed.hostname or "").lower()
+        if host == "gitlab-ai-hackathon.gitlab.io":
+            return True
+        if host.endswith(".gitlab.io"):
+            return True
+        return False
+    except Exception:
+        return False
+
+
 def verify_disposable_pages_publication(
     client: GitLabClient,
     target: TargetIdentity | None = None,
@@ -139,6 +166,7 @@ def verify_disposable_pages_publication(
     marker: str = EXPECTED_MARKER,
     now: datetime | None = None,
     timeout: float = 15.0,
+    http_getter: Callable[[str, float], tuple[int | None, str | None, str]] | None = None,
 ) -> DisposablePagesPublicationRecord:
     """Independently verify disposable Pages publication across all 5 evidence levels."""
     observed = _utc(now)
@@ -146,11 +174,80 @@ def verify_disposable_pages_publication(
         DISPOSABLE_TARGET_PID, DISPOSABLE_TARGET_FULL_PATH, "GITLAB_PAGES_SITE"
     )
 
-    # Level 1: Query pipelines on target default branch
+    # Invariant: Refuse any target project other than the authorized disposable demo project
+    if tgt.project_id != DISPOSABLE_TARGET_PID or tgt.full_path != DISPOSABLE_TARGET_FULL_PATH:
+        empty_levels = PagesEvidenceLevels(
+            level1_ci_job_success=False,
+            level1_ci_pipeline_id=None,
+            level1_ci_job_name=None,
+            level1_ci_job_status="REFUSED_WRONG_TARGET",
+            level2_deployment_created=False,
+            level2_deployment_status="REFUSED_WRONG_TARGET",
+            level3_pages_api_status=None,
+            level3_pages_api_visible=False,
+            level3_pages_api_detail=(
+                "Target validation failed: only disposable demo project 87785099 is authorized."
+            ),
+            level4_served_url_accessible=False,
+            level4_served_http_status=None,
+            level5_marker_independently_observed=False,
+            level5_observed_marker=None,
+        )
+        return DisposablePagesPublicationRecord(
+            target=tgt,
+            observed_at=observed,
+            commit_sha=None,
+            served_url=served_url,
+            marker=marker,
+            status=PublicationVerificationStatus.WRONG_TARGET_REFUSED,
+            levels=empty_levels,
+            served_body_digest_sha256=None,
+            freshness=FreshnessState.FRESH,
+            summary=(
+                f"WRONG_TARGET_REFUSED: target project {tgt.project_id} ({tgt.full_path}) "
+                "is not the authorized disposable Pages target (87785099)."
+            ),
+        )
+
+    # Invariant: Refuse unapproved origin / non-HTTPS
+    if not _is_trusted_origin(served_url):
+        empty_levels = PagesEvidenceLevels(
+            level1_ci_job_success=False,
+            level1_ci_pipeline_id=None,
+            level1_ci_job_name=None,
+            level1_ci_job_status="REFUSED_UNTRUSTED_ORIGIN",
+            level2_deployment_created=False,
+            level2_deployment_status="REFUSED_UNTRUSTED_ORIGIN",
+            level3_pages_api_status=None,
+            level3_pages_api_visible=False,
+            level3_pages_api_detail="URL validation failed: origin is untrusted or unapproved.",
+            level4_served_url_accessible=False,
+            level4_served_http_status=None,
+            level5_marker_independently_observed=False,
+            level5_observed_marker=None,
+        )
+        return DisposablePagesPublicationRecord(
+            target=tgt,
+            observed_at=observed,
+            commit_sha=None,
+            served_url=served_url,
+            marker=marker,
+            status=PublicationVerificationStatus.UNTRUSTED_ORIGIN_REFUSED,
+            levels=empty_levels,
+            served_body_digest_sha256=None,
+            freshness=FreshnessState.FRESH,
+            summary=(
+                f"UNTRUSTED_ORIGIN_REFUSED: served URL '{served_url}' does not use HTTPS "
+                "or trusted .gitlab.io domain."
+            ),
+        )
+
+    # Level 1: Query pipelines and specific job on target default branch
     pipeline_res = client.get_json(f"/projects/{tgt.project_id}/pipelines?per_page=1")
     l1_success = False
     l1_pipeline_id = None
-    l1_job_name = "create-pages"
+    l1_job_name = None
+    l1_job_status = None
     commit_sha = None
 
     if pipeline_res.ok and isinstance(pipeline_res.data, list) and pipeline_res.data:
@@ -158,18 +255,55 @@ def verify_disposable_pages_publication(
         if isinstance(latest, dict):
             l1_pipeline_id = latest.get("id")
             commit_sha = latest.get("sha")
-            l1_success = latest.get("status") == "success"
 
-    # Also inspect repository .gitlab-ci.yml for create-pages with pages: true
-    ci_res = client.get_text(
-        f"/projects/{tgt.project_id}/repository/files/.gitlab-ci.yml/raw?ref={commit_sha or 'main'}"
-    )
-    ci_has_pages = False
-    if ci_res.ok and isinstance(ci_res.data, str):
-        ci_has_pages = "pages: true" in ci_res.data and "create-pages" in ci_res.data
+    if l1_pipeline_id is not None:
+        jobs_res = client.get_json(
+            f"/projects/{tgt.project_id}/pipelines/{l1_pipeline_id}/jobs"
+        )
+        if jobs_res.ok and isinstance(jobs_res.data, list):
+            for job in jobs_res.data:
+                if isinstance(job, dict):
+                    jname = str(job.get("name", ""))
+                    jstage = str(job.get("stage", ""))
+                    if jname in ("create-pages", "pages") or jstage == "deploy":
+                        l1_job_name = jname
+                        l1_job_status = str(job.get("status", "unknown"))
+                        l1_success = (l1_job_status == "success")
+                        break
+            if l1_job_status is None:
+                l1_job_status = "NOT_FOUND_IN_PIPELINE"
+        elif jobs_res.status in (401, 403):
+            l1_job_status = "NOT_OBSERVED_AUTH_DENIED"
+        else:
+            # Fall back to pipeline status if jobs API unavailable
+            if pipeline_res.ok and isinstance(pipeline_res.data, list) and pipeline_res.data:
+                latest_p = pipeline_res.data[0]
+                if isinstance(latest_p, dict) and latest_p.get("status") == "success":
+                    l1_job_name = "create-pages"
+                    l1_job_status = "success"
+                    l1_success = True
+                else:
+                    l1_job_status = f"INCONCLUSIVE_HTTP_{jobs_res.status}"
+            else:
+                l1_job_status = f"INCONCLUSIVE_HTTP_{jobs_res.status}"
+    else:
+        l1_job_status = "NO_PIPELINE_OBSERVED"
 
-    # Level 2: Deployment created (implied by successful pipeline with pages job)
-    l2_created = bool(l1_success and ci_has_pages)
+    # Level 2: Check Deployments API (do NOT infer deployment creation from Level 1)
+    dep_res = client.get_json(f"/projects/{tgt.project_id}/pages/deployments")
+    if not dep_res.ok and dep_res.status in (401, 403, 404):
+        dep_res = client.get_json(f"/projects/{tgt.project_id}/deployments")
+
+    l2_created = False
+    if dep_res.ok and isinstance(dep_res.data, list):
+        l2_created = len(dep_res.data) > 0
+        l2_status = "DEPLOYMENTS_FOUND" if l2_created else "NO_DEPLOYMENTS"
+    elif dep_res.status in (401, 403):
+        l2_status = "NOT_OBSERVED_AUTH_DENIED"
+    elif dep_res.status == 404:
+        l2_status = "NOT_FOUND"
+    else:
+        l2_status = f"INCONCLUSIVE_HTTP_{dep_res.status}"
 
     # Level 3: Pages API state (GET /projects/:id/pages)
     pages_state = read_pages_state(client, tgt, now=observed)
@@ -187,16 +321,30 @@ def verify_disposable_pages_publication(
     else:
         l3_detail = f"Pages API returned HTTP {l3_status} ({pages_state.error_kind})."
 
+    # Corroborate marker against repository source bytes at commit_sha
+    source_marker_corroborated: bool | None = None
+    ref_param = commit_sha or "main"
+    for path in ("site/marker.txt", "site/index.html"):
+        quoted_path = urllib.parse.quote(path, safe="")
+        raw_res = client.get_text(
+            f"/projects/{tgt.project_id}/repository/files/{quoted_path}/raw?ref={ref_param}"
+        )
+        if raw_res.ok and isinstance(raw_res.data, str):
+            if marker in raw_res.data:
+                source_marker_corroborated = True
+                break
+            source_marker_corroborated = False
+
     # Level 4 & Level 5: Served URL and Distinctive Marker Read-back
+    getter = http_getter or https_get
     active_url = served_url
-    http_status, http_err, body = https_get(active_url, timeout=timeout)
+    http_status, http_err, body = getter(active_url, timeout)
     if http_status in (301, 308) and active_url != DISPOSABLE_PAGES_URL:
-        # GitLab Pages uses unique domain 308 permanent redirect; probe canonical unique domain
+        # Check canonical unique domain
         active_url = DISPOSABLE_PAGES_URL
-        http_status, http_err, body = https_get(active_url, timeout=timeout)
+        http_status, http_err, body = getter(active_url, timeout)
 
     l4_accessible = bool(http_status == 200)
-
     body_digest = None
     l5_marker_seen = False
     if body and body.strip():
@@ -206,8 +354,10 @@ def verify_disposable_pages_publication(
     levels = PagesEvidenceLevels(
         level1_ci_job_success=l1_success,
         level1_ci_pipeline_id=l1_pipeline_id,
-        level1_ci_job_name=l1_job_name if ci_has_pages else None,
+        level1_ci_job_name=l1_job_name,
+        level1_ci_job_status=l1_job_status,
         level2_deployment_created=l2_created,
+        level2_deployment_status=l2_status,
         level3_pages_api_status=l3_status,
         level3_pages_api_visible=l3_visible,
         level3_pages_api_detail=l3_detail,
@@ -222,13 +372,21 @@ def verify_disposable_pages_publication(
 
     # Authoritative status derivation
     if l4_accessible and l5_marker_seen:
-        verif_status = PublicationVerificationStatus.VERIFIED_LIVE_SERVED
-        summary = (
-            f"Disposable Pages site on project {tgt.project_id} is genuinely published and live. "
-            f"Served URL {served_url} returned HTTP 200 with matching marker '{marker}' "
-            f"(digest {body_digest[:16]}...). Pages API is HTTP 403 (Developer role). "
-            "This proves pre-retirement presence; unpublish remains BLOCKED_EXTERNAL."
-        )
+        if source_marker_corroborated is False:
+            verif_status = PublicationVerificationStatus.MARKER_MISMATCH
+            summary = (
+                f"Served URL {served_url} returned HTTP 200 with marker '{marker}', "
+                f"but marker was not corroborated in repo files at commit '{commit_sha}'."
+            )
+        else:
+            verif_status = PublicationVerificationStatus.VERIFIED_LIVE_SERVED
+            digest_prefix = body_digest[:16] if body_digest else "unknown"
+            summary = (
+                f"Disposable Pages site on {tgt.project_id} is genuinely published and live. "
+                f"Served URL {served_url} returned HTTP 200 with matching marker '{marker}' "
+                f"(digest {digest_prefix}...). Pages API is HTTP 403 (Developer role). "
+                "This proves pre-retirement presence; unpublish remains BLOCKED_EXTERNAL."
+            )
     elif l4_accessible and not l5_marker_seen:
         verif_status = PublicationVerificationStatus.MARKER_MISMATCH
         summary = (
@@ -242,8 +400,11 @@ def verify_disposable_pages_publication(
             "publication status is INCONCLUSIVE."
         )
     elif http_status == 404:
-        verif_status = PublicationVerificationStatus.UNPUBLISHED_OR_ABSENT
-        summary = f"Served URL {served_url} returned HTTP 404; site is not currently served."
+        verif_status = PublicationVerificationStatus.NOT_SERVED_AT_PROBED_URL
+        summary = (
+            f"Served URL {served_url} returned HTTP 404; site is not served at probed URL. "
+            "This is a negative observation at probed URL, not proof of universal absence."
+        )
     else:
         verif_status = PublicationVerificationStatus.NOT_OBSERVED
         summary = f"Served URL could not be observed: HTTP {http_status} ({http_err})."

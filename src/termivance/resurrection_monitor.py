@@ -11,17 +11,21 @@ Critical evidence boundaries:
 2. Observed Reappearance: A newly observed served marker after previously verified absence
    proves actual reappearance (current truth downgraded to RESURRECTED_NOT_ABSENT).
 3. Probe Failure != Continued Absence: A failed provider probe (401/403/timeout) cannot
-   prove absence; it evaluates to INCONCLUSIVE.
+   prove absence; it evaluates to INCONCLUSIVE_PROBE_FAILED.
 4. Scheduled CI != Resurrection Prevention: A scheduled job is only an execution
    mechanism, not prevention.
 5. Receipt Immobility: Historical transition receipts remain immutable audit records;
    current-truth downgrade updates the current assessment without rewriting the past.
 6. Anti-Self-Award Standard: `RESURRECTION_CONTROLLED` is NEVER awarded merely because
    a monitor exists. It requires verified neutralization or active tripwire control.
+7. Verified Historical Receipt Mandatory: Unverified caller claims cannot award
+   CONTINUED_ABSENCE_OBSERVED or downgrade to RESURRECTED_NOT_ABSENT; they evaluate to
+   HISTORICAL_RECEIPT_UNVERIFIED.
 """
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
@@ -31,6 +35,7 @@ from termivance.decay import FreshnessState, evaluate_freshness
 from termivance.discovery import detect_pages_mechanism
 from termivance.gitlab_client import GitLabClient
 from termivance.pages import https_get, marker_observed, read_pages_state
+from termivance.protected import is_protected, protection_reason
 from termivance.target import TargetIdentity
 
 if TYPE_CHECKING:
@@ -50,6 +55,7 @@ class CurrentTruthStatus(StrEnum):
     CONTINUED_ABSENCE_OBSERVED = "CONTINUED_ABSENCE_OBSERVED"
     ABSENCE_NOT_CLAIMED = "ABSENCE_NOT_CLAIMED"
     TARGET_MUTATION_BLOCKED = "TARGET_MUTATION_BLOCKED"
+    HISTORICAL_RECEIPT_UNVERIFIED = "HISTORICAL_RECEIPT_UNVERIFIED"
 
 
 class RedeploymentRisk(StrEnum):
@@ -75,6 +81,78 @@ def _utc(value: datetime | None = None) -> datetime:
     return result.astimezone(UTC)
 
 
+def validate_historical_absence_receipt(
+    history: dict[str, object] | None,
+    target: TargetIdentity,
+) -> tuple[bool, str]:
+    """Validate that historical truth is an authentic v3 retirement receipt proving absence.
+
+    Requirements:
+    1. history is a non-empty dictionary.
+    2. schema == "termivance.retirement_receipt/v3".
+    3. Target is not protected (reject 87779099, 87777871, 87786164).
+    4. Target project ID matches history target project ID.
+    5. Prior mutation was attempted and accepted (mutation_attempted=True, accepted=True or 2xx).
+    6. Prior verdict was OBSERVED_ABSENT.
+    7. Valid observation timestamp present.
+    """
+    if not isinstance(history, dict) or not history:
+        return False, "No historical receipt dictionary supplied."
+
+    if is_protected(target.project_id):
+        reason = protection_reason(target.project_id)
+        return False, f"Target project {target.project_id} is protected: {reason}."
+
+    schema = history.get("schema")
+    if schema != "termivance.retirement_receipt/v3":
+        return False, (
+            f"Unrecognized schema: '{schema}' (requires termivance.retirement_receipt/v3)."
+        )
+
+    hist_target = history.get("target")
+    if not isinstance(hist_target, dict):
+        return False, "Historical receipt lacks target dictionary."
+    hist_pid = hist_target.get("project_id")
+    if hist_pid != target.project_id:
+        return False, f"Target project ID mismatch: expected {target.project_id}, got {hist_pid}."
+
+    if isinstance(hist_pid, int) and is_protected(hist_pid):
+        return False, f"Historical receipt targets protected project {hist_pid}."
+
+    mutation_attempted = history.get("mutation_attempted")
+    if mutation_attempted is not True:
+        return False, (
+            "Historical receipt does not record an attempted mutation "
+            "(mutation_attempted is not True)."
+        )
+
+    mutation = history.get("mutation")
+    if isinstance(mutation, dict):
+        accepted = mutation.get("accepted") is True or mutation.get("status") in (200, 204)
+        if not accepted:
+            return False, "Historical receipt mutation was not accepted by provider."
+    else:
+        return False, "Historical receipt lacks mutation record."
+
+    verdict = history.get("verdict")
+    if verdict != "OBSERVED_ABSENT":
+        return False, f"Historical receipt verdict is '{verdict}', not 'OBSERVED_ABSENT'."
+
+    ts = (
+        history.get("observed_at")
+        or (history.get("preflight", {}) or {}).get("observed_at")
+        or (history.get("absence", {}) or {}).get("observed_at")
+    )
+    if not ts:
+        return False, "Historical receipt lacks valid observation timestamp."
+    try:
+        datetime.fromisoformat(str(ts))
+    except Exception:
+        return False, f"Historical receipt observation timestamp is malformed: '{ts}'."
+
+    return True, "Historical retirement receipt verified."
+
+
 @dataclass(frozen=True, slots=True)
 class TargetCurrentObservation:
     """Current live observation of target provider surfaces."""
@@ -92,6 +170,7 @@ class TargetCurrentObservation:
     served_http_status: int | None
     served_marker_observed: bool
     observed_at: datetime
+    pages_api_deployment_count: int = 0
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -104,6 +183,7 @@ class TargetCurrentObservation:
             "redeployment_signals": list(self.redeployment_signals),
             "pages_api_status": self.pages_api_status,
             "pages_api_accessible": self.pages_api_accessible,
+            "pages_api_deployment_count": self.pages_api_deployment_count,
             "served_url": self.served_url,
             "served_http_status": self.served_http_status,
             "served_marker_observed": self.served_marker_observed,
@@ -146,6 +226,7 @@ class ResurrectionMonitoringReport:
                 "Failed provider probe cannot prove continued absence.",
                 "Historical transition receipts remain immutable audit records.",
                 "RESURRECTION_CONTROLLED is never awarded merely because a monitor exists.",
+                "Unverified historical claims cannot award CONTINUED_ABSENCE_OBSERVED.",
             ],
         }
 
@@ -158,6 +239,7 @@ def observe_target_surfaces(
     marker: str | None = None,
     now: datetime | None = None,
     timeout: float = 10.0,
+    http_getter: Callable[[str, float], tuple[int | None, str | None, str]] | None = None,
 ) -> TargetCurrentObservation:
     """Perform read-only GET queries on target provider surfaces."""
     evaluated_at = _utc(now)
@@ -191,7 +273,8 @@ def observe_target_surfaces(
     http_status = None
     marker_seen = False
     if served_url:
-        s_status, _s_err, body = https_get(served_url, timeout=timeout)
+        getter = http_getter or https_get
+        s_status, _s_err, body = getter(served_url, timeout=timeout)
         http_status = s_status
         if marker and body:
             marker_seen = marker_observed(body, marker)
@@ -206,6 +289,7 @@ def observe_target_surfaces(
         redeployment_signals=tuple(signals),
         pages_api_status=pages_state.status,
         pages_api_accessible=pages_state.accessible,
+        pages_api_deployment_count=pages_state.deployment_count,
         served_url=served_url,
         served_http_status=http_status,
         served_marker_observed=marker_seen,
@@ -224,25 +308,61 @@ def monitor_resurrection(
     """Evaluate current provider observation against historical truth.
 
     Implements strict current-truth downgrade semantics:
-    - If previously claimed OBSERVED_ABSENT:
+    - Protects protected targets permanently (TARGET_MUTATION_BLOCKED).
+    - Requires verified historical absence receipt (termivance.retirement_receipt/v3)
+      before evaluating downgrade from OBSERVED_ABSENT.
+    - If historical truth is missing, malformed, or unverified: reports
+      HISTORICAL_RECEIPT_UNVERIFIED and evaluates baseline truth without assuming prior absence.
+    - If previously verified OBSERVED_ABSENT:
       - If served URL returns HTTP 200 with matching marker -> RESURRECTED_NOT_ABSENT
       - If redeployment mechanism detected in current CI -> REDEPLOYMENT_MECHANISM_ACTIVE
       - If historical receipt expired (>900s) -> STALE_REVALIDATION_REQUIRED
-      - If provider probe failed -> INCONCLUSIVE_PROBE_FAILED
-      - Otherwise -> CONTINUED_ABSENCE_OBSERVED
-    - If absence was NOT_CLAIMED:
-      - Reports current truth as TARGET_MUTATION_BLOCKED or ABSENCE_NOT_CLAIMED.
+      - If provider probe failed (401/403/timeout) -> INCONCLUSIVE_PROBE_FAILED
+      - If multi-surface corroboration verifies absence -> CONTINUED_ABSENCE_OBSERVED
     """
     evaluated_at = _utc(now)
     history = dict(historical_truth or {})
     diff_reasons: list[str] = []
     revalidation_actions: list[str] = []
 
+    # Protected target check
+    if is_protected(target.project_id):
+        reason = protection_reason(target.project_id)
+        return ResurrectionMonitoringReport(
+            target=target,
+            evaluated_at=evaluated_at,
+            historical_truth=history,
+            current_observation=current_observation,
+            current_truth=CurrentTruthStatus.TARGET_MUTATION_BLOCKED,
+            redeployment_risk=RedeploymentRisk.NO_MECHANISM_FOUND,
+            resurrection_control=ResurrectionControlStatus.NOT_CLAIMED,
+            diff_reasons=(f"Target project {target.project_id} is protected: {reason}.",),
+            required_revalidation_actions=(
+                "Retirement is permanently prohibited on protected projects.",
+            ),
+            freshness_state=FreshnessState.FRESH,
+        )
+
+    # Evaluate historical receipt verification
+    receipt_verified = False
+    if history:
+        receipt_verified, receipt_reason = validate_historical_absence_receipt(history, target)
+        if not receipt_verified:
+            diff_reasons.append(f"Historical receipt unverified: {receipt_reason}")
+            revalidation_actions.append(
+                "Supply authentic termivance.retirement_receipt/v3 with OBSERVED_ABSENT verdict."
+            )
+
     # Historical truth facts
-    prior_verdict = str(history.get("verdict", "BLOCKED"))
-    prior_absence = str(history.get("observed_absence", "NOT_CLAIMED"))
-    prior_sha = history.get("commit_sha")
-    prior_observed_at = history.get("observed_at")
+    prior_verdict = str(history.get("verdict", "BLOCKED")) if receipt_verified else "BLOCKED"
+    prior_sha = (
+        history.get("commit_sha") or (history.get("preflight", {}) or {}).get("commit_sha")
+    )
+    prior_observed_at = (
+        history.get("observed_at")
+        or (history.get("preflight", {}) or {}).get("observed_at")
+        or (history.get("absence", {}) or {}).get("observed_at")
+    )
 
     # Evaluate freshness of historical observation
     freshness = evaluate_freshness(
@@ -273,37 +393,51 @@ def monitor_resurrection(
     else:
         redeployment_risk = RedeploymentRisk.NO_MECHANISM_FOUND
 
-    # Downgrade evaluation logic
+    # Authoritative current truth derivation
     current_truth: CurrentTruthStatus
 
-    # Case 1: Actual reappearance observed (served marker seen)
-    if current_observation.served_marker_observed and current_observation.served_http_status == 200:
-        if prior_absence == "OBSERVED_ABSENT":
-            current_truth = CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+    # Case: History supplied but failed receipt validation
+    if history and not receipt_verified:
+        current_truth = CurrentTruthStatus.HISTORICAL_RECEIPT_UNVERIFIED
+        if (
+            current_observation.served_marker_observed
+            and current_observation.served_http_status == 200
+        ):
             diff_reasons.append(
-                "CRITICAL: Target resource was previously OBSERVED_ABSENT, but matching served "
-                "marker was independently observed live at served URL; absence is REVERSED."
+                "Target site is currently published and serving its marker, "
+                "but historical absence receipt was unverified."
             )
-            revalidation_actions.append(
-                "Conduct full security audit and re-evaluate retirement obligations."
-            )
-        else:
-            current_truth = CurrentTruthStatus.TARGET_MUTATION_BLOCKED
+        elif current_observation.pages_api_status in (401, 403):
             diff_reasons.append(
-                "Target Pages site is currently published and serving its distinctive marker."
+                "Provider Pages API returned access restriction; baseline cannot be verified."
             )
 
-    # Case 2: Historical absence claimed, but CI mechanism is active
-    elif prior_absence == "OBSERVED_ABSENT" and current_observation.redeployment_mechanism:
+    # Case 1: Actual reappearance observed (served marker seen) after verified absence
+    elif (
+        receipt_verified
+        and current_observation.served_marker_observed
+        and current_observation.served_http_status == 200
+    ):
+        current_truth = CurrentTruthStatus.RESURRECTED_NOT_ABSENT
+        diff_reasons.append(
+            "CRITICAL: Target resource was previously verified OBSERVED_ABSENT, but matching "
+            "served marker was independently observed live at served URL; absence is REVERSED."
+        )
+        revalidation_actions.append(
+            "Conduct full security audit and re-evaluate retirement obligations."
+        )
+
+    # Case 2: Historical absence verified, but CI mechanism is active
+    elif receipt_verified and current_observation.redeployment_mechanism:
         current_truth = CurrentTruthStatus.REDEPLOYMENT_MECHANISM_ACTIVE
         diff_reasons.append(
-            "Historical absence was claimed, but an active CI deployment mechanism exists "
+            "Historical absence was verified, but an active CI deployment mechanism exists "
             "that could republish the site on next pipeline execution."
         )
         revalidation_actions.append("Neutralize create-pages CI job or attest control.")
 
     # Case 3: Historical receipt has expired
-    elif prior_absence == "OBSERVED_ABSENT" and freshness.state == FreshnessState.EXPIRED:
+    elif receipt_verified and freshness.state == FreshnessState.EXPIRED:
         current_truth = CurrentTruthStatus.STALE_REVALIDATION_REQUIRED
         age_str = f"{freshness.age_seconds:.1f}s"
         diff_reasons.append(
@@ -311,21 +445,38 @@ def monitor_resurrection(
         )
         revalidation_actions.append("Perform fresh independent provider read-back probes.")
 
-    # Case 4: Probe failed or inaccessible
-    elif current_observation.pages_api_status in (
-        401,
-        403,
-    ) and current_observation.served_http_status in (None, 0):
+    # Case 4: Probe failed or inaccessible (multi-surface corroboration required!)
+    elif receipt_verified and (
+        current_observation.pages_api_status in (401, 403, 500, 502, 503)
+        or current_observation.pages_api_status is None
+        or current_observation.served_http_status in (None, 0, 401, 403, 500, 502, 503)
+    ):
         current_truth = CurrentTruthStatus.INCONCLUSIVE_PROBE_FAILED
         diff_reasons.append(
-            "Provider surfaces are inaccessible; unknown cannot be promoted to continued absence."
+            "Provider surfaces are inaccessible or returned errors (Pages API: "
+            f"{current_observation.pages_api_status}, "
+            f"Served URL: {current_observation.served_http_status}); "
+            "unknown cannot be promoted to continued absence."
         )
         revalidation_actions.append("Retry probes with appropriate network/access permissions.")
 
-    # Case 5: Continued absence legitimately observed
+    # Case 5: Continued absence legitimately observed across ALL surfaces:
+    # - Pages API reports undeployed (status 404 or 200 with deployment_count == 0)
+    # - Served URL returns HTTP 404 and marker NOT observed
+    # - CI redeployment mechanism NOT present
+    # - Evidence is fresh and valid for evaluation
     elif (
-        prior_absence == "OBSERVED_ABSENT"
+        receipt_verified
+        and (
+            current_observation.pages_api_status == 404
+            or (
+                current_observation.pages_api_accessible
+                and current_observation.pages_api_status == 200
+                and current_observation.pages_api_deployment_count == 0
+            )
+        )
         and current_observation.served_http_status == 404
+        and not current_observation.served_marker_observed
         and not current_observation.redeployment_mechanism
         and freshness.is_valid_for_evaluation
     ):
@@ -333,7 +484,15 @@ def monitor_resurrection(
 
     # Case 6: Baseline unmutated / not claimed
     else:
-        if prior_verdict == "BLOCKED":
+        if (
+            current_observation.served_marker_observed
+            and current_observation.served_http_status == 200
+        ):
+            current_truth = CurrentTruthStatus.TARGET_MUTATION_BLOCKED
+            diff_reasons.append(
+                "Target Pages site is currently published and serving its distinctive marker."
+            )
+        elif prior_verdict == "BLOCKED":
             current_truth = CurrentTruthStatus.TARGET_MUTATION_BLOCKED
         else:
             current_truth = CurrentTruthStatus.ABSENCE_NOT_CLAIMED

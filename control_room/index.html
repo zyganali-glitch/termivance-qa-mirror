@@ -1515,27 +1515,27 @@ function pagesPublicationCard(pub) {
       <p class="muted sm">No publication evidence record supplied.</p></div>`;
   }
   const t = pub.target || {};
-  const levels = pub.evidence_levels || {};
+  const levels = pub.levels || pub.evidence_levels || {};
+  const isLive = pub.status === 'VERIFIED_LIVE_SERVED' || pub.publication_verified;
   return `<div class="card">
     <h2>Real disposable GitLab Pages publication evidence (Target ${escapeHtml(String(t.project_id || '87785099'))})</h2>
-    ${chip(pub.publication_verified ? 'PUBLICATION_VERIFIED' : 'INCONCLUSIVE', pub.publication_verified ? 'chip ok' : 'chip amber')}
-    ${chip('target_accessible: ' + String(pub.target_accessible))}
-    ${chip('pages_setting: ' + escapeHtml(pub.pages_setting_observed || 'enabled'))}
+    ${chip(pub.status || (isLive ? 'VERIFIED_LIVE_SERVED' : 'INCONCLUSIVE'), isLive ? 'chip ok' : 'chip amber')}
+    ${chip('freshness: ' + escapeHtml(pub.freshness || 'FRESH'))}
     ${kv([
-      ['disposable project target', `<code>${escapeHtml(String(t.project_id || ''))}</code> ${escapeHtml(t.full_path || '')}`],
-      ['observed commit SHA', `<code>${escapeHtml(pub.observed_commit_sha || '')}</code>`],
+      ['disposable project target', `<code>${escapeHtml(String(t.project_id || '87785099'))}</code> ${escapeHtml(t.full_path || '')}`],
+      ['observed commit SHA', `<code>${escapeHtml(pub.commit_sha || pub.observed_commit_sha || '—')}</code>`],
       ['served Pages URL', pub.served_url ? `<a href="${escapeHtml(pub.served_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">${escapeHtml(pub.served_url)}</a>` : '—'],
-      ['distinctive marker', `<code>${escapeHtml(pub.distinctive_marker || '')}</code> (${escapeHtml(pub.marker_digest ? pub.marker_digest.substring(0, 16) + '…' : '—')})`],
-      ['HTTP read-back status', `<code>${escapeHtml(String(pub.http_status || ''))}</code> (redirect chain followed to unique Pages domain)`],
-      ['Pages API access (Developer)', `<code>HTTP 403 AUTH_DENIED</code> — Maintainer access was explicitly denied by hackathon organizer; served URL independently proves site is genuinely live`],
+      ['distinctive marker', `<code>${escapeHtml(pub.marker || pub.distinctive_marker || '—')}</code> (${escapeHtml(pub.served_body_digest_sha256 ? pub.served_body_digest_sha256.substring(0, 16) + '…' : '—')})`],
+      ['HTTP read-back status', `<code>HTTP ${escapeHtml(String(levels.level4_served_http_status != null ? levels.level4_served_http_status : (pub.http_status || '—')))}</code> (served URL independently verified)`],
+      ['Pages API access (Developer)', `<code>HTTP ${escapeHtml(String(levels.level3_pages_api_status || 403))} AUTH_DENIED</code> — ${escapeHtml(levels.level3_pages_api_detail || 'Developer role lacks Maintainer permissions')}`],
     ])}
     <h3>5-Level evidence model verification</h3>
     <ul class="tight">
-      <li><strong>Level 1 (CI Job):</strong> ${escapeHtml(levels.ci_job_status || 'SUCCESS')} — <code>create-pages</code> job creates artifact</li>
-      <li><strong>Level 2 (Deployment):</strong> ${escapeHtml(levels.deployment_created || 'CREATED')} — GitLab CI artifact uploaded to Pages daemon</li>
-      <li><strong>Level 3 (Pages API):</strong> ${escapeHtml(levels.pages_api_accessible || 'RESTRICTED')} — Developer credentials return HTTP 403; access boundary acknowledged</li>
-      <li><strong>Level 4 (Served URL):</strong> ${escapeHtml(levels.served_url_accessible || 'HTTP 200')} — Live website responds to independent HTTP request</li>
-      <li><strong>Level 5 (Marker Verified):</strong> ${escapeHtml(levels.marker_observed || 'VERIFIED')} — Exact content marker byte digest confirmed in served body</li>
+      <li><strong>Level 1 (CI Job):</strong> ${escapeHtml(levels.level1_ci_job_status || (levels.level1_ci_job_success ? 'SUCCESS' : 'NOT_OBSERVED'))} (job: <code>${escapeHtml(levels.level1_ci_job_name || 'create-pages')}</code>)</li>
+      <li><strong>Level 2 (Deployment):</strong> ${escapeHtml(levels.level2_deployment_status || (levels.level2_deployment_created ? 'CREATED' : 'NOT_OBSERVED_AUTH_DENIED'))} — Deployments API read-back</li>
+      <li><strong>Level 3 (Pages API):</strong> HTTP ${escapeHtml(String(levels.level3_pages_api_status || 403))} (${levels.level3_pages_api_visible ? 'ACCESSIBLE' : 'AUTH_DENIED'}) — Access boundary acknowledged</li>
+      <li><strong>Level 4 (Served URL):</strong> ${levels.level4_served_url_accessible ? 'HTTP 200 ACCESSIBLE' : 'HTTP ' + escapeHtml(String(levels.level4_served_http_status || 'NOT_SERVED'))} — Live website responds to independent HTTP probe</li>
+      <li><strong>Level 5 (Marker Verified):</strong> ${levels.level5_marker_independently_observed ? 'VERIFIED MATCH (' + escapeHtml(levels.level5_observed_marker || pub.marker || '') + ')' : 'MISMATCH / NOT OBSERVED'} — Content marker confirmed</li>
     </ul>
     <div class="banner info" style="margin-top:10px;">
       Live publication evidence confirms the target site is deployed and publicly accessible. In accordance with safety invariants, publication verification is <strong>never</strong> proof of retirement or observed absence.
@@ -1549,18 +1549,23 @@ function resurrectionMonitoringCard(rm) {
       <p class="muted sm">No resurrection monitor record supplied.</p></div>`;
   }
   const t = rm.target || {};
+  const obs = rm.current_observation || {};
+  const truth = rm.current_truth || rm.current_observed_state || 'UNAVAILABLE';
+  const isAbsent = truth === 'CONTINUED_ABSENCE_OBSERVED';
+  const isResurrected = truth === 'RESURRECTED_NOT_ABSENT';
   return `<div class="card">
     <h2>On-demand resurrection monitor & truth downgrade (Target ${escapeHtml(String(t.project_id || '87785099'))})</h2>
-    ${chip(rm.current_observed_state || 'REDEPLOYMENT_MECHANISM_ACTIVE', 'chip amber')}
-    ${chip('downgraded: ' + String(rm.downgraded))}
-    ${chip('receipt_preserved: ' + String(rm.historical_receipt_preserved))}
+    ${chip(truth, isAbsent ? 'chip ok' : (isResurrected ? 'chip bad' : 'chip amber'))}
+    ${chip('redeployment_risk: ' + escapeHtml(rm.redeployment_risk || 'NONE'))}
+    ${chip('resurrection_control: ' + escapeHtml(rm.resurrection_control || 'NOT_CLAIMED'))}
     ${kv([
-      ['target', `<code>${escapeHtml(String(t.project_id || ''))}</code> ${escapeHtml(t.full_path || '')}`],
-      ['monitored at', escapeHtml(rm.monitored_at || '')],
-      ['observed commit SHA', `<code>${escapeHtml(rm.observed_commit_sha || '')}</code>`],
-      ['CI deployment mechanism', escapeHtml(rm.observed_redeployment_mechanism || 'None')],
-      ['served Pages probe', `HTTP ${escapeHtml(String(rm.served_pages_probe ? rm.served_pages_probe.status_code : '—'))} (marker: ${escapeHtml(String(rm.served_pages_probe ? rm.served_pages_probe.marker_found : '—'))})`],
-      ['downgrade reason', escapeHtml(rm.downgrade_reason || '—')],
+      ['target', `<code>${escapeHtml(String(t.project_id || '87785099'))}</code> ${escapeHtml(t.full_path || '')}`],
+      ['evaluated at', escapeHtml(rm.evaluated_at || rm.monitored_at || '—')],
+      ['observed commit SHA', `<code>${escapeHtml(obs.commit_sha || rm.observed_commit_sha || '—')}</code>`],
+      ['CI deployment mechanism', obs.redeployment_mechanism ? 'ACTIVE: ' + escapeHtml(JSON.stringify(obs.redeployment_signals || [])) : 'None detected'],
+      ['served Pages probe', `HTTP ${escapeHtml(String(obs.served_http_status != null ? obs.served_http_status : '—'))} (marker observed: ${escapeHtml(String(obs.served_marker_observed))})`],
+      ['diff reasons', (rm.diff_reasons && rm.diff_reasons.length) ? rm.diff_reasons.map(escapeHtml).join('; ') : '—'],
+      ['required revalidation', (rm.required_revalidation_actions && rm.required_revalidation_actions.length) ? rm.required_revalidation_actions.map(escapeHtml).join('; ') : '—'],
     ])}
     <h3>Invariant protections</h3>
     <ul class="tight">${(rm.invariants || []).map((inv) => `<li>${escapeHtml(inv)}</li>`).join('')}</ul>

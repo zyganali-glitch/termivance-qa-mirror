@@ -657,11 +657,20 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
                 publisher = GitLabPublisher(token or load_local_token())
             except Exception:
                 pass
+        from termivance.supervised_review import DEFAULT_TARGET_FULL_PATH
+
         continuation_res = run_supervised_continuation(
             client=client,
             publisher=publisher,
-            issue_iid=getattr(args, "issue_iid", 5) or 5,
+            issue_iid=getattr(args, "issue_iid", None) or 5,
+            duo_session_id=getattr(args, "session_id", None) or "9710085",
+            duo_note_id=getattr(args, "note_id", None) or 4045401991,
             target_project_id=args.project_id,
+            target_full_path=getattr(args, "full_path", None) or DEFAULT_TARGET_FULL_PATH,
+            expected_commit_sha=(
+                getattr(args, "expected_sha", None) or "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
+            ),
+            note_body=getattr(args, "note_body", None),
             publish_outcome=getattr(args, "publish", False),
             out_dir=getattr(args, "out_dir", None) or (Path(args.out).parent if args.out else None),
         )
@@ -672,7 +681,7 @@ def _cmd_supervised_review(args: argparse.Namespace) -> int:
             print(json.dumps(payload, indent=2, sort_keys=True))
         else:
             print(continuation_res.summary)
-        return 0 if continuation_res.status == "COMPLETED" else 1
+        return 0 if continuation_res.status in ("COMPLETED", "COMPLETED_IDEMPOTENT") else 1
 
     if getattr(args, "execute", False):
         from termivance.gitlab_client import GitLabClient, load_local_token
@@ -770,6 +779,13 @@ def _cmd_repair_sets(args: argparse.Namespace) -> int:
 def _cmd_check_decay(args: argparse.Namespace) -> int:
     from termivance.decay import evaluate_freshness
 
+    if args.ttl <= 0 or args.ttl > 900:
+        import sys
+        sys.stderr.write(
+            f"Error: --ttl {args.ttl} violates contractual limit (1-900s allowed).\n"
+        )
+        return 2
+
     res = evaluate_freshness(
         args.timestamp,
         expected_sha=args.expected_sha,
@@ -801,7 +817,14 @@ def _cmd_monitor_resurrection(args: argparse.Namespace) -> int:
     except Exception:
         token = None
     client = GitLabClient(token)
-    current_obs = observe_target_surfaces(client, target, served_url=args.url, marker=args.marker)
+    served_url = args.url
+    marker = args.marker
+    if served_url is None and target.project_id == 87785099:
+        served_url = "https://termivance-b3-disposable-pages-demo-42a1a9.gitlab.io/"
+    if marker is None and target.project_id == 87785099:
+        marker = "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a"
+
+    current_obs = observe_target_surfaces(client, target, served_url=served_url, marker=marker)
     history = _read_json(args.receipt) if args.receipt else None
     report = monitor_resurrection(target, current_observation=current_obs, historical_truth=history)
     payload = report.to_dict()
@@ -1362,6 +1385,50 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=None,
         help="GitLab issue IID (e.g. 5) containing the Duo analysis",
+    )
+    supervised_review.add_argument(
+        "--issue-iid",
+        dest="issue_iid",
+        type=int,
+        default=None,
+        help="GitLab issue IID (alias for --issue)",
+    )
+    supervised_review.add_argument(
+        "--session-id",
+        dest="session_id",
+        default=None,
+        help="GitLab Duo session ID (e.g. 9710085)",
+    )
+    supervised_review.add_argument(
+        "--note-id",
+        dest="note_id",
+        type=int,
+        default=None,
+        help="GitLab issue note ID (e.g. 4045401991)",
+    )
+    supervised_review.add_argument(
+        "--target-id",
+        dest="project_id",
+        type=int,
+        help="alias for --project-id",
+    )
+    supervised_review.add_argument(
+        "--expected-sha",
+        dest="expected_sha",
+        default=None,
+        help="expected default branch commit SHA",
+    )
+    supervised_review.add_argument(
+        "--note-body",
+        dest="note_body",
+        default=None,
+        help="raw or recorded agent note body for preflight validation",
+    )
+    supervised_review.add_argument(
+        "--note",
+        dest="note_body",
+        default=None,
+        help="alias for --note-body",
     )
     supervised_review.add_argument(
         "--publish",
