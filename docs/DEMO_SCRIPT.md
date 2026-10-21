@@ -19,7 +19,7 @@ This is the canonical demonstration path for the GitLab Transcend *Life After Co
 5. **Retirement Obligation Graph** — 8 obligations evaluated; 4 satisfied, 3 violated, 1 unknown. Control Room Graph tab. Recorded evidence.
 6. **Fail-closed authorization decision** — `SAFE_TO_RETIRE = BLOCKED` (Pages administration 403; redeployment path active; no operator-signed ledger entry). Recorded + replayable live.
 7. **Bounded candidate repair recommendations** — `termivance repair-sets`: topologically ordered remediation guidance; Maintainer role honestly classified `EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS`. Recorded evidence.
-8. **Publication presence and redeployment risk** — the disposable target really serves HTTP 200 with marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` (5-level evidence, Level 2 honestly `NOT_OBSERVED_NOT_FOUND`); the surviving `create-pages` job can republish it. `RECORDED_LIVE` (regenerated 2026-10-21).
+8. **Publication presence and redeployment risk** — the disposable target really serves HTTP 200 with marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` (5-level evidence, Level 2 honestly `NOT_OBSERVED_NOT_FOUND`); the surviving `create-pages` job can republish it. `RECORDED_LIVE` (regenerated 2026-10-21; present-tense narration requires a fresh live read at demonstration time — a historical HTTP 200 never automatically becomes a current observation).
 9. **Evidence freshness / current-truth monitoring** — `termivance monitor-resurrection` + `check-decay`: 900s TTL, fail-closed staleness; the monitor requires fresh current observations for any positive present-tense verdict. `RECORDED_LIVE`.
 10. **Proof Capsule and explicit limitations** — `capsule-build` + `capsule-verify`: SHA-256 manifest; mutation/absence sections `NOT_RUN`/`NOT_OBSERVED`. Local deterministic artifact.
 11. **Human review** — the deterministic outcome is published back to Issue #5 (note `4045409264`) for human review. `RECORDED_HISTORICAL`.
@@ -30,7 +30,7 @@ This is the canonical demonstration path for the GitLab Transcend *Life After Co
 
 ```bash
 python -m pip install -e ".[dev]"
-ruff check . && python -m pytest -q        # 540 passed
+ruff check . && python -m pytest -q        # 563 passed
 # optional fresh read-only evidence refresh (anonymous, GET-only, $0.00):
 termivance verify-pages-publication --project-id 87785099 --json --out evidence/b4/disposable_pages_publication.json
 termivance monitor-resurrection --project-id 87785099 --receipt evidence/b4/decision.json --json --out evidence/b4/resurrection_monitoring.json
@@ -47,19 +47,19 @@ Open `control_room/index.html` in a browser (works from `file://`, zero network 
 | SC-02 | Control Room — Overview | Three independent claims: `SAFE_TO_RETIRE: BLOCKED`, `OBSERVED_ABSENT: NOT_CLAIMED`, `RESURRECTION_CONTROLLED: NOT_CLAIMED` | Recorded |
 | SC-03 | GitLab browser — Issue #5 + Duo session URL | The neutral request and the agent's investigation (fallback: Control Room Evidence tab, since session UI is 404 to non-members) | `RECORDED_HISTORICAL` |
 | SC-04 | Control Room — Evidence & Audit → Candidate corroboration | Session `9710085`: 4 corroborated / 2 unresolved / 1 contextual; row `duo-9710085-cand-01` (`create-pages` @ `54fcc9ff`) | Recorded |
-| SC-05 | Terminal | `scripts/run_supervised_review.bat --no-pause` (or `termivance supervised-review --execute --target 87785099`) — live deterministic evaluation ending in `BLOCKED` | `EXECUTED_NOW` (live, read-only) |
-| SC-06 | Browser — disposable Pages URL | The real published target site with the unique marker (published by the target's own CI — the resurrection risk) | `RECORDED_LIVE` (site is publicly served) |
+| SC-05 | Terminal | `scripts/run_supervised_review.bat --no-pause` (or `termivance supervised-review --execute --target 87785099`) — live deterministic evaluation; the launcher's `LAUNCHER VERDICT REPORT` must show `CLASSIFICATION: VERDICT_CONFIRMED_BLOCKED` before narrating the BLOCKED result | `EXECUTED_NOW` (live, read-only) |
+| SC-06 | Browser — disposable Pages URL | FRESH browser read of the URL during filming: if it loads, show the marker live (LIVE narration); if not, show the Control Room Pages-publication card (HISTORICAL, past-tense narration). A recorded HTTP 200 never automatically becomes a current observation. | `LIVE` when freshly read during filming, else `RECORDED_LIVE` fallback |
 | SC-07 | Control Room — Graph | Click `resource:ci_redeployment:87785099`; edges highlight to the BLOCKED decision | Recorded |
-| SC-08 | Control Room — What-if + Repair/Freshness | `PROJECTED_NOT_OBSERVED` factors; bounded repair set; 900s decay boundary | Recorded |
+| SC-08 | Control Room — What-if + Evidence & Audit → "Deterministic decision" | `PROJECTED_NOT_OBSERVED` factors; bounded repair-set card; 900s decay/freshness card | Recorded |
 | SC-09 | GitLab CI + GitHub Actions | Green verification pipeline; independent observer `PASS / IN_SYNC` | `LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS` |
 | SC-10 | Control Room — Overview (final) | Tagline close: "Software retirement, proven within bounds." | Recorded |
 
-Duration budget and full voice-over/subtitles: see Master Plan Section 11 (target 174 s, hard limit 180 s).
+Duration budget, complete voice-over and the timed narration-matching subtitle track: see Master Plan Section 11 (target 174 s, hard limit 180 s) and [`assets/demo/subtitles/termivance_demo_en.srt`](assets/demo/subtitles/termivance_demo_en.srt).
 
 ## Honest boundary lines (say these on camera)
 
 - "A real Duo Custom Flow investigated the target — its candidates are advisory; deterministic Python alone decides."
-- "The target's Pages site is genuinely published — that's presence, not retirement. Unpublishing stays blocked: the operator lacks Maintainer, and the organizer denied it. Termivance refuses to mutate without proof and permission."
+- "The target's Pages site is genuinely published — that's presence, not retirement. (Say 'is serving' only after a fresh live read during filming; otherwise say 'was independently observed serving'.) Unpublishing stays blocked: the operator lacks Maintainer, and the organizer denied it. Termivance refuses to mutate without proof and permission."
 - "Evidence has a freshness window — 900 seconds. Older observations are historical, never current truth."
 - "The what-if page is clearly hypothetical — a projection can never mint a verdict."
 

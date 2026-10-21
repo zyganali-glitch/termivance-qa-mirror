@@ -1,0 +1,115 @@
+1
+00:00:00,000 --> 00:00:04,000
+Retiring software isn't proving it's gone.
+
+2
+00:00:04,000 --> 00:00:08,000
+A forgotten CI job can bring a dead service back.
+
+3
+00:00:08,000 --> 00:00:13,000
+Termivance makes retirement a proof-bound protocol - and here, it's blocking an unsafe retirement on purpose.
+
+4
+00:00:13,000 --> 00:00:19,000
+Termivance separates three questions: is retirement safe, is absence actually observed, and can the resource come back?
+
+5
+00:00:19,000 --> 00:00:23,000
+Each needs different proof.
+
+6
+00:00:23,000 --> 00:00:30,000
+A GitLab Duo agent investigates - but deterministic Python alone decides, authorizes, and proves.
+
+7
+00:00:30,000 --> 00:00:36,000
+A human asked for retirement on a neutral GitLab issue.
+
+8
+00:00:36,000 --> 00:00:43,000
+A real Duo Custom Flow picked it up, read the target repository,
+
+9
+00:00:43,000 --> 00:00:50,000
+and found a surviving create-pages job that could republish the site - posting its findings as non-authoritative candidates.
+
+10
+00:00:50,000 --> 00:00:56,000
+Termivance then checks every AI claim against separate GitLab provider facts.
+
+11
+00:00:56,000 --> 00:01:02,000
+Four candidates were corroborated, two stayed unresolved, one was contextual.
+
+12
+00:01:02,000 --> 00:01:08,000
+AI suggestions never become facts without deterministic verification.
+
+13
+00:01:08,000 --> 00:01:15,000
+Now the deterministic engine runs live.
+
+14
+00:01:15,000 --> 00:01:22,000
+It re-reads the target, evaluates eight retirement obligations, and refuses: safe-to-retire is blocked.
+
+15
+00:01:22,000 --> 00:01:30,000
+Watch the safety refusal: a real mutation demands an independent operator trust policy.
+
+16
+00:01:30,000 --> 00:01:40,000
+AI recommendations cannot authorize deletion - and neither can stale evidence.
+
+17
+00:01:40,000 --> 00:01:45,500
+The target is real: a GitLab Pages site,
+
+18
+00:01:45,500 --> 00:01:50,500
+publicly serving its unique marker right now - we just loaded it live.
+
+19
+00:01:50,500 --> 00:01:56,000
+Published by its own CI, which is exactly the resurrection risk. Presence is not retirement.
+
+20
+00:01:56,000 --> 00:02:01,500
+The obligation graph shows what blocks retirement: GitLab Pages administration answered HTTP four-oh-three, forbidden;
+
+21
+00:02:01,500 --> 00:02:06,500
+the redeployment path is active; and no operator authorization exists.
+
+22
+00:02:06,500 --> 00:02:14,000
+Clicking the CI node reveals the exact recorded evidence behind each edge.
+
+23
+00:02:14,000 --> 00:02:19,000
+Even hypothetically, projections are labeled projected-not-observed.
+
+24
+00:02:19,000 --> 00:02:24,500
+Termivance proposes bounded repair steps -
+
+25
+00:02:24,500 --> 00:02:30,000
+and evidence expires after fifteen minutes, so stale proof can never authorize anything.
+
+26
+00:02:30,000 --> 00:02:36,000
+Every push runs real GitLab CI: five hundred sixty-three tests and forty safety assertions.
+
+27
+00:02:36,000 --> 00:02:41,000
+An independent GitHub observer checks live GitLab APIs
+
+28
+00:02:41,000 --> 00:02:46,000
+and confirms the exact source revision - pass, in sync.
+
+29
+00:02:46,000 --> 00:02:54,000
+Termivance: software retirement, proven within bounds.

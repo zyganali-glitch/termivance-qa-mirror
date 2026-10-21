@@ -50,7 +50,7 @@ The demonstrated end-to-end run (all evidence committed under [`evidence/b4/`](e
 │  Outcome note ◀─────────────────────────────────────  • sealed ledger           │
 │  (human review)                                        • verdicts & capsule     │
 │                                                                                  │
-│  GitLab CI (every push): ruff + 540 tests + 40 safety assertions                 │
+│  GitLab CI (every push): ruff + 563 tests + 40 safety assertions                 │
 └──────────────────────────────────────────────────────────────────────────────────┘
                                         │
                                         ▼ (one-way mirror, SHA-exact)
@@ -158,7 +158,7 @@ termivance supervised-review --continue --issue-iid 5 --session-id 9710085 --not
 
 ```bash
 ruff check .     # clean
-pytest -q        # 540 passed
+pytest -q        # 563 passed
 python scripts/ci_safety_assertions.py   # 40/40 PASS, network-free
 ```
 
@@ -166,7 +166,7 @@ Interpretation guide: every command prints explicit verdicts and `NOT_RUN`/`NOT_
 
 ## Tests, CI, and independent QA
 
-- **540 deterministic tests** (`pytest -q`), `ruff` clean, **40 network-free safety-contract assertions** — all green in GitLab CI on every push to `main` (visible pipeline history on the canonical repository).
+- **563 deterministic tests** (`pytest -q`), `ruff` clean, **40 network-free safety-contract assertions** — all green in GitLab CI on every push to `main` (visible pipeline history on the canonical repository).
 - An independent **GitHub Actions observer** (non-canonical QA mirror, [termivance-qa-mirror](https://github.com/zyganali-glitch/termivance-qa-mirror)) runs on a 6-hour schedule and on demand: 21+ live GitLab API observations, SHA-exact one-way mirror, source and evidence SHA-256 manifests, and fail-closed drift detection. Latest verified runs are recorded in [`docs/HANDOFF.md`](docs/HANDOFF.md).
 - Claim/proof separation for every batch is maintained in [`docs/EVIDENCE_MATRIX.md`](docs/EVIDENCE_MATRIX.md); the nine-stage DevSecOps coverage audit is [`docs/DEVSECOPS_STAGES.md`](docs/DEVSECOPS_STAGES.md).
 

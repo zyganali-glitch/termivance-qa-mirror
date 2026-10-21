@@ -9,7 +9,7 @@ Final selection (Master Plan Section 12.1; capture instructions in Turkish: `doc
 - `02_duo_issue5_discovery.png` — GitLab Issue #5 / Duo Session 9710085 (agent investigation; fallback: Control Room Duo evidence card).
 - `04_obligation_graph_focused.png` — Control Room, Graph tab, `resource:ci_redeployment:87785099` selected.
 - `06_disposable_pages_published.png` — the real served disposable Pages URL with its unique marker (condition met: publication verified live-served 2026-10-21).
-- `07_repair_set_and_freshness.png` — Control Room repair-set and proof-decay cards (condition met: `WORK-B4-21`/`22` verified).
+- `07_repair_set_and_freshness.png` — Control Room, Evidence & Audit → "Deterministic decision" sub-section (repair-set and 900-second freshness/decay cards visible).
 
 **Prepared alternates:**
 - `03_candidate_corroboration.png` — Control Room, Evidence & Audit tab, candidate corroboration matrix.
