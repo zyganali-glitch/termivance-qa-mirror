@@ -177,10 +177,12 @@ class TestDefectDSnapshotFreshnessHonesty:
     def test_html_displays_snapshot_provenance_and_expired_freshness(self):
         html = _load_html()
         assert "SNAPSHOT: RECORDED_PROVIDER_READ" in html
-        assert "FRESHNESS: EXPIRED_HISTORICAL" in html
+        # Header honestly scopes freshness to record time (per-section timestamps),
+        # never presenting historical evidence as current/live provider truth.
+        assert "FRESHNESS: FRESH WHEN RECORDED ONLY" in html
         assert "ZERO LIVE API CALLS" in html
         assert "Static Historical Snapshot" in html
-        assert "Freshness window expired" in html
+        assert "never a live claim" in html or "not live provider truth" in html
 
 
 class TestDefectEDeveloperDiagnosticsRemoved:

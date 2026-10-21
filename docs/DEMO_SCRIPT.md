@@ -1,127 +1,77 @@
-# Termivance — Judge Demo Script (<3 minutes)
+# Termivance — Judge Demo Script (end-to-end, <3 minutes)
 
-Every step below was executed and verified on 2026-10-19 against the real
-canonical repository. The only not-possible live legs are called out honestly:
-GitLab Pages unpublication (requires Maintainer; recorded 403) and any step
-needing a GitLab PAT — those stay `NOT_RUN` and are *shown as NOT_RUN in the
-demo*, which is itself a product feature (honest evidence states).
+This is the canonical demonstration path for the GitLab Transcend *Life After Code* submission. Every step is labeled with its honest evidence class:
 
-## 0 · Setup (pre-recorded, not in the video)
+- `LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS` — observed live by the independent unauthenticated observer.
+- `RECORDED_LIVE` — a real provider observation captured at a recorded time (freshness is evaluation-time only).
+- `RECORDED_HISTORICAL` — a genuine archived session/note; bodies not anonymously readable.
+- `FIXTURE` — offline replay data, clearly labeled, never presented as live.
+- `NOT_OBSERVED` / `NOT_RUN` — honestly absent; never promoted.
+
+**The chain is operator-initiated (Supervised).** A human retirement request → genuine Duo investigation → deterministic corroboration → BLOCKED decision → bounded repair guidance → proof decay boundary → human review. It is never narrated as a single-trigger autonomous flow: the Duo-to-Python continuation is an operator-run CLI command by documented platform constraint (`coding_environment: none`; no execution tools available to the flow agent).
+
+## The end-to-end narrative (one pass)
+
+1. **Human retirement request** — canonical Issue #5, a neutral unprimed prompt. `RECORDED_HISTORICAL` (issue identity observable live; note bodies 401 to anonymous reads).
+2. **Genuine Duo multi-step investigation** — Catalog Item `1018562`, Session `9710085`: the agent inspected the target repository tree and `.gitlab-ci.yml`, discovered the surviving `create-pages` (`pages: true`) redeployment mechanism and the permission boundary, and posted candidate obligations (note `4045401991`). `RECORDED_HISTORICAL`.
+3. **Identified obligations + source evidence** — 7 candidate claims: 4 corroborated, 2 unresolved, 1 contextual. `RECORDED_LIVE` corroboration against provider facts at commit `54fcc9ff`.
+4. **Deterministic corroboration** — `termivance supervised-review --execute --target 87785099`: live anonymous provider reads, candidate reconciliation, counterfactual analysis (AI input does not alter the verdict). `EXECUTED_NOW` when run.
+5. **Retirement Obligation Graph** — 8 obligations evaluated; 4 satisfied, 3 violated, 1 unknown. Control Room Graph tab. Recorded evidence.
+6. **Fail-closed authorization decision** — `SAFE_TO_RETIRE = BLOCKED` (Pages administration 403; redeployment path active; no operator-signed ledger entry). Recorded + replayable live.
+7. **Bounded candidate repair recommendations** — `termivance repair-sets`: topologically ordered remediation guidance; Maintainer role honestly classified `EXTERNALLY_UNAVAILABLE_UNDER_CONTEST_CONDITIONS`. Recorded evidence.
+8. **Publication presence and redeployment risk** — the disposable target really serves HTTP 200 with marker `TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a` (5-level evidence, Level 2 honestly `NOT_OBSERVED_NOT_FOUND`); the surviving `create-pages` job can republish it. `RECORDED_LIVE` (regenerated 2026-10-21).
+9. **Evidence freshness / current-truth monitoring** — `termivance monitor-resurrection` + `check-decay`: 900s TTL, fail-closed staleness; the monitor requires fresh current observations for any positive present-tense verdict. `RECORDED_LIVE`.
+10. **Proof Capsule and explicit limitations** — `capsule-build` + `capsule-verify`: SHA-256 manifest; mutation/absence sections `NOT_RUN`/`NOT_OBSERVED`. Local deterministic artifact.
+11. **Human review** — the deterministic outcome is published back to Issue #5 (note `4045409264`) for human review. `RECORDED_HISTORICAL`.
+
+**What is deliberately NOT shown as done:** a successful Pages retirement (blocked, `NOT_RUN / PERMISSION_BLOCKED`), `OBSERVED_ABSENT` (`NOT_CLAIMED`), `RESURRECTION_CONTROLLED` (`NOT_CLAIMED`), any simulated provider success, any green "current freshness" from historical data.
+
+## Setup (pre-recorded, not in the video)
 
 ```bash
 python -m pip install -e ".[dev]"
-ruff check . && python -m pytest -q   # 327 passed
-python scripts/refresh_b4_evidence.py  # anonymous live refresh (GET-only, $0)
-python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --witness evidence/b4/witness_87785099.json --supervised-review evidence/b4/supervised_review.json --out-dir control_room
+ruff check . && python -m pytest -q        # 540 passed
+# optional fresh read-only evidence refresh (anonymous, GET-only, $0.00):
+termivance verify-pages-publication --project-id 87785099 --json --out evidence/b4/disposable_pages_publication.json
+termivance monitor-resurrection --project-id 87785099 --receipt evidence/b4/decision.json --json --out evidence/b4/resurrection_monitoring.json
+python scripts/build_control_room.py --portfolio evidence/b4/portfolio.json --risk-map evidence/b4/risk_map.json --decision evidence/b4/decision.json --simulation evidence/b4/simulation.json --workflow evidence/b4/workflow_assessment.json --capsule evidence/b4/proof_capsule.json --duo-external evidence/b4/duo_session_9671626_readback.json --duo-reconciliation evidence/b4/duo_reconciliation.json --duo-reconciliation-primary evidence/b4/duo_reconciliation_issue_5.json --witness evidence/b4/witness_87785099.json --supervised-review evidence/b4/supervised_review.json --pages-publication evidence/b4/disposable_pages_publication.json --resurrection-monitoring evidence/b4/resurrection_monitoring.json --repair-sets evidence/b4/bounded_repair_sets.json --freshness-decay evidence/b4/freshness_decay_record.json
 ```
 
-Open `control_room/index.html` in a browser (final shot).
+Open `control_room/index.html` in a browser (works from `file://`, zero network at view time).
 
-## 1 · The problem (≈20 s)
+## Filming sequence (matches the video runbook in the Master Plan, Section 11)
 
-"Software retirement without proof is just downtime. Termivance makes retirement
-an auditable protocol: a deterministic obligation graph decides, one narrowly
-authorized action executes, and absence is proven with explicit boundaries."
+| Scene | Screen | What to show | Evidence label |
+|---|---|---|---|
+| SC-01 | Control Room — Overview | First-screen explainer; `RETIREMENT BLOCKED` hero; why (403 + redeployment + no authorization) | Recorded snapshot, `FRESH WHEN RECORDED` |
+| SC-02 | Control Room — Overview | Three independent claims: `SAFE_TO_RETIRE: BLOCKED`, `OBSERVED_ABSENT: NOT_CLAIMED`, `RESURRECTION_CONTROLLED: NOT_CLAIMED` | Recorded |
+| SC-03 | GitLab browser — Issue #5 + Duo session URL | The neutral request and the agent's investigation (fallback: Control Room Evidence tab, since session UI is 404 to non-members) | `RECORDED_HISTORICAL` |
+| SC-04 | Control Room — Evidence & Audit → Candidate corroboration | Session `9710085`: 4 corroborated / 2 unresolved / 1 contextual; row `duo-9710085-cand-01` (`create-pages` @ `54fcc9ff`) | Recorded |
+| SC-05 | Terminal | `scripts/run_supervised_review.bat --no-pause` (or `termivance supervised-review --execute --target 87785099`) — live deterministic evaluation ending in `BLOCKED` | `EXECUTED_NOW` (live, read-only) |
+| SC-06 | Browser — disposable Pages URL | The real published target site with the unique marker (published by the target's own CI — the resurrection risk) | `RECORDED_LIVE` (site is publicly served) |
+| SC-07 | Control Room — Graph | Click `resource:ci_redeployment:87785099`; edges highlight to the BLOCKED decision | Recorded |
+| SC-08 | Control Room — What-if + Repair/Freshness | `PROJECTED_NOT_OBSERVED` factors; bounded repair set; 900s decay boundary | Recorded |
+| SC-09 | GitLab CI + GitHub Actions | Green verification pipeline; independent observer `PASS / IN_SYNC` | `LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS` |
+| SC-10 | Control Room — Overview (final) | Tagline close: "Software retirement, proven within bounds." | Recorded |
 
-## 2 · Portfolio — multi-resource discovery (≈35 s)
+Duration budget and full voice-over/subtitles: see Master Plan Section 11 (target 174 s, hard limit 180 s).
+
+## Honest boundary lines (say these on camera)
+
+- "A real Duo Custom Flow investigated the target — its candidates are advisory; deterministic Python alone decides."
+- "The target's Pages site is genuinely published — that's presence, not retirement. Unpublishing stays blocked: the operator lacks Maintainer, and the organizer denied it. Termivance refuses to mutate without proof and permission."
+- "Evidence has a freshness window — 900 seconds. Older observations are historical, never current truth."
+- "The what-if page is clearly hypothetical — a projection can never mint a verdict."
+
+## Negative controls (read-only, safe to run live)
 
 ```bash
-termivance portfolio --project-ids 87785099,87779099,87777871,87786164 --anonymous \
-  --policy config/retirement_policy.b3_disposable.json
+# real mutations require an independent operator trust policy → refused (exit 2):
+termivance retire-pages --execute --project-id 87785099 --policy config/retirement_policy.b3_disposable.json
+# (with a full trust document, protected targets such as 87779099 remain
+#  structurally refused — proven by the test suite and the 40 CI safety assertions)
+# offline replay can never publish (exit 2, OFFLINE_PUBLICATION_REFUSED):
+termivance supervised-review --continue --issue-iid 5 --session-id 9710085 --note-id 4045401991 --target-id 87785099 --expected-sha 54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d --mode offline-replay --publish
 ```
 
-Show the live GitLab read: `87779099` labelled **PROTECTED** (canonical repo —
-expressly excluded), `87785099` labelled **APPROVED_RETIREMENT_TARGET**; per-resource
-records (environments, deployments, issues, CI Pages mechanism, Pages), each with
-exact IDs, endpoint, timestamp, freshness, provenance and `NOT_AUTHORIZING`.
-This pass `/pages` honest `PAGES_UNVERIFIABLE_403` on all visible projects. Say:
-"a 403 is an *access* observation — we never turn it into a deployment claim."
-
-## 3 · Decision + Risk map + Simulation (≈50 s)
-
-```bash
-termivance simulate --project-id 87785099 --from-record evidence/b4/snapshot.json --portfolio evidence/b4/portfolio.json
-termivance risk-map --decision evidence/b4/decision.json --portfolio evidence/b4/portfolio.json
-```
-
-Explain the deterministic `BLOCKED` (target outside anonymous-verifiable scope,
-pages publication unverifiable without a credential, observed redeployment
-mechanism) and the simulation's `PROJECTED_NOT_OBSERVED` labels: "same rules as
-the real engine, zero mutation dispatch — a hypothesis can never mint a verdict."
-Point out the shared portfolio evidence: the same snapshot feeds risk map and
-simulation, `INFERRED` edges are context, never decision facts.
-
-## 4 · Control Room v2, interactive (≈50 s)
-
-Open `control_room/index.html` and *use it live*:
-
-1. Header chips: **EVIDENCE: LIVE_ANONYMOUS** · **MUTATION: NOT_OBSERVED/NOT RUN**.
-2. Portfolio tab: click `87785099` → 4 resource records with endpoint/timestamp/freshness;
-   click a resource → selection highlights.
-3. Graph tab: **"independently observed" — the graph is drawn from the recorded
-   risk map only.** Click `resource:ci_redeployment:87785099` → edges highlight,
-   detail pane shows the full recorded payload; click a `not-observed:…` node →
-   the 403-with-context fact. Zoom in/out.
-4. What-if tab: pick the CI mechanism → its precomputed `PROJECTED_NOT_OBSERVED`
-   factor; pick the Pages resource → honest `NOT_RUN` card. "This page runs no
-   engine and observes nothing — it is a viewer of records."
-5. Proof tab: authorization gates (`STRUCTURALLY_REFUSED` for project deletion,
-   the receipt card showing the fail-closed truth state — `NOT_RUN` today, never
-   a "live" label from mere schema presence), capsule sections, the Duo session
-   `9671626` evidence ladder (independently observed 200s vs operator-confirmed
-   contents vs 401/404 unobservable leg), the **claim reconciliation** table
-   (4 SUPPORTED / 2 UNRESOLVED / 2 NOT_AUTHENTICALLY_ATTRIBUTABLE / 1 UNSUPPORTED
-   — "consistency is never promoted; a 401 is not attribution") and the
-   **resurrection witness** card (target 87785099's *own* CI config at the exact
-   observed commit carries Pages redeployment signals; its Pages administration
-   surface answers 403 → "the observing identity cannot verify this surface";
-   absence claim `NEVER`, control `NOT_CLAIMED`), the **supervised retirement review**
-   card (7-step visual pipeline from Duo to deterministic verdicts, candidate claims
-   matrix with source-backed corroboration, and counterfactual analysis proving
-   AI input enriches investigation without modifying the deterministic BLOCKED verdict)
-   — plus the escaping self-test rendering as inert text.
-
-## 5 · Proof Capsule + verify-receipt (≈25 s)
-
-```bash
-termivance capsule-build --decision evidence/b4/decision.json \
-  --target-project-id 87785099 \
-  --target-full-path gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo \
-  --out evidence/b4/proof_capsule.json
-termivance capsule-verify evidence/b4/proof_capsule.json
-```
-
-This is the *no-mutation-yet* capsule over the real BLOCKED decision:
-mutation/absence sections are explicit `NOT_RUN`/`NOT_OBSERVED`, never invented.
-The shipped `evidence/b4/proof_capsule.json` additionally embeds the
-non-authoritative Duo reconciliation and the resurrection witness verbatim (or
-explicit `NOT_OBSERVED` when not supplied). Say plainly: "integrity verification
-is a hash check, not a provider re-observation. When a real receipt exists, the
-capsule carries the mutation receipt, authorization provenance and independence
-observations instead."
-
-## 6 · Single-flow workflow (≈20 s)
-
-```bash
-termivance workflow-plan --project-id 87785099 --full-path \
-  gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo --out-dir evidence/b4
-```
-
-Point at stage 5: "the destructive step exists exactly once — `retire-pages
---execute` — wrapped by the operator trust policy (`--operator-trust`), a GitLab-issued
-operator approval, a durable single-use ledger and independent read-back. There is
-no second mutation code path."
-
-## 7 · Honest NOT_RUN close (≈15 s)
-
-"With today's access, the live unpublish and a role-dependent 403 re-check stay
-`NOT_RUN` — GitLab's own safety gates. The protocol fails closed, and that is
-the point."
-
-**NOT shown as done (never claim):** live unpublication footage,
-`OBSERVED_ABSENT`, `RESURRECTION_CONTROLLED`, a live capsule.
-The B1 Duo session (`9650440`) remains the deployed-flow evidence; the B4 session
-`9671626` on issue #3 is shown from its **evidence ladder**: issue metadata read
-anonymously (HTTP 200), while the comment contents are operator-confirmed only
-(notes endpoint returned 401 to anonymous reads — an access observation, never
-proof either way). The deterministic executor issued no verdict from either.
+Both refusals are product features: fail-closed safety, demonstrated live.

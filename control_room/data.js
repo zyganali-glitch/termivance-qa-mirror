@@ -27,7 +27,7 @@ window.TERMIVANCE_DATA = {
     "Unpublishing targets exactly one disposable Pages project; the canonical repository and every other project are out of scope.",
     "Unsigned SHA-256 digests in the ledger are local tamper evidence, never cryptographic authentication of provider events."
   ],
-  "built_at": "2026-10-21T13:24:18.694837+00:00",
+  "built_at": "2026-10-21T15:16:18.202626+00:00",
   "demo_target_discovery": {
     "candidates": [
       {
@@ -1798,7 +1798,7 @@ window.TERMIVANCE_DATA = {
         "level5_source_corroborated": true
       },
       "marker": "TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a",
-      "observed_at": "2026-10-21T11:58:22.683902+00:00",
+      "observed_at": "2026-10-21T15:15:06.898108+00:00",
       "prohibited_actions": [
         "DELETE /projects/87785099/pages was NOT called.",
         "Track 2 remains permanently BLOCKED_EXTERNAL under organizer denial.",
@@ -2299,7 +2299,7 @@ window.TERMIVANCE_DATA = {
         "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
         "default_branch": "main",
         "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
-        "observed_at": "2026-10-21T13:23:58.136640+00:00",
+        "observed_at": "2026-10-21T15:15:11.732621+00:00",
         "pages_api_accessible": false,
         "pages_api_deployment_count": 0,
         "pages_api_status": 403,
@@ -2319,7 +2319,7 @@ window.TERMIVANCE_DATA = {
         "Surviving CI redeployment mechanism detected: ['pages_keyword', 'pages_true'].",
         "Target site is currently published and serving its marker, but historical absence receipt was unverified."
       ],
-      "evaluated_at": "2026-10-21T13:24:00.903989+00:00",
+      "evaluated_at": "2026-10-21T15:15:13.732658+00:00",
       "freshness_state": "EXPIRED",
       "historical_truth": {
         "action": "unpublish_pages",

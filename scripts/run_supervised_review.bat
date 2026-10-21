@@ -29,21 +29,21 @@ if errorlevel 1 (
     echo [PREFLIGHT FAILED] Python executable not found in PATH.
     echo.
     echo Setup Guidance:
-    echo   1. Install Python 3.10 or newer from https://www.python.org/
+    echo   1. Install Python 3.12 or newer from https://www.python.org/
     echo   2. Ensure "Add Python to PATH" is checked during installation.
     echo ==============================================================================
     exit /b 1
 )
 
-REM 3. Preflight: Verify Python version >= 3.10 and termivance package availability
-python -c "import sys; assert sys.version_info >= (3, 10); import termivance" >nul 2>nul
+REM 3. Preflight: Verify Python version >= 3.12 and termivance package availability
+python -c "import sys; assert sys.version_info >= (3, 12); import termivance" >nul 2>nul
 if errorlevel 1 (
     echo.
     echo ==============================================================================
-    echo [PREFLIGHT FAILED] Python 3.10+ or 'termivance' package is not available.
+    echo [PREFLIGHT FAILED] Python 3.12+ or 'termivance' package is not available.
     echo.
     echo Setup Guidance:
-    echo   1. Verify Python version is 3.10+: python --version
+    echo   1. Verify Python version is 3.12+: python --version
     echo   2. Install termivance in editable mode:
     echo        pip install -e .[dev]
     echo ==============================================================================

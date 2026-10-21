@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Termivance Control Room — static, read-only viewer of a proof-bound software retirement protocol: GitLab Duo investigates, deterministic Python decides.">
 <title>Termivance Control Room — Proof-Bounded Software Retirement Protocol</title>
 <style>
   :root {
@@ -501,17 +502,18 @@
   </div>
 </header>
 
-<nav id="tabs">
-  <button class="tabbtn active" data-tab="overview" aria-selected="true">Overview</button>
-  <button class="tabbtn" data-tab="portfolio">Portfolio</button>
-  <button class="tabbtn" data-tab="graph">Obligation Graph</button>
-  <button class="tabbtn" data-tab="whatif">What-if</button>
-  <button class="tabbtn" data-tab="proof">Evidence &amp; Audit</button>
+<nav id="tabs" role="tablist" aria-label="Control Room sections">
+  <button class="tabbtn active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
+  <button class="tabbtn" data-tab="portfolio" role="tab" aria-selected="false">Portfolio</button>
+  <button class="tabbtn" data-tab="graph" role="tab" aria-selected="false">Obligation Graph</button>
+  <button class="tabbtn" data-tab="whatif" role="tab" aria-selected="false">What-if</button>
+  <button class="tabbtn" data-tab="proof" role="tab" aria-selected="false">Evidence &amp; Audit</button>
 </nav>
 
-<section class="panel active" id="tab-overview"></section>
-<section class="panel" id="tab-portfolio"></section>
-<section class="panel" id="tab-graph">
+<main>
+<section class="panel active" id="tab-overview" role="tabpanel" aria-label="Overview"></section>
+<section class="panel" id="tab-portfolio" role="tabpanel" aria-label="Portfolio"></section>
+<section class="panel" id="tab-graph" role="tabpanel" aria-label="Obligation Graph">
   <div class="grid">
     <div>
       <div class="card">
@@ -543,8 +545,9 @@
     </div>
   </div>
 </section>
-<section class="panel" id="tab-whatif"></section>
-<section class="panel" id="tab-proof"></section>
+<section class="panel" id="tab-whatif" role="tabpanel" aria-label="What-if simulation"></section>
+<section class="panel" id="tab-proof" role="tabpanel" aria-label="Evidence and audit"></section>
+</main>
 
 <footer id="footer"></footer>
 
@@ -586,21 +589,35 @@ function missing(name) {
 }
 
 /* ---------- header ---------- */
+function latestRecordedObservation() {
+  let latest = (D.snapshot_metadata || {}).snapshot_recorded_at || "";
+  for (const sec of Object.values(D.sections || {})) {
+    if (sec && typeof sec === "object") {
+      const t = sec.observed_at || sec.evaluated_at;
+      if (typeof t === "string" && t > latest) latest = t;
+    }
+  }
+  return latest || null;
+}
+
 function renderHeader() {
   const snap = D.snapshot_metadata || {};
   const mut = D.mutation_status || "NOT_RUN";
   const obsCommit = snap.observed_target_commit ? snap.observed_target_commit.slice(0, 10) + "…" : "54fcc9ff…";
+  const latest = latestRecordedObservation();
+  const latestDay = latest ? latest.slice(0, 10) : "2026-10-21";
 
   document.getElementById("hdr-chips").innerHTML =
-    `${chip("SNAPSHOT: RECORDED_PROVIDER_READ (2026-10-19)", "chip acc")} ` +
-    `${chip("FRESHNESS: EXPIRED_HISTORICAL", "chip amber")} ` +
+    `${chip("SNAPSHOT: RECORDED_PROVIDER_READS (per-section timestamps)", "chip acc")} ` +
+    `${chip("FRESHNESS: FRESH WHEN RECORDED ONLY", "chip amber")} ` +
     `${chip("ZERO LIVE API CALLS", "chip dim")} ` +
     `${chip("MUTATION: " + mut, mut === "NOT_RUN" ? "chip bad" : chipState(mut))}`;
 
   document.getElementById("hdr-sub").innerHTML =
-    "<strong>Static Historical Snapshot:</strong> Observed 2026-10-19 16:26 UTC · " +
+    "<strong>Static Historical Snapshot:</strong> Every section carries its own recorded observation timestamp (latest recorded " +
+    escapeHtml(latestDay) + "); each recorded freshness window has since expired. " +
     "Target <code>87785099</code> default branch @ commit <code>" + escapeHtml(obsCommit) + "</code> · " +
-    "Freshness window expired (historical audit evidence, not live provider truth) · " +
+    "Historical audit evidence, not live provider truth · " +
     "Zero network requests at view time · No destructive control exists on this page";
 }
 
@@ -621,6 +638,36 @@ function renderOverview() {
   const issueUrl = flow.primary_issue_url || "";
 
   el.innerHTML = `
+  <!-- First-screen product explainer -->
+  <div class="card" style="margin-bottom: 20px; border-left: 3px solid var(--accent);">
+    <h2 style="margin-top: 0;">What you are looking at</h2>
+    <div class="grid-3" style="margin-bottom: 0;">
+      <div>
+        <div class="stage-title" style="color: var(--accent); font-size: 12.5px;">THE PROBLEM</div>
+        <div class="stage-body">
+          Deleting code is not retiring software. A forgotten <code>create-pages</code> CI job, schedule or trigger can
+          resurrect a "retired" service weeks later — re-exposing vulnerabilities and silent cost.
+        </div>
+      </div>
+      <div>
+        <div class="stage-title" style="color: var(--ok); font-size: 12.5px;">THE PROTOCOL</div>
+        <div class="stage-body">
+          Termivance makes retirement an auditable, proof-bound lifecycle:
+          discover → analyze → authorize → retire → prove → watch. One GitLab Duo agent investigates and proposes;
+          deterministic Python alone decides, authorizes, and proves.
+        </div>
+      </div>
+      <div>
+        <div class="stage-title" style="color: var(--amber); font-size: 12.5px;">THIS DEMONSTRATION</div>
+        <div class="stage-body">
+          A human retirement request on GitLab Issue #5 triggered a genuine Duo Custom Flow investigation.
+          The deterministic engine independently corroborated it and refused unsafe retirement:
+          <strong>RETIREMENT BLOCKED</strong>, with three unclaimed verdicts below.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Decision hero -->
   <div class="decision-hero">
     <div>
@@ -636,7 +683,9 @@ function renderOverview() {
   <!-- Snapshot Notice -->
   <div class="banner info">
     <strong>Snapshot Provenance &amp; Verification Boundary:</strong> The observations displayed across this interface were
-    captured via anonymous read-only GitLab REST API calls on October 19, 2026. The recorded 15-minute freshness window has expired.
+    captured via anonymous read-only GitLab REST API calls; each section carries its own recorded timestamp
+    (portfolio/decision recorded 2026-10-19; Pages publication and resurrection monitoring re-observed 2026-10-21).
+    All recorded freshness windows have expired — evidence is <strong>FRESH WHEN RECORDED</strong>, never a live claim.
     This page is completely static, makes <strong>zero live provider network requests</strong>, and preserves verified historical
     evidence establishing that an active redeployment mechanism existed at the observed commit.
   </div>
@@ -1766,7 +1815,7 @@ function renderFooter() {
 
 document.querySelectorAll(".tabbtn").forEach((b) =>
   b.addEventListener("click", () => {
-    document.querySelectorAll(".tabbtn").forEach((x) => { x.classList.remove("active"); x.removeAttribute("aria-selected"); });
+    document.querySelectorAll(".tabbtn").forEach((x) => { x.classList.remove("active"); x.setAttribute("aria-selected", "false"); });
     document.querySelectorAll(".panel").forEach((x) => x.classList.remove("active"));
     b.classList.add("active");
     b.setAttribute("aria-selected", "true");

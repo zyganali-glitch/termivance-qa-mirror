@@ -5,7 +5,7 @@
     "commit_sha": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d",
     "default_branch": "main",
     "full_path": "gitlab-ai-hackathon/transcend-october-2026/39306908/termivance-b3-disposable-pages-demo",
-    "observed_at": "2026-10-21T13:23:58.136640+00:00",
+    "observed_at": "2026-10-21T15:15:11.732621+00:00",
     "pages_api_accessible": false,
     "pages_api_deployment_count": 0,
     "pages_api_status": 403,
@@ -25,7 +25,7 @@
     "Surviving CI redeployment mechanism detected: ['pages_keyword', 'pages_true'].",
     "Target site is currently published and serving its marker, but historical absence receipt was unverified."
   ],
-  "evaluated_at": "2026-10-21T13:24:00.903989+00:00",
+  "evaluated_at": "2026-10-21T15:15:13.732658+00:00",
   "freshness_state": "EXPIRED",
   "historical_truth": {
     "action": "unpublish_pages",
