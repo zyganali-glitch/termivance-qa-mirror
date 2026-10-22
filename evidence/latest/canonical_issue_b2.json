@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-22T17:17:52Z",
-  "artifact_sha256": "f7ebe974be63b13fe5d4a8eb21e192fc970f81a2f28036343bc2a3f2aae3471b",
+  "acquired_at_utc": "2026-10-22T21:43:49Z",
+  "artifact_sha256": "a73cb4c63e650360e1f356089328936437f21c774c84be74f6d52a9acce95bb7",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/issues/2",
   "http_error": null,
