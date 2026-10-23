@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-23T05:01:17Z",
-  "artifact_sha256": "bb76366a6d251182fefcd288530def9670b956ff0a40960e61417f1931b155d8",
+  "acquired_at_utc": "2026-10-23T11:48:29Z",
+  "artifact_sha256": "874cd17c2a6033347f4b7c4efca0809ac82a7ec2f5efddcae8c55d0ad7953d25",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87785099",
   "http_error": null,
