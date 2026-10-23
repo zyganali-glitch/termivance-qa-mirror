@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-22T21:43:47Z",
-  "artifact_sha256": "2761dd722f9b2799d3d3863010da5963da9e4f72320283be7fcd3d33a32df6dc",
+  "acquired_at_utc": "2026-10-23T05:01:16Z",
+  "artifact_sha256": "7106819eb7b407180687554e15c481b021d9945ace30a240b2c097141d4ff266",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
   "endpoint": "/projects/87779099/issues?per_page=20",
   "http_error": null,

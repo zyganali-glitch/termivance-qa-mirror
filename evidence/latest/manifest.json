@@ -51,28 +51,28 @@
   "evidence_manifest_sha256": {
     "algorithm": "sha256",
     "artifact_digests": {
-      "canonical_b2_commit": "20eb0ce5f5069ee1489631f8203e5cb6e31d908f1eaf6bca4abe8f05a09d9940",
-      "canonical_b2_pipeline": "1765370be500b6827c0c427f6708f97cfd0c75f8a4be7b0e18a7d40397e20498",
-      "canonical_environments": "5a3e4f9cd2fb0eaca93e645a1ad42f873fe9fb815b2aee45cf8ee4ae85893367",
-      "canonical_issue_b2": "a73cb4c63e650360e1f356089328936437f21c774c84be74f6d52a9acce95bb7",
-      "canonical_issue_b2_notes": "aa05cbf9fb3611bf77201eeee3bbf57ceb74cdb75a57787393fb45766aa90c9d",
-      "canonical_issue_b3": "df8d398bd13334169bffea9b68352a869b2ff63414f9e6c850ad14a1ac2f195a",
-      "canonical_issue_b3_notes": "4ff4920fc0ef5c419503c346799211af75219347420ac5e7a72b050d9fbede19",
-      "canonical_issues": "2761dd722f9b2799d3d3863010da5963da9e4f72320283be7fcd3d33a32df6dc",
-      "canonical_latest_pipeline_detail": "1a2ac166289f091061697add85d8505c764f0276197f2c12d393e3242dd1df23",
-      "canonical_latest_pipeline_jobs": "228c814fef7bf20e555af9a9da43c6fbe694b60300b656a3a052d1c6bafb72ad",
-      "canonical_latest_pipelines": "2a51525a40d1fc3595b234e38a3df0268076378876774faba8e8444a0f48828a",
-      "canonical_main_branch": "95aebe45d6cd26c53d884eead455afae0785856ee8be407623605e3091113df4",
-      "canonical_pages": "ed8ac218e0afdd0d0a9230bd5e897763c6c4eb12da56db1a89d108450afc1121",
-      "canonical_project": "b1693531338b8ec5a9ecb1452cd4686d6830e5117c4fc721dd90a7255a4f72d6",
-      "canonical_repo_file_ci": "3bf2ece919bcd48cddb5bd98b8e427a5447278ad21e82f6e09923c9cc8a3f1d1",
+      "canonical_b2_commit": "d3460422dfc5ffb0182c343d772db15cdd99724f7fdf3ec69b2d1bcd27d5a9fc",
+      "canonical_b2_pipeline": "92234d810b9269a13fe59e069a65fcd8565098b4073c592d87b4829ab92e2838",
+      "canonical_environments": "a64ab4c981c593145d599f2a89211f3a4f7f86d82143ac0efcdd81e94f189dcd",
+      "canonical_issue_b2": "1f21a5307162049d7d2c538f266198343fdb6ffe7b94d950d81f24b83fc52a4b",
+      "canonical_issue_b2_notes": "56890cb7a24d3a2ccb12140ace2bdd6753346d02a2bab3c619ab6c908e315b54",
+      "canonical_issue_b3": "2ab3e40dc0ba2fd42c651ac79f3c5f9631fa7353f366e596c0a7636db731a37c",
+      "canonical_issue_b3_notes": "3940a93a9fdff422eeb7d37d351dac48d067c4ba6f15c5e6e2afe0989e25d2c6",
+      "canonical_issues": "7106819eb7b407180687554e15c481b021d9945ace30a240b2c097141d4ff266",
+      "canonical_latest_pipeline_detail": "2a1e9fc9b7e3e63c96edd213f0fe821e2ab700b6f3237dcb6a9078fe47838efe",
+      "canonical_latest_pipeline_jobs": "858cde6d6e3fa7f43b56eba6ecbd3a97a011869ab7342697ce3d60eeff9d2297",
+      "canonical_latest_pipelines": "bd071b2f9e330bf47ac25763c8feb203b4282bb52a9b2bb2c6efcc803fbd7c28",
+      "canonical_main_branch": "356d2a653fafb1bed440fc508cf6c964e1c8660fd0bb5c7b9741eae42f400863",
+      "canonical_pages": "54ffb87b8457879a6741937c1e03e3bffc86e936ffca8bac0c04e55b18172f55",
+      "canonical_project": "20bf1d3b0f8d16b77ffcbe37578647713a705d6f8deb99bb2766c888ae6b873d",
+      "canonical_repo_file_ci": "bb6c1ece1f41262bcb1bec68a63ac40e66ca25f2345154a73b13534a5ac9793e",
       "canonical_verification_job_trace": "51542f5c4584eb471dd661ca8245b813e7aed5ac9d1cbefdc7b60a8743d443bf",
-      "disposable_environments": "7f27b63e814aa595ce34965c954fbf91ac6c1cfacfba2a5e6641fa97ff218503",
-      "disposable_main_branch": "324653ee3dfc52fa0b0c414302448a778cb4b0029488501d296f092bbde02a3c",
-      "disposable_pages": "59018ee33ba379c4ab79b4d01f60712d072c79d81b7b85f9fe7d9381d644dea7",
-      "disposable_pipelines": "c195a1965391cf7140ebf81779d05b4b067612447f3da08b0edb94ed971826f1",
-      "disposable_project": "524e003c134e1b0be342ad785fbbf96f8ac3131dffd8ae71f6063ae87ceb2940",
-      "duo_workflows_probe": "4e8a3fe0a31d78e1f6fc4e339698a583b145b5597c6fd7437dd91f346d22f9a6",
+      "disposable_environments": "1b8b9c0502181683f5d06588947823e44a479ac8ac263857156b9d5edb7660e7",
+      "disposable_main_branch": "15b72ff6f98d708f0c8efcd2b844abfb7420bc2b8211071dbf75bcbf64d1b77e",
+      "disposable_pages": "796722f24c13039f9d045610dc6e141f6efb8c1d13540b9eb9dfc16b1b3fd496",
+      "disposable_pipelines": "7a07c44198de9bed03c84d7057b937d3b7cc2e6ee538aef9d77a8b11605a9348",
+      "disposable_project": "bb76366a6d251182fefcd288530def9670b956ff0a40960e61417f1931b155d8",
+      "duo_workflows_probe": "987ef3764b9ee001dba3efc7f49860620052cefa93703aaf3206d3152e4692ab",
       "source_config_retirement_policy_b3_disposable_json": "4ec991bd0187a13e77411e83988e94353ce6672e0dc3b88143f0e8733e1f65b6",
       "source_gitlab_ci_yml": "8de5664162bb910036a2917fac7b557c335863656e0b2ca7d77ce34b01f91afd",
       "source_src_termivance_authorization_py": "38114b99da53925bb7abd4d6aeeba19b7005a712a7f082398f49062052536023",
@@ -84,13 +84,13 @@
       "source_src_termivance_pages_publication_py": "bcda2f57ad2c44687f935bb3c97c2771f643f92f32d3cb5d574840bac43f5f22",
       "source_src_termivance_pages_py": "c037fe913610f62ba0f8037b9d2ba7e03a226522501e20b46471fd694f4d349b",
       "source_src_termivance_protected_py": "b9f1b65871b539f273702d27d93eb9973f5e4ca187c490dab6b84bb406f19cae",
-      "source_src_termivance_resurrection_monitor_py": "c2347e65a053fb7c12897607eecd243bf559720d1d958f2a18b7ee8ff23ffb7a",
+      "source_src_termivance_resurrection_monitor_py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "source_src_termivance_retirement_py": "8dc8279f551af141f2e9aad0a0dcb06099a19aac1dffe51b13b0ffaf8acb9427",
       "source_src_termivance_supervised_review_py": "04b16cdbb7b9970d51c8443614b3ded93981cb6d67057522dfa757cb97954d7d"
     },
-    "combined_sha256": "c63071c374da065aa686672533a1e83ee129881b19be59b22a6b49647ee22c21"
+    "combined_sha256": "44689d6f946a67a17d52e99d3fc9e7ae3c3264ba61d73d9e04264cbef349f378"
   },
-  "generated_at_utc": "2026-10-22T21:43:54Z",
+  "generated_at_utc": "2026-10-23T05:01:49Z",
   "gitlab_base": "https://gitlab.com/api/v4",
   "mandatory_endpoints": [
     "canonical_project",
@@ -103,14 +103,14 @@
   ],
   "observations": [
     {
-      "artifact_sha256": "b1693531338b8ec5a9ecb1452cd4686d6830e5117c4fc721dd90a7255a4f72d6",
+      "artifact_sha256": "20bf1d3b0f8d16b77ffcbe37578647713a705d6f8deb99bb2766c888ae6b873d",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_project",
-      "observed_at_utc": "2026-10-22T21:43:46Z",
+      "observed_at_utc": "2026-10-23T05:01:15Z",
       "summary": {
         "created_at": "2026-10-18T10:56:59.177Z",
         "default_branch": "main",
@@ -120,38 +120,38 @@
       }
     },
     {
-      "artifact_sha256": "95aebe45d6cd26c53d884eead455afae0785856ee8be407623605e3091113df4",
+      "artifact_sha256": "356d2a653fafb1bed440fc508cf6c964e1c8660fd0bb5c7b9741eae42f400863",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/repository/branches/main",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_main_branch",
-      "observed_at_utc": "2026-10-22T21:43:46Z",
+      "observed_at_utc": "2026-10-23T05:01:15Z",
       "summary": {
         "commit_id": "e4653169455f0d4553abff715e48116abd704bf7"
       }
     },
     {
-      "artifact_sha256": "3bf2ece919bcd48cddb5bd98b8e427a5447278ad21e82f6e09923c9cc8a3f1d1",
+      "artifact_sha256": "bb6c1ece1f41262bcb1bec68a63ac40e66ca25f2345154a73b13534a5ac9793e",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/repository/files/.gitlab-ci.yml/raw?ref=main",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_repo_file_ci",
-      "observed_at_utc": "2026-10-22T21:43:46Z",
+      "observed_at_utc": "2026-10-23T05:01:15Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "2a51525a40d1fc3595b234e38a3df0268076378876774faba8e8444a0f48828a",
+      "artifact_sha256": "bd071b2f9e330bf47ac25763c8feb203b4282bb52a9b2bb2c6efcc803fbd7c28",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/pipelines?per_page=3&order_by=id&sort=desc",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_latest_pipelines",
-      "observed_at_utc": "2026-10-22T21:43:47Z",
+      "observed_at_utc": "2026-10-23T05:01:15Z",
       "summary": {
         "count": 3,
         "first_id": 2973233807,
@@ -160,61 +160,61 @@
       }
     },
     {
-      "artifact_sha256": "2761dd722f9b2799d3d3863010da5963da9e4f72320283be7fcd3d33a32df6dc",
+      "artifact_sha256": "7106819eb7b407180687554e15c481b021d9945ace30a240b2c097141d4ff266",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/issues?per_page=20",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_issues",
-      "observed_at_utc": "2026-10-22T21:43:47Z",
+      "observed_at_utc": "2026-10-23T05:01:16Z",
       "summary": {
         "count": 5,
         "first_id": 207188256
       }
     },
     {
-      "artifact_sha256": "ed8ac218e0afdd0d0a9230bd5e897763c6c4eb12da56db1a89d108450afc1121",
+      "artifact_sha256": "54ffb87b8457879a6741937c1e03e3bffc86e936ffca8bac0c04e55b18172f55",
       "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87779099/pages",
       "http_error": "HTTP 403",
       "http_status": 403,
       "method": "GET",
       "name": "canonical_pages",
-      "observed_at_utc": "2026-10-22T21:43:47Z",
+      "observed_at_utc": "2026-10-23T05:01:16Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "5a3e4f9cd2fb0eaca93e645a1ad42f873fe9fb815b2aee45cf8ee4ae85893367",
+      "artifact_sha256": "a64ab4c981c593145d599f2a89211f3a4f7f86d82143ac0efcdd81e94f189dcd",
       "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87779099/environments",
       "http_error": "HTTP 401",
       "http_status": 401,
       "method": "GET",
       "name": "canonical_environments",
-      "observed_at_utc": "2026-10-22T21:43:47Z",
+      "observed_at_utc": "2026-10-23T05:01:16Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "4e8a3fe0a31d78e1f6fc4e339698a583b145b5597c6fd7437dd91f346d22f9a6",
+      "artifact_sha256": "987ef3764b9ee001dba3efc7f49860620052cefa93703aaf3206d3152e4692ab",
       "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87779099/duo_workflows",
       "http_error": "HTTP 404",
       "http_status": 404,
       "method": "GET",
       "name": "duo_workflows_probe",
-      "observed_at_utc": "2026-10-22T21:43:47Z",
+      "observed_at_utc": "2026-10-23T05:01:16Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "524e003c134e1b0be342ad785fbbf96f8ac3131dffd8ae71f6063ae87ceb2940",
+      "artifact_sha256": "bb76366a6d251182fefcd288530def9670b956ff0a40960e61417f1931b155d8",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87785099",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "disposable_project",
-      "observed_at_utc": "2026-10-22T21:43:48Z",
+      "observed_at_utc": "2026-10-23T05:01:17Z",
       "summary": {
         "created_at": "2026-10-18T15:32:25.812Z",
         "default_branch": "main",
@@ -224,27 +224,27 @@
       }
     },
     {
-      "artifact_sha256": "324653ee3dfc52fa0b0c414302448a778cb4b0029488501d296f092bbde02a3c",
+      "artifact_sha256": "15b72ff6f98d708f0c8efcd2b844abfb7420bc2b8211071dbf75bcbf64d1b77e",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87785099/repository/branches/main",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "disposable_main_branch",
-      "observed_at_utc": "2026-10-22T21:43:48Z",
+      "observed_at_utc": "2026-10-23T05:01:17Z",
       "summary": {
         "commit_id": "54fcc9ff2bfde1038a8192216178a5a8b6a6ee1d"
       }
     },
     {
-      "artifact_sha256": "c195a1965391cf7140ebf81779d05b4b067612447f3da08b0edb94ed971826f1",
+      "artifact_sha256": "7a07c44198de9bed03c84d7057b937d3b7cc2e6ee538aef9d77a8b11605a9348",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87785099/pipelines?per_page=3&order_by=id&sort=desc",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "disposable_pipelines",
-      "observed_at_utc": "2026-10-22T21:43:48Z",
+      "observed_at_utc": "2026-10-23T05:01:17Z",
       "summary": {
         "count": 3,
         "first_id": 2960507698,
@@ -253,36 +253,36 @@
       }
     },
     {
-      "artifact_sha256": "59018ee33ba379c4ab79b4d01f60712d072c79d81b7b85f9fe7d9381d644dea7",
+      "artifact_sha256": "796722f24c13039f9d045610dc6e141f6efb8c1d13540b9eb9dfc16b1b3fd496",
       "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87785099/pages",
       "http_error": "HTTP 403",
       "http_status": 403,
       "method": "GET",
       "name": "disposable_pages",
-      "observed_at_utc": "2026-10-22T21:43:48Z",
+      "observed_at_utc": "2026-10-23T05:01:17Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "7f27b63e814aa595ce34965c954fbf91ac6c1cfacfba2a5e6641fa97ff218503",
+      "artifact_sha256": "1b8b9c0502181683f5d06588947823e44a479ac8ac263857156b9d5edb7660e7",
       "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87785099/environments",
       "http_error": "HTTP 401",
       "http_status": 401,
       "method": "GET",
       "name": "disposable_environments",
-      "observed_at_utc": "2026-10-22T21:43:49Z",
+      "observed_at_utc": "2026-10-23T05:01:18Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "a73cb4c63e650360e1f356089328936437f21c774c84be74f6d52a9acce95bb7",
+      "artifact_sha256": "1f21a5307162049d7d2c538f266198343fdb6ffe7b94d950d81f24b83fc52a4b",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/issues/2",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_issue_b2",
-      "observed_at_utc": "2026-10-22T21:43:49Z",
+      "observed_at_utc": "2026-10-23T05:01:18Z",
       "summary": {
         "created_at": "2026-10-18T14:14:15.330Z",
         "id": 207049857,
@@ -291,25 +291,25 @@
       }
     },
     {
-      "artifact_sha256": "aa05cbf9fb3611bf77201eeee3bbf57ceb74cdb75a57787393fb45766aa90c9d",
+      "artifact_sha256": "56890cb7a24d3a2ccb12140ace2bdd6753346d02a2bab3c619ab6c908e315b54",
       "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87779099/issues/2/notes",
       "http_error": "HTTP 401",
       "http_status": 401,
       "method": "GET",
       "name": "canonical_issue_b2_notes",
-      "observed_at_utc": "2026-10-22T21:43:49Z",
+      "observed_at_utc": "2026-10-23T05:01:18Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "df8d398bd13334169bffea9b68352a869b2ff63414f9e6c850ad14a1ac2f195a",
+      "artifact_sha256": "2ab3e40dc0ba2fd42c651ac79f3c5f9631fa7353f366e596c0a7636db731a37c",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/issues/3",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_issue_b3",
-      "observed_at_utc": "2026-10-22T21:43:49Z",
+      "observed_at_utc": "2026-10-23T05:01:18Z",
       "summary": {
         "created_at": "2026-10-18T18:56:41.601Z",
         "id": 207068923,
@@ -318,25 +318,25 @@
       }
     },
     {
-      "artifact_sha256": "4ff4920fc0ef5c419503c346799211af75219347420ac5e7a72b050d9fbede19",
+      "artifact_sha256": "3940a93a9fdff422eeb7d37d351dac48d067c4ba6f15c5e6e2afe0989e25d2c6",
       "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87779099/issues/3/notes",
       "http_error": "HTTP 401",
       "http_status": 401,
       "method": "GET",
       "name": "canonical_issue_b3_notes",
-      "observed_at_utc": "2026-10-22T21:43:49Z",
+      "observed_at_utc": "2026-10-23T05:01:19Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "20eb0ce5f5069ee1489631f8203e5cb6e31d908f1eaf6bca4abe8f05a09d9940",
+      "artifact_sha256": "d3460422dfc5ffb0182c343d772db15cdd99724f7fdf3ec69b2d1bcd27d5a9fc",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/repository/commits/21eed7e27a9077469be5297ada4cd87c728df13b",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_b2_commit",
-      "observed_at_utc": "2026-10-22T21:43:50Z",
+      "observed_at_utc": "2026-10-23T05:01:19Z",
       "summary": {
         "created_at": "2026-10-18T17:59:42.000+03:00",
         "id": "21eed7e27a9077469be5297ada4cd87c728df13b",
@@ -344,14 +344,14 @@
       }
     },
     {
-      "artifact_sha256": "1765370be500b6827c0c427f6708f97cfd0c75f8a4be7b0e18a7d40397e20498",
+      "artifact_sha256": "92234d810b9269a13fe59e069a65fcd8565098b4073c592d87b4829ab92e2838",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/pipelines/2960412852",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_b2_pipeline",
-      "observed_at_utc": "2026-10-22T21:43:50Z",
+      "observed_at_utc": "2026-10-23T05:01:19Z",
       "summary": {
         "created_at": "2026-10-18T14:59:46.249Z",
         "duration": 18,
@@ -372,7 +372,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_gitlab_ci_yml",
-      "observed_at_utc": "2026-10-22T21:43:50Z",
+      "observed_at_utc": "2026-10-23T05:01:19Z",
       "summary": {}
     },
     {
@@ -383,7 +383,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_config_retirement_policy_b3_disposable_json",
-      "observed_at_utc": "2026-10-22T21:43:50Z",
+      "observed_at_utc": "2026-10-23T05:01:20Z",
       "summary": {}
     },
     {
@@ -394,7 +394,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_authorization_py",
-      "observed_at_utc": "2026-10-22T21:43:51Z",
+      "observed_at_utc": "2026-10-23T05:01:20Z",
       "summary": {}
     },
     {
@@ -405,7 +405,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_evidence_py",
-      "observed_at_utc": "2026-10-22T21:43:51Z",
+      "observed_at_utc": "2026-10-23T05:01:20Z",
       "summary": {}
     },
     {
@@ -416,7 +416,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_ledger_py",
-      "observed_at_utc": "2026-10-22T21:43:51Z",
+      "observed_at_utc": "2026-10-23T05:01:21Z",
       "summary": {}
     },
     {
@@ -427,7 +427,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_pages_py",
-      "observed_at_utc": "2026-10-22T21:43:51Z",
+      "observed_at_utc": "2026-10-23T05:01:21Z",
       "summary": {}
     },
     {
@@ -438,18 +438,18 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_retirement_py",
-      "observed_at_utc": "2026-10-22T21:43:52Z",
+      "observed_at_utc": "2026-10-23T05:01:21Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "c2347e65a053fb7c12897607eecd243bf559720d1d958f2a18b7ee8ff23ffb7a",
-      "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
+      "artifact_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "classification": "NOT_OBSERVED",
       "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fresurrection_monitor.py/raw?ref=e4653169455f0d4553abff715e48116abd704bf7",
-      "http_error": null,
-      "http_status": 200,
+      "http_error": "error: The read operation timed out",
+      "http_status": null,
       "method": "GET",
       "name": "source_src_termivance_resurrection_monitor_py",
-      "observed_at_utc": "2026-10-22T21:43:52Z",
+      "observed_at_utc": "2026-10-23T05:01:46Z",
       "summary": {}
     },
     {
@@ -460,7 +460,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_supervised_review_py",
-      "observed_at_utc": "2026-10-22T21:43:52Z",
+      "observed_at_utc": "2026-10-23T05:01:46Z",
       "summary": {}
     },
     {
@@ -471,7 +471,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_continuation_ledger_py",
-      "observed_at_utc": "2026-10-22T21:43:52Z",
+      "observed_at_utc": "2026-10-23T05:01:47Z",
       "summary": {}
     },
     {
@@ -482,7 +482,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_pages_publication_py",
-      "observed_at_utc": "2026-10-22T21:43:53Z",
+      "observed_at_utc": "2026-10-23T05:01:47Z",
       "summary": {}
     },
     {
@@ -493,7 +493,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_decay_py",
-      "observed_at_utc": "2026-10-22T21:43:53Z",
+      "observed_at_utc": "2026-10-23T05:01:47Z",
       "summary": {}
     },
     {
@@ -504,7 +504,7 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_protected_py",
-      "observed_at_utc": "2026-10-22T21:43:53Z",
+      "observed_at_utc": "2026-10-23T05:01:48Z",
       "summary": {}
     },
     {
@@ -515,18 +515,18 @@
       "http_status": 200,
       "method": "GET",
       "name": "source_src_termivance_engine_py",
-      "observed_at_utc": "2026-10-22T21:43:53Z",
+      "observed_at_utc": "2026-10-23T05:01:48Z",
       "summary": {}
     },
     {
-      "artifact_sha256": "1a2ac166289f091061697add85d8505c764f0276197f2c12d393e3242dd1df23",
+      "artifact_sha256": "2a1e9fc9b7e3e63c96edd213f0fe821e2ab700b6f3237dcb6a9078fe47838efe",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/pipelines/2973233807",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_latest_pipeline_detail",
-      "observed_at_utc": "2026-10-22T21:43:53Z",
+      "observed_at_utc": "2026-10-23T05:01:48Z",
       "summary": {
         "created_at": "2026-10-21T17:49:23.214Z",
         "duration": 128,
@@ -540,14 +540,14 @@
       }
     },
     {
-      "artifact_sha256": "228c814fef7bf20e555af9a9da43c6fbe694b60300b656a3a052d1c6bafb72ad",
+      "artifact_sha256": "858cde6d6e3fa7f43b56eba6ecbd3a97a011869ab7342697ce3d60eeff9d2297",
       "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
       "endpoint": "/projects/87779099/pipelines/2973233807/jobs",
       "http_error": null,
       "http_status": 200,
       "method": "GET",
       "name": "canonical_latest_pipeline_jobs",
-      "observed_at_utc": "2026-10-22T21:43:54Z",
+      "observed_at_utc": "2026-10-23T05:01:48Z",
       "summary": {
         "count": 1,
         "first_id": 17358574812,
@@ -562,7 +562,7 @@
       "http_status": 401,
       "method": "GET",
       "name": "canonical_verification_job_trace",
-      "observed_at_utc": "2026-10-22T21:43:54Z",
+      "observed_at_utc": "2026-10-23T05:01:49Z",
       "summary": {}
     }
   ],
@@ -571,7 +571,7 @@
   "qa_status": "PASS",
   "schema": "termivance.qa_observer_manifest/v2",
   "source_manifest_sha256": {
-    "combined_sha256": "072fcc27a341914aff982969d170c7b50848399088bea8de10ee3c566d7c1a9b",
+    "combined_sha256": "58d2b2517420a76cba37d66ac4fc1a6a0a673eeffd0b681d7ce6678311f5811b",
     "files": {
       ".gitlab-ci.yml": {
         "bytes": 742,
@@ -640,10 +640,10 @@
         "sha256": "b9f1b65871b539f273702d27d93eb9973f5e4ca187c490dab6b84bb406f19cae"
       },
       "src/termivance/resurrection_monitor.py": {
-        "bytes": 40456,
-        "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-        "http_status": 200,
-        "sha256": "c2347e65a053fb7c12897607eecd243bf559720d1d958f2a18b7ee8ff23ffb7a"
+        "bytes": 0,
+        "classification": "NOT_OBSERVED",
+        "http_status": null,
+        "sha256": null
       },
       "src/termivance/retirement.py": {
         "bytes": 32410,
@@ -662,7 +662,7 @@
   },
   "workflow": {
     "repository": "zyganali-glitch/termivance-qa-mirror",
-    "run_id": "39859554283",
-    "run_url": "https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39859554283"
+    "run_id": "39903423908",
+    "run_url": "https://github.com/zyganali-glitch/termivance-qa-mirror/actions/runs/39903423908"
   }
 }
