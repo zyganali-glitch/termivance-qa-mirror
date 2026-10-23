@@ -1,6 +1,6 @@
 {
-  "acquired_at_utc": "2026-10-23T11:48:30Z",
-  "artifact_sha256": "0e6d6aeeb9a12b9a57f5ffcb0edc2461561e22c60b28a2d8b5f0c3f58687a780",
+  "acquired_at_utc": "2026-10-23T17:15:47Z",
+  "artifact_sha256": "ffb5421a39fda391a575157034d1da540aca983a649ef1afe0a922025086554f",
   "classification": "NOT_OBSERVED",
   "endpoint": "/projects/87785099/environments",
   "http_error": "HTTP 401",
