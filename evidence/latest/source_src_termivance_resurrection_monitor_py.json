@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-24T16:03:35Z",
+  "acquired_at_utc": "2026-10-24T17:07:45Z",
   "artifact_sha256": "c2347e65a053fb7c12897607eecd243bf559720d1d958f2a18b7ee8ff23ffb7a",
   "body_sha256": "c2347e65a053fb7c12897607eecd243bf559720d1d958f2a18b7ee8ff23ffb7a",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fresurrection_monitor.py/raw?ref=e4653169455f0d4553abff715e48116abd704bf7",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fresurrection_monitor.py/raw?ref=bb25e69bd9c1efa9c0f1f1e472ddea82a506439f",
   "http_error": null,
   "http_status": 200,
   "limitations": "public unauthenticated read",

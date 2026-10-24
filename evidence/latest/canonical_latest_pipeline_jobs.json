@@ -1,12 +1,12 @@
 {
-  "acquired_at_utc": "2026-10-24T16:03:37Z",
-  "artifact_sha256": "4564509df40564b2e30af57c9b60a2242548926b1f03195307cfa6afe7afd6bb",
+  "acquired_at_utc": "2026-10-24T17:07:47Z",
+  "artifact_sha256": "41b9434b24b9756edc7490cc4b1081df1558037c20479dea3df4ad134e725969",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/pipelines/2973233807/jobs",
+  "endpoint": "/projects/87779099/pipelines/2984879969/jobs",
   "extracted": [
     {
       "allow_failure": false,
-      "id": 17358574812,
+      "id": 17439830112,
       "name": "[REDACTED]",
       "stage": "verify",
       "status": "success"
@@ -29,57 +29,50 @@
     {
       "allow_failure": false,
       "archived": false,
-      "artifacts": [
-        {
-          "file_format": null,
-          "file_type": "trace",
-          "filename": "job.log",
-          "size": 18020
-        }
-      ],
+      "artifacts": [],
       "artifacts_expire_at": null,
       "commit": {
         "author_email": "[REDACTED]",
         "author_name": "zyganali",
-        "authored_date": "2026-10-21T20:49:12.000+03:00",
-        "committed_date": "2026-10-21T20:49:12.000+03:00",
+        "authored_date": "2026-10-24T20:03:40.000+03:00",
+        "committed_date": "2026-10-24T20:03:40.000+03:00",
         "committer_email": "[REDACTED]",
         "committer_name": "zyganali",
-        "created_at": "2026-10-21T20:49:12.000+03:00",
+        "created_at": "2026-10-24T20:03:40.000+03:00",
         "extended_trailers": {},
-        "id": "e4653169455f0d4553abff715e48116abd704bf7",
-        "message": "fix(b4-award-readiness): presentation-integrity repair - actual launcher verdicts, ten-scene contract, unified screenshot register\n\nLauncher verdict truth (W24 scope): both demo launchers previously printed a\nfixed SAFE_TO_RETIRE = BLOCKED summary on any zero exit. New shared classifier\nscripts/launcher_verdict.py reads the production CLI's structured --out record\n(termivance.supervised_review/v1) and classifies the ACTUAL result - only\nVERDICT_CONFIRMED_BLOCKED (completed-now execution + live provider steps +\nverdict BLOCKED) is presented as the expected safe outcome; unsuccessful\nexecution, missing/malformed results, non-live mode, incomplete steps, missing\nlive evidence, undetermined/inconclusive/unexpected verdicts (including\nSAFE_TO_RETIRE) are displayed as such and never converted. Original CLI exit\ncodes preserved; no mutation, publication or credentials. 23 adversarial tests\nin tests/test_b4_launcher_verdict.py. POSIX preflight now validates interpreter\ncandidates instead of trusting the python3 name (fixes the Windows Git Bash\nWindowsApps python3 stub found during rehearsal).\n\nTen-scene video contract (W25 scope): all current-state nine-scene text\nremoved; SC-07 narration corrected to 'HTTP four-oh-three, forbidden'; SC-06\ngiven conditional LIVE/HISTORICAL narration gated on a fresh browser read (a\nhistorical HTTP 200 never automatically becomes current; Level 2 stays\nNOT_OBSERVED); SC-05 verdict grounding rule added; complete narration-matching\ntimed subtitle track committed (assets/demo/subtitles/termivance_demo_en.srt,\n29 cues, 174 s) with on-screen slogans labeled separately.\n\nScreenshot register unified: ONE authoritative primary selection (01/02/04/\n06/07; alternates 03/05) across Master Plan 12.1, screenshots README and the\nTurkish operator guide; repair-set/freshness navigation corrected to Evidence\n& Audit -> 'Deterministic decision'.\n\nSafe live rehearsal: .bat 21.1 s / .sh (Git Bash) 25.4 s, both exit 0 with\nVERDICT_CONFIRMED_BLOCKED (7/7 steps, 6 live provider steps); safety refusal\nearly-fails 1.5 s (exit 2); Control Room five-tab browser pass; Duo session UI\n404 / Issue #5 notes 401 anonymous (fallbacks valid); disposable Pages site\nfresh HTTP 200 with marker at rehearsal time; committed evidence untouched.\n\nClaims reconciliation: previously accepted W27/W28 register entries reconciled\nto CLOSED_INDEPENDENT_QA with recorded acceptance chains; W23/W24/W25 remain\nIMPLEMENTED_NOT_VERIFIED pending Checkpoint A; Devpost CI/observer references\nlabeled historical verified baselines; suite count synchronized to 563\n(540 + 23 new tests).\n\nVerification: 563 tests passed, ruff clean, 40/40 network-free safety\nassertions. Zero personal spend; no destructive operation, no Pages DELETE,\nno new Duo invocation, no public UI deployment, no filming, no manufactured\nscreenshots, no YouTube upload, no Devpost submission.\n",
+        "id": "bb25e69bd9c1efa9c0f1f1e472ddea82a506439f",
+        "message": "docs(b4-freeze): final submission closure - integrate submitted video, authentic Devpost screenshots, and repository freeze readiness\n",
         "parent_ids": [
-          "4985978ee218d521283db4b33c5bb03c997b1d2c"
+          "e4653169455f0d4553abff715e48116abd704bf7"
         ],
-        "short_id": "e4653169",
-        "title": "fix(b4-award-readiness): presentation-integrity repair - actual launcher verdicts, ten-scene contract, unified screenshot register",
+        "short_id": "bb25e69b",
+        "title": "docs(b4-freeze): final submission closure - integrate submitted video, authentic Devpost screenshots, and repository freeze readiness",
         "trailers": {},
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/e4653169455f0d4553abff715e48116abd704bf7"
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/commit/bb25e69bd9c1efa9c0f1f1e472ddea82a506439f"
       },
       "coverage": null,
-      "created_at": "2026-10-21T17:49:23.362Z",
-      "duration": 128.864451,
+      "created_at": "2026-10-24T17:03:53.736Z",
+      "duration": 139.246911,
       "erased_at": null,
-      "finished_at": "2026-10-21T17:51:32.608Z",
-      "id": 17358574812,
+      "finished_at": "2026-10-24T17:06:13.454Z",
+      "id": 17439830112,
       "name": "[REDACTED]",
       "pipeline": {
-        "created_at": "2026-10-21T17:49:23.214Z",
-        "id": 2973233807,
-        "iid": 52,
+        "created_at": "2026-10-24T17:03:53.605Z",
+        "id": 2984879969,
+        "iid": 53,
         "project_id": 87779099,
         "ref": "main",
-        "sha": "e4653169455f0d4553abff715e48116abd704bf7",
+        "sha": "bb25e69bd9c1efa9c0f1f1e472ddea82a506439f",
         "source": "push",
         "status": "success",
-        "updated_at": "2026-10-21T17:51:34.030Z",
-        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2973233807"
+        "updated_at": "2026-10-24T17:06:14.970Z",
+        "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/pipelines/2984879969"
       },
       "project": {
         "ci_job_token_scope_enabled": false
       },
-      "queued_duration": 0.087066,
+      "queued_duration": 0.073413,
       "ref": "main",
       "runner": {
         "active": true,
@@ -105,14 +98,26 @@
         "runner_type": "instance_type",
         "status": "online"
       },
-      "runner_manager": null,
+      "runner_manager": {
+        "architecture": "amd64",
+        "contacted_at": "2026-10-24T17:07:47.578Z",
+        "created_at": "2026-10-23T17:07:51.614Z",
+        "id": 164740643,
+        "ip_address": "10.218.11.3",
+        "job_execution_status": "active",
+        "platform": "linux",
+        "revision": "cc7d9535",
+        "status": "online",
+        "system_id": "r_Y9hq5l81Lnqd",
+        "version": "19.6.0~pre.2364.gcc7d9535"
+      },
       "stage": "verify",
-      "started_at": "2026-10-21T17:49:23.744Z",
+      "started_at": "2026-10-24T17:03:54.207Z",
       "status": "success",
       "tag": false,
       "tag_list": [],
       "user": "[REDACTED]",
-      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17358574812"
+      "web_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance/-/jobs/17439830112"
     }
   ]
 }

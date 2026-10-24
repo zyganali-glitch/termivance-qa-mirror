@@ -1,9 +1,9 @@
 {
-  "acquired_at_utc": "2026-10-24T16:03:34Z",
+  "acquired_at_utc": "2026-10-24T17:07:44Z",
   "artifact_sha256": "38114b99da53925bb7abd4d6aeeba19b7005a712a7f082398f49062052536023",
   "body_sha256": "38114b99da53925bb7abd4d6aeeba19b7005a712a7f082398f49062052536023",
   "classification": "LIVE_GITLAB_OBSERVED_BY_GITHUB_ACTIONS",
-  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fauthorization.py/raw?ref=e4653169455f0d4553abff715e48116abd704bf7",
+  "endpoint": "/projects/87779099/repository/files/src%2Ftermivance%2Fauthorization.py/raw?ref=bb25e69bd9c1efa9c0f1f1e472ddea82a506439f",
   "http_error": null,
   "http_status": 200,
   "limitations": "public unauthenticated read",
