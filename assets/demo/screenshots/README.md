@@ -1,10 +1,10 @@
 # Public Demo Screenshots
 
-Target screenshots for the README and Devpost submission. **All images are pending capture under `WORK-B4-13` (`OPERATOR_ACTION`, gated on independent Checkpoint A)** — they must never be represented as existing deliverables until captured and sanitized by the operator.
+Official screenshots for the README and Devpost submission. All five primary images were captured by the operator at 1920×1080 (100% desktop zoom), privacy/sanity-audited, committed to the canonical repository, and uploaded to Devpost in this exact order on October 24, 2026.
 
-Final selection (Master Plan Section 12.1; capture instructions in Turkish: `docs/OPERATOR_FILMING_GUIDE.md` Section 6 — 1920×1080, 100% zoom, sanitized):
+Final selection (Master Plan Section 12.1; Turkish filming companion: `docs/OPERATOR_FILMING_GUIDE.md` Section 6):
 
-**Primary five:**
+**Primary five (committed & submitted):**
 - `01_overview_retirement_blocked.png` — Control Room, Overview tab (BLOCKED decision + evidence chain).
 - `02_duo_issue5_discovery.png` — GitLab Issue #5 / Duo Session 9710085 (agent investigation; fallback: Control Room Duo evidence card).
 - `04_obligation_graph_focused.png` — Control Room, Graph tab, `resource:ci_redeployment:87785099` selected.
@@ -15,4 +15,9 @@ Final selection (Master Plan Section 12.1; capture instructions in Turkish: `doc
 - `03_candidate_corroboration.png` — Control Room, Evidence & Audit tab, candidate corroboration matrix.
 - `05_real_ci_qa_binding.png` — split view: GitLab CI pipeline (passed) + GitHub Actions observer (PASS / IN_SYNC).
 
-**Privacy/sanity standard:** zero tokens, personal paths (`C:\Users\...`), e-mail addresses, avatars, or unmasked sensitive data; no fabricated dashboard states; no image may claim a Pages deletion, observed absence or resurrection control.
+**Privacy & Sanity Audit (PASSED):**
+- Zero tokens, credentials, runner registration keys, or private PATs.
+- Zero local developer file paths (`C:\Users\...`).
+- Zero personal email addresses, browser session tokens, or unmasked sensitive data.
+- Zero fabricated dashboard states; no image claims a Pages deletion, observed absence, or resurrection control.
+- All primary images verified at exact 1920×1080 resolution (16:9 standard).

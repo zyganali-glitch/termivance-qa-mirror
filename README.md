@@ -6,8 +6,33 @@ Termivance is a **Proof-Bounded Software Retirement Protocol** for GitLab. It an
 
 One real **GitLab Duo Custom Flow agent** investigates a retirement request and proposes candidate obligations. A **deterministic Python authority** independently corroborates every claim against provider facts, evaluates the complete obligation graph, and alone owns targeting, authorization, mutation, and verdicts. AI proposes; deterministic code decides.
 
-> Built for [GitLab Transcend — Life After Code (October 2026)](https://gitlab-transcend.devpost.com/), Path A / Start Fresh / **Supervised** autonomy.
-> Canonical repository: <https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance> (MIT).
+> **Competition:** [GitLab Transcend — Life After Code (October 2026)](https://gitlab-transcend.devpost.com/) · Path A / Start Fresh / **Supervised** autonomy  
+> **Devpost Submission:** <https://devpost.com/software/termivance> (**SUBMITTED** — October 24, 2026, 5/5 steps completed)  
+> **Demonstration Video (2:45):** <https://www.youtube.com/watch?v=_bBwgiFMknI> (Operator-produced, submitted demonstration)  
+> **Canonical Repository:** <https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance> (Project ID `87779099`, MIT)  
+> **Non-Canonical QA Mirror:** <https://github.com/zyganali-glitch/termivance-qa-mirror> (Actions observer `PASS / IN_SYNC`)
+
+[![Termivance Control Room Overview](assets/demo/screenshots/01_overview_retirement_blocked.png)](assets/demo/screenshots/01_overview_retirement_blocked.png)
+*Termivance Control Room: Overview tab showing the deterministic `BLOCKED` decision hero, three independent claim dimensions, and the Duo-to-deterministic evidence chain.*
+
+---
+
+## Video Demonstration (2:45)
+
+The complete under-three-minute demonstration was recorded and submitted by the operator, and is published on YouTube and embedded on Devpost:
+
+▶ **[Watch the Termivance Demonstration on YouTube (2:45)](https://www.youtube.com/watch?v=_bBwgiFMknI)**
+
+*Demonstration runbook structure (2 minutes 45 seconds):*
+- **0:00–0:13:** Deleting code is not retiring software; why software retirement requires deterministic proof.
+- **0:13–0:30:** Three strictly independent claims: `SAFE_TO_RETIRE`, `OBSERVED_ABSENT`, `RESURRECTION_CONTROLLED`.
+- **0:30–0:50:** Genuine GitLab Duo Custom Flow agent (Session 9710085 / Issue #5) discovering the surviving redeployment mechanism.
+- **0:50–1:08:** Control Room evidence-grounded candidate corroboration (4 corroborated, 2 unresolved, 1 contextual).
+- **1:08–1:40:** Deterministic Python authority execution & fail-closed safety refusals.
+- **1:40–1:56:** Publicly served disposable target Pages site and unique verification marker (`TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a`).
+- **1:56–2:14:** Retirement Obligation Graph (ROG) showing active redeployment node blocking safe retirement.
+- **2:14–2:30:** What-if simulation, bounded candidate repair sets, and 900-second contractual proof-decay state machine.
+- **2:30–2:45:** Canonical GitLab CI pipeline green + independent GitHub Actions observer verification (`PASS / IN_SYNC`).
 
 ---
 
@@ -110,6 +135,30 @@ The **Control Room** ([`control_room/index.html`](control_room/index.html)) is a
 
 It is deliberately **not deployed on public hosting**: GitLab Pages on the canonical project would default to members-only visibility, and making it public requires a Maintainer setting change that the organizer has denied for this namespace (see the feasibility study in the [Master Plan §10.3](plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md)). The local `file://` experience is the verified, guaranteed path — and public deployment is optional for Path A eligibility.
 
+## Submission Showcase: Primary Evidence Screenshots
+
+The five authentic screenshots submitted to Devpost, presented in official submission order (all 1920×1080 desktop resolution, privacy/sanity-verified):
+
+### 1. Control Room Overview & Retirement Blocked Verdict
+[![01_overview_retirement_blocked.png](assets/demo/screenshots/01_overview_retirement_blocked.png)](assets/demo/screenshots/01_overview_retirement_blocked.png)
+*Termivance Control Room: deterministic BLOCKED verdict with the evidence chain and explicit unclaimed outcomes.*
+
+### 2. Genuine GitLab Duo Custom Flow Issue #5 Investigation
+[![02_duo_issue5_discovery.png](assets/demo/screenshots/02_duo_issue5_discovery.png)](assets/demo/screenshots/02_duo_issue5_discovery.png)
+*Genuine GitLab Duo Custom Flow (Session 9710085) discovering the surviving redeployment path from a neutral request on Issue #5.*
+
+### 3. Retirement Obligation Graph (ROG) Focused on Redeployment Mechanism
+[![04_obligation_graph_focused.png](assets/demo/screenshots/04_obligation_graph_focused.png)](assets/demo/screenshots/04_obligation_graph_focused.png)
+*Retirement Obligation Graph: the surviving redeployment mechanism (`resource:ci_redeployment:87785099`) blocking retirement, with its recorded evidence payload.*
+
+### 4. Real Disposable Pages Site Published & Serving Verification Marker
+[![06_disposable_pages_published.png](assets/demo/screenshots/06_disposable_pages_published.png)](assets/demo/screenshots/06_disposable_pages_published.png)
+*Disposable Target Pages Deployment: the real publicly served site with its unique bound marker (`TERMIVANCE-B3-DISPOSABLE-PAGES-MARKER-7f3c9a`).*
+
+### 5. Deterministic Repair Sets & Proof Freshness Machine (900s TTL)
+[![07_repair_set_and_freshness.png](assets/demo/screenshots/07_repair_set_and_freshness.png)](assets/demo/screenshots/07_repair_set_and_freshness.png)
+*Bounded Candidate Repair Sets & Proof Decay: actionable remediation guidance with the contractual 900-second freshness boundary.*
+
 ## Try It Out
 
 ```bash
@@ -181,9 +230,12 @@ Interpretation guide: every command prints explicit verdicts and `NOT_RUN`/`NOT_
 ## Competition context
 
 - **Event:** [GitLab Transcend — Life After Code](https://gitlab-transcend.devpost.com/), October 2026 · Path A (Start Fresh) · Supervised autonomy level.
+- **Devpost Submission:** [https://devpost.com/software/termivance](https://devpost.com/software/termivance) — **SUBMITTED** on October 24, 2026 (5/5 steps completed).
+- **Submitted Demonstration Video:** [https://www.youtube.com/watch?v=_bBwgiFMknI](https://www.youtube.com/watch?v=_bBwgiFMknI) (2 minutes 45 seconds).
+- **Canonical Repository:** [GitLab Project 87779099](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/39306908/termivance) (MIT).
 - **DevSecOps stage coverage:** evidence-bound audit with per-stage qualifications in [`docs/DEVSECOPS_STAGES.md`](docs/DEVSECOPS_STAGES.md) (core: Plan, Verify, Secure, Govern; qualified: Create, Package, Configure, Monitor; Release honestly unchecked).
-- **Demo video:** a public YouTube demonstration under three minutes is part of the submission (operator-produced; this repository contains the runbook in [Master Plan §11](plans/TERMIVANCE_MASTER_EXECUTION_PLAN.md)).
-- Deadline: 2026-10-27 13:00 UTC / 16:00 Türkiye.
+- **Personal Spend:** **$0.00** incremental personal spend throughout.
+- **Official Deadline:** October 27, 2026, 13:00 UTC / 16:00 Türkiye.
 
 ## License
 
